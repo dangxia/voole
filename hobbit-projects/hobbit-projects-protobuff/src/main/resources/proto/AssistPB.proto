@@ -1,0 +1,108 @@
+option java_package = "com.voole.hobbit.proto";
+option java_generate_equals_and_hash = true;
+message FeedBackInfo {
+	optional string content = 1;
+	optional string phone = 2;
+	optional string email = 3;
+	optional string optioncode = 4;
+	optional string version = 5;
+}
+message AssistAboutUs {
+	optional string oemid = 1;
+	optional string type = 2;
+	optional string version = 3;
+	optional string packagename = 4;
+	optional string uid = 5;
+	optional string hid = 6;
+	optional string appId = 7;
+	optional string resultCode = 8;
+	optional string ip = 9;
+}
+message AssistUpdateStatisticsSrv {
+	optional string appName = 1;
+	optional string uid = 2;
+	optional string errorText = 3;
+	optional string appId = 4;
+	optional string oemid = 5;
+	optional string hid = 6;
+	optional string appVersion = 7;
+	optional string errorCode = 8;
+	optional string value = 9;
+	optional string type = 10;
+}
+message AssistUpdateCheck {
+	optional string uid = 1;
+	optional string fid = 2;
+	optional string dependPackegeVersion = 3;
+	optional string detailUrl = 4;
+	optional string appSize = 5;
+	optional string appId = 6;
+	optional string oemid = 7;
+	optional string hid = 8;
+	optional uint64 updateTime = 9;
+	optional string packagename = 10;
+	optional string downloadUrl = 11;
+	optional string version = 12;
+	optional string requiredSdk = 13;
+	optional string updateStyle = 14;
+	optional string currentVersion = 15;
+	optional string resultCode = 16;
+	optional string updateAvailabe = 17;
+	optional string resultText = 18;
+	optional string dependPackageName = 19;
+	optional string introduction = 20;
+	optional string ip = 21;
+}
+message AssistException {
+	optional ExceptionInfo exceptionInfo = 1;
+	optional string uid = 2;
+	optional string appId = 3;
+	optional string oemid = 4;
+	optional string hid = 5;
+	optional string packagename = 6;
+	optional string resultCode = 7;
+	optional string optionCode = 8;
+	optional string ip = 9;
+}
+message ExceptionInfo {
+	optional string logcategory = 1;
+	optional string priority = 2;
+	optional string packagename = 3;
+	optional string appname = 4;
+	optional string excepinfo = 5;
+	optional string version = 6;
+	optional string errcode = 7;
+}
+message AssistUpdateStatistics {
+	optional string uid = 1;
+	optional string oemid = 2;
+	optional string hid = 3;
+	optional string packagename = 4;
+	optional string resultCode = 5;
+	optional string resultText = 6;
+	optional string appId = 7;
+	repeated AssistUpdateStatisticsSrv xmlList = 8;
+	optional string ip = 9;
+}
+message AssistFeedback {
+	optional FeedBackInfo feedBackInfo = 1;
+	optional string oemid = 2;
+	optional string uid = 3;
+	optional string hid = 4;
+	optional string optionCode = 5;
+	optional string packagename = 6;
+	optional string appId = 7;
+	optional string resultCode = 8;
+	optional string ip = 9;
+}
+message AssistGetHelp {
+	optional string oemid = 1;
+	optional string version = 2;
+	optional string packagename = 3;
+	optional string uid = 4;
+	optional string hid = 5;
+	optional string type = 6;
+	optional string appId = 7;
+	optional string resultCode = 8;
+	optional string ip = 9;
+}

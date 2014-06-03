@@ -1,0 +1,463 @@
+option java_package = "com.voole.hobbit.proto";
+option java_generate_equals_and_hash = true;
+message P2pPlayAliveReqSrvV3 {
+	optional uint64 srvIP = 1;
+	optional uint64 connTimes = 2;
+	optional uint64 transNum = 3;
+	optional uint64 avgRTT = 4;
+	optional uint64 accBytes = 5;
+	optional uint64 accTime = 6;
+	optional uint64 avgSpeed = 7;
+	optional uint64 speed = 8;
+	optional uint64 RTT = 9;
+	optional uint64 nodeID = 10;
+}
+message P2pPlayBgnReqSrvV3 {
+	optional uint64 srvIP = 1;
+	optional uint32 srvPort = 2;
+	optional uint32 srvType = 3;
+}
+message OrderPlayAliveReqV2 {
+	optional string sessID = 1;
+	optional uint64 adjPlayTime = 2;
+	optional uint64 accID = 3;
+	optional uint64 aliveTick = 4;
+	optional uint64 seekNum = 5;
+	optional uint64 readNum = 6;
+	optional uint64 unsuccRead = 7;
+	optional uint64 readPos = 8;
+	optional uint64 sessAvgSpeed = 9;
+	optional uint32 linkNum = 10;
+	repeated OrderPlayAliveReqSrvV2 attachments = 11;
+}
+message P2pServerDownloadStateSrvV1 {
+	optional uint64 chl = 1;
+	optional uint64 beginTime = 2;
+	optional uint64 count = 3;
+	optional uint64 speed = 4;
+	optional uint64 reqCount = 5;
+	optional uint64 failCount = 6;
+	optional uint64 dropCount = 7;
+	optional uint64 dropData = 8;
+	optional uint64 dropSourceIp = 9;
+	optional uint64 dropSourceUid = 10;
+}
+message P2pServerChannelStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint32 chInstanteNum = 5;
+	repeated P2pServerChannelStateSrvV1 attachments = 6;
+}
+message P2pPlayEndReqV3 {
+	optional uint64 channelID = 1;
+	optional string HID = 2;
+	optional string UID = 3;
+	optional uint64 localIP = 4;
+	optional uint64 adjPlayTime = 5;
+	optional uint64 accID = 6;
+	optional uint64 endTick = 7;
+	optional uint64 readNum = 8;
+	optional uint64 avgSpeed = 9;
+	optional uint32 srvNum = 10;
+	repeated P2pPlayEndReqSrvV3 attachments = 11;
+}
+message P2pServerUploadStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint32 chInstanteNum = 5;
+	repeated P2pServerUploadStateSrvV1 attachments = 6;
+}
+message OrderPlayBgnReqSrvV2 {
+	optional uint64 srvIP = 1;
+	optional uint32 srvPort = 2;
+	optional uint32 srvType = 3;
+}
+message OrderPlayBgnReqV3 {
+	optional uint64 OEMID = 1;
+	optional uint64 vendorID = 2;
+	optional uint64 curVer = 3;
+	optional uint64 buildTime = 4;
+	optional string HID = 5;
+	optional string UID = 6;
+	optional uint64 localIP = 7;
+	optional string sessID = 8;
+	optional uint32 sessType = 9;
+	optional uint32 sessStatus = 10;
+	optional string FID = 11;
+	optional uint64 mSize = 12;
+	optional uint32 mmime = 13;
+	optional uint64 idxLen = 14;
+	optional uint32 urlLen = 15;
+	optional string URL = 16;
+	optional uint64 playTick = 17;
+	optional uint32 srvNum = 18;
+	optional uint64 cacheSize = 19;
+	optional uint64 packSize = 20;
+	optional uint64 bufSize = 21;
+	repeated OrderPlayBgnReqSrvV3 attachments = 22;
+}
+message P2pServerVlsStateSrvV1 {
+	optional uint64 chl = 1;
+	optional uint64 speed = 2;
+}
+message P2pServerPeerStateSrvV1 {
+	optional uint64 peerIp = 1;
+	optional uint64 peerUid = 2;
+	optional uint64 peerDownloadCount = 3;
+	optional uint64 peerReqCount = 4;
+	optional uint64 peerRecvReqCount = 5;
+	optional uint64 peerUploadCount = 6;
+	optional uint64 peerDownSpeed = 7;
+	optional uint64 peerUploadSpeed = 8;
+}
+message OrderPlayEndReqV3 {
+	optional string HID = 1;
+	optional string UID = 2;
+	optional uint64 localIP = 3;
+	optional string sessID = 4;
+	optional uint64 adjPlayTime = 5;
+	optional uint64 accID = 6;
+	optional uint64 endTick = 7;
+	optional uint64 seekNum = 8;
+	optional uint64 readNum = 9;
+	optional uint64 unsuccRead = 10;
+	optional uint64 stopPos = 11;
+	optional uint64 sessAvgSpeed = 12;
+	optional uint32 srvNum = 13;
+	repeated OrderPlayEndReqSrvV3 attachments = 14;
+}
+message P2pPlayBgnReqV3 {
+	optional uint64 OEMID = 1;
+	optional uint64 vendorID = 2;
+	optional uint64 curVer = 3;
+	optional uint64 buildTime = 4;
+	optional string HID = 5;
+	optional string UID = 6;
+	optional uint64 localIP = 7;
+	optional uint64 channelID = 8;
+	optional uint64 playTick = 9;
+	optional uint32 uRLLen = 10;
+	optional string URL = 11;
+	optional uint32 srvNum = 12;
+	optional uint64 cacheSize = 13;
+	optional uint64 packSize = 14;
+	optional uint64 bufSize = 15;
+	repeated P2pPlayBgnReqSrvV3 attachments = 16;
+}
+message P2pServerPeerStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 peerCount = 5;
+	repeated P2pServerPeerStateSrvV1 attachments = 6;
+}
+message P2pPlayExceptionReqV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 errorcode = 5;
+}
+message OrderPlayEndReqSrvV2 {
+	optional uint64 srvIP = 1;
+	optional uint64 connTimes = 2;
+	optional uint64 transNum = 3;
+	optional uint64 avgRTT = 4;
+	optional uint64 accBytes = 5;
+	optional uint64 accTime = 6;
+	optional uint64 avgSpeed = 7;
+}
+message OrderPlayBgnReqSrvV3 {
+	optional uint64 srvIP = 1;
+	optional uint32 srvPort = 2;
+	optional uint32 srvType = 3;
+}
+message LivePlayAliveReqV1 {
+	optional uint64 channelID = 1;
+	optional uint64 adjPlayTime = 2;
+	optional uint64 accID = 3;
+	optional uint64 aliveTick = 4;
+	optional uint64 avgSpeed = 5;
+	optional uint64 speed = 6;
+	optional uint64 cacheSizeCur = 7;
+}
+message P2pClientPeerStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 chl = 5;
+	optional uint64 peerCount = 6;
+	repeated P2pClientPeerStateSrvV1 attachments = 7;
+}
+message OrderPlayEndReqV2 {
+	optional string HID = 1;
+	optional string UID = 2;
+	optional uint64 localIP = 3;
+	optional string sessID = 4;
+	optional uint64 adjPlayTime = 5;
+	optional uint64 accID = 6;
+	optional uint64 endTick = 7;
+	optional uint64 seekNum = 8;
+	optional uint64 readNum = 9;
+	optional uint64 unsuccRead = 10;
+	optional uint64 stopPos = 11;
+	optional uint64 sessAvgSpeed = 12;
+	optional uint32 linkNum = 13;
+	repeated OrderPlayEndReqSrvV2 attachments = 14;
+}
+message P2pServerDownloadStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint32 chInstanteNum = 5;
+	repeated P2pServerDownloadStateSrvV1 attachments = 6;
+}
+message LivePlayBgnReqSrvV1 {
+	optional uint64 srvIP = 1;
+	optional uint32 srvPort = 2;
+	optional uint32 srvType = 3;
+}
+message OrderPlayAliveReqV3 {
+	optional string sessID = 1;
+	optional uint64 adjPlayTime = 2;
+	optional uint64 accID = 3;
+	optional uint64 aliveTick = 4;
+	optional uint64 seekNum = 5;
+	optional uint64 readNum = 6;
+	optional uint64 unsuccRead = 7;
+	optional uint64 readPos = 8;
+	optional uint64 sessAvgSpeed = 9;
+	optional uint64 sessSpeed = 10;
+	optional uint32 linkNum = 11;
+	optional uint64 cacheSizeCur = 12;
+	repeated OrderPlayAliveReqSrvV3 attachments = 13;
+}
+message LivePlayBgnReqV1 {
+	optional uint64 accID = 1;
+	optional uint64 OEMID = 2;
+	optional uint64 vendorID = 3;
+	optional uint64 curVer = 4;
+	optional uint64 buildTime = 5;
+	optional string HID = 6;
+	optional string UID = 7;
+	optional uint64 localIP = 8;
+	optional uint64 channelID = 9;
+	optional uint64 playTick = 10;
+	optional uint32 uRLLen = 11;
+	optional string URL = 12;
+	optional uint64 getVLSTick = 13;
+	optional uint32 srvNum = 14;
+	repeated LivePlayBgnReqSrvV1 attachments = 15;
+}
+message P2pServerVlsStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 totalCh = 5;
+	repeated P2pServerVlsStateSrvV1 attachments = 6;
+}
+message LivePlayExceptionReqV1 {
+	optional uint64 accID = 1;
+	optional uint64 channelID = 2;
+	optional uint32 srvType = 3;
+	optional uint64 srvIP = 4;
+	optional uint32 srvPort = 5;
+	optional uint64 avgSpeed = 6;
+	optional uint64 speed = 7;
+	optional uint64 cacheSizeCur = 8;
+	optional uint64 codeType = 9;
+	optional uint64 contentLen = 10;
+	optional string codeContent = 11;
+}
+message P2pServerChannelStateSrvV1 {
+	optional uint64 chl = 1;
+	optional uint64 time = 2;
+	optional uint64 concurClient = 3;
+}
+message P2pClientDownloadStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 chl = 5;
+	optional uint64 beginTime = 6;
+	optional uint64 count = 7;
+	optional uint64 speed = 8;
+	optional uint64 reqCount = 9;
+	optional uint64 failCount = 10;
+	optional uint64 dropCount = 11;
+	optional uint64 dropData = 12;
+	optional uint64 dropSourceIp = 13;
+	optional uint64 dropSourceUid = 14;
+}
+message P2pClientStatisStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 downloadCount = 5;
+	optional uint64 uploadCount = 6;
+	optional uint64 chCount = 7;
+	repeated P2pClientStatisStateSrvV1 attachments = 8;
+}
+message OrderPlayBgnReqV2 {
+	optional uint64 OEMID = 1;
+	optional uint64 vendorID = 2;
+	optional uint64 curVer = 3;
+	optional uint64 buildTime = 4;
+	optional string HID = 5;
+	optional string UID = 6;
+	optional uint64 localIP = 7;
+	optional string sessID = 8;
+	optional uint32 sessType = 9;
+	optional uint32 sessStatus = 10;
+	optional string FID = 11;
+	optional uint64 mSize = 12;
+	optional uint32 mmime = 13;
+	optional uint64 idxLen = 14;
+	optional uint32 urlLen = 15;
+	optional string URL = 16;
+	optional uint64 playTick = 17;
+	optional uint32 srvNum = 18;
+	repeated OrderPlayBgnReqSrvV2 attachments = 19;
+}
+message P2pClientStatisStateSrvV1 {
+	optional uint64 chl = 1;
+	optional uint64 chTime = 2;
+	optional uint64 chDownload = 3;
+	optional uint64 chUpload = 4;
+	optional uint64 chDownspeed = 5;
+	optional uint64 chUploadspeed = 6;
+	optional uint64 chFailcount = 7;
+	optional uint64 chDownloadserver = 8;
+	optional uint64 chDownloadclient = 9;
+	optional uint64 chCurPeerCounter = 10;
+}
+message P2pClientUploadStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 chl = 5;
+	optional uint64 beginTime = 6;
+	optional uint64 count = 7;
+	optional uint64 speed = 8;
+	optional uint64 reqCount = 9;
+	optional uint64 validReqCount = 10;
+}
+message OrderPlayEndReqSrvV3 {
+	optional uint64 srvIP = 1;
+	optional uint32 srvPort = 2;
+	optional uint32 srvType = 3;
+	optional uint64 connTimes = 4;
+	optional uint64 shutTimes = 5;
+}
+message LivePlayEndReqV1 {
+	optional uint64 channelID = 1;
+	optional string HID = 2;
+	optional string UID = 3;
+	optional uint64 localIP = 4;
+	optional uint64 adjPlayTime = 5;
+	optional uint64 accID = 6;
+	optional uint64 endTick = 7;
+	optional uint64 avgSpeed = 8;
+}
+message P2pPlayAliveReqV3 {
+	optional uint64 channelID = 1;
+	optional uint64 adjPlayTime = 2;
+	optional uint64 accID = 3;
+	optional uint64 aliveTick = 4;
+	optional uint64 readNum = 5;
+	optional uint64 unsuccRead = 6;
+	optional uint64 curFrm = 7;
+	optional uint64 avgSpeed = 8;
+	optional uint64 speed = 9;
+	optional uint32 linkNum = 10;
+	optional uint64 cacheSizeCur = 11;
+	repeated P2pPlayAliveReqSrvV3 attachments = 12;
+}
+message OrderPlayAliveReqSrvV3 {
+	optional uint64 srvIP = 1;
+	optional uint64 connTimes = 2;
+	optional uint64 transNum = 3;
+	optional uint64 avgRTT = 4;
+	optional uint64 accBytes = 5;
+	optional uint64 accTime = 6;
+	optional uint64 avgSpeed = 7;
+	optional uint64 speed = 8;
+	optional uint64 RTT = 9;
+	optional uint64 nodeID = 10;
+}
+message P2pServerUploadStateSrvV1 {
+	optional uint64 chl = 1;
+	optional uint64 beginTime = 2;
+	optional uint64 count = 3;
+	optional uint64 speed = 4;
+	optional uint64 reqCount = 5;
+	optional uint64 validReqCount = 6;
+}
+message P2pPlayEndReqSrvV3 {
+	optional uint64 srvIP = 1;
+	optional uint32 srvPort = 2;
+	optional uint32 srvType = 3;
+	optional uint64 connTimes = 4;
+	optional uint64 shutTimes = 5;
+}
+message P2pServerStatisStateV1 {
+	optional string uuid = 1;
+	optional string uid = 2;
+	optional uint64 hid = 3;
+	optional uint64 oemid = 4;
+	optional uint64 peerCount = 5;
+	optional uint64 peerPartnercount = 6;
+	optional uint64 downloadCount = 7;
+	optional uint64 uploadCount = 8;
+	optional uint64 rebootCount = 9;
+	optional uint64 staitsCount = 10;
+}
+message OrderPlayAliveReqSrvV2 {
+	optional uint64 srvIP = 1;
+	optional uint64 connTimes = 2;
+	optional uint64 transNum = 3;
+	optional uint64 avgRTT = 4;
+	optional uint64 accBytes = 5;
+	optional uint64 accTime = 6;
+	optional uint64 avgSpeed = 7;
+}
+message P2pClientPeerStateSrvV1 {
+	optional uint64 peerIp = 1;
+	optional uint64 peerUid = 2;
+	optional uint64 peerDownloadCount = 3;
+	optional uint64 peerReqCount = 4;
+	optional uint64 peerRecvReqCount = 5;
+	optional uint64 peerUploadCount = 6;
+	optional uint64 peerDownSpeed = 7;
+	optional uint64 peerUploadSpeed = 8;
+}
+message OrderPlayExceptionReqV3 {
+	optional string sessID = 1;
+	optional uint64 accID = 2;
+	optional uint32 exception = 3;
+	optional uint32 satus = 4;
+	optional uint64 srvIP = 5;
+	optional uint32 srvPort = 6;
+	optional uint32 srvType = 7;
+	optional uint64 tick = 8;
+	optional uint64 nodeID = 9;
+	optional string HID = 10;
+	optional uint64 OEMID = 11;
+	optional string UID = 12;
+	optional uint64 clientVersion = 13;
+	optional string FID = 14;
+	optional uint64 fIDOffset = 15;
+	optional uint32 errMsgLen = 16;
+	optional string errMsg = 17;
+}
