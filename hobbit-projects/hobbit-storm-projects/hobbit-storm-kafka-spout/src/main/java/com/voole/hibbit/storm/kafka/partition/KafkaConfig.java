@@ -20,13 +20,13 @@ public class KafkaConfig implements Serializable {
 	private int socketTimeoutMs = 10000;
 	private int bufferSizeBytes = 1024 * 1024;
 	private MultiScheme scheme = new RawMultiScheme();
-	private String topic;
+	private String[] topics;
 	private long startOffsetTime;
 	private boolean forceFromStart = false;
 
-	public KafkaConfig(BrokerHosts hosts, String topic) {
+	public KafkaConfig(BrokerHosts hosts, String... topics) {
 		this.hosts = hosts;
-		this.topic = topic;
+		this.topics = topics;
 		this.startOffsetTime = OffsetRequest.EarliestTime();
 	}
 
@@ -75,12 +75,12 @@ public class KafkaConfig implements Serializable {
 		this.scheme = scheme;
 	}
 
-	public String getTopic() {
-		return topic;
+	public String[] getTopics() {
+		return topics;
 	}
 
-	public void setTopic(String topic) {
-		this.topic = topic;
+	public void setTopics(String[] topic) {
+		this.topics = topic;
 	}
 
 	public long getStartOffsetTime() {

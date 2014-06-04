@@ -3,7 +3,13 @@
  */
 package com.voole.hibbit.storm.kafka.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import kafka.api.OffsetRequest;
@@ -20,7 +26,10 @@ import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
+import backtype.storm.generated.GlobalStreamId;
 import backtype.storm.generated.InvalidTopologyException;
+import backtype.storm.grouping.CustomStreamGrouping;
+import backtype.storm.task.WorkerTopologyContext;
 import backtype.storm.tuple.Fields;
 
 import com.voole.hibbit.storm.kafka.OpaqueTridentKafkaSpout;
@@ -73,6 +82,38 @@ public class TestTransformer {
 		}
 	}
 
+	public static class LocalShuffle implements CustomStreamGrouping {
+		private List<Integer> targetTasks;
+		private int size;
+		private Random r;
+
+		@Override
+		public void prepare(WorkerTopologyContext context,
+				GlobalStreamId stream, List<Integer> targetTasks) {
+			this.targetTasks = new ArrayList<Integer>();
+			Set<Integer> localTasks = new HashSet<Integer>(
+					context.getThisWorkerTasks());
+			for (Integer taskId : targetTasks) {
+				if (localTasks.contains(taskId)) {
+					this.targetTasks.add(taskId);
+				}
+			}
+			if (this.targetTasks.size() == 0) {
+				this.targetTasks.addAll(targetTasks);
+			}
+			this.size = this.targetTasks.size();
+
+			r = new Random();
+		}
+
+		@Override
+		public List<Integer> chooseTasks(int taskId, List<Object> values) {
+			int index = r.nextInt(size);
+			return Arrays.asList(targetTasks.get(index));
+		}
+
+	}
+
 	public static void main_cluster(String[] args) throws InterruptedException,
 			AlreadyAliveException, InvalidTopologyException {
 		ZkHosts hosts = new ZkHosts();
@@ -84,7 +125,7 @@ public class TestTransformer {
 		TridentTopology topology = new TridentTopology();
 		topology.newStream("test-kafka-spout", spout)
 				.parallelismHint(4)
-				.shuffle()
+				.partition(new LocalShuffle())
 				.each(new Fields("offset", "partition", "bytes"),
 						new TestKafkaFunction(), new Fields())
 				.parallelismHint(16);

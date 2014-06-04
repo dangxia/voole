@@ -68,11 +68,11 @@ public interface IBrokerReader extends Serializable {
 		private List<KafkaPartition> cachedBrokers;
 		private long lastRefreshTimeMs;
 		private long refreshMillis;
-		private String topic;
+		private String[] topics;
 
 		public ZkBrokerReader(Map<String, Object> conf,
 				KafkaConfig kafkaConfig, ZkHosts hosts) {
-			this.topic = kafkaConfig.getTopic();
+			this.topics = kafkaConfig.getTopics();
 			this.refreshMillis = hosts.getRefreshFreqSecs() * 1000L;
 			this.zkClient = new ZkClient(hosts.getKafkaConnetion(),
 					getSessionTimeout(conf, hosts), getConnectionTimeout(conf,
@@ -104,7 +104,7 @@ public interface IBrokerReader extends Serializable {
 		public List<KafkaPartition> getCurrentBrokers() {
 			long currTime = System.currentTimeMillis();
 			if (currTime > lastRefreshTimeMs + refreshMillis) {
-				cachedBrokers = KafkaUtils.getPartitions(zkClient, topic);
+				cachedBrokers = KafkaUtils.getPartitions(zkClient, topics);
 				lastRefreshTimeMs = currTime;
 			}
 			return cachedBrokers;

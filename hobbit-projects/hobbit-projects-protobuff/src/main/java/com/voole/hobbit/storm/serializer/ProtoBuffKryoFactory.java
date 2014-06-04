@@ -19,12 +19,14 @@ import com.google.protobuf.GeneratedMessage;
 public class ProtoBuffKryoFactory extends DefaultKryoFactory {
 	public static class KryoSerializableDefault2 extends
 			KryoSerializableDefault {
+		@SuppressWarnings("rawtypes")
 		private final Serializer serializer;
 
 		public KryoSerializableDefault2() {
 			serializer = new ProtoBuffSerializer<GeneratedMessage>();
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public Serializer getDefaultSerializer(Class type) {
 			if (GeneratedMessage.class.isAssignableFrom(type)) {
@@ -36,7 +38,7 @@ public class ProtoBuffKryoFactory extends DefaultKryoFactory {
 	}
 
 	@Override
-	public Kryo getKryo(Map conf) {
+	public Kryo getKryo(@SuppressWarnings("rawtypes") Map conf) {
 		KryoSerializableDefault2 k = new KryoSerializableDefault2();
 		k.setRegistrationRequired(!((Boolean) conf
 				.get(Config.TOPOLOGY_FALL_BACK_ON_JAVA_SERIALIZATION)));

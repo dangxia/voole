@@ -44,17 +44,17 @@ public class OpaqueTridentKafkaSpout
 	public static final Logger LOG = LoggerFactory
 			.getLogger(OpaqueTridentKafkaSpout.class);
 
-	private final String topic;
+	private final String[] topics;
 	private final KafkaConfig kafkaConfig;
 	private String _topologyInstanceId = UUID.randomUUID().toString();
 
 	public OpaqueTridentKafkaSpout(KafkaConfig kafkaConfig) {
-		this.topic = kafkaConfig.getTopic();
+		this.topics = kafkaConfig.getTopics();
 		this.kafkaConfig = kafkaConfig;
 	}
 
-	public String getTopic() {
-		return topic;
+	public String[] getTopics() {
+		return topics;
 	}
 
 	@Override
@@ -76,8 +76,7 @@ public class OpaqueTridentKafkaSpout
 
 	@Override
 	public Fields getOutputFields() {
-		return new Fields("offset", "partition", "bytes");
-		// return kafkaConfig.getScheme().getOutputFields();
+		return new Fields("topic", "offset", "partition", "bytes");
 	}
 
 	class OpaqueTridentKafkaSpoutCoordinator implements
@@ -119,6 +118,7 @@ public class OpaqueTridentKafkaSpout
 		public JSONObject emitPartitionBatch(TransactionAttempt tx,
 				TridentCollector collector, KafkaPartition partition,
 				JSONObject lastMeta) {
+
 			try {
 				SimpleConsumer consumer = connections.register(partition);
 				JSONObject ret = emitPartitionBatchNew(consumer, partition,
@@ -225,7 +225,7 @@ public class OpaqueTridentKafkaSpout
 			newMeta.put("nextOffset", nextOffset);
 			newMeta.put("instanceId", _topologyInstanceId);
 			newMeta.put("partition", partition.getPartition());
-			newMeta.put("topic", kafkaConfig.getTopic());
+			newMeta.put("topic", kafkaConfig.getTopics());
 			return newMeta;
 		}
 
@@ -239,14 +239,8 @@ public class OpaqueTridentKafkaSpout
 			byte[] bytes = new byte[payload.limit()];
 			payload.get(bytes);
 
-			collector.emit(new Values(msg.offset(), partition.getPartition(),
-					bytes));
-
-			// for (List<Object> it :
-			// kafkaConfig.getScheme().deserialize(bytes)) {
-			// collector.emit(it);
-			// }
-
+			collector.emit(new Values(partition.getTopic(), msg.offset(),
+					partition.getPartition(), bytes));
 		}
 	}
 

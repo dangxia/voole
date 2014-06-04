@@ -10005,60 +10005,60 @@ public final class TerminalPB {
      */
     int getSrvNum();
 
-    // optional uint64 cacheSize = 19;
+    // repeated .OrderPlayBgnReqSrvV3 attachments = 19;
     /**
-     * <code>optional uint64 cacheSize = 19;</code>
-     */
-    boolean hasCacheSize();
-    /**
-     * <code>optional uint64 cacheSize = 19;</code>
-     */
-    long getCacheSize();
-
-    // optional uint64 packSize = 20;
-    /**
-     * <code>optional uint64 packSize = 20;</code>
-     */
-    boolean hasPackSize();
-    /**
-     * <code>optional uint64 packSize = 20;</code>
-     */
-    long getPackSize();
-
-    // optional uint64 bufSize = 21;
-    /**
-     * <code>optional uint64 bufSize = 21;</code>
-     */
-    boolean hasBufSize();
-    /**
-     * <code>optional uint64 bufSize = 21;</code>
-     */
-    long getBufSize();
-
-    // repeated .OrderPlayBgnReqSrvV3 attachments = 22;
-    /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     java.util.List<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3> 
         getAttachmentsList();
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3 getAttachments(int index);
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     int getAttachmentsCount();
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     java.util.List<? extends com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder> 
         getAttachmentsOrBuilderList();
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder getAttachmentsOrBuilder(
         int index);
+
+    // optional uint64 cacheSize = 20;
+    /**
+     * <code>optional uint64 cacheSize = 20;</code>
+     */
+    boolean hasCacheSize();
+    /**
+     * <code>optional uint64 cacheSize = 20;</code>
+     */
+    long getCacheSize();
+
+    // optional uint64 packSize = 21;
+    /**
+     * <code>optional uint64 packSize = 21;</code>
+     */
+    boolean hasPackSize();
+    /**
+     * <code>optional uint64 packSize = 21;</code>
+     */
+    long getPackSize();
+
+    // optional uint64 bufSize = 22;
+    /**
+     * <code>optional uint64 bufSize = 22;</code>
+     */
+    boolean hasBufSize();
+    /**
+     * <code>optional uint64 bufSize = 22;</code>
+     */
+    long getBufSize();
   }
   /**
    * Protobuf type {@code OrderPlayBgnReqV3}
@@ -10201,27 +10201,27 @@ public final class TerminalPB {
               srvNum_ = input.readUInt32();
               break;
             }
-            case 152: {
+            case 154: {
+              if (!((mutable_bitField0_ & 0x00040000) == 0x00040000)) {
+                attachments_ = new java.util.ArrayList<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3>();
+                mutable_bitField0_ |= 0x00040000;
+              }
+              attachments_.add(input.readMessage(com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.PARSER, extensionRegistry));
+              break;
+            }
+            case 160: {
               bitField0_ |= 0x00040000;
               cacheSize_ = input.readUInt64();
               break;
             }
-            case 160: {
+            case 168: {
               bitField0_ |= 0x00080000;
               packSize_ = input.readUInt64();
               break;
             }
-            case 168: {
+            case 176: {
               bitField0_ |= 0x00100000;
               bufSize_ = input.readUInt64();
-              break;
-            }
-            case 178: {
-              if (!((mutable_bitField0_ & 0x00200000) == 0x00200000)) {
-                attachments_ = new java.util.ArrayList<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3>();
-                mutable_bitField0_ |= 0x00200000;
-              }
-              attachments_.add(input.readMessage(com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.PARSER, extensionRegistry));
               break;
             }
           }
@@ -10232,7 +10232,7 @@ public final class TerminalPB {
         throw new com.google.protobuf.InvalidProtocolBufferException(
             e.getMessage()).setUnfinishedMessage(this);
       } finally {
-        if (((mutable_bitField0_ & 0x00200000) == 0x00200000)) {
+        if (((mutable_bitField0_ & 0x00040000) == 0x00040000)) {
           attachments_ = java.util.Collections.unmodifiableList(attachments_);
         }
         this.unknownFields = unknownFields.build();
@@ -10690,88 +10690,88 @@ public final class TerminalPB {
       return srvNum_;
     }
 
-    // optional uint64 cacheSize = 19;
-    public static final int CACHESIZE_FIELD_NUMBER = 19;
-    private long cacheSize_;
-    /**
-     * <code>optional uint64 cacheSize = 19;</code>
-     */
-    public boolean hasCacheSize() {
-      return ((bitField0_ & 0x00040000) == 0x00040000);
-    }
-    /**
-     * <code>optional uint64 cacheSize = 19;</code>
-     */
-    public long getCacheSize() {
-      return cacheSize_;
-    }
-
-    // optional uint64 packSize = 20;
-    public static final int PACKSIZE_FIELD_NUMBER = 20;
-    private long packSize_;
-    /**
-     * <code>optional uint64 packSize = 20;</code>
-     */
-    public boolean hasPackSize() {
-      return ((bitField0_ & 0x00080000) == 0x00080000);
-    }
-    /**
-     * <code>optional uint64 packSize = 20;</code>
-     */
-    public long getPackSize() {
-      return packSize_;
-    }
-
-    // optional uint64 bufSize = 21;
-    public static final int BUFSIZE_FIELD_NUMBER = 21;
-    private long bufSize_;
-    /**
-     * <code>optional uint64 bufSize = 21;</code>
-     */
-    public boolean hasBufSize() {
-      return ((bitField0_ & 0x00100000) == 0x00100000);
-    }
-    /**
-     * <code>optional uint64 bufSize = 21;</code>
-     */
-    public long getBufSize() {
-      return bufSize_;
-    }
-
-    // repeated .OrderPlayBgnReqSrvV3 attachments = 22;
-    public static final int ATTACHMENTS_FIELD_NUMBER = 22;
+    // repeated .OrderPlayBgnReqSrvV3 attachments = 19;
+    public static final int ATTACHMENTS_FIELD_NUMBER = 19;
     private java.util.List<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3> attachments_;
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     public java.util.List<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3> getAttachmentsList() {
       return attachments_;
     }
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     public java.util.List<? extends com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder> 
         getAttachmentsOrBuilderList() {
       return attachments_;
     }
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     public int getAttachmentsCount() {
       return attachments_.size();
     }
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     public com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3 getAttachments(int index) {
       return attachments_.get(index);
     }
     /**
-     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+     * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
      */
     public com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder getAttachmentsOrBuilder(
         int index) {
       return attachments_.get(index);
+    }
+
+    // optional uint64 cacheSize = 20;
+    public static final int CACHESIZE_FIELD_NUMBER = 20;
+    private long cacheSize_;
+    /**
+     * <code>optional uint64 cacheSize = 20;</code>
+     */
+    public boolean hasCacheSize() {
+      return ((bitField0_ & 0x00040000) == 0x00040000);
+    }
+    /**
+     * <code>optional uint64 cacheSize = 20;</code>
+     */
+    public long getCacheSize() {
+      return cacheSize_;
+    }
+
+    // optional uint64 packSize = 21;
+    public static final int PACKSIZE_FIELD_NUMBER = 21;
+    private long packSize_;
+    /**
+     * <code>optional uint64 packSize = 21;</code>
+     */
+    public boolean hasPackSize() {
+      return ((bitField0_ & 0x00080000) == 0x00080000);
+    }
+    /**
+     * <code>optional uint64 packSize = 21;</code>
+     */
+    public long getPackSize() {
+      return packSize_;
+    }
+
+    // optional uint64 bufSize = 22;
+    public static final int BUFSIZE_FIELD_NUMBER = 22;
+    private long bufSize_;
+    /**
+     * <code>optional uint64 bufSize = 22;</code>
+     */
+    public boolean hasBufSize() {
+      return ((bitField0_ & 0x00100000) == 0x00100000);
+    }
+    /**
+     * <code>optional uint64 bufSize = 22;</code>
+     */
+    public long getBufSize() {
+      return bufSize_;
     }
 
     private void initFields() {
@@ -10793,10 +10793,10 @@ public final class TerminalPB {
       uRL_ = "";
       playTick_ = 0L;
       srvNum_ = 0;
+      attachments_ = java.util.Collections.emptyList();
       cacheSize_ = 0L;
       packSize_ = 0L;
       bufSize_ = 0L;
-      attachments_ = java.util.Collections.emptyList();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10864,17 +10864,17 @@ public final class TerminalPB {
       if (((bitField0_ & 0x00020000) == 0x00020000)) {
         output.writeUInt32(18, srvNum_);
       }
+      for (int i = 0; i < attachments_.size(); i++) {
+        output.writeMessage(19, attachments_.get(i));
+      }
       if (((bitField0_ & 0x00040000) == 0x00040000)) {
-        output.writeUInt64(19, cacheSize_);
+        output.writeUInt64(20, cacheSize_);
       }
       if (((bitField0_ & 0x00080000) == 0x00080000)) {
-        output.writeUInt64(20, packSize_);
+        output.writeUInt64(21, packSize_);
       }
       if (((bitField0_ & 0x00100000) == 0x00100000)) {
-        output.writeUInt64(21, bufSize_);
-      }
-      for (int i = 0; i < attachments_.size(); i++) {
-        output.writeMessage(22, attachments_.get(i));
+        output.writeUInt64(22, bufSize_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10957,21 +10957,21 @@ public final class TerminalPB {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt32Size(18, srvNum_);
       }
+      for (int i = 0; i < attachments_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(19, attachments_.get(i));
+      }
       if (((bitField0_ & 0x00040000) == 0x00040000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(19, cacheSize_);
+          .computeUInt64Size(20, cacheSize_);
       }
       if (((bitField0_ & 0x00080000) == 0x00080000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(20, packSize_);
+          .computeUInt64Size(21, packSize_);
       }
       if (((bitField0_ & 0x00100000) == 0x00100000)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt64Size(21, bufSize_);
-      }
-      for (int i = 0; i < attachments_.size(); i++) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(22, attachments_.get(i));
+          .computeUInt64Size(22, bufSize_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -11086,6 +11086,8 @@ public final class TerminalPB {
         result = result && (getSrvNum()
             == other.getSrvNum());
       }
+      result = result && getAttachmentsList()
+          .equals(other.getAttachmentsList());
       result = result && (hasCacheSize() == other.hasCacheSize());
       if (hasCacheSize()) {
         result = result && (getCacheSize()
@@ -11101,8 +11103,6 @@ public final class TerminalPB {
         result = result && (getBufSize()
             == other.getBufSize());
       }
-      result = result && getAttachmentsList()
-          .equals(other.getAttachmentsList());
       result = result &&
           getUnknownFields().equals(other.getUnknownFields());
       return result;
@@ -11188,6 +11188,10 @@ public final class TerminalPB {
         hash = (37 * hash) + SRVNUM_FIELD_NUMBER;
         hash = (53 * hash) + getSrvNum();
       }
+      if (getAttachmentsCount() > 0) {
+        hash = (37 * hash) + ATTACHMENTS_FIELD_NUMBER;
+        hash = (53 * hash) + getAttachmentsList().hashCode();
+      }
       if (hasCacheSize()) {
         hash = (37 * hash) + CACHESIZE_FIELD_NUMBER;
         hash = (53 * hash) + hashLong(getCacheSize());
@@ -11199,10 +11203,6 @@ public final class TerminalPB {
       if (hasBufSize()) {
         hash = (37 * hash) + BUFSIZE_FIELD_NUMBER;
         hash = (53 * hash) + hashLong(getBufSize());
-      }
-      if (getAttachmentsCount() > 0) {
-        hash = (37 * hash) + ATTACHMENTS_FIELD_NUMBER;
-        hash = (53 * hash) + getAttachmentsList().hashCode();
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -11350,18 +11350,18 @@ public final class TerminalPB {
         bitField0_ = (bitField0_ & ~0x00010000);
         srvNum_ = 0;
         bitField0_ = (bitField0_ & ~0x00020000);
-        cacheSize_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00040000);
-        packSize_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00080000);
-        bufSize_ = 0L;
-        bitField0_ = (bitField0_ & ~0x00100000);
         if (attachmentsBuilder_ == null) {
           attachments_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00200000);
+          bitField0_ = (bitField0_ & ~0x00040000);
         } else {
           attachmentsBuilder_.clear();
         }
+        cacheSize_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00080000);
+        packSize_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00100000);
+        bufSize_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00200000);
         return this;
       }
 
@@ -11462,27 +11462,27 @@ public final class TerminalPB {
           to_bitField0_ |= 0x00020000;
         }
         result.srvNum_ = srvNum_;
-        if (((from_bitField0_ & 0x00040000) == 0x00040000)) {
-          to_bitField0_ |= 0x00040000;
-        }
-        result.cacheSize_ = cacheSize_;
-        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
-          to_bitField0_ |= 0x00080000;
-        }
-        result.packSize_ = packSize_;
-        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
-          to_bitField0_ |= 0x00100000;
-        }
-        result.bufSize_ = bufSize_;
         if (attachmentsBuilder_ == null) {
-          if (((bitField0_ & 0x00200000) == 0x00200000)) {
+          if (((bitField0_ & 0x00040000) == 0x00040000)) {
             attachments_ = java.util.Collections.unmodifiableList(attachments_);
-            bitField0_ = (bitField0_ & ~0x00200000);
+            bitField0_ = (bitField0_ & ~0x00040000);
           }
           result.attachments_ = attachments_;
         } else {
           result.attachments_ = attachmentsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+          to_bitField0_ |= 0x00040000;
+        }
+        result.cacheSize_ = cacheSize_;
+        if (((from_bitField0_ & 0x00100000) == 0x00100000)) {
+          to_bitField0_ |= 0x00080000;
+        }
+        result.packSize_ = packSize_;
+        if (((from_bitField0_ & 0x00200000) == 0x00200000)) {
+          to_bitField0_ |= 0x00100000;
+        }
+        result.bufSize_ = bufSize_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -11563,20 +11563,11 @@ public final class TerminalPB {
         if (other.hasSrvNum()) {
           setSrvNum(other.getSrvNum());
         }
-        if (other.hasCacheSize()) {
-          setCacheSize(other.getCacheSize());
-        }
-        if (other.hasPackSize()) {
-          setPackSize(other.getPackSize());
-        }
-        if (other.hasBufSize()) {
-          setBufSize(other.getBufSize());
-        }
         if (attachmentsBuilder_ == null) {
           if (!other.attachments_.isEmpty()) {
             if (attachments_.isEmpty()) {
               attachments_ = other.attachments_;
-              bitField0_ = (bitField0_ & ~0x00200000);
+              bitField0_ = (bitField0_ & ~0x00040000);
             } else {
               ensureAttachmentsIsMutable();
               attachments_.addAll(other.attachments_);
@@ -11589,7 +11580,7 @@ public final class TerminalPB {
               attachmentsBuilder_.dispose();
               attachmentsBuilder_ = null;
               attachments_ = other.attachments_;
-              bitField0_ = (bitField0_ & ~0x00200000);
+              bitField0_ = (bitField0_ & ~0x00040000);
               attachmentsBuilder_ = 
                 com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getAttachmentsFieldBuilder() : null;
@@ -11597,6 +11588,15 @@ public final class TerminalPB {
               attachmentsBuilder_.addAllMessages(other.attachments_);
             }
           }
+        }
+        if (other.hasCacheSize()) {
+          setCacheSize(other.getCacheSize());
+        }
+        if (other.hasPackSize()) {
+          setPackSize(other.getPackSize());
+        }
+        if (other.hasBufSize()) {
+          setBufSize(other.getBufSize());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -12424,112 +12424,13 @@ public final class TerminalPB {
         return this;
       }
 
-      // optional uint64 cacheSize = 19;
-      private long cacheSize_ ;
-      /**
-       * <code>optional uint64 cacheSize = 19;</code>
-       */
-      public boolean hasCacheSize() {
-        return ((bitField0_ & 0x00040000) == 0x00040000);
-      }
-      /**
-       * <code>optional uint64 cacheSize = 19;</code>
-       */
-      public long getCacheSize() {
-        return cacheSize_;
-      }
-      /**
-       * <code>optional uint64 cacheSize = 19;</code>
-       */
-      public Builder setCacheSize(long value) {
-        bitField0_ |= 0x00040000;
-        cacheSize_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional uint64 cacheSize = 19;</code>
-       */
-      public Builder clearCacheSize() {
-        bitField0_ = (bitField0_ & ~0x00040000);
-        cacheSize_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      // optional uint64 packSize = 20;
-      private long packSize_ ;
-      /**
-       * <code>optional uint64 packSize = 20;</code>
-       */
-      public boolean hasPackSize() {
-        return ((bitField0_ & 0x00080000) == 0x00080000);
-      }
-      /**
-       * <code>optional uint64 packSize = 20;</code>
-       */
-      public long getPackSize() {
-        return packSize_;
-      }
-      /**
-       * <code>optional uint64 packSize = 20;</code>
-       */
-      public Builder setPackSize(long value) {
-        bitField0_ |= 0x00080000;
-        packSize_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional uint64 packSize = 20;</code>
-       */
-      public Builder clearPackSize() {
-        bitField0_ = (bitField0_ & ~0x00080000);
-        packSize_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      // optional uint64 bufSize = 21;
-      private long bufSize_ ;
-      /**
-       * <code>optional uint64 bufSize = 21;</code>
-       */
-      public boolean hasBufSize() {
-        return ((bitField0_ & 0x00100000) == 0x00100000);
-      }
-      /**
-       * <code>optional uint64 bufSize = 21;</code>
-       */
-      public long getBufSize() {
-        return bufSize_;
-      }
-      /**
-       * <code>optional uint64 bufSize = 21;</code>
-       */
-      public Builder setBufSize(long value) {
-        bitField0_ |= 0x00100000;
-        bufSize_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional uint64 bufSize = 21;</code>
-       */
-      public Builder clearBufSize() {
-        bitField0_ = (bitField0_ & ~0x00100000);
-        bufSize_ = 0L;
-        onChanged();
-        return this;
-      }
-
-      // repeated .OrderPlayBgnReqSrvV3 attachments = 22;
+      // repeated .OrderPlayBgnReqSrvV3 attachments = 19;
       private java.util.List<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3> attachments_ =
         java.util.Collections.emptyList();
       private void ensureAttachmentsIsMutable() {
-        if (!((bitField0_ & 0x00200000) == 0x00200000)) {
+        if (!((bitField0_ & 0x00040000) == 0x00040000)) {
           attachments_ = new java.util.ArrayList<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3>(attachments_);
-          bitField0_ |= 0x00200000;
+          bitField0_ |= 0x00040000;
          }
       }
 
@@ -12537,7 +12438,7 @@ public final class TerminalPB {
           com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder> attachmentsBuilder_;
 
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public java.util.List<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3> getAttachmentsList() {
         if (attachmentsBuilder_ == null) {
@@ -12547,7 +12448,7 @@ public final class TerminalPB {
         }
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public int getAttachmentsCount() {
         if (attachmentsBuilder_ == null) {
@@ -12557,7 +12458,7 @@ public final class TerminalPB {
         }
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3 getAttachments(int index) {
         if (attachmentsBuilder_ == null) {
@@ -12567,7 +12468,7 @@ public final class TerminalPB {
         }
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder setAttachments(
           int index, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3 value) {
@@ -12584,7 +12485,7 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder setAttachments(
           int index, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder builderForValue) {
@@ -12598,7 +12499,7 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder addAttachments(com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3 value) {
         if (attachmentsBuilder_ == null) {
@@ -12614,7 +12515,7 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder addAttachments(
           int index, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3 value) {
@@ -12631,7 +12532,7 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder addAttachments(
           com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder builderForValue) {
@@ -12645,7 +12546,7 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder addAttachments(
           int index, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder builderForValue) {
@@ -12659,7 +12560,7 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder addAllAttachments(
           java.lang.Iterable<? extends com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3> values) {
@@ -12673,12 +12574,12 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder clearAttachments() {
         if (attachmentsBuilder_ == null) {
           attachments_ = java.util.Collections.emptyList();
-          bitField0_ = (bitField0_ & ~0x00200000);
+          bitField0_ = (bitField0_ & ~0x00040000);
           onChanged();
         } else {
           attachmentsBuilder_.clear();
@@ -12686,7 +12587,7 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public Builder removeAttachments(int index) {
         if (attachmentsBuilder_ == null) {
@@ -12699,14 +12600,14 @@ public final class TerminalPB {
         return this;
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder getAttachmentsBuilder(
           int index) {
         return getAttachmentsFieldBuilder().getBuilder(index);
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder getAttachmentsOrBuilder(
           int index) {
@@ -12716,7 +12617,7 @@ public final class TerminalPB {
         }
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public java.util.List<? extends com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder> 
            getAttachmentsOrBuilderList() {
@@ -12727,14 +12628,14 @@ public final class TerminalPB {
         }
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder addAttachmentsBuilder() {
         return getAttachmentsFieldBuilder().addBuilder(
             com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.getDefaultInstance());
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder addAttachmentsBuilder(
           int index) {
@@ -12742,7 +12643,7 @@ public final class TerminalPB {
             index, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.getDefaultInstance());
       }
       /**
-       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 22;</code>
+       * <code>repeated .OrderPlayBgnReqSrvV3 attachments = 19;</code>
        */
       public java.util.List<com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder> 
            getAttachmentsBuilderList() {
@@ -12755,12 +12656,111 @@ public final class TerminalPB {
           attachmentsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3.Builder, com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV3OrBuilder>(
                   attachments_,
-                  ((bitField0_ & 0x00200000) == 0x00200000),
+                  ((bitField0_ & 0x00040000) == 0x00040000),
                   getParentForChildren(),
                   isClean());
           attachments_ = null;
         }
         return attachmentsBuilder_;
+      }
+
+      // optional uint64 cacheSize = 20;
+      private long cacheSize_ ;
+      /**
+       * <code>optional uint64 cacheSize = 20;</code>
+       */
+      public boolean hasCacheSize() {
+        return ((bitField0_ & 0x00080000) == 0x00080000);
+      }
+      /**
+       * <code>optional uint64 cacheSize = 20;</code>
+       */
+      public long getCacheSize() {
+        return cacheSize_;
+      }
+      /**
+       * <code>optional uint64 cacheSize = 20;</code>
+       */
+      public Builder setCacheSize(long value) {
+        bitField0_ |= 0x00080000;
+        cacheSize_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 cacheSize = 20;</code>
+       */
+      public Builder clearCacheSize() {
+        bitField0_ = (bitField0_ & ~0x00080000);
+        cacheSize_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional uint64 packSize = 21;
+      private long packSize_ ;
+      /**
+       * <code>optional uint64 packSize = 21;</code>
+       */
+      public boolean hasPackSize() {
+        return ((bitField0_ & 0x00100000) == 0x00100000);
+      }
+      /**
+       * <code>optional uint64 packSize = 21;</code>
+       */
+      public long getPackSize() {
+        return packSize_;
+      }
+      /**
+       * <code>optional uint64 packSize = 21;</code>
+       */
+      public Builder setPackSize(long value) {
+        bitField0_ |= 0x00100000;
+        packSize_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 packSize = 21;</code>
+       */
+      public Builder clearPackSize() {
+        bitField0_ = (bitField0_ & ~0x00100000);
+        packSize_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional uint64 bufSize = 22;
+      private long bufSize_ ;
+      /**
+       * <code>optional uint64 bufSize = 22;</code>
+       */
+      public boolean hasBufSize() {
+        return ((bitField0_ & 0x00200000) == 0x00200000);
+      }
+      /**
+       * <code>optional uint64 bufSize = 22;</code>
+       */
+      public long getBufSize() {
+        return bufSize_;
+      }
+      /**
+       * <code>optional uint64 bufSize = 22;</code>
+       */
+      public Builder setBufSize(long value) {
+        bitField0_ |= 0x00200000;
+        bufSize_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 bufSize = 22;</code>
+       */
+      public Builder clearBufSize() {
+        bitField0_ = (bitField0_ & ~0x00200000);
+        bufSize_ = 0L;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:OrderPlayBgnReqV3)
@@ -22009,15 +22009,15 @@ public final class TerminalPB {
      */
     int getSrvPort();
 
-    // optional uint32 srvType = 3;
+    // optional uint64 srvType = 3;
     /**
-     * <code>optional uint32 srvType = 3;</code>
+     * <code>optional uint64 srvType = 3;</code>
      */
     boolean hasSrvType();
     /**
-     * <code>optional uint32 srvType = 3;</code>
+     * <code>optional uint64 srvType = 3;</code>
      */
-    int getSrvType();
+    long getSrvType();
   }
   /**
    * Protobuf type {@code OrderPlayBgnReqSrvV3}
@@ -22082,7 +22082,7 @@ public final class TerminalPB {
             }
             case 24: {
               bitField0_ |= 0x00000004;
-              srvType_ = input.readUInt32();
+              srvType_ = input.readUInt64();
               break;
             }
           }
@@ -22157,26 +22157,26 @@ public final class TerminalPB {
       return srvPort_;
     }
 
-    // optional uint32 srvType = 3;
+    // optional uint64 srvType = 3;
     public static final int SRVTYPE_FIELD_NUMBER = 3;
-    private int srvType_;
+    private long srvType_;
     /**
-     * <code>optional uint32 srvType = 3;</code>
+     * <code>optional uint64 srvType = 3;</code>
      */
     public boolean hasSrvType() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional uint32 srvType = 3;</code>
+     * <code>optional uint64 srvType = 3;</code>
      */
-    public int getSrvType() {
+    public long getSrvType() {
       return srvType_;
     }
 
     private void initFields() {
       srvIP_ = 0L;
       srvPort_ = 0;
-      srvType_ = 0;
+      srvType_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -22197,7 +22197,7 @@ public final class TerminalPB {
         output.writeUInt32(2, srvPort_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeUInt32(3, srvType_);
+        output.writeUInt64(3, srvType_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -22218,7 +22218,7 @@ public final class TerminalPB {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, srvType_);
+          .computeUInt64Size(3, srvType_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -22281,7 +22281,7 @@ public final class TerminalPB {
       }
       if (hasSrvType()) {
         hash = (37 * hash) + SRVTYPE_FIELD_NUMBER;
-        hash = (53 * hash) + getSrvType();
+        hash = (53 * hash) + hashLong(getSrvType());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -22396,7 +22396,7 @@ public final class TerminalPB {
         bitField0_ = (bitField0_ & ~0x00000001);
         srvPort_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
-        srvType_ = 0;
+        srvType_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
@@ -22556,35 +22556,35 @@ public final class TerminalPB {
         return this;
       }
 
-      // optional uint32 srvType = 3;
-      private int srvType_ ;
+      // optional uint64 srvType = 3;
+      private long srvType_ ;
       /**
-       * <code>optional uint32 srvType = 3;</code>
+       * <code>optional uint64 srvType = 3;</code>
        */
       public boolean hasSrvType() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional uint32 srvType = 3;</code>
+       * <code>optional uint64 srvType = 3;</code>
        */
-      public int getSrvType() {
+      public long getSrvType() {
         return srvType_;
       }
       /**
-       * <code>optional uint32 srvType = 3;</code>
+       * <code>optional uint64 srvType = 3;</code>
        */
-      public Builder setSrvType(int value) {
+      public Builder setSrvType(long value) {
         bitField0_ |= 0x00000004;
         srvType_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional uint32 srvType = 3;</code>
+       * <code>optional uint64 srvType = 3;</code>
        */
       public Builder clearSrvType() {
         bitField0_ = (bitField0_ & ~0x00000004);
-        srvType_ = 0;
+        srvType_ = 0L;
         onChanged();
         return this;
       }
@@ -57573,9 +57573,9 @@ public final class TerminalPB {
       "\030\n \001(\r\022\013\n\003FID\030\013 \001(\t\022\r\n\005mSize\030\014 \001(\004\022\r\n\005mm",
       "ime\030\r \001(\r\022\016\n\006idxLen\030\016 \001(\004\022\016\n\006urlLen\030\017 \001(" +
       "\r\022\013\n\003URL\030\020 \001(\t\022\020\n\010playTick\030\021 \001(\004\022\016\n\006srvN" +
-      "um\030\022 \001(\r\022\021\n\tcacheSize\030\023 \001(\004\022\020\n\010packSize\030" +
-      "\024 \001(\004\022\017\n\007bufSize\030\025 \001(\004\022*\n\013attachments\030\026 " +
-      "\003(\0132\025.OrderPlayBgnReqSrvV3\"4\n\026P2pServerV" +
+      "um\030\022 \001(\r\022*\n\013attachments\030\023 \003(\0132\025.OrderPla" +
+      "yBgnReqSrvV3\022\021\n\tcacheSize\030\024 \001(\004\022\020\n\010packS" +
+      "ize\030\025 \001(\004\022\017\n\007bufSize\030\026 \001(\004\"4\n\026P2pServerV" +
       "lsStateSrvV1\022\013\n\003chl\030\001 \001(\004\022\r\n\005speed\030\002 \001(\004" +
       "\"\316\001\n\027P2pServerPeerStateSrvV1\022\016\n\006peerIp\030\001" +
       " \001(\004\022\017\n\007peerUid\030\002 \001(\004\022\031\n\021peerDownloadCou" +
@@ -57608,7 +57608,7 @@ public final class TerminalPB {
       "m\030\003 \001(\004\022\016\n\006avgRTT\030\004 \001(\004\022\020\n\010accBytes\030\005 \001(" +
       "\004\022\017\n\007accTime\030\006 \001(\004\022\020\n\010avgSpeed\030\007 \001(\004\"G\n\024" +
       "OrderPlayBgnReqSrvV3\022\r\n\005srvIP\030\001 \001(\004\022\017\n\007s" +
-      "rvPort\030\002 \001(\r\022\017\n\007srvType\030\003 \001(\r\"\225\001\n\022LivePl" +
+      "rvPort\030\002 \001(\r\022\017\n\007srvType\030\003 \001(\004\"\225\001\n\022LivePl" +
       "ayAliveReqV1\022\021\n\tchannelID\030\001 \001(\004\022\023\n\013adjPl" +
       "ayTime\030\002 \001(\004\022\r\n\005accID\030\003 \001(\004\022\021\n\taliveTick",
       "\030\004 \001(\004\022\020\n\010avgSpeed\030\005 \001(\004\022\r\n\005speed\030\006 \001(\004\022" +
@@ -57792,7 +57792,7 @@ public final class TerminalPB {
           internal_static_OrderPlayBgnReqV3_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_OrderPlayBgnReqV3_descriptor,
-              new java.lang.String[] { "OEMID", "VendorID", "CurVer", "BuildTime", "HID", "UID", "LocalIP", "SessID", "SessType", "SessStatus", "FID", "MSize", "Mmime", "IdxLen", "UrlLen", "URL", "PlayTick", "SrvNum", "CacheSize", "PackSize", "BufSize", "Attachments", });
+              new java.lang.String[] { "OEMID", "VendorID", "CurVer", "BuildTime", "HID", "UID", "LocalIP", "SessID", "SessType", "SessStatus", "FID", "MSize", "Mmime", "IdxLen", "UrlLen", "URL", "PlayTick", "SrvNum", "Attachments", "CacheSize", "PackSize", "BufSize", });
           internal_static_P2pServerVlsStateSrvV1_descriptor =
             getDescriptor().getMessageTypes().get(9);
           internal_static_P2pServerVlsStateSrvV1_fieldAccessorTable = new

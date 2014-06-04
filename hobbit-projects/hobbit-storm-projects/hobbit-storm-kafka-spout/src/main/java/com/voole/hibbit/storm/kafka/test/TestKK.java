@@ -3,6 +3,12 @@
  */
 package com.voole.hibbit.storm.kafka.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import kafka.api.OffsetRequest;
@@ -18,7 +24,10 @@ import backtype.storm.Config;
 import backtype.storm.LocalCluster;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
+import backtype.storm.generated.GlobalStreamId;
 import backtype.storm.generated.InvalidTopologyException;
+import backtype.storm.grouping.CustomStreamGrouping;
+import backtype.storm.task.WorkerTopologyContext;
 import backtype.storm.tuple.Fields;
 
 import com.voole.hibbit.storm.kafka.OpaqueTridentKafkaSpout;
@@ -65,13 +74,14 @@ public class TestKK {
 		OpaqueTridentKafkaSpout spout = new OpaqueTridentKafkaSpout(kafkaConfig);
 		TridentTopology topology = new TridentTopology();
 		topology.newStream("test-kafka-spout", spout)
-		// .partitionBy(new Fields("partition"))
-		// .groupBy(new Fields("partition"))
+				.parallelismHint(2)
+				.partition(new LocalShuffle())
 				.each(new Fields("bytes"), new TestKafkaFunction(),
-						new Fields());
+						new Fields()).parallelismHint(4);
 		// .parallelismHint(5);
 		Config conf = new Config();
 		conf.setMaxSpoutPending(2);
+		conf.setNumWorkers(2);
 
 		LocalCluster cluster = new LocalCluster();
 		cluster.submitTopology("test-kafka-spout-name", conf, topology.build());
@@ -79,6 +89,38 @@ public class TestKK {
 		TimeUnit.SECONDS.sleep(10000);
 		cluster.killTopology("test-kafka-spout-name");
 		cluster.shutdown();
+	}
+
+	public static class LocalShuffle implements CustomStreamGrouping {
+		private List<Integer> targetTasks;
+		private int size;
+		private Random r;
+
+		@Override
+		public void prepare(WorkerTopologyContext context,
+				GlobalStreamId stream, List<Integer> targetTasks) {
+			this.targetTasks = new ArrayList<Integer>();
+			Set<Integer> localTasks = new HashSet<Integer>(
+					context.getThisWorkerTasks());
+			for (Integer taskId : targetTasks) {
+				if (localTasks.contains(taskId)) {
+					this.targetTasks.add(taskId);
+				}
+			}
+			if (this.targetTasks.size() == 0) {
+				this.targetTasks.addAll(targetTasks);
+			}
+			this.size = this.targetTasks.size();
+
+			r = new Random();
+		}
+
+		@Override
+		public List<Integer> chooseTasks(int taskId, List<Object> values) {
+			int index = r.nextInt(size);
+			return Arrays.asList(targetTasks.get(index));
+		}
+
 	}
 
 	public static void main(String[] args) throws InterruptedException {

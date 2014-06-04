@@ -95,10 +95,10 @@ message OrderPlayBgnReqV3 {
 	optional string URL = 16;
 	optional uint64 playTick = 17;
 	optional uint32 srvNum = 18;
-	optional uint64 cacheSize = 19;
-	optional uint64 packSize = 20;
-	optional uint64 bufSize = 21;
-	repeated OrderPlayBgnReqSrvV3 attachments = 22;
+	repeated OrderPlayBgnReqSrvV3 attachments = 19;
+	optional uint64 cacheSize = 20;
+	optional uint64 packSize = 21;
+	optional uint64 bufSize = 22;
 }
 message P2pServerVlsStateSrvV1 {
 	optional uint64 chl = 1;
@@ -175,7 +175,7 @@ message OrderPlayEndReqSrvV2 {
 message OrderPlayBgnReqSrvV3 {
 	optional uint64 srvIP = 1;
 	optional uint32 srvPort = 2;
-	optional uint32 srvType = 3;
+	optional uint64 srvType = 3;
 }
 message LivePlayAliveReqV1 {
 	optional uint64 channelID = 1;

@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +26,8 @@ import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.utils.ZkUtils;
 
 import org.I0Itec.zkclient.ZkClient;
+
+import scala.actors.threadpool.Arrays;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -161,30 +162,32 @@ public class KafkaUtils {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<KafkaPartition> getPartitions(ZkClient zkClient,
-			String topic) {
-		Map<Integer, List<Integer>> partitionToBrokerId = getPartitionAssignmentForTopic(
-				zkClient, topic);
+			String... topics) {
+		Map<String, Map<Integer, List<Integer>>> partitionToBrokerId = getPartitionAssignmentForTopics(
+				zkClient, Arrays.asList(topics));
 		Map<Integer, Broker> idToBroker = getAllBrokerMapInCluster(zkClient);
 		List<KafkaPartition> list = new ArrayList<KafkaPartition>();
-		for (Entry<Integer, List<Integer>> entry : partitionToBrokerId
+		for (Entry<String, Map<Integer, List<Integer>>> entry : partitionToBrokerId
 				.entrySet()) {
-			int partition = entry.getKey();
-			List<Integer> brokerIds = entry.getValue();
-			for (Integer brokerId : brokerIds) {
-				Broker broker = idToBroker.get(brokerId);
-				if (broker != null) {
-					list.add(new KafkaPartition(broker.host(), broker.port(),
-							topic, partition));
+			String topic = entry.getKey();
+			Map<Integer, List<Integer>> topicPartitionMap = entry.getValue();
+
+			for (Entry<Integer, List<Integer>> topicEntry : topicPartitionMap
+					.entrySet()) {
+				int partition = topicEntry.getKey();
+				List<Integer> brokerIds = topicEntry.getValue();
+				for (Integer brokerId : brokerIds) {
+					Broker broker = idToBroker.get(brokerId);
+					if (broker != null) {
+						list.add(new KafkaPartition(broker.host(), broker
+								.port(), topic, partition));
+					}
 				}
 			}
+
 		}
-		Collections.sort(list, new Comparator<KafkaPartition>() {
-			@Override
-			public int compare(KafkaPartition o1, KafkaPartition o2) {
-				return o1.getPartition() - o2.getPartition();
-			}
-		});
 		return list;
 	}
 
