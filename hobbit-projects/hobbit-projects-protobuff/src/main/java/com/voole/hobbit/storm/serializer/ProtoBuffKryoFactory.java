@@ -45,4 +45,5 @@ public class ProtoBuffKryoFactory extends DefaultKryoFactory {
 		k.setReferences(false);
 		return k;
 	}
+
 }

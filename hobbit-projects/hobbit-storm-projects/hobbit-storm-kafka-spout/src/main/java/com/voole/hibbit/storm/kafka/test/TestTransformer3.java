@@ -131,7 +131,7 @@ public class TestTransformer3 {
 		return conf;
 	}
 
-	public static void local(String[] args) throws AlreadyAliveException,
+	public static void runLocal(String[] args) throws AlreadyAliveException,
 			InvalidTopologyException {
 		TridentTopology topology = createTopology(localTransformerConfig);
 		Config conf = getConfig(localTransformerConfig);
@@ -140,7 +140,7 @@ public class TestTransformer3 {
 		cluster.submitTopology("test-kafka-spout-name", conf, topology.build());
 	}
 
-	public static void cluster(String[] args) throws AlreadyAliveException,
+	public static void runCluster(String[] args) throws AlreadyAliveException,
 			InvalidTopologyException {
 		TridentTopology topology = createTopology(clusterTransformerConfig);
 		Config conf = getConfig(clusterTransformerConfig);
@@ -150,7 +150,7 @@ public class TestTransformer3 {
 
 	public static void main(String[] args) throws AlreadyAliveException,
 			InvalidTopologyException {
-		local(args);
+		runLocal(args);
 		// cluster(args);
 	}
 

@@ -41,7 +41,7 @@ public class KafkaTerminalProtoBuffTransformerFunction extends BaseFunction {
 		try {
 			for (String topic : TopicProtoClassUtils.ORDER_TOPICS) {
 				transformerMap.put(topic,
-						KafkaProtoBuffTransformerFactory.newTransformer(topic));
+						KafkaProtoBuffTransformerFactory.getTransformer(topic));
 			}
 		} catch (Exception e) {
 			logger.error("KafkaTerminalProtoBuffTransformerFunction init fail",

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.voole.hobbit.kafka.TopicProtoClassUtils;
+
 import kafka.api.FetchRequestBuilder;
 import kafka.api.PartitionOffsetRequestInfo;
 import kafka.common.TopicAndPartition;
@@ -28,7 +30,7 @@ public class TestKafka {
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		String topic = "t_playalive_v3";
+		String topic = TopicProtoClassUtils.ORDER_BGN_V2;
 		int partition = 2;
 		SimpleConsumer consumer = new SimpleConsumer("data-slave1.voole.com",
 				9092, 1000, 10000, "sdsdsd");
@@ -47,7 +49,7 @@ public class TestKafka {
 		}
 		FetchRequestBuilder requestBuilder = new FetchRequestBuilder();
 		kafka.api.FetchRequest fetchRequest = requestBuilder.addFetch(topic,
-				partition, 308859, 5000).build();
+				partition, 126909, 5000).build();
 		FetchResponse fetchResponse = consumer.fetch(fetchRequest);
 		Iterator<MessageAndOffset> iterator = fetchResponse.messageSet(topic,
 				partition).iterator();

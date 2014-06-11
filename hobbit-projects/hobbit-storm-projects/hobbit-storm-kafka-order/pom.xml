@@ -5,20 +5,15 @@
 		<groupId>com.voole.hobbit</groupId>
 		<artifactId>hobbit-projects</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../</relativePath>
 	</parent>
-	<artifactId>hobbit-storm-kafka-spout</artifactId>
+	<artifactId>hobbit-storm-kafka-order</artifactId>
 
 	<dependencies>
-
-		<!-- kafka deps -->
 		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.8.0</artifactId>
+			<groupId>com.voole.hobbit</groupId>
+			<artifactId>hobbit-storm-kafka-spout</artifactId>
+			<version>${project.version}</version>
 		</dependency>
-
-		<!-- kafka deps -->
-
 		<!-- storm deps -->
 		<dependency>
 			<groupId>org.apache.storm</groupId>
@@ -27,18 +22,16 @@
 		<!--/ storm deps -->
 
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
+			<groupId>com.voole</groupId>
+			<artifactId>monitor2-playurl-analyze</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.voole.hobbit</groupId>
-			<artifactId>hobbit-projects-config</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.voole.hobbit</groupId>
-			<artifactId>hobbit-projects-protobuff</artifactId>
+			<artifactId>hobbit-storm-cache-state</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
+
+
 </project>

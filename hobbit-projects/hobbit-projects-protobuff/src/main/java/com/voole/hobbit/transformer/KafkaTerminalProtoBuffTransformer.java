@@ -166,7 +166,7 @@ public class KafkaTerminalProtoBuffTransformer<T extends GeneratedMessage>
 			NoSuchMethodException, SecurityException, ClassNotFoundException {
 		String str = "13925774514353362612	1401781295	365829	1401874072	40	43636	1	873897440	810488	0	10	703741367	1	1044	68605	32842	173	125377	228250	43016	16	737295799	1	1040	65050	0	0	107562	200351	32420	14	4205515121	1	971	63480	12212	69	93053	176642	38418	8	770850231	1	1046	69887	16421	96	77893	169529	56359	13	1515138363	1	167	129469	82105	1199	64921	93694	93532	25	703741367	1	0	0	0	0	0	0	0	34	737295799	1	0	0	0	0	0	0	0	38	770850231	1	0	0	0	0	0	0	0	46	4205515121	1	0	0	0	0	0	0	0	48	1515138363	1	0	0	0	0	0	0	0	49	1617807";
 		OrderPlayAliveReqV3 t = (OrderPlayAliveReqV3) KafkaProtoBuffTransformerFactory
-				.newTransformer("t_playalive_v3").transform(str.getBytes());
+				.getTransformer("t_playalive_v3").transform(str.getBytes());
 		System.out.println(t.getAliveTick() * 1000);
 		System.out.println(System.currentTimeMillis());
 	}
