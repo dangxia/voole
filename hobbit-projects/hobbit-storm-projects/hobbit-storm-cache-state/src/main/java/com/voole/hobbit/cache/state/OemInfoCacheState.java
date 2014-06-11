@@ -6,7 +6,6 @@ package com.voole.hobbit.cache.state;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +30,10 @@ public class OemInfoCacheState extends AbstractRefreshState {
 
 	private final CacheDao cacheDao;
 	private Map<Integer, OemInfo> oemInfoMap;
-	private final AtomicLong times;
 
 	public OemInfoCacheState(CacheDao cacheDao) {
 		super(NAME);
 		this.cacheDao = cacheDao;
-		times = new AtomicLong(0);
 		doRefresh();
 	}
 
@@ -51,11 +48,6 @@ public class OemInfoCacheState extends AbstractRefreshState {
 	}
 
 	public OemInfo getOemInfo(Integer oemid) {
-		long t = times.incrementAndGet();
-		if (t != 1) {
-			logger.info(getName() + " getOemInfo start,times:" + t);
-		}
-
 		OemInfo info = null;
 		try {
 			info = oemInfoMap.get(oemid);
@@ -63,18 +55,12 @@ public class OemInfoCacheState extends AbstractRefreshState {
 			logger.warn("OemInfoCacheState getOemInfo error", e);
 		} finally {
 		}
-		t = times.decrementAndGet();
-		if (t != 0) {
-			logger.info("-----------------------" + getName()
-					+ "getOemInfo end,times:" + t);
-		}
 		return info;
 	}
 
 	@Override
 	protected void doRefresh() {
-		logger.info(getName() + " do refresh start,times:"
-				+ times.incrementAndGet());
+		logger.info(getName() + " do refresh start");
 		try {
 			List<OemInfo> list = cacheDao.getOemInfos();
 			oemInfoMap = new HashMap<Integer, OemInfo>();
@@ -84,8 +70,7 @@ public class OemInfoCacheState extends AbstractRefreshState {
 		} catch (Exception e) {
 			logger.warn("OemInfoCacheState doRefresh error", e);
 		}
-		logger.info("-----------------------" + getName()
-				+ " do refresh end,times:" + times.decrementAndGet());
+		logger.info(getName() + " do refresh end");
 	}
 
 	public static class OemInfoCacheStateFactory implements StateFactory {
