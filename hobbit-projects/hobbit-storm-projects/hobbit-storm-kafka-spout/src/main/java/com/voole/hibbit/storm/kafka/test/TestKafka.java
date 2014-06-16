@@ -49,7 +49,7 @@ public class TestKafka {
 		}
 		FetchRequestBuilder requestBuilder = new FetchRequestBuilder();
 		kafka.api.FetchRequest fetchRequest = requestBuilder.addFetch(topic,
-				partition, 126909, 5000).build();
+				partition, 1, 5000).build();
 		FetchResponse fetchResponse = consumer.fetch(fetchRequest);
 		Iterator<MessageAndOffset> iterator = fetchResponse.messageSet(topic,
 				partition).iterator();

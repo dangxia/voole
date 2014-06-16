@@ -8,6 +8,8 @@ import java.util.Map;
 
 import com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqV2;
 import com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqV3;
+import com.voole.hobbit.utils.OrderUtils;
+import com.voole.hobbit.utils.OrderUtils.OrderClientType;
 import com.voole.monitor2.playurl.PlayurlAnalyzer;
 
 /**
@@ -26,10 +28,10 @@ public class OrderPlayBgnExtra implements Serializable {
 	private Long oemid;
 	private String uid;// 用户ID
 	private String tvType;// 电视机型号
-	private Integer protocol;// 播放协议 0 rtsp 1PC 2TV 3mobile
+	private OrderClientType orderClientType;// 播放协议 0 rtsp 1PC 2TV 3mobile
 	private boolean isTest; // 是否是测试数据
 	private String hid;
-	private String natip;// 公网IP
+	private Long natip;// 公网IP
 	// private Long realtimeSpeed;// 实时速度
 	private boolean isPlayedWithRightStamp;
 	private Long playBgn;// 播放开始时间(单位:second)
@@ -40,7 +42,6 @@ public class OrderPlayBgnExtra implements Serializable {
 	private Integer lookBackChannelId;// 回看频道ID
 	private Integer lookBackStartTime;// 回看开始时间
 	private Integer lookBackEndTime;// 回看结束时间
-	private Integer lookBackProgramId;// 回看节目ID
 
 	public String getSessionId() {
 		return sessionId;
@@ -146,11 +147,11 @@ public class OrderPlayBgnExtra implements Serializable {
 		this.hid = hid;
 	}
 
-	public String getNatip() {
+	public Long getNatip() {
 		return natip;
 	}
 
-	public void setNatip(String natip) {
+	public void setNatip(Long natip) {
 		this.natip = natip;
 	}
 
@@ -226,20 +227,12 @@ public class OrderPlayBgnExtra implements Serializable {
 		this.lookBackEndTime = lookBackEndTime;
 	}
 
-	public Integer getLookBackProgramId() {
-		return lookBackProgramId;
+	public OrderClientType getOrderClientType() {
+		return orderClientType;
 	}
 
-	public void setLookBackProgramId(Integer lookBackProgramId) {
-		this.lookBackProgramId = lookBackProgramId;
-	}
-
-	public Integer getProtocol() {
-		return protocol;
-	}
-
-	public void setProtocol(Integer protocol) {
-		this.protocol = protocol;
+	public void setOrderClientType(OrderClientType orderClientType) {
+		this.orderClientType = orderClientType;
 	}
 
 	public void fillWith(OrderPlayBgnReqV2 v) {
@@ -249,8 +242,7 @@ public class OrderPlayBgnExtra implements Serializable {
 		setPlayBgn(v.getPlayTick());
 		setSessionId(v.getSessID());
 		setUid(v.getUID());
-		// TODO 外网IP
-
+		setNatip(v.getNatip());
 		afterFill(v.getURL());
 	}
 
@@ -261,45 +253,27 @@ public class OrderPlayBgnExtra implements Serializable {
 		setPlayBgn(v.getPlayTick());
 		setSessionId(v.getSessID());
 		setUid(v.getUID());
-		// TODO 外网IP
-
+		setNatip(v.getNatip());
 		afterFill(v.getURL());
 	}
 
 	protected void afterFill(String url) {
 		processUrl(url);
-		fidHidToLowerCase();
-		processProtocol();
+		fidHidToUperCase();
+		setOrderClientType(OrderUtils.getOrderClientType(getOemid()));
 	}
 
-	protected void processProtocol() {
-		Long oemid = this.getOemid();
-		// 协议
-		int protocol = 0;// rtsp
-		if (oemid == null) {
-		} else if (oemid == 100) {// pc客户端官方版
-			protocol = 1;
-		} else if (oemid > 100 && oemid < 500) {// 互联网电视
-			protocol = 2;
-		} else if (oemid >= 500 && oemid < 800) {// PC客户端
-			protocol = 1;
-		} else if (oemid >= 800 && oemid < 999) {// 手机客户端
-			protocol = 3;
-		}
-		setProtocol(protocol);
-	}
-
-	protected void fidHidToLowerCase() {
+	protected void fidHidToUperCase() {
 		String fid = getFid();
 		if (fid != null) {
-			setFid(fid.toLowerCase());
+			setFid(fid.toUpperCase());
 		}
 		String hid = getHid();
 		if (hid != null && hid.length() > 12) {
 			hid = hid.substring(0, 12);
 		}
 		if (hid != null) {
-			setHid(hid.toLowerCase());
+			setHid(hid.toUpperCase());
 		}
 	}
 

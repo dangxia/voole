@@ -5,7 +5,15 @@
 		<groupId>com.voole.hobbit</groupId>
 		<artifactId>hobbit-projects</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../</relativePath>
 	</parent>
-	<artifactId>hobbit-projects-config</artifactId>
+	<artifactId>hobbit-utils</artifactId>
+
+	<dependencies>
+		<dependency>
+			<artifactId>slf4j-api</artifactId>
+			<groupId>org.slf4j</groupId>
+			<version>1.6.5</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
 </project>

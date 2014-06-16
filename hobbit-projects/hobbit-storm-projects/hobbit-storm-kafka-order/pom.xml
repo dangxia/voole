@@ -31,6 +31,11 @@
 			<artifactId>hobbit-storm-cache-state</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.voole.hobbit</groupId>
+			<artifactId>hobbit-projects-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 

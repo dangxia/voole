@@ -28,6 +28,7 @@ public class OrderBgnTopology extends OrderTopology {
 		Stream stream = super.build(topology);
 		return stream.each(OrderPlayBgnExtraFunction.INPUT_FIELDS,
 				new OrderPlayBgnExtraFunction(),
+				OrderPlayBgnExtraFunction.OUTPUT_FIELDS).project(
 				OrderPlayBgnExtraFunction.OUTPUT_FIELDS);
 	}
 }

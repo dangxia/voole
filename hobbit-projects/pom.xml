@@ -237,5 +237,11 @@
 		<module>hobbit-storm-projects/hobbit-storm-kafka-spout</module>
 		<module>hobbit-projects-config</module>
 		<module>hobbit-projects-protobuff</module>
+		<module>hobbit-storm-projects/hobbit-storm-cache-state</module>
+		<module>hobbit-storm-projects/hobbit-storm-kafka-order</module>
+		<module>
+			hobbit-storm-projects/hobbit-storm-timeout-state
+		</module>
+		<module>hobbit-utils</module>
 	</modules>
 </project>

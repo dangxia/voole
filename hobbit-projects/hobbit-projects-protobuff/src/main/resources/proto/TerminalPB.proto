@@ -99,6 +99,7 @@ message OrderPlayBgnReqV3 {
 	optional uint64 cacheSize = 20;
 	optional uint64 packSize = 21;
 	optional uint64 bufSize = 22;
+	optional uint64 natip = 23;
 }
 message P2pServerVlsStateSrvV1 {
 	optional uint64 chl = 1;
@@ -328,6 +329,7 @@ message OrderPlayBgnReqV2 {
 	optional uint64 playTick = 17;
 	optional uint32 srvNum = 18;
 	repeated OrderPlayBgnReqSrvV2 attachments = 19;
+	optional uint64 natip = 20;
 }
 message P2pClientStatisStateSrvV1 {
 	optional uint64 chl = 1;

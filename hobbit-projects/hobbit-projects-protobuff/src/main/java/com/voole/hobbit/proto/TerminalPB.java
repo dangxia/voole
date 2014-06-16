@@ -10059,6 +10059,16 @@ public final class TerminalPB {
      * <code>optional uint64 bufSize = 22;</code>
      */
     long getBufSize();
+
+    // optional uint64 natip = 23;
+    /**
+     * <code>optional uint64 natip = 23;</code>
+     */
+    boolean hasNatip();
+    /**
+     * <code>optional uint64 natip = 23;</code>
+     */
+    long getNatip();
   }
   /**
    * Protobuf type {@code OrderPlayBgnReqV3}
@@ -10222,6 +10232,11 @@ public final class TerminalPB {
             case 176: {
               bitField0_ |= 0x00100000;
               bufSize_ = input.readUInt64();
+              break;
+            }
+            case 184: {
+              bitField0_ |= 0x00200000;
+              natip_ = input.readUInt64();
               break;
             }
           }
@@ -10774,6 +10789,22 @@ public final class TerminalPB {
       return bufSize_;
     }
 
+    // optional uint64 natip = 23;
+    public static final int NATIP_FIELD_NUMBER = 23;
+    private long natip_;
+    /**
+     * <code>optional uint64 natip = 23;</code>
+     */
+    public boolean hasNatip() {
+      return ((bitField0_ & 0x00200000) == 0x00200000);
+    }
+    /**
+     * <code>optional uint64 natip = 23;</code>
+     */
+    public long getNatip() {
+      return natip_;
+    }
+
     private void initFields() {
       oEMID_ = 0L;
       vendorID_ = 0L;
@@ -10797,6 +10828,7 @@ public final class TerminalPB {
       cacheSize_ = 0L;
       packSize_ = 0L;
       bufSize_ = 0L;
+      natip_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -10875,6 +10907,9 @@ public final class TerminalPB {
       }
       if (((bitField0_ & 0x00100000) == 0x00100000)) {
         output.writeUInt64(22, bufSize_);
+      }
+      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+        output.writeUInt64(23, natip_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -10972,6 +11007,10 @@ public final class TerminalPB {
       if (((bitField0_ & 0x00100000) == 0x00100000)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(22, bufSize_);
+      }
+      if (((bitField0_ & 0x00200000) == 0x00200000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(23, natip_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -11103,6 +11142,11 @@ public final class TerminalPB {
         result = result && (getBufSize()
             == other.getBufSize());
       }
+      result = result && (hasNatip() == other.hasNatip());
+      if (hasNatip()) {
+        result = result && (getNatip()
+            == other.getNatip());
+      }
       result = result &&
           getUnknownFields().equals(other.getUnknownFields());
       return result;
@@ -11203,6 +11247,10 @@ public final class TerminalPB {
       if (hasBufSize()) {
         hash = (37 * hash) + BUFSIZE_FIELD_NUMBER;
         hash = (53 * hash) + hashLong(getBufSize());
+      }
+      if (hasNatip()) {
+        hash = (37 * hash) + NATIP_FIELD_NUMBER;
+        hash = (53 * hash) + hashLong(getNatip());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -11362,6 +11410,8 @@ public final class TerminalPB {
         bitField0_ = (bitField0_ & ~0x00100000);
         bufSize_ = 0L;
         bitField0_ = (bitField0_ & ~0x00200000);
+        natip_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00400000);
         return this;
       }
 
@@ -11483,6 +11533,10 @@ public final class TerminalPB {
           to_bitField0_ |= 0x00100000;
         }
         result.bufSize_ = bufSize_;
+        if (((from_bitField0_ & 0x00400000) == 0x00400000)) {
+          to_bitField0_ |= 0x00200000;
+        }
+        result.natip_ = natip_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -11597,6 +11651,9 @@ public final class TerminalPB {
         }
         if (other.hasBufSize()) {
           setBufSize(other.getBufSize());
+        }
+        if (other.hasNatip()) {
+          setNatip(other.getNatip());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -12759,6 +12816,39 @@ public final class TerminalPB {
       public Builder clearBufSize() {
         bitField0_ = (bitField0_ & ~0x00200000);
         bufSize_ = 0L;
+        onChanged();
+        return this;
+      }
+
+      // optional uint64 natip = 23;
+      private long natip_ ;
+      /**
+       * <code>optional uint64 natip = 23;</code>
+       */
+      public boolean hasNatip() {
+        return ((bitField0_ & 0x00400000) == 0x00400000);
+      }
+      /**
+       * <code>optional uint64 natip = 23;</code>
+       */
+      public long getNatip() {
+        return natip_;
+      }
+      /**
+       * <code>optional uint64 natip = 23;</code>
+       */
+      public Builder setNatip(long value) {
+        bitField0_ |= 0x00400000;
+        natip_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 natip = 23;</code>
+       */
+      public Builder clearNatip() {
+        bitField0_ = (bitField0_ & ~0x00400000);
+        natip_ = 0L;
         onChanged();
         return this;
       }
@@ -39886,6 +39976,16 @@ public final class TerminalPB {
      */
     com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV2OrBuilder getAttachmentsOrBuilder(
         int index);
+
+    // optional uint64 natip = 20;
+    /**
+     * <code>optional uint64 natip = 20;</code>
+     */
+    boolean hasNatip();
+    /**
+     * <code>optional uint64 natip = 20;</code>
+     */
+    long getNatip();
   }
   /**
    * Protobuf type {@code OrderPlayBgnReqV2}
@@ -40034,6 +40134,11 @@ public final class TerminalPB {
                 mutable_bitField0_ |= 0x00040000;
               }
               attachments_.add(input.readMessage(com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqSrvV2.PARSER, extensionRegistry));
+              break;
+            }
+            case 160: {
+              bitField0_ |= 0x00040000;
+              natip_ = input.readUInt64();
               break;
             }
           }
@@ -40538,6 +40643,22 @@ public final class TerminalPB {
       return attachments_.get(index);
     }
 
+    // optional uint64 natip = 20;
+    public static final int NATIP_FIELD_NUMBER = 20;
+    private long natip_;
+    /**
+     * <code>optional uint64 natip = 20;</code>
+     */
+    public boolean hasNatip() {
+      return ((bitField0_ & 0x00040000) == 0x00040000);
+    }
+    /**
+     * <code>optional uint64 natip = 20;</code>
+     */
+    public long getNatip() {
+      return natip_;
+    }
+
     private void initFields() {
       oEMID_ = 0L;
       vendorID_ = 0L;
@@ -40558,6 +40679,7 @@ public final class TerminalPB {
       playTick_ = 0L;
       srvNum_ = 0;
       attachments_ = java.util.Collections.emptyList();
+      natip_ = 0L;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -40627,6 +40749,9 @@ public final class TerminalPB {
       }
       for (int i = 0; i < attachments_.size(); i++) {
         output.writeMessage(19, attachments_.get(i));
+      }
+      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+        output.writeUInt64(20, natip_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -40712,6 +40837,10 @@ public final class TerminalPB {
       for (int i = 0; i < attachments_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(19, attachments_.get(i));
+      }
+      if (((bitField0_ & 0x00040000) == 0x00040000)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(20, natip_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -40828,6 +40957,11 @@ public final class TerminalPB {
       }
       result = result && getAttachmentsList()
           .equals(other.getAttachmentsList());
+      result = result && (hasNatip() == other.hasNatip());
+      if (hasNatip()) {
+        result = result && (getNatip()
+            == other.getNatip());
+      }
       result = result &&
           getUnknownFields().equals(other.getUnknownFields());
       return result;
@@ -40916,6 +41050,10 @@ public final class TerminalPB {
       if (getAttachmentsCount() > 0) {
         hash = (37 * hash) + ATTACHMENTS_FIELD_NUMBER;
         hash = (53 * hash) + getAttachmentsList().hashCode();
+      }
+      if (hasNatip()) {
+        hash = (37 * hash) + NATIP_FIELD_NUMBER;
+        hash = (53 * hash) + hashLong(getNatip());
       }
       hash = (29 * hash) + getUnknownFields().hashCode();
       memoizedHashCode = hash;
@@ -41069,6 +41207,8 @@ public final class TerminalPB {
         } else {
           attachmentsBuilder_.clear();
         }
+        natip_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00080000);
         return this;
       }
 
@@ -41178,6 +41318,10 @@ public final class TerminalPB {
         } else {
           result.attachments_ = attachmentsBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00080000) == 0x00080000)) {
+          to_bitField0_ |= 0x00040000;
+        }
+        result.natip_ = natip_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -41283,6 +41427,9 @@ public final class TerminalPB {
               attachmentsBuilder_.addAllMessages(other.attachments_);
             }
           }
+        }
+        if (other.hasNatip()) {
+          setNatip(other.getNatip());
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -42348,6 +42495,39 @@ public final class TerminalPB {
           attachments_ = null;
         }
         return attachmentsBuilder_;
+      }
+
+      // optional uint64 natip = 20;
+      private long natip_ ;
+      /**
+       * <code>optional uint64 natip = 20;</code>
+       */
+      public boolean hasNatip() {
+        return ((bitField0_ & 0x00080000) == 0x00080000);
+      }
+      /**
+       * <code>optional uint64 natip = 20;</code>
+       */
+      public long getNatip() {
+        return natip_;
+      }
+      /**
+       * <code>optional uint64 natip = 20;</code>
+       */
+      public Builder setNatip(long value) {
+        bitField0_ |= 0x00080000;
+        natip_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional uint64 natip = 20;</code>
+       */
+      public Builder clearNatip() {
+        bitField0_ = (bitField0_ & ~0x00080000);
+        natip_ = 0L;
+        onChanged();
+        return this;
       }
 
       // @@protoc_insertion_point(builder_scope:OrderPlayBgnReqV2)
@@ -57565,7 +57745,7 @@ public final class TerminalPB {
       "InstanteNum\030\005 \001(\r\022/\n\013attachments\030\006 \003(\0132\032" +
       ".P2pServerUploadStateSrvV1\"G\n\024OrderPlayB" +
       "gnReqSrvV2\022\r\n\005srvIP\030\001 \001(\004\022\017\n\007srvPort\030\002 \001" +
-      "(\r\022\017\n\007srvType\030\003 \001(\r\"\224\003\n\021OrderPlayBgnReqV" +
+      "(\r\022\017\n\007srvType\030\003 \001(\r\"\243\003\n\021OrderPlayBgnReqV" +
       "3\022\r\n\005OEMID\030\001 \001(\004\022\020\n\010vendorID\030\002 \001(\004\022\016\n\006cu" +
       "rVer\030\003 \001(\004\022\021\n\tbuildTime\030\004 \001(\004\022\013\n\003HID\030\005 \001" +
       "(\t\022\013\n\003UID\030\006 \001(\t\022\017\n\007localIP\030\007 \001(\004\022\016\n\006sess" +
@@ -57575,164 +57755,165 @@ public final class TerminalPB {
       "\r\022\013\n\003URL\030\020 \001(\t\022\020\n\010playTick\030\021 \001(\004\022\016\n\006srvN" +
       "um\030\022 \001(\r\022*\n\013attachments\030\023 \003(\0132\025.OrderPla" +
       "yBgnReqSrvV3\022\021\n\tcacheSize\030\024 \001(\004\022\020\n\010packS" +
-      "ize\030\025 \001(\004\022\017\n\007bufSize\030\026 \001(\004\"4\n\026P2pServerV" +
-      "lsStateSrvV1\022\013\n\003chl\030\001 \001(\004\022\r\n\005speed\030\002 \001(\004" +
-      "\"\316\001\n\027P2pServerPeerStateSrvV1\022\016\n\006peerIp\030\001" +
-      " \001(\004\022\017\n\007peerUid\030\002 \001(\004\022\031\n\021peerDownloadCou" +
-      "nt\030\003 \001(\004\022\024\n\014peerReqCount\030\004 \001(\004\022\030\n\020peerRe" +
-      "cvReqCount\030\005 \001(\004\022\027\n\017peerUploadCount\030\006 \001(",
-      "\004\022\025\n\rpeerDownSpeed\030\007 \001(\004\022\027\n\017peerUploadSp" +
-      "eed\030\010 \001(\004\"\234\002\n\021OrderPlayEndReqV3\022\013\n\003HID\030\001" +
-      " \001(\t\022\013\n\003UID\030\002 \001(\t\022\017\n\007localIP\030\003 \001(\004\022\016\n\006se" +
-      "ssID\030\004 \001(\t\022\023\n\013adjPlayTime\030\005 \001(\004\022\r\n\005accID" +
-      "\030\006 \001(\004\022\017\n\007endTick\030\007 \001(\004\022\017\n\007seekNum\030\010 \001(\004" +
-      "\022\017\n\007readNum\030\t \001(\004\022\022\n\nunsuccRead\030\n \001(\004\022\017\n" +
-      "\007stopPos\030\013 \001(\004\022\024\n\014sessAvgSpeed\030\014 \001(\004\022\016\n\006" +
-      "srvNum\030\r \001(\r\022*\n\013attachments\030\016 \003(\0132\025.Orde" +
-      "rPlayEndReqSrvV3\"\262\002\n\017P2pPlayBgnReqV3\022\r\n\005" +
-      "OEMID\030\001 \001(\004\022\020\n\010vendorID\030\002 \001(\004\022\016\n\006curVer\030",
-      "\003 \001(\004\022\021\n\tbuildTime\030\004 \001(\004\022\013\n\003HID\030\005 \001(\t\022\013\n" +
-      "\003UID\030\006 \001(\t\022\017\n\007localIP\030\007 \001(\004\022\021\n\tchannelID" +
-      "\030\010 \001(\004\022\020\n\010playTick\030\t \001(\004\022\016\n\006uRLLen\030\n \001(\r" +
-      "\022\013\n\003URL\030\013 \001(\t\022\016\n\006srvNum\030\014 \001(\r\022\021\n\tcacheSi" +
-      "ze\030\r \001(\004\022\020\n\010packSize\030\016 \001(\004\022\017\n\007bufSize\030\017 " +
-      "\001(\004\022(\n\013attachments\030\020 \003(\0132\023.P2pPlayBgnReq" +
-      "SrvV3\"\217\001\n\024P2pServerPeerStateV1\022\014\n\004uuid\030\001" +
-      " \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid\030" +
-      "\004 \001(\004\022\021\n\tpeerCount\030\005 \001(\004\022-\n\013attachments\030" +
-      "\006 \003(\0132\030.P2pServerPeerStateSrvV1\"a\n\025P2pPl",
-      "ayExceptionReqV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid\030\002 " +
-      "\001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\021\n\terror" +
-      "code\030\005 \001(\004\"\217\001\n\024OrderPlayEndReqSrvV2\022\r\n\005s" +
-      "rvIP\030\001 \001(\004\022\021\n\tconnTimes\030\002 \001(\004\022\020\n\010transNu" +
-      "m\030\003 \001(\004\022\016\n\006avgRTT\030\004 \001(\004\022\020\n\010accBytes\030\005 \001(" +
-      "\004\022\017\n\007accTime\030\006 \001(\004\022\020\n\010avgSpeed\030\007 \001(\004\"G\n\024" +
-      "OrderPlayBgnReqSrvV3\022\r\n\005srvIP\030\001 \001(\004\022\017\n\007s" +
-      "rvPort\030\002 \001(\r\022\017\n\007srvType\030\003 \001(\004\"\225\001\n\022LivePl" +
-      "ayAliveReqV1\022\021\n\tchannelID\030\001 \001(\004\022\023\n\013adjPl" +
-      "ayTime\030\002 \001(\004\022\r\n\005accID\030\003 \001(\004\022\021\n\taliveTick",
-      "\030\004 \001(\004\022\020\n\010avgSpeed\030\005 \001(\004\022\r\n\005speed\030\006 \001(\004\022" +
-      "\024\n\014cacheSizeCur\030\007 \001(\004\"\234\001\n\024P2pClientPeerS" +
-      "tateV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid" +
-      "\030\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\013\n\003chl\030\005 \001(\004\022\021\n\tpe" +
-      "erCount\030\006 \001(\004\022-\n\013attachments\030\007 \003(\0132\030.P2p" +
-      "ClientPeerStateSrvV1\"\235\002\n\021OrderPlayEndReq" +
-      "V2\022\013\n\003HID\030\001 \001(\t\022\013\n\003UID\030\002 \001(\t\022\017\n\007localIP\030" +
-      "\003 \001(\004\022\016\n\006sessID\030\004 \001(\t\022\023\n\013adjPlayTime\030\005 \001" +
-      "(\004\022\r\n\005accID\030\006 \001(\004\022\017\n\007endTick\030\007 \001(\004\022\017\n\007se" +
-      "ekNum\030\010 \001(\004\022\017\n\007readNum\030\t \001(\004\022\022\n\nunsuccRe",
-      "ad\030\n \001(\004\022\017\n\007stopPos\030\013 \001(\004\022\024\n\014sessAvgSpee" +
-      "d\030\014 \001(\004\022\017\n\007linkNum\030\r \001(\r\022*\n\013attachments\030" +
-      "\016 \003(\0132\025.OrderPlayEndReqSrvV2\"\233\001\n\030P2pServ" +
-      "erDownloadStateV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid\030\002" +
-      " \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\025\n\rchIn" +
-      "stanteNum\030\005 \001(\r\0221\n\013attachments\030\006 \003(\0132\034.P" +
-      "2pServerDownloadStateSrvV1\"F\n\023LivePlayBg" +
-      "nReqSrvV1\022\r\n\005srvIP\030\001 \001(\004\022\017\n\007srvPort\030\002 \001(" +
-      "\r\022\017\n\007srvType\030\003 \001(\r\"\241\002\n\023OrderPlayAliveReq" +
-      "V3\022\016\n\006sessID\030\001 \001(\t\022\023\n\013adjPlayTime\030\002 \001(\004\022",
-      "\r\n\005accID\030\003 \001(\004\022\021\n\taliveTick\030\004 \001(\004\022\017\n\007see" +
-      "kNum\030\005 \001(\004\022\017\n\007readNum\030\006 \001(\004\022\022\n\nunsuccRea" +
-      "d\030\007 \001(\004\022\017\n\007readPos\030\010 \001(\004\022\024\n\014sessAvgSpeed" +
-      "\030\t \001(\004\022\021\n\tsessSpeed\030\n \001(\004\022\017\n\007linkNum\030\013 \001" +
-      "(\r\022\024\n\014cacheSizeCur\030\014 \001(\004\022,\n\013attachments\030" +
-      "\r \003(\0132\027.OrderPlayAliveReqSrvV3\"\241\002\n\020LiveP" +
-      "layBgnReqV1\022\r\n\005accID\030\001 \001(\004\022\r\n\005OEMID\030\002 \001(" +
-      "\004\022\020\n\010vendorID\030\003 \001(\004\022\016\n\006curVer\030\004 \001(\004\022\021\n\tb" +
-      "uildTime\030\005 \001(\004\022\013\n\003HID\030\006 \001(\t\022\013\n\003UID\030\007 \001(\t" +
-      "\022\017\n\007localIP\030\010 \001(\004\022\021\n\tchannelID\030\t \001(\004\022\020\n\010",
-      "playTick\030\n \001(\004\022\016\n\006uRLLen\030\013 \001(\r\022\013\n\003URL\030\014 " +
-      "\001(\t\022\022\n\ngetVLSTick\030\r \001(\004\022\016\n\006srvNum\030\016 \001(\r\022" +
-      ")\n\013attachments\030\017 \003(\0132\024.LivePlayBgnReqSrv" +
-      "V1\"\213\001\n\023P2pServerVlsStateV1\022\014\n\004uuid\030\001 \001(\t" +
-      "\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid\030\004 \001(" +
-      "\004\022\017\n\007totalCh\030\005 \001(\004\022,\n\013attachments\030\006 \003(\0132" +
-      "\027.P2pServerVlsStateSrvV1\"\335\001\n\026LivePlayExc" +
-      "eptionReqV1\022\r\n\005accID\030\001 \001(\004\022\021\n\tchannelID\030" +
-      "\002 \001(\004\022\017\n\007srvType\030\003 \001(\r\022\r\n\005srvIP\030\004 \001(\004\022\017\n" +
-      "\007srvPort\030\005 \001(\r\022\020\n\010avgSpeed\030\006 \001(\004\022\r\n\005spee",
-      "d\030\007 \001(\004\022\024\n\014cacheSizeCur\030\010 \001(\004\022\020\n\010codeTyp" +
-      "e\030\t \001(\004\022\022\n\ncontentLen\030\n \001(\004\022\023\n\013codeConte" +
-      "nt\030\013 \001(\t\"M\n\032P2pServerChannelStateSrvV1\022\013" +
-      "\n\003chl\030\001 \001(\004\022\014\n\004time\030\002 \001(\004\022\024\n\014concurClien" +
-      "t\030\003 \001(\004\"\206\002\n\030P2pClientDownloadStateV1\022\014\n\004" +
-      "uuid\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005" +
-      "oemid\030\004 \001(\004\022\013\n\003chl\030\005 \001(\004\022\021\n\tbeginTime\030\006 " +
-      "\001(\004\022\r\n\005count\030\007 \001(\004\022\r\n\005speed\030\010 \001(\004\022\020\n\010req" +
-      "Count\030\t \001(\004\022\021\n\tfailCount\030\n \001(\004\022\021\n\tdropCo" +
-      "unt\030\013 \001(\004\022\020\n\010dropData\030\014 \001(\004\022\024\n\014dropSourc",
-      "eIp\030\r \001(\004\022\025\n\rdropSourceUid\030\016 \001(\004\"\275\001\n\026P2p" +
-      "ClientStatisStateV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid" +
-      "\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\025\n\rdo" +
-      "wnloadCount\030\005 \001(\004\022\023\n\013uploadCount\030\006 \001(\004\022\017" +
-      "\n\007chCount\030\007 \001(\004\022/\n\013attachments\030\010 \003(\0132\032.P" +
-      "2pClientStatisStateSrvV1\"\336\002\n\021OrderPlayBg" +
-      "nReqV2\022\r\n\005OEMID\030\001 \001(\004\022\020\n\010vendorID\030\002 \001(\004\022" +
-      "\016\n\006curVer\030\003 \001(\004\022\021\n\tbuildTime\030\004 \001(\004\022\013\n\003HI" +
-      "D\030\005 \001(\t\022\013\n\003UID\030\006 \001(\t\022\017\n\007localIP\030\007 \001(\004\022\016\n" +
-      "\006sessID\030\010 \001(\t\022\020\n\010sessType\030\t \001(\r\022\022\n\nsessS",
-      "tatus\030\n \001(\r\022\013\n\003FID\030\013 \001(\t\022\r\n\005mSize\030\014 \001(\004\022" +
-      "\r\n\005mmime\030\r \001(\r\022\016\n\006idxLen\030\016 \001(\004\022\016\n\006urlLen" +
-      "\030\017 \001(\r\022\013\n\003URL\030\020 \001(\t\022\020\n\010playTick\030\021 \001(\004\022\016\n" +
-      "\006srvNum\030\022 \001(\r\022*\n\013attachments\030\023 \003(\0132\025.Ord" +
-      "erPlayBgnReqSrvV2\"\355\001\n\031P2pClientStatisSta" +
-      "teSrvV1\022\013\n\003chl\030\001 \001(\004\022\016\n\006chTime\030\002 \001(\004\022\022\n\n" +
-      "chDownload\030\003 \001(\004\022\020\n\010chUpload\030\004 \001(\004\022\023\n\013ch" +
-      "Downspeed\030\005 \001(\004\022\025\n\rchUploadspeed\030\006 \001(\004\022\023" +
-      "\n\013chFailcount\030\007 \001(\004\022\030\n\020chDownloadserver\030" +
-      "\010 \001(\004\022\030\n\020chDownloadclient\030\t \001(\004\022\030\n\020chCur",
-      "PeerCounter\030\n \001(\004\"\266\001\n\026P2pClientUploadSta" +
-      "teV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003" +
-      " \001(\004\022\r\n\005oemid\030\004 \001(\004\022\013\n\003chl\030\005 \001(\004\022\021\n\tbegi" +
-      "nTime\030\006 \001(\004\022\r\n\005count\030\007 \001(\004\022\r\n\005speed\030\010 \001(" +
-      "\004\022\020\n\010reqCount\030\t \001(\004\022\025\n\rvalidReqCount\030\n \001" +
-      "(\004\"m\n\024OrderPlayEndReqSrvV3\022\r\n\005srvIP\030\001 \001(" +
-      "\004\022\017\n\007srvPort\030\002 \001(\r\022\017\n\007srvType\030\003 \001(\r\022\021\n\tc" +
-      "onnTimes\030\004 \001(\004\022\021\n\tshutTimes\030\005 \001(\004\"\227\001\n\020Li" +
-      "vePlayEndReqV1\022\021\n\tchannelID\030\001 \001(\004\022\013\n\003HID" +
-      "\030\002 \001(\t\022\013\n\003UID\030\003 \001(\t\022\017\n\007localIP\030\004 \001(\004\022\023\n\013",
+      "ize\030\025 \001(\004\022\017\n\007bufSize\030\026 \001(\004\022\r\n\005natip\030\027 \001(" +
+      "\004\"4\n\026P2pServerVlsStateSrvV1\022\013\n\003chl\030\001 \001(\004" +
+      "\022\r\n\005speed\030\002 \001(\004\"\316\001\n\027P2pServerPeerStateSr" +
+      "vV1\022\016\n\006peerIp\030\001 \001(\004\022\017\n\007peerUid\030\002 \001(\004\022\031\n\021" +
+      "peerDownloadCount\030\003 \001(\004\022\024\n\014peerReqCount\030" +
+      "\004 \001(\004\022\030\n\020peerRecvReqCount\030\005 \001(\004\022\027\n\017peerU",
+      "ploadCount\030\006 \001(\004\022\025\n\rpeerDownSpeed\030\007 \001(\004\022" +
+      "\027\n\017peerUploadSpeed\030\010 \001(\004\"\234\002\n\021OrderPlayEn" +
+      "dReqV3\022\013\n\003HID\030\001 \001(\t\022\013\n\003UID\030\002 \001(\t\022\017\n\007loca" +
+      "lIP\030\003 \001(\004\022\016\n\006sessID\030\004 \001(\t\022\023\n\013adjPlayTime" +
+      "\030\005 \001(\004\022\r\n\005accID\030\006 \001(\004\022\017\n\007endTick\030\007 \001(\004\022\017" +
+      "\n\007seekNum\030\010 \001(\004\022\017\n\007readNum\030\t \001(\004\022\022\n\nunsu" +
+      "ccRead\030\n \001(\004\022\017\n\007stopPos\030\013 \001(\004\022\024\n\014sessAvg" +
+      "Speed\030\014 \001(\004\022\016\n\006srvNum\030\r \001(\r\022*\n\013attachmen" +
+      "ts\030\016 \003(\0132\025.OrderPlayEndReqSrvV3\"\262\002\n\017P2pP" +
+      "layBgnReqV3\022\r\n\005OEMID\030\001 \001(\004\022\020\n\010vendorID\030\002",
+      " \001(\004\022\016\n\006curVer\030\003 \001(\004\022\021\n\tbuildTime\030\004 \001(\004\022" +
+      "\013\n\003HID\030\005 \001(\t\022\013\n\003UID\030\006 \001(\t\022\017\n\007localIP\030\007 \001" +
+      "(\004\022\021\n\tchannelID\030\010 \001(\004\022\020\n\010playTick\030\t \001(\004\022" +
+      "\016\n\006uRLLen\030\n \001(\r\022\013\n\003URL\030\013 \001(\t\022\016\n\006srvNum\030\014" +
+      " \001(\r\022\021\n\tcacheSize\030\r \001(\004\022\020\n\010packSize\030\016 \001(" +
+      "\004\022\017\n\007bufSize\030\017 \001(\004\022(\n\013attachments\030\020 \003(\0132" +
+      "\023.P2pPlayBgnReqSrvV3\"\217\001\n\024P2pServerPeerSt" +
+      "ateV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030" +
+      "\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\021\n\tpeerCount\030\005 \001(\004\022" +
+      "-\n\013attachments\030\006 \003(\0132\030.P2pServerPeerStat",
+      "eSrvV1\"a\n\025P2pPlayExceptionReqV1\022\014\n\004uuid\030" +
+      "\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid" +
+      "\030\004 \001(\004\022\021\n\terrorcode\030\005 \001(\004\"\217\001\n\024OrderPlayE" +
+      "ndReqSrvV2\022\r\n\005srvIP\030\001 \001(\004\022\021\n\tconnTimes\030\002" +
+      " \001(\004\022\020\n\010transNum\030\003 \001(\004\022\016\n\006avgRTT\030\004 \001(\004\022\020" +
+      "\n\010accBytes\030\005 \001(\004\022\017\n\007accTime\030\006 \001(\004\022\020\n\010avg" +
+      "Speed\030\007 \001(\004\"G\n\024OrderPlayBgnReqSrvV3\022\r\n\005s" +
+      "rvIP\030\001 \001(\004\022\017\n\007srvPort\030\002 \001(\r\022\017\n\007srvType\030\003" +
+      " \001(\004\"\225\001\n\022LivePlayAliveReqV1\022\021\n\tchannelID" +
+      "\030\001 \001(\004\022\023\n\013adjPlayTime\030\002 \001(\004\022\r\n\005accID\030\003 \001",
+      "(\004\022\021\n\taliveTick\030\004 \001(\004\022\020\n\010avgSpeed\030\005 \001(\004\022" +
+      "\r\n\005speed\030\006 \001(\004\022\024\n\014cacheSizeCur\030\007 \001(\004\"\234\001\n" +
+      "\024P2pClientPeerStateV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003u" +
+      "id\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\013\n\003" +
+      "chl\030\005 \001(\004\022\021\n\tpeerCount\030\006 \001(\004\022-\n\013attachme" +
+      "nts\030\007 \003(\0132\030.P2pClientPeerStateSrvV1\"\235\002\n\021" +
+      "OrderPlayEndReqV2\022\013\n\003HID\030\001 \001(\t\022\013\n\003UID\030\002 " +
+      "\001(\t\022\017\n\007localIP\030\003 \001(\004\022\016\n\006sessID\030\004 \001(\t\022\023\n\013" +
       "adjPlayTime\030\005 \001(\004\022\r\n\005accID\030\006 \001(\004\022\017\n\007endT" +
-      "ick\030\007 \001(\004\022\020\n\010avgSpeed\030\010 \001(\004\"\206\002\n\021P2pPlayA" +
-      "liveReqV3\022\021\n\tchannelID\030\001 \001(\004\022\023\n\013adjPlayT" +
-      "ime\030\002 \001(\004\022\r\n\005accID\030\003 \001(\004\022\021\n\taliveTick\030\004 " +
-      "\001(\004\022\017\n\007readNum\030\005 \001(\004\022\022\n\nunsuccRead\030\006 \001(\004" +
-      "\022\016\n\006curFrm\030\007 \001(\004\022\020\n\010avgSpeed\030\010 \001(\004\022\r\n\005sp" +
-      "eed\030\t \001(\004\022\017\n\007linkNum\030\n \001(\r\022\024\n\014cacheSizeC" +
-      "ur\030\013 \001(\004\022*\n\013attachments\030\014 \003(\0132\025.P2pPlayA" +
-      "liveReqSrvV3\"\275\001\n\026OrderPlayAliveReqSrvV3\022" +
-      "\r\n\005srvIP\030\001 \001(\004\022\021\n\tconnTimes\030\002 \001(\004\022\020\n\010tra",
-      "nsNum\030\003 \001(\004\022\016\n\006avgRTT\030\004 \001(\004\022\020\n\010accBytes\030" +
-      "\005 \001(\004\022\017\n\007accTime\030\006 \001(\004\022\020\n\010avgSpeed\030\007 \001(\004" +
-      "\022\r\n\005speed\030\010 \001(\004\022\013\n\003RTT\030\t \001(\004\022\016\n\006nodeID\030\n" +
-      " \001(\004\"\202\001\n\031P2pServerUploadStateSrvV1\022\013\n\003ch" +
-      "l\030\001 \001(\004\022\021\n\tbeginTime\030\002 \001(\004\022\r\n\005count\030\003 \001(" +
-      "\004\022\r\n\005speed\030\004 \001(\004\022\020\n\010reqCount\030\005 \001(\004\022\025\n\rva" +
-      "lidReqCount\030\006 \001(\004\"k\n\022P2pPlayEndReqSrvV3\022" +
-      "\r\n\005srvIP\030\001 \001(\004\022\017\n\007srvPort\030\002 \001(\r\022\017\n\007srvTy" +
-      "pe\030\003 \001(\r\022\021\n\tconnTimes\030\004 \001(\004\022\021\n\tshutTimes" +
-      "\030\005 \001(\004\"\322\001\n\026P2pServerStatisStateV1\022\014\n\004uui",
-      "d\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oem" +
-      "id\030\004 \001(\004\022\021\n\tpeerCount\030\005 \001(\004\022\030\n\020peerPartn" +
-      "ercount\030\006 \001(\004\022\025\n\rdownloadCount\030\007 \001(\004\022\023\n\013" +
-      "uploadCount\030\010 \001(\004\022\023\n\013rebootCount\030\t \001(\004\022\023" +
-      "\n\013staitsCount\030\n \001(\004\"\221\001\n\026OrderPlayAliveRe" +
-      "qSrvV2\022\r\n\005srvIP\030\001 \001(\004\022\021\n\tconnTimes\030\002 \001(\004" +
-      "\022\020\n\010transNum\030\003 \001(\004\022\016\n\006avgRTT\030\004 \001(\004\022\020\n\010ac" +
-      "cBytes\030\005 \001(\004\022\017\n\007accTime\030\006 \001(\004\022\020\n\010avgSpee" +
-      "d\030\007 \001(\004\"\316\001\n\027P2pClientPeerStateSrvV1\022\016\n\006p" +
-      "eerIp\030\001 \001(\004\022\017\n\007peerUid\030\002 \001(\004\022\031\n\021peerDown",
-      "loadCount\030\003 \001(\004\022\024\n\014peerReqCount\030\004 \001(\004\022\030\n" +
-      "\020peerRecvReqCount\030\005 \001(\004\022\027\n\017peerUploadCou" +
-      "nt\030\006 \001(\004\022\025\n\rpeerDownSpeed\030\007 \001(\004\022\027\n\017peerU" +
-      "ploadSpeed\030\010 \001(\004\"\254\002\n\027OrderPlayExceptionR" +
-      "eqV3\022\016\n\006sessID\030\001 \001(\t\022\r\n\005accID\030\002 \001(\004\022\021\n\te" +
-      "xception\030\003 \001(\r\022\r\n\005satus\030\004 \001(\r\022\r\n\005srvIP\030\005" +
-      " \001(\004\022\017\n\007srvPort\030\006 \001(\r\022\017\n\007srvType\030\007 \001(\r\022\014" +
-      "\n\004tick\030\010 \001(\004\022\016\n\006nodeID\030\t \001(\004\022\013\n\003HID\030\n \001(" +
-      "\t\022\r\n\005OEMID\030\013 \001(\004\022\013\n\003UID\030\014 \001(\t\022\025\n\rclientV" +
-      "ersion\030\r \001(\004\022\013\n\003FID\030\016 \001(\t\022\021\n\tfIDOffset\030\017",
-      " \001(\004\022\021\n\terrMsgLen\030\020 \001(\r\022\016\n\006errMsg\030\021 \001(\tB" +
-      "\033\n\026com.voole.hobbit.proto\240\001\001"
+      "ick\030\007 \001(\004\022\017\n\007seekNum\030\010 \001(\004\022\017\n\007readNum\030\t ",
+      "\001(\004\022\022\n\nunsuccRead\030\n \001(\004\022\017\n\007stopPos\030\013 \001(\004" +
+      "\022\024\n\014sessAvgSpeed\030\014 \001(\004\022\017\n\007linkNum\030\r \001(\r\022" +
+      "*\n\013attachments\030\016 \003(\0132\025.OrderPlayEndReqSr" +
+      "vV2\"\233\001\n\030P2pServerDownloadStateV1\022\014\n\004uuid" +
+      "\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemi" +
+      "d\030\004 \001(\004\022\025\n\rchInstanteNum\030\005 \001(\r\0221\n\013attach" +
+      "ments\030\006 \003(\0132\034.P2pServerDownloadStateSrvV" +
+      "1\"F\n\023LivePlayBgnReqSrvV1\022\r\n\005srvIP\030\001 \001(\004\022" +
+      "\017\n\007srvPort\030\002 \001(\r\022\017\n\007srvType\030\003 \001(\r\"\241\002\n\023Or" +
+      "derPlayAliveReqV3\022\016\n\006sessID\030\001 \001(\t\022\023\n\013adj",
+      "PlayTime\030\002 \001(\004\022\r\n\005accID\030\003 \001(\004\022\021\n\taliveTi" +
+      "ck\030\004 \001(\004\022\017\n\007seekNum\030\005 \001(\004\022\017\n\007readNum\030\006 \001" +
+      "(\004\022\022\n\nunsuccRead\030\007 \001(\004\022\017\n\007readPos\030\010 \001(\004\022" +
+      "\024\n\014sessAvgSpeed\030\t \001(\004\022\021\n\tsessSpeed\030\n \001(\004" +
+      "\022\017\n\007linkNum\030\013 \001(\r\022\024\n\014cacheSizeCur\030\014 \001(\004\022" +
+      ",\n\013attachments\030\r \003(\0132\027.OrderPlayAliveReq" +
+      "SrvV3\"\241\002\n\020LivePlayBgnReqV1\022\r\n\005accID\030\001 \001(" +
+      "\004\022\r\n\005OEMID\030\002 \001(\004\022\020\n\010vendorID\030\003 \001(\004\022\016\n\006cu" +
+      "rVer\030\004 \001(\004\022\021\n\tbuildTime\030\005 \001(\004\022\013\n\003HID\030\006 \001" +
+      "(\t\022\013\n\003UID\030\007 \001(\t\022\017\n\007localIP\030\010 \001(\004\022\021\n\tchan",
+      "nelID\030\t \001(\004\022\020\n\010playTick\030\n \001(\004\022\016\n\006uRLLen\030" +
+      "\013 \001(\r\022\013\n\003URL\030\014 \001(\t\022\022\n\ngetVLSTick\030\r \001(\004\022\016" +
+      "\n\006srvNum\030\016 \001(\r\022)\n\013attachments\030\017 \003(\0132\024.Li" +
+      "vePlayBgnReqSrvV1\"\213\001\n\023P2pServerVlsStateV" +
+      "1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(" +
+      "\004\022\r\n\005oemid\030\004 \001(\004\022\017\n\007totalCh\030\005 \001(\004\022,\n\013att" +
+      "achments\030\006 \003(\0132\027.P2pServerVlsStateSrvV1\"" +
+      "\335\001\n\026LivePlayExceptionReqV1\022\r\n\005accID\030\001 \001(" +
+      "\004\022\021\n\tchannelID\030\002 \001(\004\022\017\n\007srvType\030\003 \001(\r\022\r\n" +
+      "\005srvIP\030\004 \001(\004\022\017\n\007srvPort\030\005 \001(\r\022\020\n\010avgSpee",
+      "d\030\006 \001(\004\022\r\n\005speed\030\007 \001(\004\022\024\n\014cacheSizeCur\030\010" +
+      " \001(\004\022\020\n\010codeType\030\t \001(\004\022\022\n\ncontentLen\030\n \001" +
+      "(\004\022\023\n\013codeContent\030\013 \001(\t\"M\n\032P2pServerChan" +
+      "nelStateSrvV1\022\013\n\003chl\030\001 \001(\004\022\014\n\004time\030\002 \001(\004" +
+      "\022\024\n\014concurClient\030\003 \001(\004\"\206\002\n\030P2pClientDown" +
+      "loadStateV1\022\014\n\004uuid\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013" +
+      "\n\003hid\030\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\013\n\003chl\030\005 \001(\004\022" +
+      "\021\n\tbeginTime\030\006 \001(\004\022\r\n\005count\030\007 \001(\004\022\r\n\005spe" +
+      "ed\030\010 \001(\004\022\020\n\010reqCount\030\t \001(\004\022\021\n\tfailCount\030" +
+      "\n \001(\004\022\021\n\tdropCount\030\013 \001(\004\022\020\n\010dropData\030\014 \001",
+      "(\004\022\024\n\014dropSourceIp\030\r \001(\004\022\025\n\rdropSourceUi" +
+      "d\030\016 \001(\004\"\275\001\n\026P2pClientStatisStateV1\022\014\n\004uu" +
+      "id\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oe" +
+      "mid\030\004 \001(\004\022\025\n\rdownloadCount\030\005 \001(\004\022\023\n\013uplo" +
+      "adCount\030\006 \001(\004\022\017\n\007chCount\030\007 \001(\004\022/\n\013attach" +
+      "ments\030\010 \003(\0132\032.P2pClientStatisStateSrvV1\"" +
+      "\355\002\n\021OrderPlayBgnReqV2\022\r\n\005OEMID\030\001 \001(\004\022\020\n\010" +
+      "vendorID\030\002 \001(\004\022\016\n\006curVer\030\003 \001(\004\022\021\n\tbuildT" +
+      "ime\030\004 \001(\004\022\013\n\003HID\030\005 \001(\t\022\013\n\003UID\030\006 \001(\t\022\017\n\007l" +
+      "ocalIP\030\007 \001(\004\022\016\n\006sessID\030\010 \001(\t\022\020\n\010sessType",
+      "\030\t \001(\r\022\022\n\nsessStatus\030\n \001(\r\022\013\n\003FID\030\013 \001(\t\022" +
+      "\r\n\005mSize\030\014 \001(\004\022\r\n\005mmime\030\r \001(\r\022\016\n\006idxLen\030" +
+      "\016 \001(\004\022\016\n\006urlLen\030\017 \001(\r\022\013\n\003URL\030\020 \001(\t\022\020\n\010pl" +
+      "ayTick\030\021 \001(\004\022\016\n\006srvNum\030\022 \001(\r\022*\n\013attachme" +
+      "nts\030\023 \003(\0132\025.OrderPlayBgnReqSrvV2\022\r\n\005nati" +
+      "p\030\024 \001(\004\"\355\001\n\031P2pClientStatisStateSrvV1\022\013\n" +
+      "\003chl\030\001 \001(\004\022\016\n\006chTime\030\002 \001(\004\022\022\n\nchDownload" +
+      "\030\003 \001(\004\022\020\n\010chUpload\030\004 \001(\004\022\023\n\013chDownspeed\030" +
+      "\005 \001(\004\022\025\n\rchUploadspeed\030\006 \001(\004\022\023\n\013chFailco" +
+      "unt\030\007 \001(\004\022\030\n\020chDownloadserver\030\010 \001(\004\022\030\n\020c",
+      "hDownloadclient\030\t \001(\004\022\030\n\020chCurPeerCounte" +
+      "r\030\n \001(\004\"\266\001\n\026P2pClientUploadStateV1\022\014\n\004uu" +
+      "id\030\001 \001(\t\022\013\n\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oe" +
+      "mid\030\004 \001(\004\022\013\n\003chl\030\005 \001(\004\022\021\n\tbeginTime\030\006 \001(" +
+      "\004\022\r\n\005count\030\007 \001(\004\022\r\n\005speed\030\010 \001(\004\022\020\n\010reqCo" +
+      "unt\030\t \001(\004\022\025\n\rvalidReqCount\030\n \001(\004\"m\n\024Orde" +
+      "rPlayEndReqSrvV3\022\r\n\005srvIP\030\001 \001(\004\022\017\n\007srvPo" +
+      "rt\030\002 \001(\r\022\017\n\007srvType\030\003 \001(\r\022\021\n\tconnTimes\030\004" +
+      " \001(\004\022\021\n\tshutTimes\030\005 \001(\004\"\227\001\n\020LivePlayEndR" +
+      "eqV1\022\021\n\tchannelID\030\001 \001(\004\022\013\n\003HID\030\002 \001(\t\022\013\n\003",
+      "UID\030\003 \001(\t\022\017\n\007localIP\030\004 \001(\004\022\023\n\013adjPlayTim" +
+      "e\030\005 \001(\004\022\r\n\005accID\030\006 \001(\004\022\017\n\007endTick\030\007 \001(\004\022" +
+      "\020\n\010avgSpeed\030\010 \001(\004\"\206\002\n\021P2pPlayAliveReqV3\022" +
+      "\021\n\tchannelID\030\001 \001(\004\022\023\n\013adjPlayTime\030\002 \001(\004\022" +
+      "\r\n\005accID\030\003 \001(\004\022\021\n\taliveTick\030\004 \001(\004\022\017\n\007rea" +
+      "dNum\030\005 \001(\004\022\022\n\nunsuccRead\030\006 \001(\004\022\016\n\006curFrm" +
+      "\030\007 \001(\004\022\020\n\010avgSpeed\030\010 \001(\004\022\r\n\005speed\030\t \001(\004\022" +
+      "\017\n\007linkNum\030\n \001(\r\022\024\n\014cacheSizeCur\030\013 \001(\004\022*" +
+      "\n\013attachments\030\014 \003(\0132\025.P2pPlayAliveReqSrv" +
+      "V3\"\275\001\n\026OrderPlayAliveReqSrvV3\022\r\n\005srvIP\030\001",
+      " \001(\004\022\021\n\tconnTimes\030\002 \001(\004\022\020\n\010transNum\030\003 \001(" +
+      "\004\022\016\n\006avgRTT\030\004 \001(\004\022\020\n\010accBytes\030\005 \001(\004\022\017\n\007a" +
+      "ccTime\030\006 \001(\004\022\020\n\010avgSpeed\030\007 \001(\004\022\r\n\005speed\030" +
+      "\010 \001(\004\022\013\n\003RTT\030\t \001(\004\022\016\n\006nodeID\030\n \001(\004\"\202\001\n\031P" +
+      "2pServerUploadStateSrvV1\022\013\n\003chl\030\001 \001(\004\022\021\n" +
+      "\tbeginTime\030\002 \001(\004\022\r\n\005count\030\003 \001(\004\022\r\n\005speed" +
+      "\030\004 \001(\004\022\020\n\010reqCount\030\005 \001(\004\022\025\n\rvalidReqCoun" +
+      "t\030\006 \001(\004\"k\n\022P2pPlayEndReqSrvV3\022\r\n\005srvIP\030\001" +
+      " \001(\004\022\017\n\007srvPort\030\002 \001(\r\022\017\n\007srvType\030\003 \001(\r\022\021" +
+      "\n\tconnTimes\030\004 \001(\004\022\021\n\tshutTimes\030\005 \001(\004\"\322\001\n",
+      "\026P2pServerStatisStateV1\022\014\n\004uuid\030\001 \001(\t\022\013\n" +
+      "\003uid\030\002 \001(\t\022\013\n\003hid\030\003 \001(\004\022\r\n\005oemid\030\004 \001(\004\022\021" +
+      "\n\tpeerCount\030\005 \001(\004\022\030\n\020peerPartnercount\030\006 " +
+      "\001(\004\022\025\n\rdownloadCount\030\007 \001(\004\022\023\n\013uploadCoun" +
+      "t\030\010 \001(\004\022\023\n\013rebootCount\030\t \001(\004\022\023\n\013staitsCo" +
+      "unt\030\n \001(\004\"\221\001\n\026OrderPlayAliveReqSrvV2\022\r\n\005" +
+      "srvIP\030\001 \001(\004\022\021\n\tconnTimes\030\002 \001(\004\022\020\n\010transN" +
+      "um\030\003 \001(\004\022\016\n\006avgRTT\030\004 \001(\004\022\020\n\010accBytes\030\005 \001" +
+      "(\004\022\017\n\007accTime\030\006 \001(\004\022\020\n\010avgSpeed\030\007 \001(\004\"\316\001" +
+      "\n\027P2pClientPeerStateSrvV1\022\016\n\006peerIp\030\001 \001(",
+      "\004\022\017\n\007peerUid\030\002 \001(\004\022\031\n\021peerDownloadCount\030" +
+      "\003 \001(\004\022\024\n\014peerReqCount\030\004 \001(\004\022\030\n\020peerRecvR" +
+      "eqCount\030\005 \001(\004\022\027\n\017peerUploadCount\030\006 \001(\004\022\025" +
+      "\n\rpeerDownSpeed\030\007 \001(\004\022\027\n\017peerUploadSpeed" +
+      "\030\010 \001(\004\"\254\002\n\027OrderPlayExceptionReqV3\022\016\n\006se" +
+      "ssID\030\001 \001(\t\022\r\n\005accID\030\002 \001(\004\022\021\n\texception\030\003" +
+      " \001(\r\022\r\n\005satus\030\004 \001(\r\022\r\n\005srvIP\030\005 \001(\004\022\017\n\007sr" +
+      "vPort\030\006 \001(\r\022\017\n\007srvType\030\007 \001(\r\022\014\n\004tick\030\010 \001" +
+      "(\004\022\016\n\006nodeID\030\t \001(\004\022\013\n\003HID\030\n \001(\t\022\r\n\005OEMID" +
+      "\030\013 \001(\004\022\013\n\003UID\030\014 \001(\t\022\025\n\rclientVersion\030\r \001",
+      "(\004\022\013\n\003FID\030\016 \001(\t\022\021\n\tfIDOffset\030\017 \001(\004\022\021\n\ter" +
+      "rMsgLen\030\020 \001(\r\022\016\n\006errMsg\030\021 \001(\tB\033\n\026com.voo" +
+      "le.hobbit.proto\240\001\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -57792,7 +57973,7 @@ public final class TerminalPB {
           internal_static_OrderPlayBgnReqV3_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_OrderPlayBgnReqV3_descriptor,
-              new java.lang.String[] { "OEMID", "VendorID", "CurVer", "BuildTime", "HID", "UID", "LocalIP", "SessID", "SessType", "SessStatus", "FID", "MSize", "Mmime", "IdxLen", "UrlLen", "URL", "PlayTick", "SrvNum", "Attachments", "CacheSize", "PackSize", "BufSize", });
+              new java.lang.String[] { "OEMID", "VendorID", "CurVer", "BuildTime", "HID", "UID", "LocalIP", "SessID", "SessType", "SessStatus", "FID", "MSize", "Mmime", "IdxLen", "UrlLen", "URL", "PlayTick", "SrvNum", "Attachments", "CacheSize", "PackSize", "BufSize", "Natip", });
           internal_static_P2pServerVlsStateSrvV1_descriptor =
             getDescriptor().getMessageTypes().get(9);
           internal_static_P2pServerVlsStateSrvV1_fieldAccessorTable = new
@@ -57918,7 +58099,7 @@ public final class TerminalPB {
           internal_static_OrderPlayBgnReqV2_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_OrderPlayBgnReqV2_descriptor,
-              new java.lang.String[] { "OEMID", "VendorID", "CurVer", "BuildTime", "HID", "UID", "LocalIP", "SessID", "SessType", "SessStatus", "FID", "MSize", "Mmime", "IdxLen", "UrlLen", "URL", "PlayTick", "SrvNum", "Attachments", });
+              new java.lang.String[] { "OEMID", "VendorID", "CurVer", "BuildTime", "HID", "UID", "LocalIP", "SessID", "SessType", "SessStatus", "FID", "MSize", "Mmime", "IdxLen", "UrlLen", "URL", "PlayTick", "SrvNum", "Attachments", "Natip", });
           internal_static_P2pClientStatisStateSrvV1_descriptor =
             getDescriptor().getMessageTypes().get(30);
           internal_static_P2pClientStatisStateSrvV1_fieldAccessorTable = new
