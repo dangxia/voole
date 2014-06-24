@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit.storm.order.function;
+package com.voole.hobbit.storm.order.state.query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import backtype.storm.tuple.Values;
 import com.voole.hobbit.cachestate.cache.AreaInfoCache;
 import com.voole.hobbit.cachestate.entity.AreaInfo;
 import com.voole.hobbit.cachestate.state.HobbitState.HobbitStateCommon;
-import com.voole.hobbit.storm.order.module.extra.OrderPlayBgnExtra;
+import com.voole.hobbit.storm.order.module.extra.PlayBgnExtra;
 
 /**
  * @author XuehuiHe
@@ -31,7 +31,7 @@ public class AreaInfoQueryFunction extends
 			List<TridentTuple> args) {
 		List<AreaInfo> list = new ArrayList<AreaInfo>();
 		for (TridentTuple tuple : args) {
-			OrderPlayBgnExtra extra = (OrderPlayBgnExtra) tuple.get(0);
+			PlayBgnExtra extra = (PlayBgnExtra) tuple.get(0);
 			String spid = (String) tuple.get(1);
 			list.add(state.getCache().getAreaInfo(extra.getHid(),
 					extra.getOemid().toString(), spid, extra.getNatip()));

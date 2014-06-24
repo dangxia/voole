@@ -16,7 +16,7 @@ import com.voole.monitor2.playurl.PlayurlAnalyzer;
  * @author XuehuiHe
  * @date 2014年6月9日
  */
-public class OrderPlayBgnExtra implements Serializable {
+public class PlayBgnExtra implements Serializable {
 	private String sessionId;
 	private String bandwidth;// 用户带宽
 	private String thirdpartyUid;// 第三方Uid

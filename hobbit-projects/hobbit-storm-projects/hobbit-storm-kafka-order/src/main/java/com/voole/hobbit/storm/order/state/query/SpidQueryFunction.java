@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit.storm.order.function;
+package com.voole.hobbit.storm.order.state.query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,7 @@ import backtype.storm.tuple.Values;
 import com.voole.hobbit.cachestate.cache.OemInfoCache;
 import com.voole.hobbit.cachestate.entity.OemInfo;
 import com.voole.hobbit.cachestate.state.HobbitState.HobbitStateCommon;
-import com.voole.hobbit.storm.order.module.extra.OrderPlayBgnExtra;
+import com.voole.hobbit.storm.order.module.extra.PlayBgnExtra;
 import com.voole.hobbit.utils.ProductUtils;
 
 /**
@@ -32,7 +32,7 @@ public class SpidQueryFunction extends
 			List<TridentTuple> args) {
 		List<String> list = new ArrayList<String>();
 		for (TridentTuple tuple : args) {
-			OrderPlayBgnExtra extra = (OrderPlayBgnExtra) tuple.get(0);
+			PlayBgnExtra extra = (PlayBgnExtra) tuple.get(0);
 			list.add(getSpid(state, extra.getOemid()));
 		}
 		return list;

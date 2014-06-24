@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author XuehuiHe
  * @date 2014年6月16日
  */
-public class OrderOnlineUser implements Serializable {
+public class OnlineUser implements Serializable {
 	private long userNum;
 	private long userNum_l;
 	private long vipNum;
@@ -47,7 +47,7 @@ public class OrderOnlineUser implements Serializable {
 		this.vipNum_l = vipNum_l;
 	}
 
-	public void update(OrderOnlineUser modify) {
+	public void update(OnlineUser modify) {
 		setUserNum(getUserNum() + modify.getUserNum());
 		setUserNum_l(getUserNum_l() + modify.getUserNum_l());
 

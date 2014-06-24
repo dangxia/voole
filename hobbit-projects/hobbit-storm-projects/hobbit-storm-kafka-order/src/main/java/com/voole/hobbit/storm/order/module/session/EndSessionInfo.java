@@ -1,13 +1,13 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit.storm.order.module;
+package com.voole.hobbit.storm.order.module.session;
 
 /**
  * @author XuehuiHe
  * @date 2014年6月13日
  */
-public class OrderEndSessionInfo implements OrderSessionInfo {
+public class EndSessionInfo implements SessionInfo {
 	private String sessionId;
 	private Long playEnd;
 

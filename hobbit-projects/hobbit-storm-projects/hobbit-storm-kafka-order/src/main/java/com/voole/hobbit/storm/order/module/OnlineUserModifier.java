@@ -9,13 +9,13 @@ import com.voole.hobbit.utils.Tuple;
  * @author XuehuiHe
  * @date 2014年6月16日
  */
-public class OrderOnlineUserModifier extends OrderOnlineUser {
+public class OnlineUserModifier extends OnlineUser {
 	private Tuple<String, Long> key;
 
-	public OrderOnlineUserModifier() {
+	public OnlineUserModifier() {
 	}
 
-	public OrderOnlineUserModifier(String spid, Long oemid) {
+	public OnlineUserModifier(String spid, Long oemid) {
 		Tuple<String, Long> key = new Tuple<String, Long>(spid, oemid);
 		setKey(key);
 	}

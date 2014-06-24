@@ -11,10 +11,10 @@ import backtype.storm.tuple.Values;
 
 import com.voole.hobbit.cachestate.entity.AreaInfo;
 import com.voole.hobbit.cachestate.entity.ResourceInfo;
-import com.voole.hobbit.storm.order.module.OrderBgnSessionInfo;
-import com.voole.hobbit.storm.order.module.extra.OrderPlayBgnExtra;
+import com.voole.hobbit.storm.order.module.extra.PlayBgnExtra;
+import com.voole.hobbit.storm.order.module.session.AliveSessionInfo;
 
-public class AssemblyOrderSession extends BaseFunction {
+public class AssemblySession extends BaseFunction {
 	public final static Fields INPUT_FIELDS = new Fields("extra", "spid",
 			"areainfo", "resourceinfo");
 	public final static Fields OUTPUT_FIELDS = new Fields("sessionId",
@@ -22,12 +22,12 @@ public class AssemblyOrderSession extends BaseFunction {
 
 	@Override
 	public void execute(TridentTuple tuple, TridentCollector collector) {
-		OrderPlayBgnExtra extra = (OrderPlayBgnExtra) tuple.get(0);
+		PlayBgnExtra extra = (PlayBgnExtra) tuple.get(0);
 		String spid = tuple.getString(1);
 		AreaInfo areaInfo = (AreaInfo) tuple.get(2);
 		ResourceInfo resourceInfo = (ResourceInfo) tuple.get(3);
 		collector.emit(new Values(extra.getSessionId(),
-				OrderBgnSessionInfo.create(extra, spid, areaInfo,
+				AliveSessionInfo.create(extra, spid, areaInfo,
 						resourceInfo)));
 	}
 

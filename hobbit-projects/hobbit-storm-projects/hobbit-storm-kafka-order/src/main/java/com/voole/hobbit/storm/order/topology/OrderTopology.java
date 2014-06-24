@@ -10,8 +10,8 @@ import storm.trident.TridentTopology;
 import com.voole.hibbit.storm.kafka.OpaqueTridentKafkaSpout;
 import com.voole.hibbit.storm.kafka.partition.BrokerHosts.ZkHosts;
 import com.voole.hibbit.storm.kafka.partition.KafkaConfig;
-import com.voole.hobbit.storm.order.function.TickFilter;
-import com.voole.hobbit.storm.order.function.TransformerFunction;
+import com.voole.hobbit.storm.order.filter.TickFilter;
+import com.voole.hobbit.storm.order.function.transformer.TransformerFunction;
 
 /**
  * @author XuehuiHe

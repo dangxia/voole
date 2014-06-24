@@ -1,29 +1,34 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit.storm.order.module;
+package com.voole.hobbit.storm.order.module.session;
 
 import com.voole.hobbit.cachestate.entity.AreaInfo;
 import com.voole.hobbit.cachestate.entity.ResourceInfo;
-import com.voole.hobbit.storm.order.module.extra.OrderPlayBgnExtra;
+import com.voole.hobbit.proto.TerminalPB.OrderPlayAliveReqV2;
+import com.voole.hobbit.proto.TerminalPB.OrderPlayAliveReqV3;
+import com.voole.hobbit.storm.order.module.extra.PlayBgnExtra;
 import com.voole.hobbit.utils.ProductUtils;
 
 /**
  * @author XuehuiHe
  * @date 2014年6月13日
  */
-public class OrderBgnSessionInfo implements OrderSessionInfo {
+public class AliveSessionInfo implements SessionInfo {
 	private Long playAlive;// 最后一次心跳时间
 	private String spid;
 	private Integer areaid;
 	private Integer nettype;
 	private Integer bitrate;
-	private final OrderPlayBgnExtra extra;
+	private final PlayBgnExtra extra;
 	private boolean isVip;
+	private long avgSpeed;
+	private boolean isLow;
 
-	public OrderBgnSessionInfo(OrderPlayBgnExtra extra) {
+	public AliveSessionInfo(PlayBgnExtra extra) {
 		this.extra = extra;
 		isVip = false;
+		isLow = false;
 	}
 
 	@Override
@@ -84,7 +89,7 @@ public class OrderBgnSessionInfo implements OrderSessionInfo {
 		this.bitrate = bitrate;
 	}
 
-	public OrderPlayBgnExtra getExtra() {
+	public PlayBgnExtra getExtra() {
 		return extra;
 	}
 
@@ -96,9 +101,47 @@ public class OrderBgnSessionInfo implements OrderSessionInfo {
 		this.isVip = isVip;
 	}
 
-	public static OrderBgnSessionInfo create(OrderPlayBgnExtra extra,
+	public long getAvgSpeed() {
+		return avgSpeed;
+	}
+
+	public void setAvgSpeed(long avgSpeed) {
+		this.avgSpeed = avgSpeed;
+	}
+
+	public boolean isLow() {
+		return isLow;
+	}
+
+	public void setLow(boolean isLow) {
+		this.isLow = isLow;
+	}
+
+	public void update(OrderPlayAliveReqV2 v) {
+		setAvgSpeed(v.getSessAvgSpeed());
+		setPlayAlive(v.getAliveTick());
+		setLow(calcLow());
+	}
+
+	public void update(OrderPlayAliveReqV3 v) {
+		setAvgSpeed(v.getSessAvgSpeed());
+		setPlayAlive(v.getAliveTick());
+		setLow(calcLow());
+	}
+
+	public boolean calcLow() {
+		if (getBitrate() == null || getAvgSpeed() == 0) {
+			return false;
+		}
+		if (getBitrate() * 1024 > getAvgSpeed() * 8) {
+			return true;
+		}
+		return false;
+	}
+
+	public static AliveSessionInfo create(PlayBgnExtra extra,
 			String spid, AreaInfo areaInfo, ResourceInfo resourceInfo) {
-		OrderBgnSessionInfo sessionInfo = new OrderBgnSessionInfo(extra);
+		AliveSessionInfo sessionInfo = new AliveSessionInfo(extra);
 		sessionInfo.setSpid(spid);
 		if (spid != null && spid.equals(ProductUtils.VOOLE_SPID.toString())
 				&& extra.getProductId() != null
@@ -112,7 +155,6 @@ public class OrderBgnSessionInfo implements OrderSessionInfo {
 		if (resourceInfo != null) {
 			sessionInfo.setBitrate(resourceInfo.getBitrate());
 		}
-
 		return sessionInfo;
 	}
 }
