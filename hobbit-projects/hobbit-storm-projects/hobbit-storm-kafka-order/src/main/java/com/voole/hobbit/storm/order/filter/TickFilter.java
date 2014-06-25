@@ -3,6 +3,7 @@
  */
 package com.voole.hobbit.storm.order.filter;
 
+import storm.trident.Stream;
 import storm.trident.operation.BaseFilter;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.tuple.Fields;
@@ -22,6 +23,10 @@ import com.voole.hobbit.storm.order.function.transformer.TransformerFunction;
 public class TickFilter extends BaseFilter {
 	public static final Fields INPUT_FIELDS = TransformerFunction.OUTPUT_FIELDS;
 
+	public static Stream filte(Stream stream) {
+		return stream.each(INPUT_FIELDS, new TickFilter());
+	}
+
 	@Override
 	public boolean isKeep(TridentTuple tuple) {
 		Long tick = getTick(tuple.get(0));
@@ -29,7 +34,7 @@ public class TickFilter extends BaseFilter {
 			return true;
 		}
 		return true;
-//		return false;
+		// return false;
 	}
 
 	protected Long getTick(Object proto) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import storm.trident.Stream;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.operation.TridentOperationContext;
@@ -36,6 +37,11 @@ public class TransformerFunction extends BaseFunction {
 		this.topics = topics;
 	}
 
+	public static Stream each(Stream stream, String... topics) {
+		return stream.each(INPUT_FIELDS, new TransformerFunction(topics),
+				OUTPUT_FIELDS).project(OUTPUT_FIELDS);
+	}
+
 	@Override
 	public void prepare(@SuppressWarnings("rawtypes") Map conf,
 			TridentOperationContext context) {
@@ -49,7 +55,7 @@ public class TransformerFunction extends BaseFunction {
 		byte[] bytes = tuple.getBinaryByField("bytes");
 		long offset = tuple.getLongByField("offset");
 		String topic = tuple.getStringByField("topic");
-		if (offset % 10000 == 0) {
+		if (offset % 10 == 0) {
 			int partition = tuple.getIntegerByField("partition");
 			logger.info("topic:" + topic + "\tpartition:" + partition
 					+ "\toffset:" + offset);

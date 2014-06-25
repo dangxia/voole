@@ -3,12 +3,12 @@
  */
 package com.voole.hobbit.storm.order.module.extra;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqV2;
 import com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqV3;
 import com.voole.hobbit.utils.OrderUtils;
+import com.voole.hobbit.utils.ProductUtils;
 import com.voole.hobbit.utils.OrderUtils.OrderClientType;
 import com.voole.monitor2.playurl.PlayurlAnalyzer;
 
@@ -16,7 +16,7 @@ import com.voole.monitor2.playurl.PlayurlAnalyzer;
  * @author XuehuiHe
  * @date 2014年6月9日
  */
-public class PlayBgnExtra implements Serializable {
+public class PlayBgnExtra implements PlayExtra {
 	private String sessionId;
 	private String bandwidth;// 用户带宽
 	private String thirdpartyUid;// 第三方Uid
@@ -32,9 +32,7 @@ public class PlayBgnExtra implements Serializable {
 	private boolean isTest; // 是否是测试数据
 	private String hid;
 	private Long natip;// 公网IP
-	// private Long realtimeSpeed;// 实时速度
 	private boolean isPlayedWithRightStamp;
-	private Long playBgn;// 播放开始时间(单位:second)
 	private String fid;
 	private Integer policyId;// 产品策略ID（来源于播放串po参数）
 	private boolean isAdMode;// 是否为广告模式
@@ -42,6 +40,22 @@ public class PlayBgnExtra implements Serializable {
 	private Integer lookBackChannelId;// 回看频道ID
 	private Integer lookBackStartTime;// 回看开始时间
 	private Integer lookBackEndTime;// 回看结束时间
+
+	private Long playBgn;// 播放开始时间(单位:second)
+	private Long playAlive;// 播放心跳时间(单位:second)
+	private long avgSpeed;// 平均速度
+
+	private String spid;
+	private Integer areaid;
+	private Integer nettype;
+	private Integer bitrate;
+	private boolean isVip;
+	private boolean isLow;
+
+	public PlayBgnExtra() {
+		isVip = false;
+		isLow = false;
+	}
 
 	public String getSessionId() {
 		return sessionId;
@@ -235,6 +249,76 @@ public class PlayBgnExtra implements Serializable {
 		this.orderClientType = orderClientType;
 	}
 
+	public Long getPlayAlive() {
+		return playAlive;
+	}
+
+	public void setPlayAlive(Long playAlive) {
+		this.playAlive = playAlive;
+	}
+
+	public long getAvgSpeed() {
+		return avgSpeed;
+	}
+
+	public void setAvgSpeed(long avgSpeed) {
+		this.avgSpeed = avgSpeed;
+	}
+
+	public String getSpid() {
+		return spid;
+	}
+
+	public void setSpid(String spid) {
+		this.spid = spid;
+	}
+
+	public Integer getAreaid() {
+		return areaid;
+	}
+
+	public void setAreaid(Integer areaid) {
+		this.areaid = areaid;
+	}
+
+	public Integer getNettype() {
+		return nettype;
+	}
+
+	public void setNettype(Integer nettype) {
+		this.nettype = nettype;
+	}
+
+	public Integer getBitrate() {
+		return bitrate;
+	}
+
+	public void setBitrate(Integer bitrate) {
+		this.bitrate = bitrate;
+	}
+
+	public boolean isVip() {
+		return isVip;
+	}
+
+	public void setVip(boolean isVip) {
+		this.isVip = isVip;
+	}
+
+	public boolean isLow() {
+		return isLow;
+	}
+
+	public void setLow(boolean isLow) {
+		this.isLow = isLow;
+	}
+
+	public void update(PlayAliveExtra alive) {
+		this.setPlayAlive(alive.getPlayAlive());
+		this.setAvgSpeed(alive.getAvgSpeed());
+		calcLow();
+	}
+
 	public void fillWith(OrderPlayBgnReqV2 v) {
 		setFid(v.getFID());
 		setHid(v.getHID());
@@ -274,6 +358,24 @@ public class PlayBgnExtra implements Serializable {
 		}
 		if (hid != null) {
 			setHid(hid.toUpperCase());
+		}
+	}
+
+	public void calcLow() {
+		if (getBitrate() == null || getPlayAlive() == null) {
+			setLow(false);
+		} else if (getBitrate() * 1024 > getAvgSpeed() * 8) {
+			setLow(true);
+		} else {
+			setLow(false);
+		}
+	}
+
+	public void calcVip() {
+		if (spid != null && spid.equals(ProductUtils.VOOLE_SPID.toString())
+				&& this.getProductId() != null
+				&& this.getProductId().length() > 0) {
+			this.setVip(true);
 		}
 	}
 
@@ -391,5 +493,33 @@ public class PlayBgnExtra implements Serializable {
 		}
 		double diff = Math.abs(stampInt - playbgn * 1000);
 		return diff > 1 * 60 * 60 ? false : true;
+	}
+
+	@Override
+	public long lastStamp() {
+		if (getPlayAlive() == null) {
+			return getPlayBgn();
+		}
+		return getPlayAlive();
+	}
+
+	@Override
+	public PlayType getPlayType() {
+		return PlayType.BGN;
+	}
+
+	public static PlayBgnExtra getExtra(Object proto) {
+		if (proto == null) {
+			return null;
+		}
+		PlayBgnExtra extra = null;
+		if (proto instanceof OrderPlayBgnReqV2) {
+			extra = new PlayBgnExtra();
+			extra.fillWith((OrderPlayBgnReqV2) proto);
+		} else if (proto instanceof OrderPlayBgnReqV3) {
+			extra = new PlayBgnExtra();
+			extra.fillWith((OrderPlayBgnReqV3) proto);
+		}
+		return extra;
 	}
 }

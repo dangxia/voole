@@ -3,35 +3,38 @@
  */
 package com.voole.hobbit.storm.order.function.extra;
 
+import storm.trident.Stream;
 import storm.trident.operation.BaseFunction;
 import storm.trident.operation.TridentCollector;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 
-import com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqV2;
-import com.voole.hobbit.proto.TerminalPB.OrderPlayBgnReqV3;
 import com.voole.hobbit.storm.order.function.transformer.TransformerFunction;
-import com.voole.hobbit.storm.order.module.extra.PlayBgnExtra;
+import com.voole.hobbit.storm.order.module.extra.PlayExtra;
+import com.voole.hobbit.storm.order.module.extra.PlayExtraUtils;
 
 /**
  * @author XuehuiHe
- * @date 2014年6月6日
+ * @date 2014年6月24日
  */
-public class PlayBgnExtraFunction extends BaseFunction {
+public class PlayExtraFunction extends BaseFunction {
 	public static final Fields INPUT_FIELDS = TransformerFunction.OUTPUT_FIELDS;
-	public static final Fields OUTPUT_FIELDS = new Fields("extra");
+	public static final Fields OUTPUT_FIELDS = new Fields("sessionId", "extra");
+
+	public static Stream each(Stream stream) {
+		return stream
+				.each(INPUT_FIELDS, new PlayExtraFunction(), OUTPUT_FIELDS)
+				.project(OUTPUT_FIELDS);
+	}
 
 	@Override
 	public void execute(TridentTuple tuple, TridentCollector collector) {
-		PlayBgnExtra extra = new PlayBgnExtra();
 		Object proto = tuple.get(0);
-		if (proto instanceof OrderPlayBgnReqV2) {
-			extra.fillWith((OrderPlayBgnReqV2) proto);
-		} else if (proto instanceof OrderPlayBgnReqV3) {
-			extra.fillWith((OrderPlayBgnReqV3) proto);
+		PlayExtra extra = PlayExtraUtils.getExtra(proto);
+		if (extra != null) {
+			collector.emit(new Values(extra.getSessionId(), extra));
 		}
-		collector.emit(new Values(extra));
 	}
 
 }

@@ -2,8 +2,11 @@ package com.voole.hobbit.storm.order.module.session;
 
 import java.io.Serializable;
 
+import com.voole.hobbit.storm.order.module.extra.PlayExtra.PlayType;
+import com.voole.hobbit.utils.HobbitUtils;
+
 public class SessionTick implements Serializable {
-	private OrderSessionTickType type;
+	private PlayType type;
 	private String spid;
 	private Long oemid;
 
@@ -13,13 +16,11 @@ public class SessionTick implements Serializable {
 	private boolean isLow;
 	private boolean isVip;
 
-	public SessionTick(OrderSessionTickType type) {
-		this.type = type;
-	}
+	private String hid;
 
-	public boolean isAlive() {
-		return type == OrderSessionTickType.ALIVE
-				|| type == OrderSessionTickType.BGN;
+	public SessionTick(PlayType type, String hid) {
+		this.type = type;
+		this.hid = hid;
 	}
 
 	public String getSpid() {
@@ -70,12 +71,20 @@ public class SessionTick implements Serializable {
 		this.isVip = isVip;
 	}
 
-	public OrderSessionTickType getType() {
+	public PlayType getType() {
 		return type;
 	}
 
-	public void setType(OrderSessionTickType type) {
+	public void setType(PlayType type) {
 		this.type = type;
+	}
+
+	public String getHid() {
+		return hid;
+	}
+
+	public void setHid(String hid) {
+		this.hid = hid;
 	}
 
 	@Override
@@ -88,8 +97,8 @@ public class SessionTick implements Serializable {
 		}
 		if (obj instanceof SessionTick) {
 			SessionTick that = (SessionTick) obj;
-			return this.getOemid().equals(that.getOemid())
-					&& this.getSpid().equals(that.getSpid())
+			return HobbitUtils.equals(this.getOemid(), that.getOemid())
+					&& HobbitUtils.equals(this.getSpid(), that.getSpid())
 					&& this.isLow() == that.isLow()
 					&& this.isVip() == that.isVip();
 		}

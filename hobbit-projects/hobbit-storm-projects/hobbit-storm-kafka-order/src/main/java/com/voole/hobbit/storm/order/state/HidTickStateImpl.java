@@ -1,8 +1,8 @@
 package com.voole.hobbit.storm.order.state;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import storm.trident.operation.TridentCollector;
 import storm.trident.state.State;
@@ -14,65 +14,74 @@ import com.voole.hobbit.storm.order.module.OnlineUserModifier;
 import com.voole.hobbit.storm.order.module.session.SessionTick;
 
 public class HidTickStateImpl implements HidTickState {
-	private Long _currTx;
-	private final Map<String, OpaqueValue<SessionTick>> hidToSessionId;
+	private final Map<String, SessionTick> db;
 
 	public HidTickStateImpl() {
-		hidToSessionId = new HashMap<String, OpaqueValue<SessionTick>>();
+		db = new HashMap<String, SessionTick>();
 	}
 
 	@Override
 	public void beginCommit(Long txid) {
-		_currTx = txid;
 	}
 
 	@Override
 	public void commit(Long txid) {
-		_currTx = null;
 	}
 
 	@Override
-	public void update(Map<String, SessionTick> hidToTick,
-			TridentCollector collector) {
-		for (Entry<String, SessionTick> entry : hidToTick.entrySet()) {
-			String hid = entry.getKey();
-			SessionTick curr = entry.getValue();
-			OpaqueValue<SessionTick> opa = hidToSessionId.get(hid);
-			SessionTick prev = null;
-			if (opa != null) {
-				prev = opa.get(_currTx);
-			}
+	public void update(List<SessionTick> ticks, TridentCollector collector) {
+		for (SessionTick curr : ticks) {
+			String hid = curr.getHid();
+			SessionTick prev = db.get(hid);
 			if (prev == null) {
-				if (curr.isAlive()) {
-					opa = new OpaqueValue<SessionTick>(_currTx, curr);
-					hidToSessionId.put(hid, opa);
-					collector.emit(new Values(createModifier(curr, 1)));
-				}
+				updateNoPrev(hid, curr, collector);
 			} else {
-				if (prev.getLastStamp() < curr.getLastStamp()) {
-					if (curr.isAlive()) {
-						if (!prev.equals(curr)) {
-							opa.prev = prev;
-							opa.curr = curr;
-							opa.currTxid = _currTx;
-							collector
-									.emit(new Values(createModifier(prev, -1)));
-							collector.emit(new Values(createModifier(curr, 1)));
-						}
-					} else if (prev.getSessionId().equals(curr.getSessionId())) {
-						hidToSessionId.remove(hid);
-						collector.emit(new Values(createModifier(prev, -1)));
-					}
+				if (curr.getSessionId().equals(prev.getSessionId())) {
+					updateSameSessionId(hid, prev, curr, collector);
+				} else {
+					updateDifferentSessionId(hid, prev, curr, collector);
 				}
 			}
 		}
-
 	}
 
-	protected OnlineUserModifier createModifier(SessionTick tick,
-			long num) {
-		OnlineUserModifier modifier = new OnlineUserModifier(
-				tick.getSpid(), tick.getOemid());
+	private void updateNoPrev(String hid, SessionTick curr,
+			TridentCollector collector) {
+		if (!curr.getType().isEnd()) {
+			db.put(hid, curr);
+			collector.emit(new Values(createModifier(curr, 1)));
+		}
+	}
+
+	private void updateSameSessionId(String hid, SessionTick prev,
+			SessionTick curr, TridentCollector collector) {
+		if (curr.getType().isEnd()) {
+			db.remove(hid);
+			collector.emit(new Values(createModifier(prev, -1)));
+		} else {
+			db.put(hid, curr);
+			if (!prev.equals(curr)) {
+				collector.emit(new Values(createModifier(prev, -1)));
+				collector.emit(new Values(createModifier(curr, 1)));
+			}
+		}
+	}
+
+	private void updateDifferentSessionId(String hid, SessionTick prev,
+			SessionTick curr, TridentCollector collector) {
+		if (!curr.getType().isEnd()
+				&& curr.getLastStamp() > prev.getLastStamp()) {
+			db.put(hid, curr);
+			if (!prev.equals(curr)) {
+				collector.emit(new Values(createModifier(prev, -1)));
+				collector.emit(new Values(createModifier(curr, 1)));
+			}
+		}
+	}
+
+	protected OnlineUserModifier createModifier(SessionTick tick, long num) {
+		OnlineUserModifier modifier = new OnlineUserModifier(tick.getSpid(),
+				tick.getOemid());
 		modifier.setUserNum(num);
 		if (tick.isLow()) {
 			modifier.setUserNum_l(num);

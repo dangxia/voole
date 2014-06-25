@@ -47,4 +47,15 @@ public class HobbitUtils {
 		return df.format(d);
 	}
 
+	public static boolean equals(Object v1, Object v2) {
+		if (v1 == null && v2 == null) {
+			return true;
+		}
+		if (v1 != null) {
+			return v1.equals(v2);
+		} else {
+			return v2.equals(v1);
+		}
+	}
+
 }

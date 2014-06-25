@@ -18,6 +18,7 @@ import backtype.storm.LocalCluster;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.voole.hobbit.storm.order.state.PlayExtraStateImpl.PlayExtraUpdater;
 import com.voole.hobbit.storm.order.state.updater.OnlineUserStateQueryUpdater;
 
 /**
@@ -78,7 +79,7 @@ public class TestOrderTopology {
 	public static TridentTopology createTopology(
 			TransformerConfig transformerConfig) {
 		TridentTopology topology = new TridentTopology();
-		OrderBgnTopology orderBgnTopology = new OrderBgnTopology();
+		OrderTopology2 orderBgnTopology = new OrderTopology2();
 		if (transformerConfig.getFetchSizeBytes() != null) {
 			orderBgnTopology.getKafkaConfig().setFetchSizeBytes(
 					transformerConfig.getFetchSizeBytes());
@@ -86,7 +87,6 @@ public class TestOrderTopology {
 		Stream orderBgnStream = orderBgnTopology.build(topology);
 		orderBgnStream.each(OnlineUserStateQueryUpdater.OUTPUT_FIELDS,
 				new Print());
-
 		return topology;
 	}
 

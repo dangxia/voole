@@ -7,13 +7,18 @@ import java.util.List;
 
 import storm.trident.operation.TridentCollector;
 import storm.trident.state.State;
-
-import com.voole.hobbit.storm.order.module.session.SessionTick;
+import storm.trident.tuple.TridentTuple;
 
 /**
  * @author XuehuiHe
- * @date 2014年6月24日
+ * @date 2014年6月25日
  */
-public interface HidTickState extends State {
-	public void update(List<SessionTick> ticks, TridentCollector collector);
+public interface PlayExtraState extends State{
+
+	/**
+	 * @param tuples
+	 * @param collector
+	 */
+	void updateByPlayExtra(List<TridentTuple> tuples, TridentCollector collector);
+
 }
