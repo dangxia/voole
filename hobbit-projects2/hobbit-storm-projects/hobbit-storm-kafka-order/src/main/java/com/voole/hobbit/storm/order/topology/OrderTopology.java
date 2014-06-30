@@ -17,6 +17,7 @@ import com.voole.hobbit.storm.order.function.aggregator.OnlineUserModifierCombin
 import com.voole.hobbit.storm.order.function.aggregator.PlayExtraCombinerAggregator;
 import com.voole.hobbit.storm.order.function.aggregator.SessionTickCombinerAggregator;
 import com.voole.hobbit.storm.order.function.extra.PlayExtraFunction;
+import com.voole.hobbit.storm.order.function.query.OnlineUserQuery;
 import com.voole.hobbit.storm.order.function.transformer.TransformerFunction;
 import com.voole.hobbit.storm.order.state.OrderExtraInfoQueryState.OrderExtraInfoQuery;
 import com.voole.hobbit.storm.order.state.OrderExtraInfoQueryState.OrderExtraInfoQueryStateFactory;
@@ -27,18 +28,20 @@ import com.voole.hobbit.storm.order.state.updater.HidTickStateUpdater;
  * @author XuehuiHe
  * @date 2014年6月24日
  */
-public class OrderTopology2 {
+public class OrderTopology {
 	private final ZkHosts hosts;
 	private final KafkaConfig kafkaConfig;
 	private final String streamTxid;
+	private final int stormClusterNum;
 
-	public OrderTopology2() {
+	public OrderTopology() {
 		this.streamTxid = "order-kafka-stream";
 		hosts = new ZkHosts();
 		hosts.setKafkaConnetion("data-zk1.voole.com:2181,data-zk2.voole.com:2181,data-zk3.voole.com:2181/kafka");
 		kafkaConfig = new KafkaConfig(hosts,
 				TopicProtoClassUtils.ORDER_TOPICS.toArray(new String[] {}));
 		kafkaConfig.forceStartOffsetTime(OffsetRequest.LatestTime());
+		stormClusterNum = 4;
 	}
 
 	public ZkHosts getHosts() {
@@ -56,23 +59,37 @@ public class OrderTopology2 {
 	public Stream build(TridentTopology topology) {
 		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout(
 				getKafkaConfig());
-		TridentState extraInfoState = topology
-				.newStaticState(new OrderExtraInfoQueryStateFactory());
+		TridentState extraInfoState = topology.newStaticState(
+				new OrderExtraInfoQueryStateFactory()).parallelismHint(
+				getStormClusterNum());
 		Stream stream = topology.newStream(getStreamTxid(), orderKafkaSpout)
-				.parallelismHint(getKafkaConfig().getTopics().length * 4)
-				.shuffle();
+				.parallelismHint(
+						getKafkaConfig().getTopics().length
+								* getStormClusterNum());
 		stream = TransformerFunction.each(stream, getKafkaConfig().getTopics());
 		stream = TickFilter.filte(stream);
-		stream = PlayExtraFunction.each(stream);
-		stream = PlayExtraCombinerAggregator.group(stream);
+		stream = PlayExtraFunction.each(stream).shuffle();
+		stream = PlayExtraCombinerAggregator.group(stream).parallelismHint(
+				getStormClusterNum());
 		stream = OrderExtraInfoQuery.query(stream, extraInfoState);
-		TridentState playExtraState = PlayExtraUpdater.partitionPersist(stream);
+		TridentState playExtraState = PlayExtraUpdater.partitionPersist(stream)
+				.parallelismHint(getStormClusterNum());
 		stream = playExtraState.newValuesStream();
-		stream = SessionTickCombinerAggregator.group(stream);
+		stream = SessionTickCombinerAggregator.group(stream).parallelismHint(
+				getStormClusterNum());
 		TridentState hidTickState = HidTickStateUpdater
-				.partitionPersist(stream);
+				.partitionPersist(stream).parallelismHint(getStormClusterNum());
 		stream = hidTickState.newValuesStream();
-		stream = OnlineUserModifierCombiner.combine(stream).newValuesStream();
+		TridentState onlineUserState = OnlineUserModifierCombiner
+				.combine(stream);
+		stream = onlineUserState.newValuesStream();
+
+		OnlineUserQuery.query(topology.newDRPCStream("query"), onlineUserState);
+
 		return stream;
+	}
+
+	public int getStormClusterNum() {
+		return stormClusterNum;
 	}
 }

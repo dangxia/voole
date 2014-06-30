@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import storm.trident.Stream;
 import storm.trident.TridentState;
 import storm.trident.operation.TridentCollector;
@@ -39,6 +42,11 @@ public class PlayExtraStateImpl implements PlayExtraState {
 	private final TreeMap<Long, Set<String>> timeoutTree;
 	private final Map<String, OpaqueValue<PlayExtra>> db;
 
+	private static Logger logger = LoggerFactory
+			.getLogger(PlayExtraStateImpl.class);
+
+	private long prev = 0;
+
 	public PlayExtraStateImpl() {
 		timeoutTree = new TreeMap<Long, Set<String>>();
 		db = new HashMap<String, OpaqueValue<PlayExtra>>();
@@ -54,29 +62,96 @@ public class PlayExtraStateImpl implements PlayExtraState {
 		_currTx = null;
 	}
 
+	public Long get_currTx() {
+		return _currTx;
+	}
+
+	public void set_currTx(Long _currTx) {
+		this._currTx = _currTx;
+	}
+
+	public TreeMap<Long, Set<String>> getTimeoutTree() {
+		return timeoutTree;
+	}
+
+	public Map<String, OpaqueValue<PlayExtra>> getDb() {
+		return db;
+	}
+
+	@Override
+	public void gc(TridentCollector collector) {
+		long now = System.currentTimeMillis();
+		if (prev == 0) {
+			if (now - prev > 10 * 60 * 1000) {
+				prev = now;
+			} else {
+				return;
+			}
+		} else if (now - prev > 2 * 60 * 1000) {
+			prev = now;
+		} else {
+			return;
+		}
+		logger.info("session state gc start");
+		long max = System.currentTimeMillis() / 1000 - 60 * 10;
+		Map<Long, Set<String>> timeout = timeoutTree
+				.subMap(0l, true, max, true);
+		if (timeout == null) {
+			return;
+		}
+		Set<Long> timeoutKeys = new HashSet<Long>();
+		timeoutKeys.addAll(timeout.keySet());
+		Set<String> timeoutSessionIds = new HashSet<String>();
+		for (Long k : timeoutKeys) {
+			timeoutSessionIds.addAll(timeoutTree.remove(k));
+		}
+		long gc = 0;
+		for (String sessionId : timeoutSessionIds) {
+			gc++;
+			OpaqueValue<PlayExtra> opa = db.remove(sessionId);
+			if (opa != null && opa.curr != null
+					&& opa.curr.getPlayType().isBgn()) {
+				_emitEnd(collector, (PlayBgnExtra) opa.curr);
+			}
+		}
+		logger.info("session state gc:" + gc);
+	}
+
 	@Override
 	public void updateByPlayExtra(List<TridentTuple> tuples,
 			TridentCollector collector) {
 		for (TridentTuple tuple : tuples) {
-			PlayExtra extra = (PlayExtra) tuple.get(1);
-			String sessionId = extra.getSessionId();
-			OpaqueValue<PlayExtra> opa = db.get(sessionId);
-			if (opa == null) {
-				_new(sessionId, extra, collector);
-			} else {
-				_update(opa, sessionId, extra, collector);
-			}
+			update((PlayExtra) tuple.get(1), collector);
+		}
+		gc(collector);
+	}
+
+	protected void update(PlayExtra extra, TridentCollector collector) {
+		String sessionId = extra.getSessionId();
+		OpaqueValue<PlayExtra> opa = db.get(sessionId);
+		if (opa == null) {
+			_new(opa, sessionId, extra, collector);
+		} else {
+			_update(opa, sessionId, extra, collector);
 		}
 	}
 
-	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
+	protected void _new(OpaqueValue<PlayExtra> opa, String sessionId,
 			PlayExtra curr, TridentCollector collector) {
-		if (_currTx.equals(opa.currTxid)) {
+		update(opa, sessionId, curr, null);
+		if (curr.getPlayType().isBgn()) {
+			_emitNew(collector, (PlayBgnExtra) curr);
+		}
+	}
+
+	protected void _update(OpaqueValue<PlayExtra> opa, String sessionId,
+			PlayExtra curr, TridentCollector collector) {
+		if (_currTx != null && _currTx.equals(opa.currTxid)) {
 			rollbackTimeoutTree(sessionId, opa);
 		}
 		PlayExtra prev = opa.get(_currTx);
 		if (prev == null) {
-			_new(sessionId, curr, collector);
+			_new(opa, sessionId, curr, collector);
 		} else {
 			if (prev.getPlayType().isBgn()) {
 				if (curr.getPlayType().isBgn()) {
@@ -89,7 +164,7 @@ public class PlayExtraStateImpl implements PlayExtraState {
 					_update(opa, sessionId, (PlayBgnExtra) prev,
 							(PlayEndExtra) curr, collector);
 				}
-			} else {
+			} else if (prev.getPlayType().isEnd()) {
 				if (curr.getPlayType().isBgn()) {
 					_update(opa, sessionId, (PlayEndExtra) prev,
 							(PlayBgnExtra) curr, collector);
@@ -100,30 +175,69 @@ public class PlayExtraStateImpl implements PlayExtraState {
 					_update(opa, sessionId, (PlayEndExtra) prev,
 							(PlayEndExtra) curr, collector);
 				}
+			} else {
+				if (curr.getPlayType().isBgn()) {
+					_update(opa, sessionId, (PlayAliveExtra) prev,
+							(PlayBgnExtra) curr, collector);
+				} else if (curr.getPlayType().isAlive()) {
+					_update(opa, sessionId, (PlayAliveExtra) prev,
+							(PlayAliveExtra) curr, collector);
+				} else {
+					_update(opa, sessionId, (PlayAliveExtra) prev,
+							(PlayEndExtra) curr, collector);
+				}
 			}
+		}
+	}
+
+	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
+			PlayAliveExtra prev, PlayEndExtra curr, TridentCollector collector) {
+		if (curr.lastStamp() > prev.lastStamp()) {
+			update(opa, sessionId, curr, prev);
+		}
+	}
+
+	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
+			PlayAliveExtra prev, PlayAliveExtra curr, TridentCollector collector) {
+		if (curr.lastStamp() > prev.lastStamp()) {
+			update(opa, sessionId, curr, prev);
+		}
+	}
+
+	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
+			PlayAliveExtra prev, PlayBgnExtra curr, TridentCollector collector) {
+		if (curr.lastStamp() > prev.lastStamp()) {
+			update(opa, sessionId, curr, prev);
+
+			_emitNew(collector, curr);
+		} else {
+			curr.update(prev);
+			updateDb(opa, sessionId, curr, prev);
+
+			_emitNew(collector, curr);
 		}
 	}
 
 	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
 			PlayEndExtra prev, PlayEndExtra curr, TridentCollector collector) {
 		if (curr.lastStamp() > prev.lastStamp()) {
-			updateTimeoutTree(sessionId, curr, prev);
-			updateDb(opa, sessionId, curr, prev);
+			update(opa, sessionId, curr, prev);
 		}
 	}
 
 	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
 			PlayEndExtra prev, PlayAliveExtra curr, TridentCollector collector) {
+		if (curr.lastStamp() > prev.lastStamp()) {
+			update(opa, sessionId, curr, prev);
+		}
 	}
 
 	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
 			PlayEndExtra prev, PlayBgnExtra curr, TridentCollector collector) {
 		if (prev.lastStamp() > curr.lastStamp()) {
-			removeFromTimeOutTree(sessionId, prev.lastStamp());
-			db.remove(sessionId);
+			removePrev(sessionId, prev);
 		} else {
-			updateTimeoutTree(sessionId, curr, prev);
-			updateDb(opa, sessionId, curr, prev);
+			update(opa, sessionId, curr, prev);
 
 			_emitNew(collector, curr);
 		}
@@ -132,8 +246,7 @@ public class PlayExtraStateImpl implements PlayExtraState {
 	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
 			PlayBgnExtra prev, PlayEndExtra curr, TridentCollector collector) {
 		if (curr.lastStamp() > prev.lastStamp()) {
-			removeFromTimeOutTree(sessionId, prev.lastStamp());
-			db.remove(sessionId);
+			removePrev(sessionId, prev);
 
 			_emitEnd(collector, prev);
 		}
@@ -144,7 +257,6 @@ public class PlayExtraStateImpl implements PlayExtraState {
 		if (curr.lastStamp() > prev.lastStamp()) {
 			updateTimeoutTree(sessionId, curr, prev);
 			prev.update(curr);
-
 			_emitAlive(collector, prev);
 		}
 	}
@@ -152,11 +264,15 @@ public class PlayExtraStateImpl implements PlayExtraState {
 	private void _update(OpaqueValue<PlayExtra> opa, String sessionId,
 			PlayBgnExtra prev, PlayBgnExtra curr, TridentCollector collector) {
 		if (curr.lastStamp() > prev.lastStamp()) {
-			updateTimeoutTree(sessionId, curr, prev);
-			updateDb(opa, sessionId, curr, prev);
-
+			update(opa, sessionId, curr, prev);
 			_emitNew(collector, curr);
 		}
+	}
+
+	private void update(OpaqueValue<PlayExtra> opa, String sessionId,
+			PlayExtra curr, PlayExtra prev) {
+		updateTimeoutTree(sessionId, curr, prev);
+		updateDb(opa, sessionId, curr, prev);
 	}
 
 	private void updateDb(OpaqueValue<PlayExtra> opa, String sessionId,
@@ -170,27 +286,13 @@ public class PlayExtraStateImpl implements PlayExtraState {
 		}
 	}
 
-	private void rollbackTimeoutTree(String sessionId,
-			OpaqueValue<PlayExtra> opa) {
-		PlayExtra _old = opa.curr;
-		PlayExtra _new = opa.prev;
-		if (_old != null) {
-			removeFromTimeOutTree(sessionId, _old.lastStamp());
+	private void updateTimeoutTree(String sessionId, PlayExtra curr,
+			PlayExtra prev) {
+		if (prev != null) {
+			removeFromTimeOutTree(sessionId, prev.lastStamp());
 		}
-		if (_new != null) {
-			addToTimeOutTree(sessionId, _new.lastStamp());
-		}
-	}
-
-	private void _new(String sessionId, PlayExtra curr,
-			TridentCollector collector) {
-		if (curr.getPlayType().isAlive()) {
-			return;
-		}
-		updateTimeoutTree(sessionId, curr, null);
-		updateDb(null, sessionId, curr, null);
-		if (curr.getPlayType().isBgn()) {
-			_emitNew(collector, (PlayBgnExtra) curr);
+		if (curr != null) {
+			addToTimeOutTree(sessionId, curr.lastStamp());
 		}
 	}
 
@@ -207,14 +309,16 @@ public class PlayExtraStateImpl implements PlayExtraState {
 				.emit(new Values(extra.getHid(), createAliveSessionTick(extra)));
 	}
 
-	private void updateTimeoutTree(String sessionId, PlayExtra curr,
-			PlayExtra prev) {
-		if (prev != null) {
-			removeFromTimeOutTree(sessionId, prev.lastStamp());
-		}
-		if (curr != null) {
-			addToTimeOutTree(sessionId, curr.lastStamp());
-		}
+	private void removePrev(String sessionId, PlayExtra prev) {
+		removeFromTimeOutTree(sessionId, prev.lastStamp());
+		db.remove(sessionId);
+	}
+
+	private void rollbackTimeoutTree(String sessionId,
+			OpaqueValue<PlayExtra> opa) {
+		PlayExtra _old = opa.curr;
+		PlayExtra _new = opa.prev;
+		updateTimeoutTree(sessionId, _new, _old);
 	}
 
 	private void removeFromTimeOutTree(String sessionId, Long stamp) {
@@ -239,19 +343,20 @@ public class PlayExtraStateImpl implements PlayExtraState {
 		keys.add(sessionId);
 	}
 
-	protected SessionTick createBgnSessionTick(PlayBgnExtra playBgnExtra) {
+	protected static SessionTick createBgnSessionTick(PlayBgnExtra playBgnExtra) {
 		return createOrderSessionTick(PlayType.BGN, playBgnExtra);
 	}
 
-	protected SessionTick createAliveSessionTick(PlayBgnExtra playBgnExtra) {
+	protected static SessionTick createAliveSessionTick(
+			PlayBgnExtra playBgnExtra) {
 		return createOrderSessionTick(PlayType.ALIVE, playBgnExtra);
 	}
 
-	protected SessionTick createEndSessionTick(PlayBgnExtra playBgnExtra) {
+	protected static SessionTick createEndSessionTick(PlayBgnExtra playBgnExtra) {
 		return createOrderSessionTick(PlayType.END, playBgnExtra);
 	}
 
-	protected SessionTick createOrderSessionTick(PlayType type,
+	protected static SessionTick createOrderSessionTick(PlayType type,
 			PlayBgnExtra playBgnExtra) {
 		SessionTick tick = new SessionTick(type, playBgnExtra.getHid());
 		tick.setLastStamp(playBgnExtra.lastStamp());

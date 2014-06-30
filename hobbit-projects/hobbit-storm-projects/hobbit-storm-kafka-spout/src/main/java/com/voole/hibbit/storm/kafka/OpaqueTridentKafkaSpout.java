@@ -177,6 +177,10 @@ public class OpaqueTridentKafkaSpout
 						&& !_topologyInstanceId.equals(lastInstanceId)) {
 					offset = KafkaUtils.getOffsetsBefore(consumer, partition,
 							kafkaConfig.getStartOffsetTime());
+					offset -= 100000;
+					if (offset < 0) {
+						offset = 0;
+					}
 				} else {
 					offset = (Long) lastMeta.get("nextOffset");
 				}
@@ -186,6 +190,10 @@ public class OpaqueTridentKafkaSpout
 					startTime = kafkaConfig.getStartOffsetTime();
 				offset = KafkaUtils.getOffsetsBefore(consumer, partition,
 						startTime);
+				offset -= 100000;
+				if (offset < 0) {
+					offset = 0;
+				}
 			}
 			ByteBufferMessageSet msgs;
 			try {
