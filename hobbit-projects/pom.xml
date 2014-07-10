@@ -17,6 +17,11 @@
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro</artifactId>
+				<version>1.7.6</version>
+			</dependency>
 			<!-- protobuf -->
 			<dependency>
 				<groupId>com.google.protobuf</groupId>
@@ -181,7 +186,66 @@
 					</execution>
 				</executions>
 			</plugin>
+<!-- 
+			<plugin>
+				<groupId>org.apache.avro</groupId>
+				<artifactId>avro-maven-plugin</artifactId>
+				<version>1.7.6</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>schema</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
+							<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
+							<testSourceDirectory>${project.basedir}/src/test/avro/</testSourceDirectory>
+							<includes>
+								<include>**/*.avro</include>
+								<include>**/*.json</include>
+							</includes>
+							<testIncludes>
+								<testInclude>**/*.test</testInclude>
+							</testIncludes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin> -->
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.avro</groupId>
+										<artifactId>avro-maven-plugin</artifactId>
+										<versionRange>
+											[1.7.6,)
+										</versionRange>
+										<goals>
+											<goal>schema</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<profiles>
@@ -243,5 +307,6 @@
 			hobbit-storm-projects/hobbit-storm-timeout-state
 		</module>
 		<module>hobbit-utils</module>
+		<module>hobbit-projects-avro</module>
 	</modules>
 </project>
