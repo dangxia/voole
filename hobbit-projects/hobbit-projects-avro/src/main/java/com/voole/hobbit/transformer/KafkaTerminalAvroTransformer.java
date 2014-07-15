@@ -180,7 +180,13 @@ public class KafkaTerminalAvroTransformer implements KafkaTransformer {
 		InputStream inputStream = KafkaTerminalAvroTransformer.class
 				.getClassLoader()
 				.getResourceAsStream("avro/" + topic + ".avro");
-		return new Parser().parse(inputStream);
+		try {
+			return new Parser().parse(inputStream);
+		} catch (Exception e) {
+		} finally {
+			inputStream.close();
+		}
+		return null;
 	}
 
 	public static void main(String[] args) throws TransformerException,

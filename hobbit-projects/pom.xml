@@ -169,50 +169,17 @@
 	</dependencyManagement>
 
 	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>2.3</version>
-				<configuration>
-					<dependencyReducedPomLocation>${basedir}/target/dependency-reduced-pom.xml</dependencyReducedPomLocation>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-<!-- 
-			<plugin>
-				<groupId>org.apache.avro</groupId>
-				<artifactId>avro-maven-plugin</artifactId>
-				<version>1.7.6</version>
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>schema</goal>
-						</goals>
-						<configuration>
-							<sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory>
-							<outputDirectory>${project.basedir}/src/main/java/</outputDirectory>
-							<testSourceDirectory>${project.basedir}/src/test/avro/</testSourceDirectory>
-							<includes>
-								<include>**/*.avro</include>
-								<include>**/*.json</include>
-							</includes>
-							<testIncludes>
-								<testInclude>**/*.test</testInclude>
-							</testIncludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin> -->
-		</plugins>
+		<!--<plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-shade-plugin</artifactId> 
+			<version>2.3</version> <configuration> <dependencyReducedPomLocation>${basedir}/target/dependency-reduced-pom.xml</dependencyReducedPomLocation> 
+			</configuration> <executions> <execution> <phase>package</phase> <goals> 
+			<goal>shade</goal> </goals> </execution> </executions> </plugin> <plugin> 
+			<groupId>org.apache.avro</groupId> <artifactId>avro-maven-plugin</artifactId> 
+			<version>1.7.6</version> <executions> <execution> <phase>generate-sources</phase> 
+			<goals> <goal>schema</goal> </goals> <configuration> <sourceDirectory>${project.basedir}/src/main/avro/</sourceDirectory> 
+			<outputDirectory>${project.basedir}/src/main/java/</outputDirectory> <testSourceDirectory>${project.basedir}/src/test/avro/</testSourceDirectory> 
+			<includes> <include>**/*.avro</include> <include>**/*.json</include> </includes> 
+			<testIncludes> <testInclude>**/*.test</testInclude> </testIncludes> </configuration> 
+			</execution> </executions> </plugin> </plugins> -->
 
 		<pluginManagement>
 			<plugins>
@@ -249,6 +216,31 @@
 	</build>
 
 	<profiles>
+
+		<profile>
+			<id>shade-deps</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-shade-plugin</artifactId>
+						<version>2.3</version>
+						<configuration>
+							<dependencyReducedPomLocation>${basedir}/target/dependency-reduced-pom.xml</dependencyReducedPomLocation>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>shade</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
 		<profile>
 			<id>cp-deps</id>
 			<build>
@@ -308,5 +300,7 @@
 		</module>
 		<module>hobbit-utils</module>
 		<module>hobbit-projects-avro</module>
+		<module>hobbit-camus-projects/hobbit-camus-api</module>
+		<module>hobbit-camus-projects/hobbit-camus-etl-kafka</module>
 	</modules>
 </project>
