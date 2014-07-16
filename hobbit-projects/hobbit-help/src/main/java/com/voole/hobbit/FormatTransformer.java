@@ -70,7 +70,10 @@ public class FormatTransformer {
 
 	public static Schema createArraySchema(Descriptor descriptor,
 			String packagee) {
-		return SchemaBuilder.array().items(createSchema(descriptor, packagee));
+		 return SchemaBuilder.unionOf().nullType().and().array()
+		 .items(createSchema(descriptor, packagee)).endUnion();
+		// return SchemaBuilder.array().items(createSchema(descriptor,
+		// packagee));
 	}
 
 	public static Schema createSchema(Descriptor descriptor, String packagee) {

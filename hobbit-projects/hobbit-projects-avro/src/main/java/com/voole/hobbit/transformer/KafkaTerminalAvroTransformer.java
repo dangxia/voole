@@ -49,10 +49,11 @@ public class KafkaTerminalAvroTransformer implements KafkaTransformer {
 		this.fields = new ArrayList<Field>();
 		int repeatIndex = 0;
 		for (Field field : fields) {
-			if (field.schema().getType() == Type.ARRAY) {
+			Schema arraySchema = getArraySchema(field.schema());
+			if (arraySchema != null) {
 				this.arrayIndex = repeatIndex;
 				this.arrayField = field;
-				this.arrayItemSchema = field.schema().getElementType();
+				this.arrayItemSchema = arraySchema.getElementType();
 				this.arrayItemFields = arrayItemSchema.getFields();
 				this.arrayCount = this.arrayItemFields.size();
 			} else {
@@ -130,6 +131,20 @@ public class KafkaTerminalAvroTransformer implements KafkaTransformer {
 		return AvroUtils.get(type, item);
 	}
 
+	public static Schema getArraySchema(Schema schema) {
+		if (schema.getType() == Type.UNION) {
+			List<Schema> schemas = schema.getTypes();
+			for (Schema itemSchema : schemas) {
+				if (itemSchema.getType() == Type.ARRAY) {
+					return itemSchema;
+				}
+			}
+		} else if (schema.getType() == Type.ARRAY) {
+			return schema;
+		}
+		return null;
+	}
+
 	public static Type getFieldType(Schema schema) {
 		Type type = null;
 		if (schema.getType() == Type.UNION) {
@@ -148,6 +163,10 @@ public class KafkaTerminalAvroTransformer implements KafkaTransformer {
 			type = schema.getType();
 		}
 		return type;
+	}
+
+	public Schema getSchema() {
+		return schema;
 	}
 
 	public static Record newRecord(Schema schema) {
@@ -187,6 +206,11 @@ public class KafkaTerminalAvroTransformer implements KafkaTransformer {
 			inputStream.close();
 		}
 		return null;
+	}
+
+	public static KafkaTerminalAvroTransformer createKafkaTransformer(
+			String topic) throws IOException {
+		return new KafkaTerminalAvroTransformer(getKafkaTopicSchema(topic));
 	}
 
 	public static void main(String[] args) throws TransformerException,
