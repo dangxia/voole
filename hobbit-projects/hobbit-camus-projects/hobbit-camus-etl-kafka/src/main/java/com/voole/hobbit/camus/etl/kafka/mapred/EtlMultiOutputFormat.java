@@ -49,7 +49,7 @@ public class EtlMultiOutputFormat extends FileOutputFormat<EtlKey, Object> {
 	public static final String ETL_RUN_TRACKING_POST = "etl.run.tracking.post";
 
 	public static final DateTimeFormatter FILE_DATE_FORMATTER = DateUtils
-			.getDateTimeFormatter("YYYYMMddHH");
+			.getDateTimeFormatter("YYYYMMdd");
 
 	private static EtlMultiOutputCommitter committer = null;
 	private static Map<String, Partitioner> partitionersByTopic = new HashMap<String, Partitioner>();
