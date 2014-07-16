@@ -33,35 +33,22 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.log4j.Logger;
 
 import com.voole.hobbit.camus.coders.CamusWrapper;
-import com.voole.hobbit.camus.coders.MessageDecoder;
 import com.voole.hobbit.camus.etl.kafka.CamusConfigs;
 import com.voole.hobbit.camus.etl.kafka.CamusJob;
-import com.voole.hobbit.camus.etl.kafka.coders.KafkaAvroMessageDecoder;
 import com.voole.hobbit.camus.etl.kafka.common.EtlKey;
 import com.voole.hobbit.camus.etl.kafka.common.EtlRequest;
 import com.voole.hobbit.camus.etl.kafka.common.KafkaMetaUtils;
 import com.voole.hobbit.camus.etl.kafka.common.LeaderInfo;
+import com.voole.hobbit.camus.etl.kafka.util.SequenceFileUtils;
 
 /**
  * Input format for a Kafka pull job.
  */
-public class EtlInputFormat extends InputFormat<EtlKey, CamusWrapper> {
-
-	public static final String KAFKA_CLIENT_BUFFER_SIZE = "kafka.client.buffer.size";
-	public static final String KAFKA_CLIENT_SO_TIMEOUT = "kafka.client.so.timeout";
-
-	public static final String KAFKA_MAX_PULL_HRS = "kafka.max.pull.hrs";
-	public static final String KAFKA_MAX_PULL_MINUTES_PER_TASK = "kafka.max.pull.minutes.per.task";
-	public static final String KAFKA_MAX_HISTORICAL_DAYS = "kafka.max.historical.days";
-
-	public static final String CAMUS_MESSAGE_DECODER_CLASS = "camus.message.decoder.class";
-	public static final String ETL_IGNORE_SCHEMA_ERRORS = "etl.ignore.schema.errors";
-	public static final String ETL_AUDIT_IGNORE_SERVICE_TOPIC_LIST = "etl.audit.ignore.service.topic.list";
-
+public class EtlInputFormat extends InputFormat<EtlKey, CamusWrapper<?>> {
 	private final Logger log = Logger.getLogger(getClass());
 
 	@Override
-	public RecordReader<EtlKey, CamusWrapper> createRecordReader(
+	public RecordReader<EtlKey, CamusWrapper<?>> createRecordReader(
 			InputSplit split, TaskAttemptContext context) throws IOException,
 			InterruptedException {
 		return new EtlRecordReader(split, context);
@@ -245,7 +232,7 @@ public class EtlInputFormat extends InputFormat<EtlKey, CamusWrapper> {
 		}
 
 		output = new Path(output, CamusConfigs.OFFSET_PREFIX + "-previous");
-		SequenceFile.Writer writer = SequenceFile.createWriter(fs,
+		SequenceFile.Writer writer = SequenceFileUtils.createWriter(fs,
 				context.getConfiguration(), output, EtlKey.class,
 				NullWritable.class);
 
@@ -266,7 +253,8 @@ public class EtlInputFormat extends InputFormat<EtlKey, CamusWrapper> {
 		}
 
 		output = new Path(output, CamusConfigs.REQUESTS_FILE);
-		SequenceFile.Writer writer = SequenceFile.createWriter(fs,
+
+		SequenceFile.Writer writer = SequenceFileUtils.createWriter(fs,
 				context.getConfiguration(), output, EtlRequest.class,
 				NullWritable.class);
 
@@ -283,7 +271,8 @@ public class EtlInputFormat extends InputFormat<EtlKey, CamusWrapper> {
 			FileSystem fs = input.getFileSystem(context.getConfiguration());
 			for (FileStatus f : fs.listStatus(input, new OffsetFileFilter())) {
 				log.info("previous offset file:" + f.getPath().toString());
-				SequenceFile.Reader reader = new SequenceFile.Reader(fs,
+
+				SequenceFile.Reader reader = SequenceFileUtils.createReader(fs,
 						f.getPath(), context.getConfiguration());
 				EtlKey key = new EtlKey();
 				while (reader.next(key, NullWritable.get())) {
@@ -305,78 +294,6 @@ public class EtlInputFormat extends InputFormat<EtlKey, CamusWrapper> {
 			}
 		}
 		return offsetKeysMap;
-	}
-
-	public static void setKafkaClientBufferSize(JobContext job, int val) {
-		job.getConfiguration().setInt(KAFKA_CLIENT_BUFFER_SIZE, val);
-	}
-
-	public static int getKafkaClientBufferSize(JobContext job) {
-		return job.getConfiguration().getInt(KAFKA_CLIENT_BUFFER_SIZE,
-				2 * 1024 * 1024);
-	}
-
-	public static void setKafkaClientTimeout(JobContext job, int val) {
-		job.getConfiguration().setInt(KAFKA_CLIENT_SO_TIMEOUT, val);
-	}
-
-	public static int getKafkaClientTimeout(JobContext job) {
-		return job.getConfiguration().getInt(KAFKA_CLIENT_SO_TIMEOUT, 60000);
-	}
-
-	public static void setKafkaMaxPullHrs(JobContext job, int val) {
-		job.getConfiguration().setInt(KAFKA_MAX_PULL_HRS, val);
-	}
-
-	public static int getKafkaMaxPullHrs(JobContext job) {
-		return job.getConfiguration().getInt(KAFKA_MAX_PULL_HRS, -1);
-	}
-
-	public static void setKafkaMaxPullMinutesPerTask(JobContext job, int val) {
-		job.getConfiguration().setInt(KAFKA_MAX_PULL_MINUTES_PER_TASK, val);
-	}
-
-	public static int getKafkaMaxPullMinutesPerTask(JobContext job) {
-		return job.getConfiguration().getInt(KAFKA_MAX_PULL_MINUTES_PER_TASK,
-				-1);
-	}
-
-	public static void setKafkaMaxHistoricalDays(JobContext job, int val) {
-		job.getConfiguration().setInt(KAFKA_MAX_HISTORICAL_DAYS, val);
-	}
-
-	public static int getKafkaMaxHistoricalDays(JobContext job) {
-		return job.getConfiguration().getInt(KAFKA_MAX_HISTORICAL_DAYS, -1);
-	}
-
-	public static void setEtlIgnoreSchemaErrors(JobContext job, boolean val) {
-		job.getConfiguration().setBoolean(ETL_IGNORE_SCHEMA_ERRORS, val);
-	}
-
-	public static boolean getEtlIgnoreSchemaErrors(JobContext job) {
-		return job.getConfiguration().getBoolean(ETL_IGNORE_SCHEMA_ERRORS,
-				false);
-	}
-
-	public static void setEtlAuditIgnoreServiceTopicList(JobContext job,
-			String topics) {
-		job.getConfiguration().set(ETL_AUDIT_IGNORE_SERVICE_TOPIC_LIST, topics);
-	}
-
-	public static String[] getEtlAuditIgnoreServiceTopicList(JobContext job) {
-		return job.getConfiguration().getStrings(
-				ETL_AUDIT_IGNORE_SERVICE_TOPIC_LIST, "");
-	}
-
-	public static void setMessageDecoderClass(JobContext job,
-			Class<MessageDecoder> cls) {
-		job.getConfiguration().setClass(CAMUS_MESSAGE_DECODER_CLASS, cls,
-				MessageDecoder.class);
-	}
-
-	public static Class<MessageDecoder> getMessageDecoderClass(JobContext job) {
-		return (Class<MessageDecoder>) job.getConfiguration().getClass(
-				CAMUS_MESSAGE_DECODER_CLASS, KafkaAvroMessageDecoder.class);
 	}
 
 	private class OffsetFileFilter implements PathFilter {

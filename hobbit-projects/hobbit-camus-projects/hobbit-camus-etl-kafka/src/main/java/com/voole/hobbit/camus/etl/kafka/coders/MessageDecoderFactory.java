@@ -1,32 +1,12 @@
 package com.voole.hobbit.camus.etl.kafka.coders;
 
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import org.apache.hadoop.mapreduce.JobContext;
 
 import com.voole.hobbit.camus.coders.MessageDecoder;
-import com.voole.hobbit.camus.coders.MessageDecoderException;
-import com.voole.hobbit.camus.etl.kafka.mapred.EtlInputFormat;
 
-public class MessageDecoderFactory {
-    
-    public static MessageDecoder<?,?> createMessageDecoder(JobContext context, String topicName){
-        MessageDecoder<?,?> decoder;
-        try {
-            decoder = (MessageDecoder<?,?>) EtlInputFormat.getMessageDecoderClass(context).newInstance();
-            
-            Properties props = new Properties();
-            for (Entry<String, String> entry : context.getConfiguration()){
-                props.put(entry.getKey(), entry.getValue());
-            }
-            
-            decoder.init(props, topicName);
-            
-            return decoder;
-        } catch (Exception e) {
-            throw new MessageDecoderException(e);
-        }    
-    }
+public interface MessageDecoderFactory {
+
+	public MessageDecoder<?, ?> createMessageDecoder(JobContext context,
+			String topicName);
 
 }

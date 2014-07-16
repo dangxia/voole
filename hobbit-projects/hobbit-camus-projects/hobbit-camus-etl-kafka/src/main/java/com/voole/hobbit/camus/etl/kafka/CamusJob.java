@@ -15,6 +15,14 @@ import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.mapred.JobClient;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapred.TIPStatus;
+import org.apache.hadoop.mapred.TaskCompletionEvent;
+import org.apache.hadoop.mapred.TaskReport;
+import org.apache.hadoop.mapreduce.Counter;
+import org.apache.hadoop.mapreduce.CounterGroup;
+import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -27,6 +35,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import com.voole.hobbit.camus.etl.kafka.common.DateUtils;
 import com.voole.hobbit.camus.etl.kafka.mapred.EtlInputFormat;
+import com.voole.hobbit.camus.etl.kafka.mapred.EtlMultiOutputFormat;
 
 /**
  * @author XuehuiHe
@@ -73,13 +82,63 @@ public class CamusJob extends Configured implements Tool {
 		log.info("New execution temp location: "
 				+ newExecutionOutput.toString());
 
+		// KafkaMetaUtils.getKafkaMetadata(job);
+
 		job.setInputFormatClass(EtlInputFormat.class);
-		// job.setOutputFormatClass(EtlMultiOutputFormat.class);
+		job.setOutputFormatClass(EtlMultiOutputFormat.class);
 		job.setNumReduceTasks(0);
 		//
 		stopTiming("pre-setup");
-		job.submit();
+		try {
+			job.submit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		job.waitForCompletion(true);
+		// dump all counters
+		Counters counters = job.getCounters();
+		for (String groupName : counters.getGroupNames()) {
+			CounterGroup group = counters.getGroup(groupName);
+			log.info("Group: " + group.getDisplayName());
+			for (Counter counter : group) {
+				log.info(counter.getDisplayName() + ":\t" + counter.getValue());
+			}
+		}
+
+		stopTiming("hadoop");
+		startTiming("commit");
+
+		// Send Tracking counts to Kafka
+		// sendTrackingCounts(job, fs, newExecutionOutput);
+
+		// Print any potentail errors encountered
+		// printErrors(fs, newExecutionOutput);
+
+		fs.rename(newExecutionOutput, execHistory);
+
+		log.info("Job finished");
+		stopTiming("commit");
+		stopTiming("total");
+		// createReport(job, timingMap);
+
+		if (!job.isSuccessful()) {
+			JobClient client = new JobClient(
+					new JobConf(job.getConfiguration()));
+
+			TaskCompletionEvent[] tasks = job.getTaskCompletionEvents(0);
+
+			for (TaskReport task : client.getMapTaskReports(tasks[0]
+					.getTaskAttemptId().getJobID())) {
+				if (task.getCurrentStatus().equals(TIPStatus.FAILED)) {
+					for (String s : task.getDiagnostics()) {
+						System.err.println("task error: " + s);
+					}
+				}
+			}
+			throw new RuntimeException("hadoop job failed");
+		}
+
 		return 0;
 	}
 

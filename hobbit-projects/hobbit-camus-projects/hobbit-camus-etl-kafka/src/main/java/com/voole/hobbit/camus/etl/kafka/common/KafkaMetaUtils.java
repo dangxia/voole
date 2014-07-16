@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 
 import com.voole.hobbit.camus.etl.kafka.CamusConfigs;
 import com.voole.hobbit.camus.etl.kafka.CamusJob;
-import com.voole.hobbit.camus.etl.kafka.coders.MessageDecoderFactory;
 
 /**
  * @author XuehuiHe
@@ -192,7 +191,8 @@ public class KafkaMetaUtils {
 
 	private static boolean createMessageDecoder(JobContext context, String topic) {
 		try {
-			MessageDecoderFactory.createMessageDecoder(context, topic);
+			CamusConfigs.getMessageDecoderFactoryClass(context).newInstance()
+					.createMessageDecoder(context, topic);
 			return true;
 		} catch (Exception e) {
 			return false;
