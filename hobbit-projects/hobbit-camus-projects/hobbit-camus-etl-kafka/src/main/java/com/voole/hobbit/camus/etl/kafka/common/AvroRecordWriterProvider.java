@@ -2,9 +2,9 @@ package com.voole.hobbit.camus.etl.kafka.common;
 
 import java.io.IOException;
 
-import org.apache.avro.UnresolvedUnionException;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
+import org.apache.avro.file.DataFileWriter.AppendWriteException;
 import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificDatumWriter;
@@ -66,7 +66,7 @@ public class AvroRecordWriterProvider implements RecordWriterProvider {
 					throws IOException {
 				try {
 					writer.append(data.getRecord());
-				} catch (UnresolvedUnionException e) {
+				} catch (AppendWriteException e) {
 					Record r = (Record) data.getRecord();
 					log.error("record name :" + r.getSchema().getName()
 							+ "\t,record data:" + e.toString(), e);
