@@ -82,6 +82,8 @@ public class CamusConfigs {
 
 	public static final String JOB_EXCUTION_STAMP = "job.excution.stamp";
 
+	public static final String MAPRED_MAP_TASKS = "mapreduce.job.maps";
+
 	public static String getJobName(JobContext job) {
 		return job.getConfiguration().get(CAMUS_JOB_NAME, "Camus Job");
 	}
@@ -269,5 +271,9 @@ public class CamusConfigs {
 	public static long getJobExcutionStamp(JobContext job) {
 		return job.getConfiguration().getLong(JOB_EXCUTION_STAMP,
 				System.currentTimeMillis());
+	}
+
+	public static int getMapredMapTasks(JobContext job) {
+		return job.getConfiguration().getInt(MAPRED_MAP_TASKS, 30);
 	}
 }
