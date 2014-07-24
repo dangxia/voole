@@ -99,7 +99,8 @@ public class KafkaTerminalAvroTransformer implements KafkaTransformer {
 		Record record = newRecord();
 		for (int i = 0; i < items.length; i++) {
 			String item = items[i];
-			record.put(i, getFieldValue(fields.get(i), item));
+			Field f = fields.get(i);
+			record.put(f.pos(), getFieldValue(f, item));
 		}
 
 		if (repeatedData != null) {
@@ -216,8 +217,9 @@ public class KafkaTerminalAvroTransformer implements KafkaTransformer {
 	public static void main(String[] args) throws TransformerException,
 			IOException {
 		String str = "13925774514353362612	1401781295	365829	1401874072	40	43636	1	873897440	810488	0	10	703741367	1	1044	68605	32842	173	125377	228250	43016	16	737295799	1	1040	65050	0	0	107562	200351	32420	14	4205515121	1	971	63480	12212	69	93053	176642	38418	8	770850231	1	1046	69887	16421	96	77893	169529	56359	13	1515138363	1	167	129469	82105	1199	64921	93694	93532	25	703741367	1	0	0	0	0	0	0	0	34	737295799	1	0	0	0	0	0	0	0	38	770850231	1	0	0	0	0	0	0	0	46	4205515121	1	0	0	0	0	0	0	0	48	1515138363	1	0	0	0	0	0	0	0	49	1617807";
+		str = "145	0	30	1305905550	BC83A71935BE00000000000000000000	1000	1694542016	8546749285776193522	0	0	FF2D905B74EE3A7A5C8CBC352BC3FC20	1363914803	7	992688	220	vosp://cdn.voole.com:3528/play?fid=ff2d905b74ee3a7a5c8cbc352bc3fc20&keyid=0&stamp=1406184247&is3d=0&fm=7&tvid=BC83A71935BE&bit=1300&auth=6caba6f89099539475e09a81e9696066&ext=oid:433,eid:100105,code:ASTBOX_movie_index&s=1	1406184279	0	2874777552";
 		KafkaTerminalAvroTransformer transformer = new KafkaTerminalAvroTransformer(
-				getKafkaTopicSchema("t_playalive_v3"));
+				getKafkaTopicSchema("t_playbgn_v2"));
 		Record r = transformer.transform(str.getBytes());
 		System.out.println(r);
 	}

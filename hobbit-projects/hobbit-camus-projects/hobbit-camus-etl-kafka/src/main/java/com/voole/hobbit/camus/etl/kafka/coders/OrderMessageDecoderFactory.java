@@ -4,7 +4,6 @@
 package com.voole.hobbit.camus.etl.kafka.coders;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,10 +62,7 @@ public class OrderMessageDecoderFactory implements MessageDecoderFactory {
 			try {
 				Record record = transformer.transform(message);
 				wrapper = new CamusWrapper<Record>(record, getStamp(record));
-				wrapper.setStr(new String(message, "UTF-8"));
 			} catch (TransformerException e) {
-				throw new MessageDecoderException(e);
-			} catch (UnsupportedEncodingException e) {
 				throw new MessageDecoderException(e);
 			}
 			return wrapper;

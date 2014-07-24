@@ -15,7 +15,6 @@ public class CamusWrapper<R> {
 	private R record;
 	private long timestamp;
 	private MapWritable partitionMap;
-	private String str;
 
 	public CamusWrapper(R record) {
 		this(record, System.currentTimeMillis());
@@ -72,14 +71,6 @@ public class CamusWrapper<R> {
 	 */
 	public MapWritable getPartitionMap() {
 		return partitionMap;
-	}
-
-	public String getStr() {
-		return str;
-	}
-
-	public void setStr(String str) {
-		this.str = str;
 	}
 
 }

@@ -20,7 +20,6 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.log4j.Logger;
 
 import com.voole.hobbit.camus.etl.kafka.CamusConfigs;
-import com.voole.hobbit.camus.etl.kafka.CamusJob;
 
 /**
  * Poorly named class that handles kafka pull events within each

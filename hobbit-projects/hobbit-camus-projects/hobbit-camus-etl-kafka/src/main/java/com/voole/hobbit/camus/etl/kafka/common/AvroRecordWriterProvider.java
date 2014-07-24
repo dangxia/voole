@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileWriter;
-import org.apache.avro.file.DataFileWriter.AppendWriteException;
-import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.hadoop.fs.Path;
@@ -64,15 +62,7 @@ public class AvroRecordWriterProvider implements RecordWriterProvider {
 			@Override
 			public void write(IEtlKey ignore, CamusWrapper<?> data)
 					throws IOException {
-				try {
-					writer.append(data.getRecord());
-				} catch (AppendWriteException e) {
-					Record r = (Record) data.getRecord();
-					log.error("record name :" + r.getSchema().getName()
-							+ "\t,record data:" + r.toString() + "\t,str:"
-							+ data.getStr(), e);
-				}
-
+				writer.append(data.getRecord());
 			}
 
 			@Override
