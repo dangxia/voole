@@ -82,7 +82,7 @@ public class FormatTransformer {
 		FieldAssembler<Schema> fa = rb.fields();
 		for (FieldDescriptor fieldDescriptor : descriptor.getFields()) {
 			if (fieldDescriptor.getJavaType() == JavaType.MESSAGE) {
-				fa.name("srvs")
+				fa.name("_srvs")
 						.type(createArraySchema(
 								fieldDescriptor.getMessageType(), packagee))
 						.noDefault();

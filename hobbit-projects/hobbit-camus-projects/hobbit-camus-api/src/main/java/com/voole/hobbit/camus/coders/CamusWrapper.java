@@ -15,6 +15,7 @@ public class CamusWrapper<R> {
 	private R record;
 	private long timestamp;
 	private MapWritable partitionMap;
+	private String str;
 
 	public CamusWrapper(R record) {
 		this(record, System.currentTimeMillis());
@@ -24,8 +25,7 @@ public class CamusWrapper<R> {
 		this(record, timestamp, "unknown_server", "unknown_service");
 	}
 
-	public CamusWrapper(R record, long timestamp, String server,
-			String service) {
+	public CamusWrapper(R record, long timestamp, String server, String service) {
 		this.record = record;
 		this.timestamp = timestamp;
 		this.partitionMap = new MapWritable();
@@ -72,6 +72,14 @@ public class CamusWrapper<R> {
 	 */
 	public MapWritable getPartitionMap() {
 		return partitionMap;
+	}
+
+	public String getStr() {
+		return str;
+	}
+
+	public void setStr(String str) {
+		this.str = str;
 	}
 
 }

@@ -69,7 +69,8 @@ public class AvroRecordWriterProvider implements RecordWriterProvider {
 				} catch (AppendWriteException e) {
 					Record r = (Record) data.getRecord();
 					log.error("record name :" + r.getSchema().getName()
-							+ "\t,record data:" + r.toString(), e);
+							+ "\t,record data:" + r.toString() + "\t,str:"
+							+ data.getStr(), e);
 				}
 
 			}
