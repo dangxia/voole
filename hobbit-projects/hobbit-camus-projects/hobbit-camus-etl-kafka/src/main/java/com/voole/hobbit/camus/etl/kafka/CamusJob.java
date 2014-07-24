@@ -203,6 +203,8 @@ public class CamusJob extends Configured implements Tool {
 		for (Object key : props.keySet()) {
 			conf.set(key.toString(), props.getProperty(key.toString()));
 		}
+		conf.setLong(CamusConfigs.JOB_EXCUTION_STAMP,
+				System.currentTimeMillis());
 		return true;
 	}
 

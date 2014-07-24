@@ -345,7 +345,8 @@ public class EtlMultiOutputFormat extends FileOutputFormat<EtlKey, Object> {
 							Integer.parseInt(partition), encodedPartition);
 
 			return partitionedPath + "/" + topic + "." + leaderId + "."
-					+ partition + "." + count + "." + offset
+					+ partition + "." + count + "." + offset + "."
+					+ CamusConfigs.getJobExcutionStamp(context)
 					+ recordWriterProvider.getFilenameExtension();
 		}
 	}

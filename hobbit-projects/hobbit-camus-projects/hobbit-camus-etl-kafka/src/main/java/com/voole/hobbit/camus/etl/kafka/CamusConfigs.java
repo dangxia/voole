@@ -80,6 +80,8 @@ public class CamusConfigs {
 
 	public static final String REQUESTS_FILE = "requests.previous";
 
+	public static final String JOB_EXCUTION_STAMP = "job.excution.stamp";
+
 	public static String getJobName(JobContext job) {
 		return job.getConfiguration().get(CAMUS_JOB_NAME, "Camus Job");
 	}
@@ -262,5 +264,10 @@ public class CamusConfigs {
 	public static int getMonitorTimeGranularityMins(JobContext job) {
 		return job.getConfiguration().getInt(KAFKA_MONITOR_TIME_GRANULARITY_MS,
 				10);
+	}
+
+	public static long getJobExcutionStamp(JobContext job) {
+		return job.getConfiguration().getLong(JOB_EXCUTION_STAMP,
+				System.currentTimeMillis());
 	}
 }
