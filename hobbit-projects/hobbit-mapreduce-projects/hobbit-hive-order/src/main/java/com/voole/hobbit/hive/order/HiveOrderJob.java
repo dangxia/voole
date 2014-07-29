@@ -42,7 +42,7 @@ public class HiveOrderJob extends Configured implements Tool {
 	private static org.apache.log4j.Logger log = Logger
 			.getLogger(HiveOrderJob.class);
 	private static SimpleDateFormat df = new SimpleDateFormat(
-			"YYYY-MM-dd-HH-mm-ss");
+			"yyyy-MM-dd-HH-mm-ss");
 
 	@Override
 	public int run(String[] args) throws Exception {
