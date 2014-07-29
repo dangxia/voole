@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import org.apache.avro.generic.GenericData.Record;
 import org.apache.avro.mapred.AvroKey;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -16,8 +17,8 @@ import org.apache.hadoop.mapreduce.Reducer;
  * @date 2014年7月29日
  */
 public class HiveOrderInputReducer extends
-		Reducer<Text, AvroKey<Record>, NullWritable, Text> {
-	private NullWritable _null = NullWritable.get();
+		Reducer<Text, AvroKey<Record>, LongWritable, Text> {
+	private LongWritable _null = new LongWritable(0);
 	private Text count = new Text();
 
 	@Override

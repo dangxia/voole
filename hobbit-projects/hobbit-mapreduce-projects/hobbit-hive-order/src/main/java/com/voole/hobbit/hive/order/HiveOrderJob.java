@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import org.apache.avro.mapred.AvroKey;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -16,6 +17,8 @@ import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.TIPStatus;
@@ -27,6 +30,7 @@ import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
@@ -74,10 +78,16 @@ public class HiveOrderJob extends Configured implements Tool {
 				new Path(HiveOrderConfigs.getCamusDestinationPath(job)));
 
 		job.setInputFormatClass(HiveOrderRecordInputFormat.class);
+
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(AvroKey.class);
 		job.setMapperClass(HiveOrderInputMapper.class);
+
 		job.setReducerClass(HiveOrderInputReducer.class);
-		job.setOutputFormatClass(FileOutputFormat.class);
-		// job.setOutputFormatClass(EtlMultiOutputFormat.class);
+		job.setOutputKeyClass(LongWritable.class);
+		job.setOutputValueClass(Text.class);
+
+		job.setOutputFormatClass(TextOutputFormat.class);
 
 		try {
 			job.submit();

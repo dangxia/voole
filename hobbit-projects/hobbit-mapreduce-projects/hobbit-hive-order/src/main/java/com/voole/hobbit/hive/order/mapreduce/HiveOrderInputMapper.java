@@ -22,8 +22,13 @@ public class HiveOrderInputMapper extends
 	@Override
 	protected void map(AvroKey<Record> key, NullWritable value, Context context)
 			throws IOException, InterruptedException {
-		sessionId.set((String) key.datum().get("sessID"));
-		context.write(sessionId, key);
+		try {
+			sessionId.set((String) key.datum().get("sessID"));
+			context.write(sessionId, key);
+		} catch (IOException e) {
+			throw e;
+		}
+
 	}
 
 }
