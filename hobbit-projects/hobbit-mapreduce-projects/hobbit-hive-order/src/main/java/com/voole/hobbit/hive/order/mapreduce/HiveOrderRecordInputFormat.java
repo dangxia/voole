@@ -4,12 +4,16 @@
 package com.voole.hobbit.hive.order.mapreduce;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapreduce.AvroKeyRecordReader;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -39,5 +43,23 @@ public class HiveOrderRecordInputFormat<T> extends
 			LOG.info("Using a reader schema equal to the writer schema.");
 		}
 		return new AvroKeyRecordReader<T>(readerSchema);
+	}
+
+	protected List<FileStatus> listStatus(JobContext job) throws IOException {
+		HiveOrderInputFileFilter fileFilter = new HiveOrderInputFileFilter(job);
+		List<FileStatus> result = new ArrayList<FileStatus>();
+		List<FileStatus> list = super.listStatus(job);
+		for (FileStatus fileStatus : list) {
+			if (fileFilter.accept(fileStatus.getPath())) {
+				// TODO
+				System.out.println(fileStatus.getPath().toUri().getPath());
+				result.add(fileStatus);
+			}
+		}
+		if (result.size() == 0) {
+			throw new IOException("No input paths specified in job");
+		}
+		return result;
+
 	}
 }

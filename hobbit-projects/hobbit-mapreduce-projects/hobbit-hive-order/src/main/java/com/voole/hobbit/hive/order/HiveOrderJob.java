@@ -31,7 +31,6 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-import com.voole.hobbit.hive.order.mapreduce.HiveOrderInputPathFilter;
 import com.voole.hobbit.hive.order.mapreduce.HiveOrderRecordInputFormat;
 
 /**
@@ -49,7 +48,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		if (!processArgs(args)) {
 			return 1;
 		}
-		// System.setProperty("HADOOP_USER_NAME", "root");
+		System.setProperty("HADOOP_USER_NAME", "root");
 		Job job = Job.getInstance(getConf());
 		job.setJarByClass(HiveOrderJob.class);
 		job.setJobName(HiveOrderConfigs.getHiveOrderJobName(job));
@@ -68,11 +67,9 @@ public class HiveOrderJob extends Configured implements Tool {
 		log.info("New execution temp location: "
 				+ newExecutionOutput.toString());
 
-		FileInputFormat.setInputPaths(job,
-				HiveOrderConfigs.getCamusDestinationPath(job));
-		// FileInputFormat.addInputPath(job,
-		// new Path(HiveOrderConfigs.getCamusDestinationPath(job)));
-		FileInputFormat.setInputPathFilter(job, HiveOrderInputPathFilter.class);
+		FileInputFormat.setInputDirRecursive(job, true);
+		FileInputFormat.addInputPath(job,
+				new Path(HiveOrderConfigs.getCamusDestinationPath(job)));
 
 		job.setInputFormatClass(HiveOrderRecordInputFormat.class);
 		// job.setOutputFormatClass(EtlMultiOutputFormat.class);

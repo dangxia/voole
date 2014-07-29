@@ -30,7 +30,10 @@ public class HiveOrderInputSplitSchemaManager implements
 		if (path.startsWith("/")) {
 			path = path.substring(1);
 		}
-		String topic = path.substring(0, path.indexOf("/"));
+		String topic = path;
+		if (path.indexOf("/") != -1) {
+			topic = path.substring(0, path.indexOf("/"));
+		}
 		return KafkaTerminalAvroTransformer.getKafkaTopicSchema(topic);
 	}
 
