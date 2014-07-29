@@ -18,7 +18,7 @@ public class HiveOrderInputFileFilter {
 	private final Pattern p = Pattern.compile("(\\d+)\\.\\w+$");
 
 	public HiveOrderInputFileFilter(JobContext job) {
-		lastStamp = 1406617057642l;
+		lastStamp = 1406617057641l;
 	}
 
 	public boolean accept(Path path) {
