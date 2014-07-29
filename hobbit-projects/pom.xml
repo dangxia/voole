@@ -308,5 +308,8 @@
 		<module>hobbit-projects-avro</module>
 		<module>hobbit-camus-projects/hobbit-camus-api</module>
 		<module>hobbit-camus-projects/hobbit-camus-etl-kafka</module>
+		<module>
+			hobbit-mapreduce-projects/hobbit-order-record-mapreduce
+		</module>
 	</modules>
 </project>
