@@ -31,6 +31,8 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
+import com.voole.hobbit.hive.order.mapreduce.HiveOrderInputMapper;
+import com.voole.hobbit.hive.order.mapreduce.HiveOrderInputReducer;
 import com.voole.hobbit.hive.order.mapreduce.HiveOrderRecordInputFormat;
 
 /**
@@ -72,9 +74,11 @@ public class HiveOrderJob extends Configured implements Tool {
 				new Path(HiveOrderConfigs.getCamusDestinationPath(job)));
 
 		job.setInputFormatClass(HiveOrderRecordInputFormat.class);
+		job.setMapperClass(HiveOrderInputMapper.class);
+		job.setReducerClass(HiveOrderInputReducer.class);
+		job.setOutputFormatClass(FileOutputFormat.class);
 		// job.setOutputFormatClass(EtlMultiOutputFormat.class);
 
-		job.setNumReduceTasks(0);
 		try {
 			job.submit();
 		} catch (Exception e) {

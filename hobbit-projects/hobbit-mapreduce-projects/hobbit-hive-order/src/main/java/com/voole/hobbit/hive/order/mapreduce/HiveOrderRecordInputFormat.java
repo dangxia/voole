@@ -51,8 +51,6 @@ public class HiveOrderRecordInputFormat<T> extends
 		List<FileStatus> list = super.listStatus(job);
 		for (FileStatus fileStatus : list) {
 			if (fileFilter.accept(fileStatus.getPath())) {
-				// TODO
-				System.out.println(fileStatus.getPath().toUri().getPath());
 				result.add(fileStatus);
 			}
 		}

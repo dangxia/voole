@@ -23,6 +23,9 @@ public class HiveOrderInputFileFilter {
 
 	public boolean accept(Path path) {
 		String url = path.toUri().getPath();
+		if (!url.endsWith("avro")) {
+			return false;
+		}
 		Matcher m = p.matcher(url);
 		if (m.find()) {
 			long stamp = Long.parseLong(m.group(1));
