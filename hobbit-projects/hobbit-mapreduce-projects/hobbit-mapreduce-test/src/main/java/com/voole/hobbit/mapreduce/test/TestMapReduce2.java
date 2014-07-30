@@ -88,22 +88,22 @@ public class TestMapReduce2 extends Configured implements Tool {
 		FileOutputFormat.setOutputPath(job,
 				new Path("/tmp/hexh/" + df.format(new Date())));
 
-		List<Schema> schemas = new ArrayList<Schema>();
-		schemas.add(OrderPlayBgnReqV2.getClassSchema());
-		schemas.add(OrderPlayEndReqV2.getClassSchema());
-		Schema union = Schema.createUnion(schemas);
-
+//		List<Schema> schemas = new ArrayList<Schema>();
+//		schemas.add(OrderPlayBgnReqV2.getClassSchema());
+//		schemas.add(OrderPlayEndReqV2.getClassSchema());
+//		Schema union = Schema.createUnion(schemas);
+//
 		AvroJob.setInputKeySchema(job, OrderPlayBgnReqV2.getClassSchema());
-		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(NullWritable.class);
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(NullWritable.class);
-
-		job.setMapperClass(TestMapper2.class);
-		job.setReducerClass(TestReducer2.class);
-
-		job.setInputFormatClass(AvroKeyInputFormat.class);
-		job.setOutputFormatClass(TextOutputFormat.class);
+//		job.setMapOutputKeyClass(Text.class);
+//		job.setMapOutputValueClass(NullWritable.class);
+//		job.setOutputKeyClass(Text.class);
+//		job.setOutputValueClass(NullWritable.class);
+//
+//		job.setMapperClass(TestMapper2.class);
+//		job.setReducerClass(TestReducer2.class);
+//
+//		job.setInputFormatClass(AvroKeyInputFormat.class);
+//		job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(0);
 
 		job.submit();
