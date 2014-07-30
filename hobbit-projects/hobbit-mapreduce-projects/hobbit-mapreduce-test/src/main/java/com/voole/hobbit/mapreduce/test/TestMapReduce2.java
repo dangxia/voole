@@ -38,40 +38,42 @@ public class TestMapReduce2 extends Configured implements Tool {
 
 	public static class TestMapper2
 			extends
-			Mapper<AvroKey<SpecificRecordBase>, NullWritable, Text, AvroValue<Long>> {
-		private Text sessId = new Text();
-		private AvroValue<Long> v = new AvroValue<Long>();
+			Mapper<AvroKey<SpecificRecordBase>, NullWritable, AvroKey<CharSequence>, AvroValue<SpecificRecordBase>> {
+		private AvroValue<SpecificRecordBase> v = new AvroValue<SpecificRecordBase>();
+		private AvroKey<CharSequence> k = new AvroKey<CharSequence>();
 
 		@Override
 		protected void map(AvroKey<SpecificRecordBase> key, NullWritable value,
 				Context context) throws IOException, InterruptedException {
-			sessId.set((String) key.datum().get("sessID"));
-			v.datum(1l);
-			context.write(sessId, v);
+			k.datum((CharSequence) key.datum().get("sessID"));
+			v.datum(key.datum());
+			context.write(k, v);
 		}
 	}
 
-	public static class TestReducer2 extends
-			Reducer<Text, AvroValue<Long>, Text, NullWritable> {
+	public static class TestReducer2
+			extends
+			Reducer<AvroKey<CharSequence>, AvroValue<SpecificRecordBase>, Text, NullWritable> {
 		private Text write = new Text();
 
 		@Override
-		protected void reduce(Text key, Iterable<AvroValue<Long>> iterable,
+		protected void reduce(AvroKey<CharSequence> key,
+				Iterable<AvroValue<SpecificRecordBase>> iterable,
 				Context context) throws IOException, InterruptedException {
 
-			// long bgn = 0l;
-			// long end = 0l;
-			// for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-			// logger.info("record type:"
-			// + avroValue.datum().getClass().getName());
-			// if (avroValue.datum() instanceof OrderPlayBgnReqV2) {
-			// bgn++;
-			// } else {
-			// end++;
-			// }
-			// }
-			// write.set(key.toString() + "_" + bgn + "_" + end);
-			// context.write(write, NullWritable.get());
+			long bgn = 0l;
+			long end = 0l;
+			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+				logger.info("record type:"
+						+ avroValue.datum().getClass().getName());
+				if (avroValue.datum() instanceof OrderPlayBgnReqV2) {
+					bgn++;
+				} else {
+					end++;
+				}
+			}
+			write.set(key.datum() + "_" + bgn + "_" + end);
+			context.write(write, NullWritable.get());
 
 		}
 	}
@@ -91,27 +93,30 @@ public class TestMapReduce2 extends Configured implements Tool {
 
 		job.setMapOutputKeyClass(Text.class);
 
-		AvroJob.setMapOutputValueSchema(job, Schema.create(Type.LONG));
-		// AvroJob.setMapOutputValueSchema(
-		// job,
-		// SchemaBuilder.unionOf()
-		// .type(OrderPlayBgnReqV2.getClassSchema()).and()
-		// .type(OrderPlayEndReqV2.getClassSchema()).endUnion());
+		AvroJob.setInputKeySchema(
+				job,
+				SchemaBuilder.unionOf()
+						.type(OrderPlayBgnReqV2.getClassSchema()).and()
+						.type(OrderPlayEndReqV2.getClassSchema()).endUnion());
+		AvroJob.setInputValueSchema(job, Schema.create(Type.NULL));
+
+		AvroJob.setMapOutputKeySchema(job, Schema.create(Type.STRING));
+		// AvroJob.setMapOutputValueSchema(job, Schema.create(Type.LONG));
+		AvroJob.setMapOutputValueSchema(
+				job,
+				SchemaBuilder.unionOf()
+						.type(OrderPlayBgnReqV2.getClassSchema()).and()
+						.type(OrderPlayEndReqV2.getClassSchema()).endUnion());
 
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(NullWritable.class);
+
 		job.setMapperClass(TestMapper2.class);
 		job.setReducerClass(TestReducer2.class);
 
 		job.setInputFormatClass(AvroKeyInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(0);
-
-		AvroJob.setInputKeySchema(
-				job,
-				SchemaBuilder.unionOf()
-						.type(OrderPlayBgnReqV2.getClassSchema()).and()
-						.type(OrderPlayEndReqV2.getClassSchema()).endUnion());
 
 		job.submit();
 		job.waitForCompletion(true);
