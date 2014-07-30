@@ -4,16 +4,25 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.mapreduce.AvroJob;
+import org.apache.avro.mapreduce.AvroKeyInputFormat;
 import org.apache.avro.mapreduce.AvroKeyOutputFormat;
+import org.apache.avro.mapreduce.AvroKeyRecordReader;
 import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.hadoop.classification.InterfaceAudience;
+import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
@@ -103,8 +112,8 @@ public class TestMapReduce2 extends Configured implements Tool {
 		//
 
 		// job.setInputFormatClass(TextInputFormat.class);
-		job.setInputFormatClass(org.apache.avro.mapreduce.AvroKeyInputFormat.class);
-		job.setOutputFormatClass(AvroKeyOutputFormat.class);
+		job.setInputFormatClass(AvroKeyInputFormat.class);
+		// job.setOutputFormatClass(AvroKeyOutputFormat.class);
 		// job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(0);
 
@@ -116,6 +125,28 @@ public class TestMapReduce2 extends Configured implements Tool {
 	public static void main(String[] args) throws Exception {
 		System.setProperty("HADOOP_USER_NAME", "root");
 		ToolRunner.run(new TestMapReduce2(), args);
+	}
+
+	@InterfaceAudience.Public
+	@InterfaceStability.Stable
+	public static class AvroKeyInputFormat<T> extends
+			FileInputFormat<AvroKey<T>, NullWritable> {
+		private static final Logger LOG = LoggerFactory
+				.getLogger(AvroKeyInputFormat.class);
+
+		/** {@inheritDoc} */
+		@Override
+		public RecordReader<AvroKey<T>, NullWritable> createRecordReader(
+				InputSplit split, TaskAttemptContext context)
+				throws IOException, InterruptedException {
+			Schema readerSchema = AvroJob.getInputKeySchema(context
+					.getConfiguration());
+			if (null == readerSchema) {
+				LOG.warn("Reader schema was not set. Use AvroJob.setInputKeySchema() if desired.");
+				LOG.info("Using a reader schema equal to the writer schema.");
+			}
+			return new AvroKeyRecordReader<T>(readerSchema);
+		}
 	}
 
 }
