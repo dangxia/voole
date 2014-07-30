@@ -145,6 +145,7 @@ public class TestMapReduce2 extends Configured implements Tool {
 				LOG.warn("Reader schema was not set. Use AvroJob.setInputKeySchema() if desired.");
 				LOG.info("Using a reader schema equal to the writer schema.");
 			}
+			LOG.info(AvroKeyRecordReader.class.getProtectionDomain().toString());
 			return new AvroKeyRecordReader<T>(readerSchema);
 		}
 	}
