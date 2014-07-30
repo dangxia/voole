@@ -21,11 +21,6 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.JobClient;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.TIPStatus;
-import org.apache.hadoop.mapred.TaskCompletionEvent;
-import org.apache.hadoop.mapred.TaskReport;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.CounterGroup;
 import org.apache.hadoop.mapreduce.Counters;
@@ -115,22 +110,22 @@ public class HiveOrderJob extends Configured implements Tool {
 
 		log.info("Job finished");
 
-		if (!job.isSuccessful()) {
-			JobClient client = new JobClient(
-					new JobConf(job.getConfiguration()));
-
-			TaskCompletionEvent[] tasks = job.getTaskCompletionEvents(0);
-
-			for (TaskReport task : client.getMapTaskReports(tasks[0]
-					.getTaskAttemptId().getJobID())) {
-				if (task.getCurrentStatus().equals(TIPStatus.FAILED)) {
-					for (String s : task.getDiagnostics()) {
-						System.err.println("task error: " + s);
-					}
-				}
-			}
-			throw new RuntimeException("hadoop job failed");
-		}
+		// if (!job.isSuccessful()) {
+		// JobClient client = new JobClient(
+		// new JobConf(job.getConfiguration()));
+		//
+		// TaskCompletionEvent[] tasks = job.getTaskCompletionEvents(0);
+		//
+		// for (TaskReport task : client.getMapTaskReports(tasks[0]
+		// .getTaskAttemptId().getJobID())) {
+		// if (task.getCurrentStatus().equals(TIPStatus.FAILED)) {
+		// for (String s : task.getDiagnostics()) {
+		// System.err.println("task error: " + s);
+		// }
+		// }
+		// }
+		// throw new RuntimeException("hadoop job failed");
+		// }
 
 		return 0;
 	}
