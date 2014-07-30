@@ -5,8 +5,6 @@ package com.voole.hobbit.hive.order;
 
 import java.util.Properties;
 
-import org.apache.avro.mapreduce.AvroJob;
-import org.apache.avro.mapreduce.AvroKeyOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -17,7 +15,6 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import com.voole.hobbit.hive.order.mapreduce.HiveOrderRecordInputFormat;
-import com.voole.hobbit.transformer.KafkaTerminalAvroTransformer;
 
 /**
  * @author XuehuiHe
@@ -27,7 +24,7 @@ public class MapReduceColorCount extends Configured implements Tool {
 
 	@Override
 	public int run(String[] args) throws Exception {
-		System.setProperty("HADOOP_USER_NAME", "root");
+//		System.setProperty("HADOOP_USER_NAME", "root");
 		Job job = Job.getInstance(getConf());
 
 		Properties props = new Properties();
@@ -51,7 +48,7 @@ public class MapReduceColorCount extends Configured implements Tool {
 
 		FileOutputFormat
 				.setOutputPath(job, new Path("/tmp/test_order_record3"));
-//		job.setOutputFormatClass(AvroKeyOutputFormat.class);
+		// job.setOutputFormatClass(AvroKeyOutputFormat.class);
 		// AvroJob.setOutputKeySchema(job, KafkaTerminalAvroTransformer
 		// .getKafkaTopicSchema("t_playalive_v2"));
 		// AvroJob.setOutputValueSchema(job, KafkaTerminalAvroTransformer
