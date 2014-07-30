@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.mapreduce.AvroKeyOutputFormat;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -90,6 +91,8 @@ public class TestMapReduce2 extends Configured implements Tool {
 		//
 		org.apache.avro.mapreduce.AvroJob.setInputKeySchema(job,
 				OrderPlayBgnReqV2.getClassSchema());
+		org.apache.avro.mapreduce.AvroJob.setOutputKeySchema(job,
+				OrderPlayBgnReqV2.getClassSchema());
 		// job.setMapOutputKeyClass(Text.class);
 		// job.setMapOutputValueClass(NullWritable.class);
 		// job.setOutputKeyClass(Text.class);
@@ -99,8 +102,9 @@ public class TestMapReduce2 extends Configured implements Tool {
 		// job.setReducerClass(TestReducer2.class);
 		//
 
-//		job.setInputFormatClass(TextInputFormat.class);
+		// job.setInputFormatClass(TextInputFormat.class);
 		job.setInputFormatClass(org.apache.avro.mapreduce.AvroKeyInputFormat.class);
+		job.setOutputFormatClass(AvroKeyOutputFormat.class);
 		// job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(0);
 
