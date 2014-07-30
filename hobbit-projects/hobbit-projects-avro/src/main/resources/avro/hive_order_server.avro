@@ -1,0 +1,18 @@
+{
+	"type" : "record",
+	"name" : "HiveOrderServerRecord",
+	"namespace" : "com.voole.hobbit.avro.hive",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : "string"
+	}, {
+		"name" : "playAliveTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "srvIP",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "avgSpeed",
+		"type" : [ "long", "null" ]
+	} ]
+}

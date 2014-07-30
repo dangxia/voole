@@ -14,18 +14,19 @@
 		<storm.version>0.9.1-incubating</storm.version>
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<protobuf.version>2.5.0</protobuf.version>
+		<avro.version>1.7.7</avro.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro</artifactId>
-				<version>1.7.4</version>
+				<version>${avro.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro-mapred</artifactId>
-				<version>1.7.4</version>
+				<version>${avro.version}</version>
 				<classifier>hadoop2</classifier>
 			</dependency>
 			<!-- protobuf -->

@@ -1,4 +1,4 @@
-var k = {
+{
 	"type" : "record",
 	"name" : "HiveOrderRecord",
 	"namespace" : "com.voole.hobbit.avro.hive",
@@ -62,7 +62,9 @@ var k = {
 		"name" : "mid",
 		"type" : [ "long", "null" ]
 	}, {
-		"name" : "series",
+		"name" : "currSeries",
 		"type" : [ "long", "null" ]
 	} ]
 }
+
+// MID、当前剧集

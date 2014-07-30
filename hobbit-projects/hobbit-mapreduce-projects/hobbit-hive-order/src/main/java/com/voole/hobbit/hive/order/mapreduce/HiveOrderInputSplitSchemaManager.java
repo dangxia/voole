@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
+import com.voole.hobbit.avro.hive.HiveOrderRecord;
 import com.voole.hobbit.hive.order.HiveOrderConfigs;
 import com.voole.hobbit.transformer.KafkaTerminalAvroTransformer;
 
@@ -25,6 +26,10 @@ public class HiveOrderInputSplitSchemaManager implements
 			throws IOException {
 		FileSplit fSplit = (FileSplit) split;
 		String path = fSplit.getPath().toUri().getPath();
+		String camusPath = HiveOrderConfigs.getCamusDestinationPath(context);
+		if (!path.startsWith(camusPath)) {
+			return HiveOrderRecord.getClassSchema();
+		}
 		path = path.replace(HiveOrderConfigs.getCamusDestinationPath(context),
 				"");
 		if (path.startsWith("/")) {

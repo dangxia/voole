@@ -9,7 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
-import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
+import org.apache.avro.mapreduce.AvroJob;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -35,9 +37,11 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
+import com.voole.hobbit.avro.hive.HiveOrderRecord;
 import com.voole.hobbit.hive.order.mapreduce.HiveOrderInputMapper;
 import com.voole.hobbit.hive.order.mapreduce.HiveOrderInputReducer;
 import com.voole.hobbit.hive.order.mapreduce.HiveOrderRecordInputFormat;
+import com.voole.hobbit.transformer.KafkaTerminalAvroTransformer;
 
 /**
  * @author XuehuiHe
@@ -80,13 +84,14 @@ public class HiveOrderJob extends Configured implements Tool {
 		job.setInputFormatClass(HiveOrderRecordInputFormat.class);
 
 		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(AvroKey.class);
+
+		AvroJob.setMapOutputValueSchema(job, getMapValueSchema());
+
 		job.setMapperClass(HiveOrderInputMapper.class);
 
 		job.setReducerClass(HiveOrderInputReducer.class);
 		job.setOutputKeyClass(LongWritable.class);
 		job.setOutputValueClass(Text.class);
-
 		job.setOutputFormatClass(TextOutputFormat.class);
 
 		try {
@@ -128,6 +133,29 @@ public class HiveOrderJob extends Configured implements Tool {
 		}
 
 		return 0;
+	}
+
+	public static Schema getMapValueSchema() throws IOException {
+		return SchemaBuilder
+				.unionOf()
+				.type(KafkaTerminalAvroTransformer
+						.getKafkaTopicSchema("t_playbgn_v2"))
+				.and()
+				.type(KafkaTerminalAvroTransformer
+						.getKafkaTopicSchema("t_playbgn_v3"))
+				.and()
+				.type(KafkaTerminalAvroTransformer
+						.getKafkaTopicSchema("t_playalive_v2"))
+				.and()
+				.type(KafkaTerminalAvroTransformer
+						.getKafkaTopicSchema("t_playalive_v3"))
+				.and()
+				.type(KafkaTerminalAvroTransformer
+						.getKafkaTopicSchema("t_playend_v2"))
+				.and()
+				.type(KafkaTerminalAvroTransformer
+						.getKafkaTopicSchema("t_playend_v3")).and()
+				.type(HiveOrderRecord.getClassSchema()).endUnion();
 	}
 
 	public static void main(String[] args) throws Exception {
