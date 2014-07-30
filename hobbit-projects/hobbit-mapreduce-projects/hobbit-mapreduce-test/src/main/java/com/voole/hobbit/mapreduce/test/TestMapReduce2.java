@@ -2,14 +2,9 @@ package com.voole.hobbit.mapreduce.test;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroKey;
-import org.apache.avro.mapreduce.AvroJob;
-import org.apache.avro.mapreduce.AvroKeyInputFormat;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -20,7 +15,6 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.slf4j.Logger;
@@ -93,7 +87,8 @@ public class TestMapReduce2 extends Configured implements Tool {
 		// schemas.add(OrderPlayEndReqV2.getClassSchema());
 		// Schema union = Schema.createUnion(schemas);
 		//
-		AvroJob.setInputKeySchema(job, OrderPlayBgnReqV2.getClassSchema());
+		org.apache.avro.mapreduce.AvroJob.setInputKeySchema(job,
+				OrderPlayBgnReqV2.getClassSchema());
 		// job.setMapOutputKeyClass(Text.class);
 		// job.setMapOutputValueClass(NullWritable.class);
 		// job.setOutputKeyClass(Text.class);
@@ -102,11 +97,11 @@ public class TestMapReduce2 extends Configured implements Tool {
 		// job.setMapperClass(TestMapper2.class);
 		// job.setReducerClass(TestReducer2.class);
 		//
-		job.setInputFormatClass(AvroKeyInputFormat.class);
+		job.setInputFormatClass(org.apache.avro.mapreduce.AvroKeyInputFormat.class);
 		// job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(0);
 
-//		job.submit();
+		// job.submit();
 		job.waitForCompletion(true);
 		return 0;
 	}
