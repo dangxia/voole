@@ -19,6 +19,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -83,6 +84,8 @@ public class TestMapReduce2 extends Configured implements Tool {
 	@Override
 	public int run(String[] args) throws Exception {
 		Job job = Job.getInstance(getConf());
+		job.getConfiguration().setBoolean(
+				MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
 		job.setJarByClass(TestMapReduce2.class);
 		job.setJobName("test_map_reduce");
 
