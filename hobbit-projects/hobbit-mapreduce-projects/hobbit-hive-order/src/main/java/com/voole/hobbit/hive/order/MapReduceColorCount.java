@@ -43,7 +43,7 @@ public class MapReduceColorCount extends Configured implements Tool {
 		job.setJobName("test avro map reduce");
 
 		FileInputFormat.setInputPaths(job, new Path(
-				"/kafka/t_playalive_v2/hourly/2014/07/21/17"));
+				"/kafka/t_playalive_v2/hourly/2014/07/30/18"));
 		job.setInputFormatClass(HiveOrderRecordInputFormat.class);
 		// AvroJob.setInputKeySchema(job, KafkaTerminalAvroTransformer
 		// .getKafkaTopicSchema("t_playalive_v2"));
