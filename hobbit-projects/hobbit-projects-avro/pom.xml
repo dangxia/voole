@@ -14,11 +14,6 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro</artifactId>
 		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.avro</groupId>
-			<artifactId>avro-tools</artifactId>
-			<version>${avro.version}</version>
-		</dependency>
+
 	</dependencies>
 </project>
