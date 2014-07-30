@@ -14,7 +14,7 @@
 		<storm.version>0.9.1-incubating</storm.version>
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<protobuf.version>2.5.0</protobuf.version>
-		<avro.version>1.7.7</avro.version>
+		<avro.version>1.7.4</avro.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -297,15 +297,10 @@
 		</profile>
 	</profiles>
 	<modules>
-	<!--
-		<module>hobbit-storm-projects/hobbit-storm-kafka-spout</module>
-		<module>hobbit-projects-config</module>
-		<module>hobbit-projects-protobuff</module>
-		<module>hobbit-storm-projects/hobbit-storm-cache-state</module>
-		<module>hobbit-storm-projects/hobbit-storm-kafka-order</module>
-		<module>
-			hobbit-storm-projects/hobbit-storm-timeout-state
-		</module>-->
+		<!-- <module>hobbit-storm-projects/hobbit-storm-kafka-spout</module> <module>hobbit-projects-config</module> 
+			<module>hobbit-projects-protobuff</module> <module>hobbit-storm-projects/hobbit-storm-cache-state</module> 
+			<module>hobbit-storm-projects/hobbit-storm-kafka-order</module> <module> 
+			hobbit-storm-projects/hobbit-storm-timeout-state </module> -->
 		<module>hobbit-utils</module>
 		<module>hobbit-projects-avro</module>
 		<module>hobbit-camus-projects/hobbit-camus-api</module>

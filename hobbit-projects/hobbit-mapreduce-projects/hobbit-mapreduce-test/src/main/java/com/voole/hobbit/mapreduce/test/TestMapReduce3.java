@@ -2,11 +2,12 @@ package com.voole.hobbit.mapreduce.test;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
-import org.apache.avro.SchemaBuilder;
 import org.apache.avro.mapred.AvroCollector;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroMapper;
@@ -43,8 +44,18 @@ public class TestMapReduce3 extends Configured implements Tool {
 				SpecificRecordBase datum,
 				AvroCollector<Pair<CharSequence, SpecificRecordBase>> collector,
 				Reporter reporter) throws IOException {
-			collector.collect(new Pair<CharSequence, SpecificRecordBase>(datum
-					.get("sessID").toString(), datum));
+			collector.collect(new Pair<CharSequence, SpecificRecordBase>(
+					getSessid(datum), datum));
+
+		}
+
+		private CharSequence getSessid(SpecificRecordBase record) {
+			if (record instanceof OrderPlayBgnReqV2) {
+				return ((OrderPlayBgnReqV2) record).getSessID();
+			} else if (record instanceof OrderPlayEndReqV2) {
+				return ((OrderPlayEndReqV2) record).getSessID();
+			}
+			return "";
 		}
 	}
 
@@ -82,9 +93,10 @@ public class TestMapReduce3 extends Configured implements Tool {
 		// Note that AvroJob.setInputSchema and AvroJob.setOutputSchema set
 		// relevant config options such as input/output format, map output
 		// classes, and output key class.
-		Schema s = SchemaBuilder.unionOf()
-				.type(OrderPlayBgnReqV2.getClassSchema()).and()
-				.type(OrderPlayEndReqV2.getClassSchema()).endUnion();
+		List<Schema> schemas = new ArrayList<Schema>();
+		schemas.add(OrderPlayBgnReqV2.getClassSchema());
+		schemas.add(OrderPlayEndReqV2.getClassSchema());
+		Schema s = Schema.createUnion(schemas);
 		AvroJob.setInputSchema(conf, s);
 		AvroJob.setMapOutputSchema(conf,
 				Pair.getPairSchema(Schema.create(Type.STRING), s));

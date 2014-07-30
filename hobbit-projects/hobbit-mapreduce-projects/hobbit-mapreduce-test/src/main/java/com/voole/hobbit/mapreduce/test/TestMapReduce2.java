@@ -2,11 +2,12 @@ package com.voole.hobbit.mapreduce.test;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
-import org.apache.avro.SchemaBuilder;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.mapreduce.AvroJob;
@@ -45,9 +46,18 @@ public class TestMapReduce2 extends Configured implements Tool {
 		@Override
 		protected void map(AvroKey<SpecificRecordBase> key, NullWritable value,
 				Context context) throws IOException, InterruptedException {
-			k.datum((CharSequence) key.datum().get("sessID"));
+			k.datum(getSessid(key.datum()));
 			v.datum(key.datum());
 			context.write(k, v);
+		}
+
+		private CharSequence getSessid(SpecificRecordBase record) {
+			if (record instanceof OrderPlayBgnReqV2) {
+				return ((OrderPlayBgnReqV2) record).getSessID();
+			} else if (record instanceof OrderPlayEndReqV2) {
+				return ((OrderPlayEndReqV2) record).getSessID();
+			}
+			return "";
 		}
 	}
 
@@ -93,20 +103,17 @@ public class TestMapReduce2 extends Configured implements Tool {
 
 		job.setMapOutputKeyClass(Text.class);
 
-		AvroJob.setInputKeySchema(
-				job,
-				SchemaBuilder.unionOf()
-						.type(OrderPlayBgnReqV2.getClassSchema()).and()
-						.type(OrderPlayEndReqV2.getClassSchema()).endUnion());
+		List<Schema> schemas = new ArrayList<Schema>();
+		schemas.add(OrderPlayBgnReqV2.getClassSchema());
+		schemas.add(OrderPlayEndReqV2.getClassSchema());
+		Schema union = Schema.createUnion(schemas);
+
+		AvroJob.setInputKeySchema(job, union);
 		AvroJob.setInputValueSchema(job, Schema.create(Type.NULL));
 
 		AvroJob.setMapOutputKeySchema(job, Schema.create(Type.STRING));
 		// AvroJob.setMapOutputValueSchema(job, Schema.create(Type.LONG));
-		AvroJob.setMapOutputValueSchema(
-				job,
-				SchemaBuilder.unionOf()
-						.type(OrderPlayBgnReqV2.getClassSchema()).and()
-						.type(OrderPlayEndReqV2.getClassSchema()).endUnion());
+		AvroJob.setMapOutputValueSchema(job, union);
 
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(NullWritable.class);
