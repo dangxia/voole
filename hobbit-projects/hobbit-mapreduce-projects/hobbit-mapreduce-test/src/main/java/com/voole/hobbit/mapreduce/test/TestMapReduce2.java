@@ -103,6 +103,7 @@ public class TestMapReduce2 extends Configured implements Tool {
 
 		job.setInputFormatClass(AvroKeyInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
+		job.setNumReduceTasks(0);
 
 		AvroJob.setInputKeySchema(
 				job,
