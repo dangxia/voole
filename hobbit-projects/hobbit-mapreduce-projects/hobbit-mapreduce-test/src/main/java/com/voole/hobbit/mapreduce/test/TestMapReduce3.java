@@ -6,11 +6,13 @@ import java.util.Date;
 
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
+import org.apache.avro.SchemaBuilder;
 import org.apache.avro.mapred.AvroCollector;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroMapper;
 import org.apache.avro.mapred.AvroReducer;
 import org.apache.avro.mapred.Pair;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
@@ -25,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.voole.hobbit.avro.termial.OrderPlayBgnReqV2;
+import com.voole.hobbit.avro.termial.OrderPlayEndReqV2;
 
 public class TestMapReduce3 extends Configured implements Tool {
 	private final SimpleDateFormat df = new SimpleDateFormat(
@@ -34,26 +37,27 @@ public class TestMapReduce3 extends Configured implements Tool {
 
 	public static class TestMapper3
 			extends
-			AvroMapper<OrderPlayBgnReqV2, Pair<CharSequence, OrderPlayBgnReqV2>> {
+			AvroMapper<SpecificRecordBase, Pair<CharSequence, SpecificRecordBase>> {
 		@Override
-		public void map(OrderPlayBgnReqV2 datum,
-				AvroCollector<Pair<CharSequence, OrderPlayBgnReqV2>> collector,
+		public void map(
+				SpecificRecordBase datum,
+				AvroCollector<Pair<CharSequence, SpecificRecordBase>> collector,
 				Reporter reporter) throws IOException {
-			collector.collect(new Pair<CharSequence, OrderPlayBgnReqV2>(datum
-					.getSessID(), datum));
+			collector.collect(new Pair<CharSequence, SpecificRecordBase>(datum
+					.get("sessID"), datum));
 		}
 	}
 
 	public static class TestReducer3
 			extends
-			AvroReducer<CharSequence, OrderPlayBgnReqV2, Pair<CharSequence, Integer>> {
+			AvroReducer<CharSequence, SpecificRecordBase, Pair<CharSequence, Integer>> {
 		@Override
 		public void reduce(CharSequence key,
-				Iterable<OrderPlayBgnReqV2> values,
+				Iterable<SpecificRecordBase> values,
 				AvroCollector<Pair<CharSequence, Integer>> collector,
 				Reporter reporter) throws IOException {
 			int count = 0;
-			for (OrderPlayBgnReqV2 OrderPlayBgnReqV2 : values) {
+			for (SpecificRecordBase SpecificRecordBase : values) {
 				count++;
 			}
 			collector.collect(new Pair<CharSequence, Integer>(key, count));
@@ -67,8 +71,8 @@ public class TestMapReduce3 extends Configured implements Tool {
 
 		FileInputFormat.setInputPaths(conf,
 				"/kafka/t_playbgn_v2/hourly/2014/07/30/19");
-		// FileInputFormat.addInputPath(conf, new Path(
-		// "/kafka/t_playend_v2/hourly/2014/07/30/19"));
+		FileInputFormat.addInputPath(conf, new Path(
+				"/kafka/t_playend_v2/hourly/2014/07/30/19"));
 		FileOutputFormat.setOutputPath(conf,
 				new Path("/tmp/hexh/" + df.format(new Date())));
 
@@ -78,10 +82,12 @@ public class TestMapReduce3 extends Configured implements Tool {
 		// Note that AvroJob.setInputSchema and AvroJob.setOutputSchema set
 		// relevant config options such as input/output format, map output
 		// classes, and output key class.
-
-		AvroJob.setInputSchema(conf, OrderPlayBgnReqV2.getClassSchema());
-		AvroJob.setMapOutputSchema(conf, Pair.getPairSchema(
-				Schema.create(Type.STRING), OrderPlayBgnReqV2.getClassSchema()));
+		Schema s = SchemaBuilder.unionOf()
+				.type(OrderPlayBgnReqV2.getClassSchema()).and()
+				.type(OrderPlayEndReqV2.getClassSchema()).endUnion();
+		AvroJob.setInputSchema(conf, s);
+		AvroJob.setMapOutputSchema(conf,
+				Pair.getPairSchema(Schema.create(Type.STRING), s));
 		AvroJob.setOutputSchema(
 				conf,
 				Pair.getPairSchema(Schema.create(Type.STRING),
