@@ -106,7 +106,7 @@ public class TestMapReduce2 extends Configured implements Tool {
 		// job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(0);
 
-		job.submit();
+//		job.submit();
 		job.waitForCompletion(true);
 		return 0;
 	}
