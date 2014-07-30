@@ -14,6 +14,12 @@
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro-mapred</artifactId>
 			<classifier>hadoop2</classifier>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.avro</groupId>
+					<artifactId>avro-ipc</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
