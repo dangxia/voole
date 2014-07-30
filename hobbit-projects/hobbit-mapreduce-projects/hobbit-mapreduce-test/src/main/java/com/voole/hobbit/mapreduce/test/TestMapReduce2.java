@@ -99,7 +99,8 @@ public class TestMapReduce2 extends Configured implements Tool {
 		// job.setReducerClass(TestReducer2.class);
 		//
 
-		job.setInputFormatClass(TextInputFormat.class);
+//		job.setInputFormatClass(TextInputFormat.class);
+		job.setInputFormatClass(org.apache.avro.mapreduce.AvroKeyInputFormat.class);
 		// job.setOutputFormatClass(TextOutputFormat.class);
 		job.setNumReduceTasks(0);
 
