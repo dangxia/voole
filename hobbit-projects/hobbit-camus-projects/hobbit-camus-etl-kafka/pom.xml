@@ -5,6 +5,7 @@
 		<groupId>com.voole.hobbit</groupId>
 		<artifactId>hobbit-projects</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../../</relativePath>
 	</parent>
 	<artifactId>hobbit-camus-etl-kafka</artifactId>
 

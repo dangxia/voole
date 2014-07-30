@@ -297,6 +297,7 @@
 		</profile>
 	</profiles>
 	<modules>
+	<!--
 		<module>hobbit-storm-projects/hobbit-storm-kafka-spout</module>
 		<module>hobbit-projects-config</module>
 		<module>hobbit-projects-protobuff</module>
@@ -304,7 +305,7 @@
 		<module>hobbit-storm-projects/hobbit-storm-kafka-order</module>
 		<module>
 			hobbit-storm-projects/hobbit-storm-timeout-state
-		</module>
+		</module>-->
 		<module>hobbit-utils</module>
 		<module>hobbit-projects-avro</module>
 		<module>hobbit-camus-projects/hobbit-camus-api</module>
