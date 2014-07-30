@@ -51,9 +51,9 @@ public class MapReduceColorCount extends Configured implements Tool {
 
 		FileOutputFormat
 				.setOutputPath(job, new Path("/tmp/test_order_record3"));
-		job.setOutputFormatClass(AvroKeyOutputFormat.class);
-		AvroJob.setOutputKeySchema(job, KafkaTerminalAvroTransformer
-				.getKafkaTopicSchema("t_playalive_v2"));
+//		job.setOutputFormatClass(AvroKeyOutputFormat.class);
+		// AvroJob.setOutputKeySchema(job, KafkaTerminalAvroTransformer
+		// .getKafkaTopicSchema("t_playalive_v2"));
 		// AvroJob.setOutputValueSchema(job, KafkaTerminalAvroTransformer
 		// .getKafkaTopicSchema("t_playalive_v2"));
 		return (job.waitForCompletion(true) ? 0 : 1);
