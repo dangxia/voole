@@ -37,11 +37,11 @@ public class TestMapReduce2 extends Configured implements Tool {
 
 	public static class TestMapper2
 			extends
-			Mapper<AvroKey<SpecificRecordBase>, NullWritable, Text, NullWritable> {
+			Mapper<AvroKey<OrderPlayBgnReqV2>, NullWritable, Text, NullWritable> {
 		Text t = new Text();
 
 		@Override
-		protected void map(AvroKey<SpecificRecordBase> key, NullWritable value,
+		protected void map(AvroKey<OrderPlayBgnReqV2> key, NullWritable value,
 				Context context) throws IOException, InterruptedException {
 			t.set(getSessid(key.datum()).toString());
 			context.write(t, NullWritable.get());
@@ -83,8 +83,8 @@ public class TestMapReduce2 extends Configured implements Tool {
 
 		FileInputFormat.setInputPaths(job,
 				"/kafka/t_playbgn_v2/hourly/2014/07/30/19");
-		FileInputFormat.addInputPath(job, new Path(
-				"/kafka/t_playend_v2/hourly/2014/07/30/19"));
+		// FileInputFormat.addInputPath(job, new Path(
+		// "/kafka/t_playend_v2/hourly/2014/07/30/19"));
 		FileOutputFormat.setOutputPath(job,
 				new Path("/tmp/hexh/" + df.format(new Date())));
 
@@ -93,7 +93,7 @@ public class TestMapReduce2 extends Configured implements Tool {
 		schemas.add(OrderPlayEndReqV2.getClassSchema());
 		Schema union = Schema.createUnion(schemas);
 
-		AvroJob.setInputKeySchema(job, union);
+		AvroJob.setInputKeySchema(job, OrderPlayBgnReqV2.getClassSchema());
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(NullWritable.class);
 		job.setOutputKeyClass(Text.class);
