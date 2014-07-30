@@ -43,8 +43,8 @@ public class TestMapReduce3 extends Configured implements Tool {
 				SpecificRecordBase datum,
 				AvroCollector<Pair<CharSequence, SpecificRecordBase>> collector,
 				Reporter reporter) throws IOException {
-			collector.collect(new Pair<CharSequence, SpecificRecordBase>(datum
-					.get("sessID"), datum));
+			collector.collect(new Pair<CharSequence, SpecificRecordBase>(
+					(CharSequence) datum.get("sessID"), datum));
 		}
 	}
 
