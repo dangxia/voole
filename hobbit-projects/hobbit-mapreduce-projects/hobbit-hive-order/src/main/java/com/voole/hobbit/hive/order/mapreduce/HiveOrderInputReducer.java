@@ -156,6 +156,7 @@ public class HiveOrderInputReducer extends
 			record.setNatip(natip);
 			record.setFID(fid);
 			record.setPlayBgnTime(playTick);
+			afterFill(record, url.toString());
 		}
 	}
 
