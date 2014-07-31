@@ -11,6 +11,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.voole</groupId>
+			<version>1.0</version>
+			<artifactId>monitor2-playurl-analyze</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.avro</groupId>
 			<artifactId>avro-mapred</artifactId>
 			<classifier>hadoop2</classifier>

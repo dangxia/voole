@@ -6,6 +6,7 @@ package com.voole.hobbit.hive.order.mapreduce;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -20,6 +21,7 @@ import com.voole.hobbit.avro.termial.OrderPlayBgnReqV2;
 import com.voole.hobbit.avro.termial.OrderPlayBgnReqV3;
 import com.voole.hobbit.avro.termial.OrderPlayEndReqV2;
 import com.voole.hobbit.avro.termial.OrderPlayEndReqV3;
+import com.voole.monitor2.playurl.PlayurlAnalyzer;
 
 /**
  * @author XuehuiHe
@@ -134,17 +136,18 @@ public class HiveOrderInputReducer extends
 
 	private void _fillBgn(HiveOrderRecord record, OrderPlayBgnReqV2 bgn) {
 		_fillBgn(record, bgn.getUID(), bgn.getHID(), bgn.getOEMID(),
-				bgn.getNatip(), bgn.getFID(), bgn.getPlayTick());
+				bgn.getNatip(), bgn.getFID(), bgn.getPlayTick(), bgn.getURL());
+
 	}
 
 	private void _fillBgn(HiveOrderRecord record, OrderPlayBgnReqV3 bgn) {
 		_fillBgn(record, bgn.getUID(), bgn.getHID(), bgn.getOEMID(),
-				bgn.getNatip(), bgn.getFID(), bgn.getPlayTick());
+				bgn.getNatip(), bgn.getFID(), bgn.getPlayTick(), bgn.getURL());
 	}
 
 	private void _fillBgn(HiveOrderRecord record, CharSequence uid,
 			CharSequence hid, Long oemid, Long natip, CharSequence fid,
-			Long playTick) {
+			Long playTick, CharSequence url) {
 		if (record.getPlayBgnTime() == null
 				|| record.getPlayBgnTime() < playTick) {
 			record.setUID(uid);
@@ -154,6 +157,60 @@ public class HiveOrderInputReducer extends
 			record.setFID(fid);
 			record.setPlayBgnTime(playTick);
 		}
+	}
+
+	protected void afterFill(HiveOrderRecord record, String url) {
+		processUrl(record, url);
+		fidHidToUperCase(record);
+	}
+
+	protected void processUrl(HiveOrderRecord record, String url) {
+		if (url == null || url.length() == 0) {
+			return;
+		}
+		processUrlMap(record, PlayurlAnalyzer.analyze(url));
+	}
+
+	protected void fidHidToUperCase(HiveOrderRecord record) {
+		CharSequence fid = record.getFID();
+		if (fid != null) {
+			record.setFID(fid.toString().toUpperCase());
+		}
+		CharSequence hid = record.getHID();
+		if (hid != null && hid.length() > 12) {
+			hid = hid.toString().substring(0, 12);
+		}
+		if (hid != null) {
+			record.setHID(hid.toString().toUpperCase());
+		}
+	}
+
+	public void processUrlMap(HiveOrderRecord record, Map<String, String> pars) {
+		record.setPid(pars.get("pid"));
+		record.setSecid(pars.get("secid"));
+		String egpid = pars.get("epgid");
+		if (egpid != null && egpid.length() > 0) {
+			try {
+				record.setEpgid(Long.parseLong(egpid));
+			} catch (Exception e) {
+			}
+		}
+		// setChannelId(pars.get("chid"));
+		String oemid = pars.get("oemid");
+		try {
+			if (oemid != null && oemid.length() > 0) {
+				record.setOEMID(Long.parseLong(oemid));
+			}
+		} catch (Exception e) {
+		}
+		// FID
+		if (pars.containsKey("fid")) {
+			record.setFID(pars.get("fid").toLowerCase());
+		}
+		// AD
+		record.setIsAdMod(pars.containsKey("adInfo"));
+		// QTYPE
+		record.setIsRepeatMod("500".equals(pars.get("qtype")));
 	}
 
 	// --->fill bgn end
