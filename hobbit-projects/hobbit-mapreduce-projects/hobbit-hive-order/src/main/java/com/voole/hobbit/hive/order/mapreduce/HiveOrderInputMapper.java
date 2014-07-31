@@ -31,7 +31,7 @@ public class HiveOrderInputMapper
 		if (recordBase instanceof HiveOrderRecord) {
 			sessionId.set((String) ((HiveOrderRecord) recordBase).getSessID());
 		} else {
-//			sessionId.set((String) recordBase.get("sessID"));
+			sessionId.set((String) recordBase.get("sessID"));
 		}
 		record.datum(key.datum());
 		context.write(sessionId, record);
