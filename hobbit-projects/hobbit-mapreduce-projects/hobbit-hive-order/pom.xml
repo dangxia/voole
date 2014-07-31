@@ -11,6 +11,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.voole.hobbit</groupId>
+			<artifactId>hobbit-cache</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.voole</groupId>
 			<version>1.0</version>
 			<artifactId>monitor2-playurl-analyze</artifactId>

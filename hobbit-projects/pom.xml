@@ -306,5 +306,6 @@
 		<module>hobbit-camus-projects/hobbit-camus-api</module>
 		<module>hobbit-camus-projects/hobbit-camus-etl-kafka</module>
 		<module>hobbit-mapreduce-projects/hobbit-hive-order</module>
+		<module>hobbit-cache</module>
 	</modules>
 </project>

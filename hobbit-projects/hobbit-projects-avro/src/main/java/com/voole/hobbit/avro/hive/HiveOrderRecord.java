@@ -7,9 +7,10 @@ package com.voole.hobbit.avro.hive;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderRecord\",\"namespace\":\"com.voole.hobbit.avro.hive\",\"fields\":[{\"name\":\"sessID\",\"type\":\"string\"},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"areaid\",\"type\":[\"int\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"playBgnTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playAliveTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playEndTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playDurationTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"isAdMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"isRepeatMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"epgid\",\"type\":[\"long\",\"null\"]},{\"name\":\"secid\",\"type\":[\"string\",\"null\"]},{\"name\":\"bitrate\",\"type\":[\"long\",\"null\"]},{\"name\":\"mid\",\"type\":[\"long\",\"null\"]},{\"name\":\"currSeries\",\"type\":[\"long\",\"null\"]}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderRecord\",\"namespace\":\"com.voole.hobbit.avro.hive\",\"fields\":[{\"name\":\"sessID\",\"type\":\"string\"},{\"name\":\"spid\",\"type\":[\"string\",\"null\"]},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"areaid\",\"type\":[\"int\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"playBgnTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playAliveTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playEndTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playDurationTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"isAdMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"isRepeatMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"epgid\",\"type\":[\"long\",\"null\"]},{\"name\":\"secid\",\"type\":[\"string\",\"null\"]},{\"name\":\"bitrate\",\"type\":[\"long\",\"null\"]},{\"name\":\"mid\",\"type\":[\"long\",\"null\"]},{\"name\":\"currSeries\",\"type\":[\"long\",\"null\"]}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence sessID;
+  @Deprecated public java.lang.CharSequence spid;
   @Deprecated public java.lang.CharSequence UID;
   @Deprecated public java.lang.CharSequence HID;
   @Deprecated public java.lang.Long OEMID;
@@ -40,8 +41,9 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
   /**
    * All-args constructor.
    */
-  public HiveOrderRecord(java.lang.CharSequence sessID, java.lang.CharSequence UID, java.lang.CharSequence HID, java.lang.Long OEMID, java.lang.Long natip, java.lang.Integer areaid, java.lang.CharSequence FID, java.lang.Long playBgnTime, java.lang.Long playAliveTime, java.lang.Long playEndTime, java.lang.Long playDurationTime, java.lang.Long avgspeed, java.lang.Boolean isAdMod, java.lang.Boolean isRepeatMod, java.lang.CharSequence pid, java.lang.Long epgid, java.lang.CharSequence secid, java.lang.Long bitrate, java.lang.Long mid, java.lang.Long currSeries) {
+  public HiveOrderRecord(java.lang.CharSequence sessID, java.lang.CharSequence spid, java.lang.CharSequence UID, java.lang.CharSequence HID, java.lang.Long OEMID, java.lang.Long natip, java.lang.Integer areaid, java.lang.CharSequence FID, java.lang.Long playBgnTime, java.lang.Long playAliveTime, java.lang.Long playEndTime, java.lang.Long playDurationTime, java.lang.Long avgspeed, java.lang.Boolean isAdMod, java.lang.Boolean isRepeatMod, java.lang.CharSequence pid, java.lang.Long epgid, java.lang.CharSequence secid, java.lang.Long bitrate, java.lang.Long mid, java.lang.Long currSeries) {
     this.sessID = sessID;
+    this.spid = spid;
     this.UID = UID;
     this.HID = HID;
     this.OEMID = OEMID;
@@ -68,25 +70,26 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
   public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return sessID;
-    case 1: return UID;
-    case 2: return HID;
-    case 3: return OEMID;
-    case 4: return natip;
-    case 5: return areaid;
-    case 6: return FID;
-    case 7: return playBgnTime;
-    case 8: return playAliveTime;
-    case 9: return playEndTime;
-    case 10: return playDurationTime;
-    case 11: return avgspeed;
-    case 12: return isAdMod;
-    case 13: return isRepeatMod;
-    case 14: return pid;
-    case 15: return epgid;
-    case 16: return secid;
-    case 17: return bitrate;
-    case 18: return mid;
-    case 19: return currSeries;
+    case 1: return spid;
+    case 2: return UID;
+    case 3: return HID;
+    case 4: return OEMID;
+    case 5: return natip;
+    case 6: return areaid;
+    case 7: return FID;
+    case 8: return playBgnTime;
+    case 9: return playAliveTime;
+    case 10: return playEndTime;
+    case 11: return playDurationTime;
+    case 12: return avgspeed;
+    case 13: return isAdMod;
+    case 14: return isRepeatMod;
+    case 15: return pid;
+    case 16: return epgid;
+    case 17: return secid;
+    case 18: return bitrate;
+    case 19: return mid;
+    case 20: return currSeries;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -95,25 +98,26 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
     case 0: sessID = (java.lang.CharSequence)value$; break;
-    case 1: UID = (java.lang.CharSequence)value$; break;
-    case 2: HID = (java.lang.CharSequence)value$; break;
-    case 3: OEMID = (java.lang.Long)value$; break;
-    case 4: natip = (java.lang.Long)value$; break;
-    case 5: areaid = (java.lang.Integer)value$; break;
-    case 6: FID = (java.lang.CharSequence)value$; break;
-    case 7: playBgnTime = (java.lang.Long)value$; break;
-    case 8: playAliveTime = (java.lang.Long)value$; break;
-    case 9: playEndTime = (java.lang.Long)value$; break;
-    case 10: playDurationTime = (java.lang.Long)value$; break;
-    case 11: avgspeed = (java.lang.Long)value$; break;
-    case 12: isAdMod = (java.lang.Boolean)value$; break;
-    case 13: isRepeatMod = (java.lang.Boolean)value$; break;
-    case 14: pid = (java.lang.CharSequence)value$; break;
-    case 15: epgid = (java.lang.Long)value$; break;
-    case 16: secid = (java.lang.CharSequence)value$; break;
-    case 17: bitrate = (java.lang.Long)value$; break;
-    case 18: mid = (java.lang.Long)value$; break;
-    case 19: currSeries = (java.lang.Long)value$; break;
+    case 1: spid = (java.lang.CharSequence)value$; break;
+    case 2: UID = (java.lang.CharSequence)value$; break;
+    case 3: HID = (java.lang.CharSequence)value$; break;
+    case 4: OEMID = (java.lang.Long)value$; break;
+    case 5: natip = (java.lang.Long)value$; break;
+    case 6: areaid = (java.lang.Integer)value$; break;
+    case 7: FID = (java.lang.CharSequence)value$; break;
+    case 8: playBgnTime = (java.lang.Long)value$; break;
+    case 9: playAliveTime = (java.lang.Long)value$; break;
+    case 10: playEndTime = (java.lang.Long)value$; break;
+    case 11: playDurationTime = (java.lang.Long)value$; break;
+    case 12: avgspeed = (java.lang.Long)value$; break;
+    case 13: isAdMod = (java.lang.Boolean)value$; break;
+    case 14: isRepeatMod = (java.lang.Boolean)value$; break;
+    case 15: pid = (java.lang.CharSequence)value$; break;
+    case 16: epgid = (java.lang.Long)value$; break;
+    case 17: secid = (java.lang.CharSequence)value$; break;
+    case 18: bitrate = (java.lang.Long)value$; break;
+    case 19: mid = (java.lang.Long)value$; break;
+    case 20: currSeries = (java.lang.Long)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -131,6 +135,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
    */
   public void setSessID(java.lang.CharSequence value) {
     this.sessID = value;
+  }
+
+  /**
+   * Gets the value of the 'spid' field.
+   */
+  public java.lang.CharSequence getSpid() {
+    return spid;
+  }
+
+  /**
+   * Sets the value of the 'spid' field.
+   * @param value the value to set.
+   */
+  public void setSpid(java.lang.CharSequence value) {
+    this.spid = value;
   }
 
   /**
@@ -440,6 +459,7 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     implements org.apache.avro.data.RecordBuilder<HiveOrderRecord> {
 
     private java.lang.CharSequence sessID;
+    private java.lang.CharSequence spid;
     private java.lang.CharSequence UID;
     private java.lang.CharSequence HID;
     private java.lang.Long OEMID;
@@ -472,81 +492,85 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
         this.sessID = data().deepCopy(fields()[0].schema(), other.sessID);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.UID)) {
-        this.UID = data().deepCopy(fields()[1].schema(), other.UID);
+      if (isValidValue(fields()[1], other.spid)) {
+        this.spid = data().deepCopy(fields()[1].schema(), other.spid);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.HID)) {
-        this.HID = data().deepCopy(fields()[2].schema(), other.HID);
+      if (isValidValue(fields()[2], other.UID)) {
+        this.UID = data().deepCopy(fields()[2].schema(), other.UID);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.OEMID)) {
-        this.OEMID = data().deepCopy(fields()[3].schema(), other.OEMID);
+      if (isValidValue(fields()[3], other.HID)) {
+        this.HID = data().deepCopy(fields()[3].schema(), other.HID);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.natip)) {
-        this.natip = data().deepCopy(fields()[4].schema(), other.natip);
+      if (isValidValue(fields()[4], other.OEMID)) {
+        this.OEMID = data().deepCopy(fields()[4].schema(), other.OEMID);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.areaid)) {
-        this.areaid = data().deepCopy(fields()[5].schema(), other.areaid);
+      if (isValidValue(fields()[5], other.natip)) {
+        this.natip = data().deepCopy(fields()[5].schema(), other.natip);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.FID)) {
-        this.FID = data().deepCopy(fields()[6].schema(), other.FID);
+      if (isValidValue(fields()[6], other.areaid)) {
+        this.areaid = data().deepCopy(fields()[6].schema(), other.areaid);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.playBgnTime)) {
-        this.playBgnTime = data().deepCopy(fields()[7].schema(), other.playBgnTime);
+      if (isValidValue(fields()[7], other.FID)) {
+        this.FID = data().deepCopy(fields()[7].schema(), other.FID);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.playAliveTime)) {
-        this.playAliveTime = data().deepCopy(fields()[8].schema(), other.playAliveTime);
+      if (isValidValue(fields()[8], other.playBgnTime)) {
+        this.playBgnTime = data().deepCopy(fields()[8].schema(), other.playBgnTime);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.playEndTime)) {
-        this.playEndTime = data().deepCopy(fields()[9].schema(), other.playEndTime);
+      if (isValidValue(fields()[9], other.playAliveTime)) {
+        this.playAliveTime = data().deepCopy(fields()[9].schema(), other.playAliveTime);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.playDurationTime)) {
-        this.playDurationTime = data().deepCopy(fields()[10].schema(), other.playDurationTime);
+      if (isValidValue(fields()[10], other.playEndTime)) {
+        this.playEndTime = data().deepCopy(fields()[10].schema(), other.playEndTime);
         fieldSetFlags()[10] = true;
       }
-      if (isValidValue(fields()[11], other.avgspeed)) {
-        this.avgspeed = data().deepCopy(fields()[11].schema(), other.avgspeed);
+      if (isValidValue(fields()[11], other.playDurationTime)) {
+        this.playDurationTime = data().deepCopy(fields()[11].schema(), other.playDurationTime);
         fieldSetFlags()[11] = true;
       }
-      if (isValidValue(fields()[12], other.isAdMod)) {
-        this.isAdMod = data().deepCopy(fields()[12].schema(), other.isAdMod);
+      if (isValidValue(fields()[12], other.avgspeed)) {
+        this.avgspeed = data().deepCopy(fields()[12].schema(), other.avgspeed);
         fieldSetFlags()[12] = true;
       }
-      if (isValidValue(fields()[13], other.isRepeatMod)) {
-        this.isRepeatMod = data().deepCopy(fields()[13].schema(), other.isRepeatMod);
+      if (isValidValue(fields()[13], other.isAdMod)) {
+        this.isAdMod = data().deepCopy(fields()[13].schema(), other.isAdMod);
         fieldSetFlags()[13] = true;
       }
-      if (isValidValue(fields()[14], other.pid)) {
-        this.pid = data().deepCopy(fields()[14].schema(), other.pid);
+      if (isValidValue(fields()[14], other.isRepeatMod)) {
+        this.isRepeatMod = data().deepCopy(fields()[14].schema(), other.isRepeatMod);
         fieldSetFlags()[14] = true;
       }
-      if (isValidValue(fields()[15], other.epgid)) {
-        this.epgid = data().deepCopy(fields()[15].schema(), other.epgid);
+      if (isValidValue(fields()[15], other.pid)) {
+        this.pid = data().deepCopy(fields()[15].schema(), other.pid);
         fieldSetFlags()[15] = true;
       }
-      if (isValidValue(fields()[16], other.secid)) {
-        this.secid = data().deepCopy(fields()[16].schema(), other.secid);
+      if (isValidValue(fields()[16], other.epgid)) {
+        this.epgid = data().deepCopy(fields()[16].schema(), other.epgid);
         fieldSetFlags()[16] = true;
       }
-      if (isValidValue(fields()[17], other.bitrate)) {
-        this.bitrate = data().deepCopy(fields()[17].schema(), other.bitrate);
+      if (isValidValue(fields()[17], other.secid)) {
+        this.secid = data().deepCopy(fields()[17].schema(), other.secid);
         fieldSetFlags()[17] = true;
       }
-      if (isValidValue(fields()[18], other.mid)) {
-        this.mid = data().deepCopy(fields()[18].schema(), other.mid);
+      if (isValidValue(fields()[18], other.bitrate)) {
+        this.bitrate = data().deepCopy(fields()[18].schema(), other.bitrate);
         fieldSetFlags()[18] = true;
       }
-      if (isValidValue(fields()[19], other.currSeries)) {
-        this.currSeries = data().deepCopy(fields()[19].schema(), other.currSeries);
+      if (isValidValue(fields()[19], other.mid)) {
+        this.mid = data().deepCopy(fields()[19].schema(), other.mid);
         fieldSetFlags()[19] = true;
+      }
+      if (isValidValue(fields()[20], other.currSeries)) {
+        this.currSeries = data().deepCopy(fields()[20].schema(), other.currSeries);
+        fieldSetFlags()[20] = true;
       }
     }
     
@@ -557,81 +581,85 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
         this.sessID = data().deepCopy(fields()[0].schema(), other.sessID);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.UID)) {
-        this.UID = data().deepCopy(fields()[1].schema(), other.UID);
+      if (isValidValue(fields()[1], other.spid)) {
+        this.spid = data().deepCopy(fields()[1].schema(), other.spid);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.HID)) {
-        this.HID = data().deepCopy(fields()[2].schema(), other.HID);
+      if (isValidValue(fields()[2], other.UID)) {
+        this.UID = data().deepCopy(fields()[2].schema(), other.UID);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.OEMID)) {
-        this.OEMID = data().deepCopy(fields()[3].schema(), other.OEMID);
+      if (isValidValue(fields()[3], other.HID)) {
+        this.HID = data().deepCopy(fields()[3].schema(), other.HID);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.natip)) {
-        this.natip = data().deepCopy(fields()[4].schema(), other.natip);
+      if (isValidValue(fields()[4], other.OEMID)) {
+        this.OEMID = data().deepCopy(fields()[4].schema(), other.OEMID);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.areaid)) {
-        this.areaid = data().deepCopy(fields()[5].schema(), other.areaid);
+      if (isValidValue(fields()[5], other.natip)) {
+        this.natip = data().deepCopy(fields()[5].schema(), other.natip);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.FID)) {
-        this.FID = data().deepCopy(fields()[6].schema(), other.FID);
+      if (isValidValue(fields()[6], other.areaid)) {
+        this.areaid = data().deepCopy(fields()[6].schema(), other.areaid);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.playBgnTime)) {
-        this.playBgnTime = data().deepCopy(fields()[7].schema(), other.playBgnTime);
+      if (isValidValue(fields()[7], other.FID)) {
+        this.FID = data().deepCopy(fields()[7].schema(), other.FID);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.playAliveTime)) {
-        this.playAliveTime = data().deepCopy(fields()[8].schema(), other.playAliveTime);
+      if (isValidValue(fields()[8], other.playBgnTime)) {
+        this.playBgnTime = data().deepCopy(fields()[8].schema(), other.playBgnTime);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.playEndTime)) {
-        this.playEndTime = data().deepCopy(fields()[9].schema(), other.playEndTime);
+      if (isValidValue(fields()[9], other.playAliveTime)) {
+        this.playAliveTime = data().deepCopy(fields()[9].schema(), other.playAliveTime);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.playDurationTime)) {
-        this.playDurationTime = data().deepCopy(fields()[10].schema(), other.playDurationTime);
+      if (isValidValue(fields()[10], other.playEndTime)) {
+        this.playEndTime = data().deepCopy(fields()[10].schema(), other.playEndTime);
         fieldSetFlags()[10] = true;
       }
-      if (isValidValue(fields()[11], other.avgspeed)) {
-        this.avgspeed = data().deepCopy(fields()[11].schema(), other.avgspeed);
+      if (isValidValue(fields()[11], other.playDurationTime)) {
+        this.playDurationTime = data().deepCopy(fields()[11].schema(), other.playDurationTime);
         fieldSetFlags()[11] = true;
       }
-      if (isValidValue(fields()[12], other.isAdMod)) {
-        this.isAdMod = data().deepCopy(fields()[12].schema(), other.isAdMod);
+      if (isValidValue(fields()[12], other.avgspeed)) {
+        this.avgspeed = data().deepCopy(fields()[12].schema(), other.avgspeed);
         fieldSetFlags()[12] = true;
       }
-      if (isValidValue(fields()[13], other.isRepeatMod)) {
-        this.isRepeatMod = data().deepCopy(fields()[13].schema(), other.isRepeatMod);
+      if (isValidValue(fields()[13], other.isAdMod)) {
+        this.isAdMod = data().deepCopy(fields()[13].schema(), other.isAdMod);
         fieldSetFlags()[13] = true;
       }
-      if (isValidValue(fields()[14], other.pid)) {
-        this.pid = data().deepCopy(fields()[14].schema(), other.pid);
+      if (isValidValue(fields()[14], other.isRepeatMod)) {
+        this.isRepeatMod = data().deepCopy(fields()[14].schema(), other.isRepeatMod);
         fieldSetFlags()[14] = true;
       }
-      if (isValidValue(fields()[15], other.epgid)) {
-        this.epgid = data().deepCopy(fields()[15].schema(), other.epgid);
+      if (isValidValue(fields()[15], other.pid)) {
+        this.pid = data().deepCopy(fields()[15].schema(), other.pid);
         fieldSetFlags()[15] = true;
       }
-      if (isValidValue(fields()[16], other.secid)) {
-        this.secid = data().deepCopy(fields()[16].schema(), other.secid);
+      if (isValidValue(fields()[16], other.epgid)) {
+        this.epgid = data().deepCopy(fields()[16].schema(), other.epgid);
         fieldSetFlags()[16] = true;
       }
-      if (isValidValue(fields()[17], other.bitrate)) {
-        this.bitrate = data().deepCopy(fields()[17].schema(), other.bitrate);
+      if (isValidValue(fields()[17], other.secid)) {
+        this.secid = data().deepCopy(fields()[17].schema(), other.secid);
         fieldSetFlags()[17] = true;
       }
-      if (isValidValue(fields()[18], other.mid)) {
-        this.mid = data().deepCopy(fields()[18].schema(), other.mid);
+      if (isValidValue(fields()[18], other.bitrate)) {
+        this.bitrate = data().deepCopy(fields()[18].schema(), other.bitrate);
         fieldSetFlags()[18] = true;
       }
-      if (isValidValue(fields()[19], other.currSeries)) {
-        this.currSeries = data().deepCopy(fields()[19].schema(), other.currSeries);
+      if (isValidValue(fields()[19], other.mid)) {
+        this.mid = data().deepCopy(fields()[19].schema(), other.mid);
         fieldSetFlags()[19] = true;
+      }
+      if (isValidValue(fields()[20], other.currSeries)) {
+        this.currSeries = data().deepCopy(fields()[20].schema(), other.currSeries);
+        fieldSetFlags()[20] = true;
       }
     }
 
@@ -660,6 +688,31 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
       return this;
     }
 
+    /** Gets the value of the 'spid' field */
+    public java.lang.CharSequence getSpid() {
+      return spid;
+    }
+    
+    /** Sets the value of the 'spid' field */
+    public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setSpid(java.lang.CharSequence value) {
+      validate(fields()[1], value);
+      this.spid = value;
+      fieldSetFlags()[1] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'spid' field has been set */
+    public boolean hasSpid() {
+      return fieldSetFlags()[1];
+    }
+    
+    /** Clears the value of the 'spid' field */
+    public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearSpid() {
+      spid = null;
+      fieldSetFlags()[1] = false;
+      return this;
+    }
+
     /** Gets the value of the 'UID' field */
     public java.lang.CharSequence getUID() {
       return UID;
@@ -667,21 +720,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'UID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setUID(java.lang.CharSequence value) {
-      validate(fields()[1], value);
+      validate(fields()[2], value);
       this.UID = value;
-      fieldSetFlags()[1] = true;
+      fieldSetFlags()[2] = true;
       return this; 
     }
     
     /** Checks whether the 'UID' field has been set */
     public boolean hasUID() {
-      return fieldSetFlags()[1];
+      return fieldSetFlags()[2];
     }
     
     /** Clears the value of the 'UID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearUID() {
       UID = null;
-      fieldSetFlags()[1] = false;
+      fieldSetFlags()[2] = false;
       return this;
     }
 
@@ -692,21 +745,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'HID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setHID(java.lang.CharSequence value) {
-      validate(fields()[2], value);
+      validate(fields()[3], value);
       this.HID = value;
-      fieldSetFlags()[2] = true;
+      fieldSetFlags()[3] = true;
       return this; 
     }
     
     /** Checks whether the 'HID' field has been set */
     public boolean hasHID() {
-      return fieldSetFlags()[2];
+      return fieldSetFlags()[3];
     }
     
     /** Clears the value of the 'HID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearHID() {
       HID = null;
-      fieldSetFlags()[2] = false;
+      fieldSetFlags()[3] = false;
       return this;
     }
 
@@ -717,21 +770,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'OEMID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setOEMID(java.lang.Long value) {
-      validate(fields()[3], value);
+      validate(fields()[4], value);
       this.OEMID = value;
-      fieldSetFlags()[3] = true;
+      fieldSetFlags()[4] = true;
       return this; 
     }
     
     /** Checks whether the 'OEMID' field has been set */
     public boolean hasOEMID() {
-      return fieldSetFlags()[3];
+      return fieldSetFlags()[4];
     }
     
     /** Clears the value of the 'OEMID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearOEMID() {
       OEMID = null;
-      fieldSetFlags()[3] = false;
+      fieldSetFlags()[4] = false;
       return this;
     }
 
@@ -742,21 +795,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'natip' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setNatip(java.lang.Long value) {
-      validate(fields()[4], value);
+      validate(fields()[5], value);
       this.natip = value;
-      fieldSetFlags()[4] = true;
+      fieldSetFlags()[5] = true;
       return this; 
     }
     
     /** Checks whether the 'natip' field has been set */
     public boolean hasNatip() {
-      return fieldSetFlags()[4];
+      return fieldSetFlags()[5];
     }
     
     /** Clears the value of the 'natip' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearNatip() {
       natip = null;
-      fieldSetFlags()[4] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -767,21 +820,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'areaid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setAreaid(java.lang.Integer value) {
-      validate(fields()[5], value);
+      validate(fields()[6], value);
       this.areaid = value;
-      fieldSetFlags()[5] = true;
+      fieldSetFlags()[6] = true;
       return this; 
     }
     
     /** Checks whether the 'areaid' field has been set */
     public boolean hasAreaid() {
-      return fieldSetFlags()[5];
+      return fieldSetFlags()[6];
     }
     
     /** Clears the value of the 'areaid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearAreaid() {
       areaid = null;
-      fieldSetFlags()[5] = false;
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -792,21 +845,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'FID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setFID(java.lang.CharSequence value) {
-      validate(fields()[6], value);
+      validate(fields()[7], value);
       this.FID = value;
-      fieldSetFlags()[6] = true;
+      fieldSetFlags()[7] = true;
       return this; 
     }
     
     /** Checks whether the 'FID' field has been set */
     public boolean hasFID() {
-      return fieldSetFlags()[6];
+      return fieldSetFlags()[7];
     }
     
     /** Clears the value of the 'FID' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearFID() {
       FID = null;
-      fieldSetFlags()[6] = false;
+      fieldSetFlags()[7] = false;
       return this;
     }
 
@@ -817,21 +870,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'playBgnTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setPlayBgnTime(java.lang.Long value) {
-      validate(fields()[7], value);
+      validate(fields()[8], value);
       this.playBgnTime = value;
-      fieldSetFlags()[7] = true;
+      fieldSetFlags()[8] = true;
       return this; 
     }
     
     /** Checks whether the 'playBgnTime' field has been set */
     public boolean hasPlayBgnTime() {
-      return fieldSetFlags()[7];
+      return fieldSetFlags()[8];
     }
     
     /** Clears the value of the 'playBgnTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearPlayBgnTime() {
       playBgnTime = null;
-      fieldSetFlags()[7] = false;
+      fieldSetFlags()[8] = false;
       return this;
     }
 
@@ -842,21 +895,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'playAliveTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setPlayAliveTime(java.lang.Long value) {
-      validate(fields()[8], value);
+      validate(fields()[9], value);
       this.playAliveTime = value;
-      fieldSetFlags()[8] = true;
+      fieldSetFlags()[9] = true;
       return this; 
     }
     
     /** Checks whether the 'playAliveTime' field has been set */
     public boolean hasPlayAliveTime() {
-      return fieldSetFlags()[8];
+      return fieldSetFlags()[9];
     }
     
     /** Clears the value of the 'playAliveTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearPlayAliveTime() {
       playAliveTime = null;
-      fieldSetFlags()[8] = false;
+      fieldSetFlags()[9] = false;
       return this;
     }
 
@@ -867,21 +920,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'playEndTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setPlayEndTime(java.lang.Long value) {
-      validate(fields()[9], value);
+      validate(fields()[10], value);
       this.playEndTime = value;
-      fieldSetFlags()[9] = true;
+      fieldSetFlags()[10] = true;
       return this; 
     }
     
     /** Checks whether the 'playEndTime' field has been set */
     public boolean hasPlayEndTime() {
-      return fieldSetFlags()[9];
+      return fieldSetFlags()[10];
     }
     
     /** Clears the value of the 'playEndTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearPlayEndTime() {
       playEndTime = null;
-      fieldSetFlags()[9] = false;
+      fieldSetFlags()[10] = false;
       return this;
     }
 
@@ -892,21 +945,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'playDurationTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setPlayDurationTime(java.lang.Long value) {
-      validate(fields()[10], value);
+      validate(fields()[11], value);
       this.playDurationTime = value;
-      fieldSetFlags()[10] = true;
+      fieldSetFlags()[11] = true;
       return this; 
     }
     
     /** Checks whether the 'playDurationTime' field has been set */
     public boolean hasPlayDurationTime() {
-      return fieldSetFlags()[10];
+      return fieldSetFlags()[11];
     }
     
     /** Clears the value of the 'playDurationTime' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearPlayDurationTime() {
       playDurationTime = null;
-      fieldSetFlags()[10] = false;
+      fieldSetFlags()[11] = false;
       return this;
     }
 
@@ -917,21 +970,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'avgspeed' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setAvgspeed(java.lang.Long value) {
-      validate(fields()[11], value);
+      validate(fields()[12], value);
       this.avgspeed = value;
-      fieldSetFlags()[11] = true;
+      fieldSetFlags()[12] = true;
       return this; 
     }
     
     /** Checks whether the 'avgspeed' field has been set */
     public boolean hasAvgspeed() {
-      return fieldSetFlags()[11];
+      return fieldSetFlags()[12];
     }
     
     /** Clears the value of the 'avgspeed' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearAvgspeed() {
       avgspeed = null;
-      fieldSetFlags()[11] = false;
+      fieldSetFlags()[12] = false;
       return this;
     }
 
@@ -942,20 +995,20 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'isAdMod' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setIsAdMod(boolean value) {
-      validate(fields()[12], value);
+      validate(fields()[13], value);
       this.isAdMod = value;
-      fieldSetFlags()[12] = true;
+      fieldSetFlags()[13] = true;
       return this; 
     }
     
     /** Checks whether the 'isAdMod' field has been set */
     public boolean hasIsAdMod() {
-      return fieldSetFlags()[12];
+      return fieldSetFlags()[13];
     }
     
     /** Clears the value of the 'isAdMod' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearIsAdMod() {
-      fieldSetFlags()[12] = false;
+      fieldSetFlags()[13] = false;
       return this;
     }
 
@@ -966,20 +1019,20 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'isRepeatMod' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setIsRepeatMod(boolean value) {
-      validate(fields()[13], value);
+      validate(fields()[14], value);
       this.isRepeatMod = value;
-      fieldSetFlags()[13] = true;
+      fieldSetFlags()[14] = true;
       return this; 
     }
     
     /** Checks whether the 'isRepeatMod' field has been set */
     public boolean hasIsRepeatMod() {
-      return fieldSetFlags()[13];
+      return fieldSetFlags()[14];
     }
     
     /** Clears the value of the 'isRepeatMod' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearIsRepeatMod() {
-      fieldSetFlags()[13] = false;
+      fieldSetFlags()[14] = false;
       return this;
     }
 
@@ -990,21 +1043,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'pid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setPid(java.lang.CharSequence value) {
-      validate(fields()[14], value);
+      validate(fields()[15], value);
       this.pid = value;
-      fieldSetFlags()[14] = true;
+      fieldSetFlags()[15] = true;
       return this; 
     }
     
     /** Checks whether the 'pid' field has been set */
     public boolean hasPid() {
-      return fieldSetFlags()[14];
+      return fieldSetFlags()[15];
     }
     
     /** Clears the value of the 'pid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearPid() {
       pid = null;
-      fieldSetFlags()[14] = false;
+      fieldSetFlags()[15] = false;
       return this;
     }
 
@@ -1015,21 +1068,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'epgid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setEpgid(java.lang.Long value) {
-      validate(fields()[15], value);
+      validate(fields()[16], value);
       this.epgid = value;
-      fieldSetFlags()[15] = true;
+      fieldSetFlags()[16] = true;
       return this; 
     }
     
     /** Checks whether the 'epgid' field has been set */
     public boolean hasEpgid() {
-      return fieldSetFlags()[15];
+      return fieldSetFlags()[16];
     }
     
     /** Clears the value of the 'epgid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearEpgid() {
       epgid = null;
-      fieldSetFlags()[15] = false;
+      fieldSetFlags()[16] = false;
       return this;
     }
 
@@ -1040,21 +1093,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'secid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setSecid(java.lang.CharSequence value) {
-      validate(fields()[16], value);
+      validate(fields()[17], value);
       this.secid = value;
-      fieldSetFlags()[16] = true;
+      fieldSetFlags()[17] = true;
       return this; 
     }
     
     /** Checks whether the 'secid' field has been set */
     public boolean hasSecid() {
-      return fieldSetFlags()[16];
+      return fieldSetFlags()[17];
     }
     
     /** Clears the value of the 'secid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearSecid() {
       secid = null;
-      fieldSetFlags()[16] = false;
+      fieldSetFlags()[17] = false;
       return this;
     }
 
@@ -1065,21 +1118,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'bitrate' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setBitrate(java.lang.Long value) {
-      validate(fields()[17], value);
+      validate(fields()[18], value);
       this.bitrate = value;
-      fieldSetFlags()[17] = true;
+      fieldSetFlags()[18] = true;
       return this; 
     }
     
     /** Checks whether the 'bitrate' field has been set */
     public boolean hasBitrate() {
-      return fieldSetFlags()[17];
+      return fieldSetFlags()[18];
     }
     
     /** Clears the value of the 'bitrate' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearBitrate() {
       bitrate = null;
-      fieldSetFlags()[17] = false;
+      fieldSetFlags()[18] = false;
       return this;
     }
 
@@ -1090,21 +1143,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'mid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setMid(java.lang.Long value) {
-      validate(fields()[18], value);
+      validate(fields()[19], value);
       this.mid = value;
-      fieldSetFlags()[18] = true;
+      fieldSetFlags()[19] = true;
       return this; 
     }
     
     /** Checks whether the 'mid' field has been set */
     public boolean hasMid() {
-      return fieldSetFlags()[18];
+      return fieldSetFlags()[19];
     }
     
     /** Clears the value of the 'mid' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearMid() {
       mid = null;
-      fieldSetFlags()[18] = false;
+      fieldSetFlags()[19] = false;
       return this;
     }
 
@@ -1115,21 +1168,21 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
     
     /** Sets the value of the 'currSeries' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder setCurrSeries(java.lang.Long value) {
-      validate(fields()[19], value);
+      validate(fields()[20], value);
       this.currSeries = value;
-      fieldSetFlags()[19] = true;
+      fieldSetFlags()[20] = true;
       return this; 
     }
     
     /** Checks whether the 'currSeries' field has been set */
     public boolean hasCurrSeries() {
-      return fieldSetFlags()[19];
+      return fieldSetFlags()[20];
     }
     
     /** Clears the value of the 'currSeries' field */
     public com.voole.hobbit.avro.hive.HiveOrderRecord.Builder clearCurrSeries() {
       currSeries = null;
-      fieldSetFlags()[19] = false;
+      fieldSetFlags()[20] = false;
       return this;
     }
 
@@ -1138,25 +1191,26 @@ public class HiveOrderRecord extends org.apache.avro.specific.SpecificRecordBase
       try {
         HiveOrderRecord record = new HiveOrderRecord();
         record.sessID = fieldSetFlags()[0] ? this.sessID : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.UID = fieldSetFlags()[1] ? this.UID : (java.lang.CharSequence) defaultValue(fields()[1]);
-        record.HID = fieldSetFlags()[2] ? this.HID : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.OEMID = fieldSetFlags()[3] ? this.OEMID : (java.lang.Long) defaultValue(fields()[3]);
-        record.natip = fieldSetFlags()[4] ? this.natip : (java.lang.Long) defaultValue(fields()[4]);
-        record.areaid = fieldSetFlags()[5] ? this.areaid : (java.lang.Integer) defaultValue(fields()[5]);
-        record.FID = fieldSetFlags()[6] ? this.FID : (java.lang.CharSequence) defaultValue(fields()[6]);
-        record.playBgnTime = fieldSetFlags()[7] ? this.playBgnTime : (java.lang.Long) defaultValue(fields()[7]);
-        record.playAliveTime = fieldSetFlags()[8] ? this.playAliveTime : (java.lang.Long) defaultValue(fields()[8]);
-        record.playEndTime = fieldSetFlags()[9] ? this.playEndTime : (java.lang.Long) defaultValue(fields()[9]);
-        record.playDurationTime = fieldSetFlags()[10] ? this.playDurationTime : (java.lang.Long) defaultValue(fields()[10]);
-        record.avgspeed = fieldSetFlags()[11] ? this.avgspeed : (java.lang.Long) defaultValue(fields()[11]);
-        record.isAdMod = fieldSetFlags()[12] ? this.isAdMod : (java.lang.Boolean) defaultValue(fields()[12]);
-        record.isRepeatMod = fieldSetFlags()[13] ? this.isRepeatMod : (java.lang.Boolean) defaultValue(fields()[13]);
-        record.pid = fieldSetFlags()[14] ? this.pid : (java.lang.CharSequence) defaultValue(fields()[14]);
-        record.epgid = fieldSetFlags()[15] ? this.epgid : (java.lang.Long) defaultValue(fields()[15]);
-        record.secid = fieldSetFlags()[16] ? this.secid : (java.lang.CharSequence) defaultValue(fields()[16]);
-        record.bitrate = fieldSetFlags()[17] ? this.bitrate : (java.lang.Long) defaultValue(fields()[17]);
-        record.mid = fieldSetFlags()[18] ? this.mid : (java.lang.Long) defaultValue(fields()[18]);
-        record.currSeries = fieldSetFlags()[19] ? this.currSeries : (java.lang.Long) defaultValue(fields()[19]);
+        record.spid = fieldSetFlags()[1] ? this.spid : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.UID = fieldSetFlags()[2] ? this.UID : (java.lang.CharSequence) defaultValue(fields()[2]);
+        record.HID = fieldSetFlags()[3] ? this.HID : (java.lang.CharSequence) defaultValue(fields()[3]);
+        record.OEMID = fieldSetFlags()[4] ? this.OEMID : (java.lang.Long) defaultValue(fields()[4]);
+        record.natip = fieldSetFlags()[5] ? this.natip : (java.lang.Long) defaultValue(fields()[5]);
+        record.areaid = fieldSetFlags()[6] ? this.areaid : (java.lang.Integer) defaultValue(fields()[6]);
+        record.FID = fieldSetFlags()[7] ? this.FID : (java.lang.CharSequence) defaultValue(fields()[7]);
+        record.playBgnTime = fieldSetFlags()[8] ? this.playBgnTime : (java.lang.Long) defaultValue(fields()[8]);
+        record.playAliveTime = fieldSetFlags()[9] ? this.playAliveTime : (java.lang.Long) defaultValue(fields()[9]);
+        record.playEndTime = fieldSetFlags()[10] ? this.playEndTime : (java.lang.Long) defaultValue(fields()[10]);
+        record.playDurationTime = fieldSetFlags()[11] ? this.playDurationTime : (java.lang.Long) defaultValue(fields()[11]);
+        record.avgspeed = fieldSetFlags()[12] ? this.avgspeed : (java.lang.Long) defaultValue(fields()[12]);
+        record.isAdMod = fieldSetFlags()[13] ? this.isAdMod : (java.lang.Boolean) defaultValue(fields()[13]);
+        record.isRepeatMod = fieldSetFlags()[14] ? this.isRepeatMod : (java.lang.Boolean) defaultValue(fields()[14]);
+        record.pid = fieldSetFlags()[15] ? this.pid : (java.lang.CharSequence) defaultValue(fields()[15]);
+        record.epgid = fieldSetFlags()[16] ? this.epgid : (java.lang.Long) defaultValue(fields()[16]);
+        record.secid = fieldSetFlags()[17] ? this.secid : (java.lang.CharSequence) defaultValue(fields()[17]);
+        record.bitrate = fieldSetFlags()[18] ? this.bitrate : (java.lang.Long) defaultValue(fields()[18]);
+        record.mid = fieldSetFlags()[19] ? this.mid : (java.lang.Long) defaultValue(fields()[19]);
+        record.currSeries = fieldSetFlags()[20] ? this.currSeries : (java.lang.Long) defaultValue(fields()[20]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

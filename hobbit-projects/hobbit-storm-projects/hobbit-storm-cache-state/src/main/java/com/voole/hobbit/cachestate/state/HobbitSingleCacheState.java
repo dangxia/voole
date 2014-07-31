@@ -3,7 +3,7 @@
  */
 package com.voole.hobbit.cachestate.state;
 
-import com.voole.hobbit.cachestate.cache.HobbitCache;
+import com.voole.hobbit.cache.HobbitCache;
 
 /**
  * @author XuehuiHe

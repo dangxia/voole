@@ -21,6 +21,8 @@ import com.voole.hobbit.avro.termial.OrderPlayBgnReqV2;
 import com.voole.hobbit.avro.termial.OrderPlayBgnReqV3;
 import com.voole.hobbit.avro.termial.OrderPlayEndReqV2;
 import com.voole.hobbit.avro.termial.OrderPlayEndReqV3;
+import com.voole.hobbit.hive.order.cache.HiveOrderCache;
+import com.voole.hobbit.hive.order.cache.HiveOrderCacheImpl;
 import com.voole.monitor2.playurl.PlayurlAnalyzer;
 
 /**
@@ -33,6 +35,22 @@ public class HiveOrderInputReducer extends
 	private Text record = new Text();
 	private SessionInfo sessionInfo = new SessionInfo();
 	private List<Object> srvs = new ArrayList<Object>();
+	private HiveOrderCache hiveOrderCache;
+
+	@Override
+	protected void setup(Context context) throws IOException,
+			InterruptedException {
+		hiveOrderCache = new HiveOrderCacheImpl();
+		hiveOrderCache.open();
+	}
+
+	@Override
+	protected void cleanup(Context context) throws IOException,
+			InterruptedException {
+		if (hiveOrderCache != null) {
+			hiveOrderCache.close();
+		}
+	}
 
 	@Override
 	protected void reduce(Text sessionId,
@@ -163,6 +181,7 @@ public class HiveOrderInputReducer extends
 	protected void afterFill(HiveOrderRecord record, String url) {
 		processUrl(record, url);
 		fidHidToUperCase(record);
+		hiveOrderCache.deal(record);
 	}
 
 	protected void processUrl(HiveOrderRecord record, String url) {

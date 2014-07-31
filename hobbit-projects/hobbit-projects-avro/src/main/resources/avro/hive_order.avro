@@ -5,6 +5,9 @@
 	"fields" : [ {
 		"name" : "sessID",
 		"type" : "string"
+	},{
+		"name" : "spid",
+		"type" : [ "string", "null" ]
 	}, {
 		"name" : "UID",
 		"type" : [ "string", "null" ]

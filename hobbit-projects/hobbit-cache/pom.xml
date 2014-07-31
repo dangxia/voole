@@ -5,18 +5,11 @@
 		<groupId>com.voole.hobbit</groupId>
 		<artifactId>hobbit-projects</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../</relativePath>
+		<relativePath>../</relativePath>
 	</parent>
-	<artifactId>hobbit-storm-cache-state</artifactId>
+	<artifactId>hobbit-cache</artifactId>
 
 	<dependencies>
-		<!-- storm deps -->
-		<dependency>
-			<groupId>org.apache.storm</groupId>
-			<artifactId>storm-core</artifactId>
-		</dependency>
-		<!--/ storm deps -->
-
 		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -64,7 +57,7 @@
 		<!-- /其他 -->
 		<dependency>
 			<groupId>com.voole.hobbit</groupId>
-			<artifactId>hobbit-cache</artifactId>
+			<artifactId>hobbit-projects-config</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

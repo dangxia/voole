@@ -9,12 +9,12 @@ import storm.trident.state.State;
 import storm.trident.state.StateFactory;
 import backtype.storm.task.IMetricsContext;
 
-import com.voole.hobbit.cachestate.cache.AreaInfoCacheImpl;
-import com.voole.hobbit.cachestate.cache.HobbitCache;
-import com.voole.hobbit.cachestate.cache.OemInfoCacheImpl;
-import com.voole.hobbit.cachestate.cache.ResourceInfoCacheImpl;
-import com.voole.hobbit.cachestate.db.CacheDao;
-import com.voole.hobbit.cachestate.db.CacheDaoUtil;
+import com.voole.hobbit.cache.AreaInfoCacheImpl;
+import com.voole.hobbit.cache.HobbitCache;
+import com.voole.hobbit.cache.OemInfoCacheImpl;
+import com.voole.hobbit.cache.ResourceInfoCacheImpl;
+import com.voole.hobbit.cache.db.CacheDao;
+import com.voole.hobbit.cache.db.CacheDaoUtil;
 
 public abstract class HobbitStateFactory implements StateFactory {
 

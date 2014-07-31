@@ -10,7 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.voole.hobbit.cachestate.cache.HobbitCache;
+import com.voole.hobbit.cache.HobbitCache;
 
 /**
  * @author XuehuiHe
