@@ -26,6 +26,7 @@ import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.CounterGroup;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
@@ -61,6 +62,8 @@ public class HiveOrderJob extends Configured implements Tool {
 		}
 		System.setProperty("HADOOP_USER_NAME", "root");
 		Job job = Job.getInstance(getConf());
+		job.getConfiguration().setBoolean(
+				MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
 		job.setJarByClass(HiveOrderJob.class);
 		job.setJobName(HiveOrderConfigs.getHiveOrderJobName(job));
 
