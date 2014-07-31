@@ -64,6 +64,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		Job job = Job.getInstance(getConf());
 		job.getConfiguration().setBoolean(
 				MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
+		job.setNumReduceTasks(6);
 		job.setJarByClass(HiveOrderJob.class);
 		job.setJobName(HiveOrderConfigs.getHiveOrderJobName(job));
 
