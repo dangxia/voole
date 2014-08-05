@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
+import org.apache.avro.mapreduce.AvroMultipleOutputs;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -39,11 +40,15 @@ public class HiveOrderInputReducer
 	NullWritable outValue = NullWritable.get();
 	AvroKey<HiveOrderRecord> outKey = new AvroKey<HiveOrderRecord>();
 
+	private AvroMultipleOutputs ass;
+
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 		hiveOrderCache = new HiveOrderCacheImpl();
 		hiveOrderCache.open();
+
+		ass = new AvroMultipleOutputs(context);
 	}
 
 	@Override
@@ -86,8 +91,9 @@ public class HiveOrderInputReducer
 		HiveOrderRecord orderRecord = sessionInfo.generateHiveOrderRecord(
 				sessionId.toString(), noendRecord);
 		if (orderRecord != null) {
-			outKey.datum(orderRecord);
-			context.write(outKey, outValue);
+			ass.write("simple", orderRecord);
+			// outKey.datum(orderRecord);
+			// context.write(outKey, outValue);
 		}
 	}
 
