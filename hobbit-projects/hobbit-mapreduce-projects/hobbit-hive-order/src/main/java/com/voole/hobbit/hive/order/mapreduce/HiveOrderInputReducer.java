@@ -57,6 +57,7 @@ public class HiveOrderInputReducer
 		if (hiveOrderCache != null) {
 			hiveOrderCache.close();
 		}
+		ass.close();
 	}
 
 	@Override
