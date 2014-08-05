@@ -92,7 +92,7 @@ public class HiveOrderInputReducer
 				sessionId.toString(), noendRecord);
 		if (orderRecord != null) {
 			outkey.datum(orderRecord);
-			if (orderRecord.getSecid().hashCode() % 2 == 0) {
+			if (orderRecord.getSessID().hashCode() % 2 == 0) {
 				ass.write("simple", outkey);
 			} else {
 				ass.write("test", outkey);
