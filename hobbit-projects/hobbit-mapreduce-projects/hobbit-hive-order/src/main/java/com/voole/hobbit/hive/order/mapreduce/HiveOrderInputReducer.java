@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.mapreduce.AvroMultipleOutputs;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -37,6 +38,7 @@ public class HiveOrderInputReducer
 	private List<Object> srvs = new ArrayList<Object>();
 	private HiveOrderCache hiveOrderCache;
 	NullWritable outValue = NullWritable.get();
+	AvroKey<HiveOrderRecord> outkey = new AvroKey<HiveOrderRecord>();
 
 	private AvroMultipleOutputs ass;
 
@@ -89,10 +91,11 @@ public class HiveOrderInputReducer
 		HiveOrderRecord orderRecord = sessionInfo.generateHiveOrderRecord(
 				sessionId.toString(), noendRecord);
 		if (orderRecord != null) {
+			outkey.datum(orderRecord);
 			if (orderRecord.getSecid().hashCode() % 2 == 0) {
-				ass.write("simple", orderRecord);
+				ass.write("simple", outkey);
 			} else {
-				ass.write("test", orderRecord);
+				ass.write("test", outkey);
 			}
 
 			// outKey.datum(orderRecord);
