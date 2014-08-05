@@ -22,7 +22,6 @@ import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.CounterGroup;
@@ -94,14 +93,15 @@ public class HiveOrderJob extends Configured implements Tool {
 		AvroJob.setMapOutputValueSchema(job, getMapValueSchema());
 		// AvroJob.setOutputKeySchema(job, HiveOrderRecord.getClassSchema());
 
-//		job.setOutputValueClass(NullWritable.class);
+		// job.setOutputValueClass(NullWritable.class);
 
 		job.setMapperClass(HiveOrderInputMapper.class);
 		job.setReducerClass(HiveOrderInputReducer.class);
 
 		AvroMultipleOutputs.addNamedOutput(job, "simple",
 				AvroKeyOutputFormat.class, HiveOrderRecord.getClassSchema());
-
+		AvroMultipleOutputs.addNamedOutput(job, "test",
+				AvroKeyOutputFormat.class, HiveOrderRecord.getClassSchema());
 		// job.setOutputFormatClass(AvroKeyOutputFormat.class);
 
 		try {
