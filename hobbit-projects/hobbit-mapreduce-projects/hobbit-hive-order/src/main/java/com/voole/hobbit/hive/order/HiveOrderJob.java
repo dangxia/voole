@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.avro.Schema;
+import org.apache.avro.Schema.Type;
 import org.apache.avro.mapreduce.AvroJob;
+import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -20,7 +22,6 @@ import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.CounterGroup;
@@ -29,7 +30,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
@@ -91,13 +91,15 @@ public class HiveOrderJob extends Configured implements Tool {
 		job.setMapOutputKeyClass(Text.class);
 
 		AvroJob.setMapOutputValueSchema(job, getMapValueSchema());
+		AvroJob.setOutputValueSchema(job, HiveOrderRecord.getClassSchema());
+		AvroJob.setOutputKeySchema(job, Schema.create(Type.NULL));
 
 		job.setMapperClass(HiveOrderInputMapper.class);
-
 		job.setReducerClass(HiveOrderInputReducer.class);
-		job.setOutputKeyClass(LongWritable.class);
-		job.setOutputValueClass(Text.class);
-		job.setOutputFormatClass(TextOutputFormat.class);
+		job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
+		// job.setOutputKeyClass(LongWritable.class);
+		// job.setOutputValueClass(Text.class);
+		// job.setOutputFormatClass(TextOutputFormat.class);
 
 		try {
 			job.submit();
