@@ -123,7 +123,7 @@ public class HiveOrderJob extends Configured implements Tool {
 			}
 		}
 
-		fs.rename(newExecutionOutput, execHistory);
+//		fs.rename(newExecutionOutput, execHistory);
 
 		log.info("Job finished");
 
