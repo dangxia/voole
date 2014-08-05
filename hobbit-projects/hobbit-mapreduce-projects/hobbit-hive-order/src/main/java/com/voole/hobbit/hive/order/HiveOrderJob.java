@@ -91,7 +91,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		job.setMapOutputKeyClass(Text.class);
 
 		AvroJob.setMapOutputValueSchema(job, getMapValueSchema());
-		// AvroJob.setOutputKeySchema(job, HiveOrderRecord.getClassSchema());
+		AvroJob.setOutputKeySchema(job, HiveOrderRecord.getClassSchema());
 
 		// job.setOutputValueClass(NullWritable.class);
 
