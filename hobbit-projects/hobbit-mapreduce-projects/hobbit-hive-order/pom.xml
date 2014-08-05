@@ -11,6 +11,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-jdbc</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.voole.hobbit</groupId>
 			<artifactId>hobbit-cache</artifactId>
 			<version>${project.version}</version>

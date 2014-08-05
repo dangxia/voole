@@ -15,9 +15,15 @@
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<protobuf.version>2.5.0</protobuf.version>
 		<avro.version>1.7.7</avro.version>
+		<hive.version>0.13.1</hive.version>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.apache.hive</groupId>
+				<artifactId>hive-jdbc</artifactId>
+				<version>${hive.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.avro</groupId>
 				<artifactId>avro</artifactId>

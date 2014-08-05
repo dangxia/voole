@@ -5,6 +5,10 @@ package com.voole.hobbit.hive.order;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +26,7 @@ import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.CounterGroup;
@@ -50,6 +55,7 @@ import com.voole.hobbit.hive.order.mapreduce.HiveOrderRecordInputFormat;
  * @date 2014年7月29日
  */
 public class HiveOrderJob extends Configured implements Tool {
+	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
 	private static org.apache.log4j.Logger log = Logger
 			.getLogger(HiveOrderJob.class);
 	private static SimpleDateFormat df = new SimpleDateFormat(
@@ -123,26 +129,46 @@ public class HiveOrderJob extends Configured implements Tool {
 			}
 		}
 
-		fs.rename(newExecutionOutput, execHistory);
-
 		log.info("Job finished");
-
-		// if (!job.isSuccessful()) {
-		// JobClient client = new JobClient(
-		// new JobConf(job.getConfiguration()));
-		//
-		// TaskCompletionEvent[] tasks = job.getTaskCompletionEvents(0);
-		//
-		// for (TaskReport task : client.getMapTaskReports(tasks[0]
-		// .getTaskAttemptId().getJobID())) {
-		// if (task.getCurrentStatus().equals(TIPStatus.FAILED)) {
-		// for (String s : task.getDiagnostics()) {
-		// System.err.println("task error: " + s);
-		// }
-		// }
-		// }
-		// throw new RuntimeException("hadoop job failed");
-		// }
+		if (job.isSuccessful()) {
+			FileStatus[] files = fs.listStatus(newExecutionOutput,
+					new PathFilter() {
+						@Override
+						public boolean accept(Path path) {
+							return path.toUri().getPath().startsWith("record");
+						}
+					});
+			for (FileStatus fileStatus : files) {
+				fileStatus.getPath().toUri().getPath();
+				Class.forName(driverName);
+				Connection con = DriverManager.getConnection(
+						"jdbc:hive://data-master.voole.com:10000/default", "", "");
+				Statement stmt = con.createStatement();
+				String tableName = "testHiveDriverTable";
+				stmt.executeQuery("drop table " + tableName);
+				ResultSet res = stmt.executeQuery("create table " + tableName
+						+ " (key int, value string)");
+				// show tables
+				String sql = "show tables '" + tableName + "'";
+				System.out.println("Running: " + sql);
+				res = stmt.executeQuery(sql);
+				if (res.next()) {
+					System.out.println(res.getString(1));
+				}
+				// describe table
+				sql = "describe " + tableName;
+				System.out.println("Running: " + sql);
+				res = stmt.executeQuery(sql);
+				while (res.next()) {
+					System.out.println(res.getString(1) + "\t"
+							+ res.getString(2));
+				}
+			}
+			fs.rename(newExecutionOutput, execHistory);
+			log.info("Job finished");
+		} else {
+			log.info("Job failed");
+		}
 
 		return 0;
 	}
