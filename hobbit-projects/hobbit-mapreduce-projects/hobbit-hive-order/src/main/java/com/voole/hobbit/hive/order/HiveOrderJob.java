@@ -13,7 +13,7 @@ import java.util.Properties;
 
 import org.apache.avro.Schema;
 import org.apache.avro.mapreduce.AvroJob;
-import org.apache.avro.mapreduce.AvroSequenceFileOutputFormat;
+import org.apache.avro.mapreduce.AvroKeyOutputFormat;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -91,13 +91,14 @@ public class HiveOrderJob extends Configured implements Tool {
 		job.setMapOutputKeyClass(Text.class);
 
 		AvroJob.setMapOutputValueSchema(job, getMapValueSchema());
-		AvroJob.setOutputValueSchema(job, HiveOrderRecord.getClassSchema());
-		// AvroJob.setOutputKeySchema(job, Schema.create(Type.NULL));
+		// AvroJob.setOutputValueSchema(job, HiveOrderRecord.getClassSchema());
+		AvroJob.setOutputKeySchema(job, HiveOrderRecord.getClassSchema());
+
+		job.setOutputValueClass(NullWritable.class);
 
 		job.setMapperClass(HiveOrderInputMapper.class);
 		job.setReducerClass(HiveOrderInputReducer.class);
-		job.setOutputKeyClass(NullWritable.class);
-		job.setOutputFormatClass(AvroSequenceFileOutputFormat.class);
+		job.setOutputFormatClass(AvroKeyOutputFormat.class);
 		// job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
 		// job.setOutputKeyClass(LongWritable.class);
 		// job.setOutputValueClass(Text.class);

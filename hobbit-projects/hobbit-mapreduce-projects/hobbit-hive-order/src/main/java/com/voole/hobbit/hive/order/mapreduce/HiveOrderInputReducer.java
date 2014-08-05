@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
@@ -31,12 +32,12 @@ import com.voole.monitor2.playurl.PlayurlAnalyzer;
  */
 public class HiveOrderInputReducer
 		extends
-		Reducer<Text, AvroValue<SpecificRecordBase>, NullWritable, AvroValue<HiveOrderRecord>> {
+		Reducer<Text, AvroValue<SpecificRecordBase>, AvroKey<HiveOrderRecord>, NullWritable> {
 	private SessionInfo sessionInfo = new SessionInfo();
 	private List<Object> srvs = new ArrayList<Object>();
 	private HiveOrderCache hiveOrderCache;
-	NullWritable outKey = NullWritable.get();
-	AvroValue<HiveOrderRecord> outValue = new AvroValue<HiveOrderRecord>();
+	NullWritable outValue = NullWritable.get();
+	AvroKey<HiveOrderRecord> outKey = new AvroKey<HiveOrderRecord>();
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -85,7 +86,7 @@ public class HiveOrderInputReducer
 		HiveOrderRecord orderRecord = sessionInfo.generateHiveOrderRecord(
 				sessionId.toString(), noendRecord);
 		if (orderRecord != null) {
-			outValue.datum(orderRecord);
+			outKey.datum(orderRecord);
 			context.write(outKey, outValue);
 		}
 	}
