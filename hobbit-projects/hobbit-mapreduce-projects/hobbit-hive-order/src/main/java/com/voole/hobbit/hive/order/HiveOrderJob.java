@@ -132,12 +132,14 @@ public class HiveOrderJob extends Configured implements Tool {
 					new PathFilter() {
 						@Override
 						public boolean accept(Path path) {
+							System.out.println(path.toUri().getPath());
 							return path.toUri().getPath().startsWith("record");
 						}
 					});
 			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
 					"hive-db.xml");
 			JdbcTemplate hiveClient = cxt.getBean(JdbcTemplate.class);
+			System.out.println("files site:" + files.length);
 			for (FileStatus fileStatus : files) {
 				String resultFilePath = fileStatus.getPath().toUri().getPath();
 				String sql = "LOAD DATA  INPATH '" + resultFilePath
