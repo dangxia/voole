@@ -5,10 +5,6 @@ package com.voole.hobbit.hive.order;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,6 +34,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.voole.hobbit.avro.hive.HiveOrderRecord;
 import com.voole.hobbit.avro.termial.OrderPlayAliveReqV2;
@@ -55,7 +53,6 @@ import com.voole.hobbit.hive.order.mapreduce.HiveOrderRecordInputFormat;
  * @date 2014年7月29日
  */
 public class HiveOrderJob extends Configured implements Tool {
-	private static String driverName = "org.apache.hadoop.hive.jdbc.HiveDriver";
 	private static org.apache.log4j.Logger log = Logger
 			.getLogger(HiveOrderJob.class);
 	private static SimpleDateFormat df = new SimpleDateFormat(
@@ -106,7 +103,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		job.setMapperClass(HiveOrderInputMapper.class);
 		job.setReducerClass(HiveOrderInputReducer.class);
 
-		AvroMultipleOutputs.addNamedOutput(job, "simple",
+		AvroMultipleOutputs.addNamedOutput(job, "record",
 				AvroKeyOutputFormat.class, HiveOrderRecord.getClassSchema());
 		AvroMultipleOutputs.addNamedOutput(job, "test",
 				AvroKeyOutputFormat.class, HiveOrderRecord.getClassSchema());
@@ -138,32 +135,16 @@ public class HiveOrderJob extends Configured implements Tool {
 							return path.toUri().getPath().startsWith("record");
 						}
 					});
+			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
+					"hive-db.xml");
+			JdbcTemplate hiveClient = cxt.getBean(JdbcTemplate.class);
 			for (FileStatus fileStatus : files) {
-				fileStatus.getPath().toUri().getPath();
-				Class.forName(driverName);
-				Connection con = DriverManager.getConnection(
-						"jdbc:hive://data-master.voole.com:10000/default", "", "");
-				Statement stmt = con.createStatement();
-				String tableName = "testHiveDriverTable";
-				stmt.executeQuery("drop table " + tableName);
-				ResultSet res = stmt.executeQuery("create table " + tableName
-						+ " (key int, value string)");
-				// show tables
-				String sql = "show tables '" + tableName + "'";
-				System.out.println("Running: " + sql);
-				res = stmt.executeQuery(sql);
-				if (res.next()) {
-					System.out.println(res.getString(1));
-				}
-				// describe table
-				sql = "describe " + tableName;
-				System.out.println("Running: " + sql);
-				res = stmt.executeQuery(sql);
-				while (res.next()) {
-					System.out.println(res.getString(1) + "\t"
-							+ res.getString(2));
-				}
+				String resultFilePath = fileStatus.getPath().toUri().getPath();
+				String sql = "LOAD DATA  INPATH '" + resultFilePath
+						+ "'  INTO TABLE tablename";
+				hiveClient.execute(sql);
 			}
+			cxt.close();
 			fs.rename(newExecutionOutput, execHistory);
 			log.info("Job finished");
 		} else {
