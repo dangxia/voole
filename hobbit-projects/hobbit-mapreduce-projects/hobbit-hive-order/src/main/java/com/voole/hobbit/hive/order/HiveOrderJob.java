@@ -142,7 +142,7 @@ public class HiveOrderJob extends Configured implements Tool {
 			for (FileStatus fileStatus : files) {
 				String resultFilePath = fileStatus.getPath().toUri().getPath();
 				String sql = "LOAD DATA  INPATH '" + resultFilePath
-						+ "'  INTO TABLE tablename";
+						+ "'  INTO TABLE order_record";
 				hiveClient.execute(sql);
 			}
 			cxt.close();
