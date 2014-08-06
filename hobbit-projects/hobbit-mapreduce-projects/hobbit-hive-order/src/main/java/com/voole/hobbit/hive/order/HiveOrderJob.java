@@ -132,8 +132,7 @@ public class HiveOrderJob extends Configured implements Tool {
 					new PathFilter() {
 						@Override
 						public boolean accept(Path path) {
-							System.out.println(path.toUri().getPath());
-							return path.toUri().getPath().startsWith("record");
+							return path.getName().startsWith("record");
 						}
 					});
 			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
