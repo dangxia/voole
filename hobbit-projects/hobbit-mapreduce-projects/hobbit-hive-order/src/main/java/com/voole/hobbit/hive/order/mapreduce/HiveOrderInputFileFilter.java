@@ -36,6 +36,7 @@ public class HiveOrderInputFileFilter {
 				if (stamp > maxStamp) {
 					maxStamp = stamp;
 				}
+				System.out.println(path.toUri().getPath());
 				return true;
 			}
 		}
