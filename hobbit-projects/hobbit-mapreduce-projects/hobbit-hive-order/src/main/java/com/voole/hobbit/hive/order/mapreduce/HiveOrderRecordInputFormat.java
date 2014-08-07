@@ -57,6 +57,7 @@ public class HiveOrderRecordInputFormat<T> extends
 		if (result.size() == 0) {
 			throw new IOException("No input paths specified in job");
 		}
+		HiveOrderConfigs.setCurrCamusMaxStamp(job, fileFilter.getMaxStamp());
 		return result;
 
 	}

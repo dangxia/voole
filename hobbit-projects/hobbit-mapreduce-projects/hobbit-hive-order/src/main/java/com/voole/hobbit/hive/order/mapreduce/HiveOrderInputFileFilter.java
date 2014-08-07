@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
 
+import com.voole.hobbit.hive.order.HiveOrderConfigs;
+
 /**
  * @author XuehuiHe
  * @date 2014年7月29日
@@ -16,9 +18,10 @@ import org.apache.hadoop.mapreduce.JobContext;
 public class HiveOrderInputFileFilter {
 	private final long lastStamp;
 	private final Pattern p = Pattern.compile("(\\d+)\\.\\w+$");
+	private long maxStamp = 0l;
 
 	public HiveOrderInputFileFilter(JobContext job) {
-		lastStamp = 1406777361763l;
+		lastStamp = HiveOrderConfigs.getPrevCamusMaxStamp(job);
 	}
 
 	public boolean accept(Path path) {
@@ -29,9 +32,22 @@ public class HiveOrderInputFileFilter {
 		Matcher m = p.matcher(url);
 		if (m.find()) {
 			long stamp = Long.parseLong(m.group(1));
-			return stamp > lastStamp;
+			if (stamp > lastStamp) {
+				if (stamp > maxStamp) {
+					maxStamp = stamp;
+				}
+				return true;
+			}
 		}
 		return false;
+	}
+
+	public long getMaxStamp() {
+		return maxStamp;
+	}
+
+	public void setMaxStamp(long maxStamp) {
+		this.maxStamp = maxStamp;
 	}
 
 }

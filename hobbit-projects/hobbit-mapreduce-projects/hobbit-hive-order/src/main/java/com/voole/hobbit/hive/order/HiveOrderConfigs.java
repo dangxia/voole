@@ -21,6 +21,11 @@ public class HiveOrderConfigs {
 	public static final String HIVE_ORDER_EXECUTION_BASE_PATH = "hive.order.execution.base.path";
 	public static final String HIVE_ORDER_EXECUTION_HISTORY_PATH = "hive.order.execution.history.path";
 	public static final String HIVE_ORDER_DESTINATION_PATH = "hive.order.destination.path";
+
+	public static final String CAMUS_MAX_STAMP_FILE_NAME = "camus_max_stamp_file";
+
+	public static final String CURR_CAMUS_MAX_STAMP = "curr.camus.max.stamp";
+	public static final String PREV_CAMUS_MAX_STAMP = "prev.camus.max.stamp";
 	private static InputSplitSchemaManager inputSplitSchemaManager = null;
 
 	public static InputSplitSchemaManager getInputSplitSchema(JobContext job) {
@@ -57,6 +62,22 @@ public class HiveOrderConfigs {
 
 	public static Path getHiveOrderrDestinationPath(JobContext job) {
 		return new Path(job.getConfiguration().get(HIVE_ORDER_DESTINATION_PATH));
+	}
+
+	public static long getCurrCamusMaxStamp(JobContext job) {
+		return job.getConfiguration().getLong(CURR_CAMUS_MAX_STAMP, 0l);
+	}
+
+	public static void setCurrCamusMaxStamp(JobContext job, long maxStamp) {
+		job.getConfiguration().setLong(CURR_CAMUS_MAX_STAMP, maxStamp);
+	}
+
+	public static long getPrevCamusMaxStamp(JobContext job) {
+		return job.getConfiguration().getLong(PREV_CAMUS_MAX_STAMP, 0l);
+	}
+
+	public static void setPrevCamusMaxStamp(JobContext job, long maxStamp) {
+		job.getConfiguration().setLong(PREV_CAMUS_MAX_STAMP, maxStamp);
 	}
 
 }

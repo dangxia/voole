@@ -23,6 +23,11 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.SequenceFile.Reader;
+import org.apache.hadoop.io.SequenceFile.Writer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.CounterGroup;
@@ -105,7 +110,7 @@ public class HiveOrderJob extends Configured implements Tool {
 
 		AvroMultipleOutputs.addNamedOutput(job, "record",
 				AvroKeyOutputFormat.class, HiveOrderRecord.getClassSchema());
-		AvroMultipleOutputs.addNamedOutput(job, "test",
+		AvroMultipleOutputs.addNamedOutput(job, "noend",
 				AvroKeyOutputFormat.class, HiveOrderRecord.getClassSchema());
 		// job.setOutputFormatClass(AvroKeyOutputFormat.class);
 
@@ -146,6 +151,20 @@ public class HiveOrderJob extends Configured implements Tool {
 				hiveClient.execute(sql);
 			}
 			cxt.close();
+
+			Path currCamusMaxStamp = new Path(newExecutionOutput,
+					HiveOrderConfigs.CAMUS_MAX_STAMP_FILE_NAME);
+
+			Writer writer = SequenceFile.createWriter(job.getConfiguration(),
+					Writer.file(currCamusMaxStamp),
+					Writer.keyClass(NullWritable.class),
+					Writer.valueClass(LongWritable.class));
+
+			writer.append(
+					NullWritable.get(),
+					new LongWritable(HiveOrderConfigs.getCurrCamusMaxStamp(job)));
+			writer.close();
+
 			fs.rename(newExecutionOutput, execHistory);
 			log.info("Job finished");
 		} else {
@@ -216,6 +235,19 @@ public class HiveOrderJob extends Configured implements Tool {
 		if (executions.length > 0) {
 			Path previous = executions[executions.length - 1].getPath();
 			FileInputFormat.setInputPaths(job, previous);
+			Path prevMaxStamp = new Path(previous,
+					HiveOrderConfigs.CAMUS_MAX_STAMP_FILE_NAME);
+			if (fs.exists(prevMaxStamp)) {
+				Reader r = new SequenceFile.Reader(job.getConfiguration(),
+						SequenceFile.Reader.file(prevMaxStamp));
+				LongWritable prevMaxStampLongWritable = new LongWritable();
+				if (r.next(NullWritable.get(), prevMaxStampLongWritable)) {
+					HiveOrderConfigs.setPrevCamusMaxStamp(job,
+							prevMaxStampLongWritable.get());
+				}
+				r.close();
+			}
+
 			log.info("Previous execution: " + previous.toString());
 		} else {
 			System.out.println("No previous execution");
