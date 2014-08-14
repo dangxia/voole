@@ -26,6 +26,8 @@ public class HiveOrderConfigs {
 
 	public static final String CURR_CAMUS_MAX_STAMP = "curr.camus.max.stamp";
 	public static final String PREV_CAMUS_MAX_STAMP = "prev.camus.max.stamp";
+
+	public static final String HIVE_ORDER_EXECUTION_START_TIME = "hive.order.execution.start.time";
 	private static InputSplitSchemaManager inputSplitSchemaManager = null;
 
 	public static InputSplitSchemaManager getInputSplitSchema(JobContext job) {
@@ -78,6 +80,17 @@ public class HiveOrderConfigs {
 
 	public static void setPrevCamusMaxStamp(JobContext job, long maxStamp) {
 		job.getConfiguration().setLong(PREV_CAMUS_MAX_STAMP, maxStamp);
+	}
+
+	public static void setExecutionStartTime(JobContext job) {
+		long startTime = System.currentTimeMillis() / 1000;
+		job.getConfiguration().setLong(HIVE_ORDER_EXECUTION_START_TIME,
+				startTime);
+	}
+
+	public static long getExecutionStartTime(JobContext job) {
+		return job.getConfiguration().getLong(HIVE_ORDER_EXECUTION_START_TIME,
+				0l);
 	}
 
 }

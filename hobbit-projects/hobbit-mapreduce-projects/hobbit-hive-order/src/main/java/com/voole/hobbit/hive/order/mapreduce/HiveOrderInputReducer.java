@@ -23,6 +23,7 @@ import com.voole.hobbit.avro.termial.OrderPlayBgnReqV2;
 import com.voole.hobbit.avro.termial.OrderPlayBgnReqV3;
 import com.voole.hobbit.avro.termial.OrderPlayEndReqV2;
 import com.voole.hobbit.avro.termial.OrderPlayEndReqV3;
+import com.voole.hobbit.hive.order.HiveOrderConfigs;
 import com.voole.hobbit.hive.order.cache.HiveOrderCache;
 import com.voole.hobbit.hive.order.cache.HiveOrderCacheImpl;
 import com.voole.monitor2.playurl.PlayurlAnalyzer;
@@ -93,8 +94,29 @@ public class HiveOrderInputReducer
 				sessionId.toString(), noendRecord);
 		if (orderRecord != null) {
 			outkey.datum(orderRecord);
-			ass.write("record", outkey);
+			if (isEnd(orderRecord, context)) {
+				ass.write("record", outkey);
+			} else {
+				ass.write("noend", outkey);
+			}
+
 		}
+	}
+
+	private boolean isEnd(HiveOrderRecord orderRecord, Context context) {
+		Long last = null;
+		long startTime = HiveOrderConfigs.getExecutionStartTime(context);
+		if (orderRecord.getPlayEndTime() != null) {
+			last = orderRecord.getPlayEndTime();
+		} else if (orderRecord.getPlayAliveTime() != null) {
+			last = orderRecord.getPlayAliveTime();
+		} else {
+			last = orderRecord.getPlayBgnTime();
+		}
+		if (last != null) {
+			return last < startTime - 10 * 60;
+		}
+		return true;
 	}
 
 	// <!---fill alive bgn

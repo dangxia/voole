@@ -25,11 +25,14 @@ public class HiveOrderInputFileFilter {
 	}
 
 	public boolean accept(Path path) {
-		String url = path.toUri().getPath();
-		if (!url.endsWith("avro")) {
+		String name = path.getName();
+		if (!name.endsWith("avro")) {
 			return false;
 		}
-		Matcher m = p.matcher(url);
+		if (name.startsWith("noend")) {
+			return true;
+		}
+		Matcher m = p.matcher(name);
 		if (m.find()) {
 			long stamp = Long.parseLong(m.group(1));
 			if (stamp > lastStamp) {
