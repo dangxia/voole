@@ -105,7 +105,7 @@ public class HiveOrderInputReducer
 
 	private boolean isEnd(HiveOrderRecord orderRecord, Context context) {
 		Long last = null;
-		long startTime = HiveOrderConfigs.getExecutionStartTime(context);
+		long startTime = HiveOrderConfigs.getCurrCamusStartTime(context);
 		if (orderRecord.getPlayEndTime() != null) {
 			last = orderRecord.getPlayEndTime();
 		} else if (orderRecord.getPlayAliveTime() != null) {

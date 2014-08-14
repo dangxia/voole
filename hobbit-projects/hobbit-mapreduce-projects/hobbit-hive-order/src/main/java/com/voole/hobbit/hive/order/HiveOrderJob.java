@@ -114,7 +114,6 @@ public class HiveOrderJob extends Configured implements Tool {
 		AvroMultipleOutputs.addNamedOutput(job, "noend",
 				AvroKeyOutputFormat.class, HiveOrderRecord.getClassSchema());
 		// job.setOutputFormatClass(AvroKeyOutputFormat.class);
-		HiveOrderConfigs.setExecutionStartTime(job);
 		try {
 			job.submit();
 		} catch (Exception e) {
