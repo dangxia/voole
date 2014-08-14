@@ -24,6 +24,7 @@ import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.CounterGroup;
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
@@ -205,6 +206,7 @@ public class CamusJob extends Configured implements Tool {
 		}
 		conf.setLong(CamusConfigs.JOB_EXCUTION_STAMP,
 				System.currentTimeMillis());
+		conf.setBoolean(MRJobConfig.MAP_SPECULATIVE, false);
 		return true;
 	}
 
