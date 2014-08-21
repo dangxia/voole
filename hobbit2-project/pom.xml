@@ -288,4 +288,10 @@
 			</build>
 		</profile>
 	</profiles>
+	<modules>
+		<module>hobbit2-configs/hobbit2-config-props</module>
+		<module>hobbit2-configs/hobbit2-config-spring</module>
+		<module>hobbit2-tools/hobbit2-tools-common</module>
+		<module>hobbit2-tools/hobbit2-tools-kafka</module>
+	</modules>
 </project>
