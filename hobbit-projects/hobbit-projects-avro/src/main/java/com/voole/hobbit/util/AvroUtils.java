@@ -3,6 +3,13 @@
  */
 package com.voole.hobbit.util;
 
+import static com.voole.hobbit.util.TopicUtils.ORDER_ALIVE_V2;
+import static com.voole.hobbit.util.TopicUtils.ORDER_ALIVE_V3;
+import static com.voole.hobbit.util.TopicUtils.ORDER_BGN_V2;
+import static com.voole.hobbit.util.TopicUtils.ORDER_BGN_V3;
+import static com.voole.hobbit.util.TopicUtils.ORDER_END_V2;
+import static com.voole.hobbit.util.TopicUtils.ORDER_END_V3;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParseException;
@@ -14,8 +21,16 @@ import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
+import org.apache.avro.specific.SpecificRecordBase;
 
+import com.voole.hobbit.avro.termial.OrderPlayAliveReqV2;
+import com.voole.hobbit.avro.termial.OrderPlayAliveReqV3;
+import com.voole.hobbit.avro.termial.OrderPlayBgnReqV2;
+import com.voole.hobbit.avro.termial.OrderPlayBgnReqV3;
+import com.voole.hobbit.avro.termial.OrderPlayEndReqV2;
+import com.voole.hobbit.avro.termial.OrderPlayEndReqV3;
 import com.voole.hobbit.transformer.KafkaTransformException;
 
 /**
@@ -26,20 +41,44 @@ public class AvroUtils {
 	public static final SimpleDateFormat sf = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss");
 
-	public static final Map<Type, Class<?>> typeToClass = new HashMap<Type, Class<?>>();
+	public static final Map<Type, Class<?>> avroTypeToJavaClass = new HashMap<Type, Class<?>>();
 	static {
-		typeToClass.put(Type.INT, Integer.class);
-		typeToClass.put(Type.BOOLEAN, Boolean.class);
-		typeToClass.put(Type.DOUBLE, Double.class);
-		typeToClass.put(Type.ENUM, Enum.class);
-		typeToClass.put(Type.FLOAT, Float.class);
-		typeToClass.put(Type.LONG, Long.class);
-		typeToClass.put(Type.STRING, String.class);
+		avroTypeToJavaClass.put(Type.INT, Integer.class);
+		avroTypeToJavaClass.put(Type.BOOLEAN, Boolean.class);
+		avroTypeToJavaClass.put(Type.DOUBLE, Double.class);
+		avroTypeToJavaClass.put(Type.ENUM, Enum.class);
+		avroTypeToJavaClass.put(Type.FLOAT, Float.class);
+		avroTypeToJavaClass.put(Type.LONG, Long.class);
+		avroTypeToJavaClass.put(Type.STRING, String.class);
+	}
+
+	public static final Map<String, Schema> topicToSchema = new HashMap<String, Schema>();
+	static {
+		topicToSchema.put(ORDER_BGN_V2, OrderPlayBgnReqV2.getClassSchema());
+		topicToSchema.put(ORDER_BGN_V3, OrderPlayBgnReqV3.getClassSchema());
+
+		topicToSchema.put(ORDER_END_V2, OrderPlayEndReqV2.getClassSchema());
+		topicToSchema.put(ORDER_END_V3, OrderPlayEndReqV3.getClassSchema());
+
+		topicToSchema.put(ORDER_ALIVE_V2, OrderPlayAliveReqV2.getClassSchema());
+		topicToSchema.put(ORDER_ALIVE_V3, OrderPlayAliveReqV3.getClassSchema());
+	}
+
+	public static Schema getKafkaTopicSchema(String topic) {
+		return topicToSchema.get(topic);
 	}
 
 	public static Object get(Type type, String item)
 			throws TransformerException {
-		return get(typeToClass.get(type), item);
+		return get(avroTypeToJavaClass.get(type), item);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Class<? extends SpecificRecordBase> getSchemaClass(
+			Schema schema) throws ClassNotFoundException {
+		return ((Class<? extends SpecificRecordBase>) Class.forName(schema
+				.getFullName()));
+
 	}
 
 	public static Object get(Class<?> clazz, String b)

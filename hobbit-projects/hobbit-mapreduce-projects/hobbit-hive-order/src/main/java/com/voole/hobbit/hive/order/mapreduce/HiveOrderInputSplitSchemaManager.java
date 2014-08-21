@@ -12,7 +12,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 import com.voole.hobbit.avro.hive.HiveOrderRecord;
 import com.voole.hobbit.hive.order.HiveOrderConfigs;
-import com.voole.hobbit.transformer.KafkaTerminalAvroTransformer;
+import com.voole.hobbit.util.AvroUtils;
 
 /**
  * @author XuehuiHe
@@ -39,7 +39,7 @@ public class HiveOrderInputSplitSchemaManager implements
 		if (path.indexOf("/") != -1) {
 			topic = path.substring(0, path.indexOf("/"));
 		}
-		return KafkaTerminalAvroTransformer.getKafkaTopicSchema(topic);
+		return AvroUtils.getKafkaTopicSchema(topic);
 	}
 
 }

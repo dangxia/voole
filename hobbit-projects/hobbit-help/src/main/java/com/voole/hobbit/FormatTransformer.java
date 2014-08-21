@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.avro.Schema;
+import org.apache.avro.SchemaBuilder;
+import org.apache.avro.SchemaBuilder.BaseFieldTypeBuilder;
+import org.apache.avro.SchemaBuilder.FieldAssembler;
 import org.apache.avro.data.RecordBuilder;
 
 import com.google.protobuf.Descriptors.Descriptor;
