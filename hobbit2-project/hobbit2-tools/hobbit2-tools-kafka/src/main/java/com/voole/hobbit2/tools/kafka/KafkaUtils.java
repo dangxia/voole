@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import kafka.api.FetchRequestBuilder;
@@ -32,6 +33,7 @@ import scala.actors.threadpool.Arrays;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.voole.hobbit2.config.props.Hobbit2PropsUtils;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
 import com.voole.hobbit2.tools.kafka.partition.KafkaPartition;
 
@@ -219,6 +221,10 @@ public class KafkaUtils {
 	}
 
 	public static void main(String[] args) {
+
+		Properties props = Hobbit2PropsUtils.getKafkaProperties();
+		System.out.println(props);
+
 		ZkClient zkClient = ZookeeperUtils
 				.createZKClient(
 						"data-zk1.voole.com:2181,data-zk2.voole.com:2181,data-zk3.voole.com:2181/kafka",
