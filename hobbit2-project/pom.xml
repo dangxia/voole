@@ -293,5 +293,11 @@
 		<module>hobbit2-configs/hobbit2-config-spring</module>
 		<module>hobbit2-tools/hobbit2-tools-common</module>
 		<module>hobbit2-tools/hobbit2-tools-kafka</module>
+		<module>hobbit2-kafka-project/hobbit2-kafka-avro</module>
+		<module>
+			hobbit2-kafka-project/hobbit2-kafka-avro/hobbit2-kafka-avro-order
+		</module>
+		<module>hobbit2-kafka-project/hobbit2-kafka-common</module>
+		<module>hobbit2-tools/hobbit2-tools-avro</module>
 	</modules>
 </project>

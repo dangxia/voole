@@ -5,6 +5,7 @@
 		<groupId>com.voole.hobbit2</groupId>
 		<artifactId>hobbit2-project</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../../</relativePath>
 	</parent>
 	<artifactId>hobbit2-kafka-common</artifactId>
 </project>
