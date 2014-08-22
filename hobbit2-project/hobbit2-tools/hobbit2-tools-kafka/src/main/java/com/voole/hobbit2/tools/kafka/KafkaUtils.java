@@ -6,7 +6,6 @@ package com.voole.hobbit2.tools.kafka;
 import static com.voole.hobbit2.tools.kafka.ZookeeperUtils.getChildrenParentMayNotExist;
 import static com.voole.hobbit2.tools.kafka.ZookeeperUtils.readDataMaybeNull;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -30,8 +29,7 @@ import org.I0Itec.zkclient.ZkClient;
 
 import scala.actors.threadpool.Arrays;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.voole.hobbit2.tools.kafka.KafkaJsonUtils.PartitionsInfo;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
 import com.voole.hobbit2.tools.kafka.partition.KafkaPartition;
 
@@ -40,11 +38,6 @@ import com.voole.hobbit2.tools.kafka.partition.KafkaPartition;
  * @date 2014年5月28日
  */
 public class KafkaUtils {
-	private static Gson gson;
-	static {
-		GsonBuilder builder = new GsonBuilder();
-		gson = builder.create();
-	}
 
 	public static ByteBufferMessageSet fetch(SimpleConsumer consumer,
 			KafkaPartition partition, long offset, int fetchSize) {
@@ -83,7 +76,7 @@ public class KafkaUtils {
 		String data = readDataMaybeNull(zkClient, ZkUtils.BrokerIdsPath() + "/"
 				+ brokerId);
 		if (data != null && data.length() > 0) {
-			Broker broker = gson.fromJson(data, Broker.class);
+			Broker broker = KafkaJsonUtils.toBroker(data);
 			broker.setId(Integer.parseInt(brokerId));
 			return broker;
 		}
@@ -107,7 +100,7 @@ public class KafkaUtils {
 			String topicPath = ZkUtils.getTopicPath(topic);
 			String data = readDataMaybeNull(zkClient, topicPath);
 			if (data != null && data.length() > 0) {
-				PartitionsInfo info = gson.fromJson(data, PartitionsInfo.class);
+				PartitionsInfo info = KafkaJsonUtils.toPartitionsInfo(data);
 				result.put(topic, info.partitions);
 			}
 		}
@@ -212,10 +205,6 @@ public class KafkaUtils {
 
 		}
 		return list;
-	}
-
-	public static class PartitionsInfo implements Serializable {
-		public Map<Integer, List<Integer>> partitions;
 	}
 
 }
