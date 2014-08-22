@@ -59,8 +59,8 @@ public class Tuple<A, B> implements Serializable {
 		}
 		if (obj instanceof Tuple) {
 			Tuple<?, ?> that = (Tuple<?, ?>) obj;
-			return Hobbi2tUtils.equals(this.a, that.a)
-					&& Hobbi2tUtils.equals(this.b, that.b);
+			return Hobbit2Utils.equals(this.a, that.a)
+					&& Hobbit2Utils.equals(this.b, that.b);
 		}
 		return false;
 	}

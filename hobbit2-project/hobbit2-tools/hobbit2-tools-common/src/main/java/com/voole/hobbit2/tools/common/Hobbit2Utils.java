@@ -10,7 +10,7 @@ import java.util.Date;
  * @author XuehuiHe
  * @date 2014年6月12日
  */
-public class Hobbi2tUtils {
+public class Hobbit2Utils {
 	private static final SimpleDateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss");
 

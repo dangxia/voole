@@ -5,7 +5,7 @@ package com.voole.hobbit2.tools.kafka.partition;
 
 import java.io.Serializable;
 
-import com.voole.hobbit2.tools.common.Hobbi2tUtils;
+import com.voole.hobbit2.tools.common.Hobbit2Utils;
 
 /**
  * @author XuehuiHe
@@ -73,18 +73,18 @@ public class Broker implements Serializable {
 		}
 		if (obj instanceof Broker) {
 			Broker that = (Broker) obj;
-			return Hobbi2tUtils.equals(this.getHost(), that.getHost())
-					&& Hobbi2tUtils.equals(this.getId(), that.getId())
-					&& Hobbi2tUtils.equals(this.getPort(), that.getPort());
+			return Hobbit2Utils.equals(this.getHost(), that.getHost())
+					&& Hobbit2Utils.equals(this.getId(), that.getId())
+					&& Hobbit2Utils.equals(this.getPort(), that.getPort());
 		}
 		return false;
 	}
 
 	@Override
 	public String toString() {
-		return "host:" + Hobbi2tUtils.toString(this.getHost()) + ",\tport:"
-				+ Hobbi2tUtils.toString(this.getPort()) + "\tid:"
-				+ Hobbi2tUtils.toString(this.getId());
+		return "host:" + Hobbit2Utils.toString(this.getHost()) + ",\tport:"
+				+ Hobbit2Utils.toString(this.getPort()) + "\tid:"
+				+ Hobbit2Utils.toString(this.getId());
 	}
 
 }

@@ -69,9 +69,9 @@ public class Triple<A, B, C> implements Serializable {
 		}
 		if (obj instanceof Triple) {
 			Triple<?, ?, ?> that = (Triple<?, ?, ?>) obj;
-			return Hobbi2tUtils.equals(this.a, that.a)
-					&& Hobbi2tUtils.equals(this.b, that.b)
-					&& Hobbi2tUtils.equals(this.c, that.c);
+			return Hobbit2Utils.equals(this.a, that.a)
+					&& Hobbit2Utils.equals(this.b, that.b)
+					&& Hobbit2Utils.equals(this.c, that.c);
 		}
 		return false;
 	}
