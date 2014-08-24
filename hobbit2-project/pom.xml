@@ -299,5 +299,8 @@
 		</module>
 		<module>hobbit2-kafka-project/hobbit2-kafka-common</module>
 		<module>hobbit2-tools/hobbit2-tools-avro</module>
+		<module>
+			hobbit2-hadoop-project/hobbit2-camus-project/hobbit2-camus-meta
+		</module>
 	</modules>
 </project>
