@@ -7,19 +7,16 @@ import java.io.Serializable;
 
 import kafka.common.TopicAndPartition;
 
+import com.google.common.base.Objects;
+
 /**
  * @author XuehuiHe
  * @date 2014年5月28日
  */
 public class KafkaPartition implements Serializable {
-	private Broker broker;
-	private int partition;
-	private String topic;
-	private long latestOffset;
-	private long earliestOffset;
-
-	public KafkaPartition() {
-	}
+	private final Broker broker;
+	private final int partition;
+	private final String topic;
 
 	public KafkaPartition(Broker broker, String topic, int partition) {
 		this.broker = broker;
@@ -31,47 +28,18 @@ public class KafkaPartition implements Serializable {
 		return broker;
 	}
 
-	public void setBroker(Broker broker) {
-		this.broker = broker;
-	}
-
 	public int getPartition() {
 		return partition;
-	}
-
-	public void setPartition(int partition) {
-		this.partition = partition;
 	}
 
 	public String getTopic() {
 		return topic;
 	}
 
-	public void setTopic(String topic) {
-		this.topic = topic;
-	}
-
-	public long getLatestOffset() {
-		return latestOffset;
-	}
-
-	public void setLatestOffset(long latestOffset) {
-		this.latestOffset = latestOffset;
-	}
-
-	public long getEarliestOffset() {
-		return earliestOffset;
-	}
-
-	public void setEarliestOffset(long earliestOffset) {
-		this.earliestOffset = earliestOffset;
-	}
-
 	@Override
 	public String toString() {
-		return getBroker().toString() + "\ttopic:" + getTopic()
-				+ "\tpartition:" + getPartition() + "\tlatestOffset:"
-				+ getLatestOffset() + "\tearliestOffset:" + getEarliestOffset();
+		return Objects.toStringHelper(this).add("broker", broker)
+				.add("topic", topic).add("partition", partition).toString();
 	}
 
 	@Override
@@ -84,21 +52,25 @@ public class KafkaPartition implements Serializable {
 		}
 		if (obj instanceof KafkaPartition) {
 			KafkaPartition that = (KafkaPartition) obj;
-			return this.getBroker().equals(that.getBroker())
-					&& this.getPartition() == that.getPartition()
-					&& this.getTopic().equals(that.getTopic());
+			return Objects.equal(this.getBroker(), that.getBroker())
+					&& Objects.equal(this.getPartition(), that.getPartition())
+					&& Objects.equal(this.getTopic(), that.getTopic());
 		}
 		return false;
 	}
 
 	@Override
 	public int hashCode() {
-		return this.getBroker().hashCode() + this.getPartition() * 17
-				+ this.getTopic().hashCode() * 7;
+		return Objects.hashCode(this.getBroker(), this.getTopic(),
+				this.getPartition());
 	}
 
 	public TopicAndPartition getTopicAndPartition() {
 		return new TopicAndPartition(topic, partition);
+	}
+
+	public KafkaPartitionState createState() {
+		return new KafkaPartitionState(this);
 	}
 
 }

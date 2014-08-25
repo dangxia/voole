@@ -9,7 +9,6 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.voole.hobbit2.tools.kafka.partition.Broker;
 
 /**
  * @author XuehuiHe
@@ -22,8 +21,8 @@ public class KafkaJsonUtils {
 		gson = builder.create();
 	}
 
-	public static Broker toBroker(String data) {
-		return gson.fromJson(data, Broker.class);
+	public static BrokerShadow toBrokerShadow(String data) {
+		return gson.fromJson(data, BrokerShadow.class);
 	}
 
 	public static PartitionsInfo toPartitionsInfo(String data) {
@@ -32,5 +31,10 @@ public class KafkaJsonUtils {
 
 	public static class PartitionsInfo implements Serializable {
 		public Map<Integer, List<Integer>> partitions;
+	}
+
+	public static class BrokerShadow implements Serializable {
+		public String host;
+		public int port;
 	}
 }

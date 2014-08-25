@@ -16,6 +16,14 @@
 		<avro.version>1.7.7</avro.version>
 		<hive.version>0.13.1</hive.version>
 	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>17.0</version>
+		</dependency>
+	</dependencies>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

@@ -11,4 +11,6 @@ import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
  */
 public interface KafkaTransformer<T> {
 	T transform(byte[] bytes) throws KafkaTransformException;
+
+	T transform(String str) throws KafkaTransformException;
 }

@@ -5,6 +5,8 @@ package com.voole.hobbit2.tools.common;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+
 /**
  * @author XuehuiHe
  * @date 2014年8月21日
@@ -46,17 +48,7 @@ public class Triple<A, B, C> implements Serializable {
 
 	@Override
 	public int hashCode() {
-		int code = 0;
-		if (this.a != null) {
-			code += this.a.hashCode();
-		}
-		if (this.b != null) {
-			code += this.b.hashCode() * 3;
-		}
-		if (this.c != null) {
-			code += this.c.hashCode() * 7;
-		}
-		return code;
+		return Objects.hashCode(a, b, c);
 	}
 
 	@Override
@@ -69,9 +61,9 @@ public class Triple<A, B, C> implements Serializable {
 		}
 		if (obj instanceof Triple) {
 			Triple<?, ?, ?> that = (Triple<?, ?, ?>) obj;
-			return Hobbit2Utils.equals(this.a, that.a)
-					&& Hobbit2Utils.equals(this.b, that.b)
-					&& Hobbit2Utils.equals(this.c, that.c);
+			return Objects.equal(this.a, that.a)
+					&& Objects.equal(this.b, that.b)
+					&& Objects.equal(this.c, that.c);
 		}
 		return false;
 	}

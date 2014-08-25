@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.google.common.base.Preconditions;
+
 /**
  * @author XuehuiHe
  * @date 2014年8月22日
@@ -21,6 +23,7 @@ public class Converts {
 	@SuppressWarnings("unchecked")
 	public static <T> T convert(Class<T> clazz, String b)
 			throws ConvertException, ConvertDontSupportException {
+		Preconditions.checkNotNull(clazz, "convert clazz can't be null");
 		if (b == null) {
 			return null;
 		}

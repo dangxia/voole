@@ -4,34 +4,37 @@
 package com.voole.hobbit2.tools.kafka;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 import java.util.List;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;
 
+import com.google.common.base.Optional;
+
 /**
  * @author XuehuiHe
  * @date 2014年8月21日
  */
 public class ZookeeperUtils {
-	public static String readDataMaybeNull(ZkClient zkClient, String path) {
-		try {
-			return zkClient.readData(path);
-		} catch (Exception e) {
+	public static Optional<String> readDataMaybeNull(ZkClient zkClient,
+			String path) {
+		String result = zkClient.readData(path);
+		if (result == null) {
+			return Optional.absent();
+		} else {
+			return Optional.of(result);
 		}
-		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public static List<String> getChildrenParentMayNotExist(ZkClient zkClient,
-			String path) {
-		try {
-			return zkClient.getChildren(path);
-		} catch (Exception e) {
+	public static Optional<List<String>> getChildrenParentMayNotExist(
+			ZkClient zkClient, String path) {
+		List<String> result = zkClient.getChildren(path);
+		if (result == null) {
+			return Optional.absent();
+		} else {
+			return Optional.of(result);
 		}
-		return Collections.EMPTY_LIST;
 	}
 
 	public static ZkClient createZKClient(String zkServers, int sessionTimeout,

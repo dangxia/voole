@@ -47,29 +47,4 @@ public class Hobbit2Utils {
 		return df.format(d);
 	}
 
-	public static boolean equals(Object v1, Object v2) {
-		if (v1 == null && v2 == null) {
-			return true;
-		}
-		if (v1 != null) {
-			return v1.equals(v2);
-		} else {
-			return v2.equals(v1);
-		}
-	}
-
-	public static int hashCode(Object o) {
-		if (o == null) {
-			return 0;
-		}
-		return o.hashCode();
-	}
-
-	public static String toString(Object o) {
-		if (o == null) {
-			return "null";
-		}
-		return o.toString();
-	}
-
 }

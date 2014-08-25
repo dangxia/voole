@@ -15,6 +15,7 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.specific.SpecificRecordBase;
 
+import com.google.common.base.Preconditions;
 import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
 import com.voole.hobbit2.tools.avro.AvroConverts;
 import com.voole.hobbit2.tools.avro.AvroSchemas;
@@ -53,6 +54,8 @@ public class AvroCtypeKafkaTransformer implements AvroKafkaTransformer {
 			for (Field field : fields) {
 				Schema arraySchema = getArraySchema(field.schema());
 				if (arraySchema != null) {
+					Preconditions.checkArgument(this.arrayField == null,
+							"%s has > 1 array schema", schema.getFullName());
 					this.arrayIndex = repeatIndex;
 					this.arrayField = field;
 					this.arrayItemSchema = arraySchema.getElementType();
@@ -60,6 +63,7 @@ public class AvroCtypeKafkaTransformer implements AvroKafkaTransformer {
 					this.arrayCount = this.arrayItemFields.size();
 					this.arrayClass = AvroSchemas
 							.getSchemaClass(this.arrayItemSchema);
+
 				} else {
 					this.fields.add(field);
 				}
@@ -74,9 +78,8 @@ public class AvroCtypeKafkaTransformer implements AvroKafkaTransformer {
 	}
 
 	@Override
-	public SpecificRecordBase transform(byte[] bytes)
+	public SpecificRecordBase transform(String msg)
 			throws KafkaTransformException {
-		String msg = new String(bytes);
 		String[] items = msg.split("\\t");
 		int repeatTimes = getRepeatTimes(items.length);
 		if (repeatTimes == -1) {
@@ -129,6 +132,12 @@ public class AvroCtypeKafkaTransformer implements AvroKafkaTransformer {
 		}
 
 		return record;
+	}
+
+	@Override
+	public SpecificRecordBase transform(byte[] bytes)
+			throws KafkaTransformException {
+		return transform(new String(bytes));
 	}
 
 	private Object getFieldValue(Field field, String item)

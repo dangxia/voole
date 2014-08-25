@@ -3,7 +3,7 @@
  */
 package com.voole.hobbit2.tools.common.convert;
 
-import com.voole.hobbit2.tools.common.Hobbit2Utils;
+import com.google.common.base.Objects;
 
 /**
  * @author XuehuiHe
@@ -47,8 +47,8 @@ public class ConvertException extends Exception {
 
 	@Override
 	public String toString() {
-		return "targetClass:" + target + "\tsource:"
-				+ Hobbit2Utils.toString(source);
+		return Objects.toStringHelper(this).add("targetClass", target)
+				.add("source", source).toString();
 	}
 
 }

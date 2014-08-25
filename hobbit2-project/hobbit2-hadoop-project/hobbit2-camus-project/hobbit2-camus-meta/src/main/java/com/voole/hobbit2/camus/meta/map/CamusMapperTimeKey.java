@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.WritableUtils;
 
+import com.google.common.base.Objects;
+
 public class CamusMapperTimeKey implements CamusMapperKey<CamusMapperTimeKey> {
 	private String topic;
 	private long categoryTime;
@@ -40,12 +42,28 @@ public class CamusMapperTimeKey implements CamusMapperKey<CamusMapperTimeKey> {
 
 	@Override
 	public int hashCode() {
-		return super.hashCode();
+		return Objects.hashCode(topic, categoryTime);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return super.equals(obj);
+		if (obj == null) {
+			return false;
+		}
+		if (obj == this) {
+			return true;
+		}
+		if (obj instanceof CamusMapperTimeKey) {
+			CamusMapperTimeKey that = (CamusMapperTimeKey) obj;
+			return this.compareTo(that) == 0;
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("topic", topic)
+				.add("categoryTime", categoryTime).toString();
 	}
 
 	@Override

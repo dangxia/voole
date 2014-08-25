@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,7 +27,6 @@ import kafka.javaapi.TopicMetadata;
 import kafka.javaapi.TopicMetadataRequest;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
-import kafka.message.MessageAndOffset;
 import kafka.utils.ZkUtils;
 
 import org.I0Itec.zkclient.ZkClient;
@@ -37,11 +35,16 @@ import org.slf4j.LoggerFactory;
 
 import scala.actors.threadpool.Arrays;
 
-import com.voole.hobbit2.config.props.Hobbit2Configuration;
-import com.voole.hobbit2.config.props.KafkaConfigKeys;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
+import com.voole.hobbit2.tools.kafka.KafkaJsonUtils.BrokerShadow;
 import com.voole.hobbit2.tools.kafka.KafkaJsonUtils.PartitionsInfo;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
 import com.voole.hobbit2.tools.kafka.partition.KafkaPartition;
+import com.voole.hobbit2.tools.kafka.partition.KafkaPartitionState;
 
 /**
  * @author XuehuiHe
@@ -50,12 +53,14 @@ import com.voole.hobbit2.tools.kafka.partition.KafkaPartition;
 public class KafkaUtils {
 	private static final Logger log = LoggerFactory.getLogger(KafkaUtils.class);
 
+	@Deprecated
 	public static ByteBufferMessageSet fetch(SimpleConsumer consumer,
 			KafkaPartition partition, long offset, int fetchSize) {
 		return fetch(consumer, partition.getTopic(), partition.getPartition(),
 				offset, fetchSize);
 	}
 
+	@Deprecated
 	public static ByteBufferMessageSet fetch(SimpleConsumer consumer,
 			String topic, int partition, long offset, int fetchSize) {
 		FetchRequestBuilder requestBuilder = new FetchRequestBuilder();
@@ -67,32 +72,45 @@ public class KafkaUtils {
 	}
 
 	public static List<Broker> getBrokerInfosInCluster(ZkClient zkClient) {
-		List<String> borkerIds = getBrokerIdsInCluster(zkClient);
+		List<Integer> borkerIds = getBrokerIdsInCluster(zkClient);
 		List<Broker> list = new ArrayList<Broker>();
-		for (String brokerId : borkerIds) {
-			Broker broker = getBrokerInfo(zkClient, brokerId);
-			if (broker != null) {
-				list.add(broker);
+		for (Integer brokerId : borkerIds) {
+			Optional<Broker> broker = getBrokerInfo(zkClient, brokerId);
+			if (broker.isPresent()) {
+				list.add(broker.get());
+			} else {
+				log.warn("broker info not found for broker id:" + brokerId);
 			}
 		}
-
 		return list;
 	}
 
-	public static List<String> getBrokerIdsInCluster(ZkClient zkClient) {
-		return getChildrenParentMayNotExist(zkClient, ZkUtils.BrokerIdsPath());
+	public static List<Integer> getBrokerIdsInCluster(ZkClient zkClient) {
+		Optional<List<String>> children = getChildrenParentMayNotExist(
+				zkClient, ZkUtils.BrokerIdsPath());
+		if (!children.isPresent()) {
+			throw new RuntimeException("kafka brokers not found in zookeeper");
+		}
+		return Lists.newArrayList(Iterators.transform(
+				children.get().iterator(), new Function<String, Integer>() {
+					@Override
+					public Integer apply(String input) {
+						return Integer.parseInt(input);
+					}
+				}));
 	}
 
-	public static Broker getBrokerInfo(ZkClient zkClient, String brokerId) {
-		String data = readDataMaybeNull(zkClient, ZkUtils.BrokerIdsPath() + "/"
-				+ brokerId);
-		if (data != null && data.length() > 0) {
-			Broker broker = KafkaJsonUtils.toBroker(data);
-			broker.setId(Integer.parseInt(brokerId));
-			return broker;
+	public static Optional<Broker> getBrokerInfo(ZkClient zkClient,
+			Integer brokerId) {
+		Optional<String> data = readDataMaybeNull(zkClient,
+				ZkUtils.BrokerIdsPath() + "/" + brokerId);
+		if (data.isPresent()) {
+			BrokerShadow brokerShadow = KafkaJsonUtils.toBrokerShadow(data
+					.get());
+			return Optional.of(new Broker(brokerShadow.host, brokerShadow.port,
+					brokerId));
 		}
-
-		return null;
+		return Optional.absent();
 	}
 
 	public static Map<Integer, List<Integer>> readTopicPartitionToBrokerId(
@@ -109,16 +127,19 @@ public class KafkaUtils {
 		Map<String, Map<Integer, List<Integer>>> result = new HashMap<String, Map<Integer, List<Integer>>>();
 		for (String topic : topics) {
 			String topicPath = ZkUtils.getTopicPath(topic);
-			String data = readDataMaybeNull(zkClient, topicPath);
-			if (data != null && data.length() > 0) {
-				PartitionsInfo info = KafkaJsonUtils.toPartitionsInfo(data);
+			Optional<String> data = readDataMaybeNull(zkClient, topicPath);
+			if (data.isPresent()) {
+				PartitionsInfo info = KafkaJsonUtils.toPartitionsInfo(data
+						.get());
 				result.put(topic, info.partitions);
+			} else {
+				log.warn("not found topic partition info for topic:" + topic);
 			}
 		}
 		return result;
 	}
 
-	public static Map<Broker, List<KafkaPartition>> getPartitionMeta(
+	public static Map<Broker, List<KafkaPartitionState>> getPartitionState(
 			ZkClient zkClient, String... topics) {
 		List<KafkaPartition> partitions = getPartitions2(zkClient, topics);
 		Map<Broker, List<KafkaPartition>> map = new HashMap<Broker, List<KafkaPartition>>();
@@ -133,14 +154,16 @@ public class KafkaUtils {
 			}
 			brokerPartitions.add(kafkaPartition);
 		}
+		Map<Broker, List<KafkaPartitionState>> result = new HashMap<Broker, List<KafkaPartitionState>>();
 		for (Entry<Broker, List<KafkaPartition>> entry : map.entrySet()) {
-			fillKafkaPartitionOffsets(entry.getKey(), entry.getValue());
+			result.put(entry.getKey(),
+					fillKafkaPartitionOffsets(entry.getKey(), entry.getValue()));
 		}
-		return map;
+		return result;
 	}
 
-	public static void fillKafkaPartitionOffsets(Broker broker,
-			List<KafkaPartition> partitions) {
+	public static List<KafkaPartitionState> fillKafkaPartitionOffsets(
+			Broker broker, List<KafkaPartition> partitions) {
 		Map<TopicAndPartition, PartitionOffsetRequestInfo> latestOffsetInfo = new HashMap<TopicAndPartition, PartitionOffsetRequestInfo>();
 		Map<TopicAndPartition, PartitionOffsetRequestInfo> earliestOffsetInfo = new HashMap<TopicAndPartition, PartitionOffsetRequestInfo>();
 		// Latest Offset
@@ -157,35 +180,52 @@ public class KafkaUtils {
 			earliestOffsetInfo.put(topicAndPartition,
 					partitionEarliestOffsetRequestInfo);
 		}
-
 		SimpleConsumer consumer = new SimpleConsumer(broker.host(),
 				broker.port(), 10000, 1024 * 1024,
 				kafka.api.OffsetRequest.DefaultClientId());
-		OffsetResponse latestOffsetResponse = consumer
-				.getOffsetsBefore(new OffsetRequest(latestOffsetInfo,
-						kafka.api.OffsetRequest.CurrentVersion(),
-						kafka.api.OffsetRequest.DefaultClientId()));
-		OffsetResponse earliestOffsetResponse = consumer
-				.getOffsetsBefore(new OffsetRequest(earliestOffsetInfo,
-						kafka.api.OffsetRequest.CurrentVersion(),
-						kafka.api.OffsetRequest.DefaultClientId()));
-		consumer.close();
+		List<KafkaPartitionState> result = new ArrayList<KafkaPartitionState>();
+		try {
+			OffsetResponse latestOffsetResponse = consumer
+					.getOffsetsBefore(new OffsetRequest(latestOffsetInfo,
+							kafka.api.OffsetRequest.CurrentVersion(),
+							kafka.api.OffsetRequest.DefaultClientId()));
+			OffsetResponse earliestOffsetResponse = consumer
+					.getOffsetsBefore(new OffsetRequest(earliestOffsetInfo,
+							kafka.api.OffsetRequest.CurrentVersion(),
+							kafka.api.OffsetRequest.DefaultClientId()));
 
-		for (KafkaPartition kafkaPartition : partitions) {
-			long[] latestOffsets = latestOffsetResponse.offsets(
-					kafkaPartition.getTopic(), kafkaPartition.getPartition());
-			long[] earliestOffsets = earliestOffsetResponse.offsets(
-					kafkaPartition.getTopic(), kafkaPartition.getPartition());
-			if (latestOffsets != null && latestOffsets.length > 0) {
-				kafkaPartition.setLatestOffset(latestOffsets[0]);
+			for (KafkaPartition kafkaPartition : partitions) {
+				long[] latestOffsets = latestOffsetResponse.offsets(
+						kafkaPartition.getTopic(),
+						kafkaPartition.getPartition());
+				long[] earliestOffsets = earliestOffsetResponse.offsets(
+						kafkaPartition.getTopic(),
+						kafkaPartition.getPartition());
+				if ((latestOffsets == null || latestOffsets.length == 0)
+						&& (earliestOffsets == null || earliestOffsets.length == 0)) {
+					continue;
+				}
+				KafkaPartitionState state = kafkaPartition.createState();
+				if (latestOffsets != null && latestOffsets.length > 0) {
+					state.setLatestOffset(latestOffsets[0]);
+				}
+				if (earliestOffsets != null && earliestOffsets.length > 0) {
+					state.setEarliestOffset(earliestOffsets[0]);
+				}
+				result.add(state);
 			}
-			if (earliestOffsets != null && earliestOffsets.length > 0) {
-				kafkaPartition.setEarliestOffset(earliestOffsets[0]);
-			}
+		} catch (Exception e) {
+			Throwables.propagate(e);
+		} finally {
+			consumer.close();
 		}
+
+		return result;
+
 	}
 
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static List<KafkaPartition> getPartitions(ZkClient zkClient,
 			String... topics) {
 		// topic=>{partition=>[broker]}
@@ -245,10 +285,8 @@ public class KafkaUtils {
 				kafka.cluster.Broker kafkaBroker = partitionMetadata.leader();
 				Broker broker = new Broker(kafkaBroker.host(),
 						kafkaBroker.port(), kafkaBroker.id());
-				KafkaPartition partition = new KafkaPartition();
-				partition.setBroker(broker);
-				partition.setTopic(topic);
-				partition.setPartition(partitionMetadata.partitionId());
+				KafkaPartition partition = new KafkaPartition(broker, topic,
+						partitionMetadata.partitionId());
 				partitions.add(partition);
 			}
 		}
@@ -296,66 +334,20 @@ public class KafkaUtils {
 		return topicMetadataList;
 	}
 
-	public static void main(String[] args) {
-		Hobbit2Configuration conf = new Hobbit2Configuration();
-		ZkClient client = ZookeeperUtils.createZKClient(
-				conf.getString(KafkaConfigKeys.KAFKA_ZOOKEEPER_CONNECT),
-				conf.getInt(KafkaConfigKeys.KAFKA_TIME_OUT_MS),
-				conf.getInt(KafkaConfigKeys.KAFKA_TIME_OUT_MS));
-		Map<Broker, List<KafkaPartition>> map = getPartitionMeta(client,
-				"t_playbgn_v2", "t_playbgn_v3");
-		for (Entry<Broker, List<KafkaPartition>> entry : map.entrySet()) {
-			List<KafkaPartition> list = entry.getValue();
-			for (KafkaPartition kafkaPartition : list) {
-				System.out.println(kafkaPartition);
-			}
-		}
-		// ByteBufferMessageSet
-		long start = System.currentTimeMillis();
-		long offset = 36416803;
-		SimpleConsumer consumer = new SimpleConsumer("data-slave1.voole.com",
-				9092, 10000, 1024 * 1024, "");
-		long total = 0;
-		for (int i = 0; i < 10; i++) {
-			ByteBufferMessageSet byteBufferMessageSet = fetch(consumer,
-					"t_playbgn_v3", 2, offset, 1024 * 1024);
-			offset += 2000;
-			Iterator<MessageAndOffset> iterator = byteBufferMessageSet
-					.iterator();
-			while (iterator.hasNext()) {
-				iterator.next();
-				total++;
-			}
-		}
-		consumer.close();
-		System.out.println("total:" + total);
-		System.out.println(System.currentTimeMillis() - start);
-
-		start = System.currentTimeMillis();
-		total = 0;
-		consumer = new SimpleConsumer("data-slave1.voole.com", 9092, 10000,
-				10 * 1024 * 1024, "");
-		ByteBufferMessageSet byteBufferMessageSet = fetch(consumer,
-				"t_playbgn_v3", 2, 36416803, 10 * 1024 * 1024);
-		Iterator<MessageAndOffset> iterator = byteBufferMessageSet.iterator();
-		while (iterator.hasNext()) {
-			iterator.next();
-			total++;
-		}
-		consumer.close();
-		System.out.println("total:" + total);
-		System.out.println(System.currentTimeMillis() - start);
-
-		// Iterator<MessageAndOffset> iterator =
-		// byteBufferMessageSet.iterator();
-		// int i = 0;
-		// while (iterator.hasNext()) {
-		// MessageAndOffset messageAndOffset = iterator.next();
-		// // System.out.println(messageAndOffset.offset());
-		// // break;
-		// i++;
-		// }
-		// System.out.println(i);
-
-	}
+	// public static void main(String[] args) {
+	// Hobbit2Configuration conf = new Hobbit2Configuration();
+	// ZkClient client = ZookeeperUtils.createZKClient(
+	// conf.getString(KafkaConfigKeys.KAFKA_ZOOKEEPER_CONNECT),
+	// conf.getInt(KafkaConfigKeys.KAFKA_TIME_OUT_MS),
+	// conf.getInt(KafkaConfigKeys.KAFKA_TIME_OUT_MS));
+	// Map<Broker, List<KafkaPartitionState>> map = getPartitionState(client,
+	// "t_playbgn_v2", "t_playbgn_v3");
+	// for (Entry<Broker, List<KafkaPartitionState>> entry : map.entrySet()) {
+	// List<KafkaPartitionState> list = entry.getValue();
+	// for (KafkaPartitionState kafkaPartition : list) {
+	// System.out.println(kafkaPartition);
+	// }
+	// }
+	// client.close();
+	// }
 }

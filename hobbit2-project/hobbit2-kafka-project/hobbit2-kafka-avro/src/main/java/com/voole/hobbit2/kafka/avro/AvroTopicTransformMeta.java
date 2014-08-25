@@ -6,6 +6,7 @@ package com.voole.hobbit2.kafka.avro;
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 
+import com.google.common.base.Preconditions;
 import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
 import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMeta;
 
@@ -28,9 +29,10 @@ public class AvroTopicTransformMeta<T extends AvroKafkaTransformer> extends
 	@SuppressWarnings("unchecked")
 	@Override
 	public T createTransformer() throws KafkaTransformException {
-		if (getTransformerClass() == AvroCtypeKafkaTransformer.class) {
-			return (T) new AvroCtypeKafkaTransformer(getSchema());
-		}
-		return null;
+		Preconditions
+				.checkState(
+						getTransformerClass() == AvroCtypeKafkaTransformer.class,
+						"AvroTopicTransformMeta transformerClass is not AvroCtypeKafkaTransformer");
+		return (T) new AvroCtypeKafkaTransformer(getSchema());
 	}
 }

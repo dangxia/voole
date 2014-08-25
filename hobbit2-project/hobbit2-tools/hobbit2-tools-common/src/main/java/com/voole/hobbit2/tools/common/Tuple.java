@@ -5,6 +5,8 @@ package com.voole.hobbit2.tools.common;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+
 /**
  * @author XuehuiHe
  * @date 2013年10月25日
@@ -39,14 +41,7 @@ public class Tuple<A, B> implements Serializable {
 
 	@Override
 	public int hashCode() {
-		int code = 0;
-		if (this.a != null) {
-			code += this.a.hashCode();
-		}
-		if (this.b != null) {
-			code += this.b.hashCode() * 3;
-		}
-		return code;
+		return Objects.hashCode(a, b);
 	}
 
 	@Override
@@ -59,8 +54,8 @@ public class Tuple<A, B> implements Serializable {
 		}
 		if (obj instanceof Tuple) {
 			Tuple<?, ?> that = (Tuple<?, ?>) obj;
-			return Hobbit2Utils.equals(this.a, that.a)
-					&& Hobbit2Utils.equals(this.b, that.b);
+			return Objects.equal(this.a, that.a)
+					&& Objects.equal(this.b, that.b);
 		}
 		return false;
 	}
