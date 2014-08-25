@@ -21,7 +21,7 @@ import com.voole.hobbit2.tools.kafka.partition.KafkaPartitionState;
  * @date 2014年8月25日
  */
 public class CamusInputFormat extends
-		InputFormat<KafkaSplitPartitionState, byte[]> {
+		InputFormat<CamusInputSplit, byte[]> {
 
 	@Override
 	public List<InputSplit> getSplits(JobContext context) throws IOException,
@@ -36,7 +36,7 @@ public class CamusInputFormat extends
 	}
 
 	@Override
-	public RecordReader<KafkaSplitPartitionState, byte[]> createRecordReader(
+	public RecordReader<CamusInputSplit, byte[]> createRecordReader(
 			InputSplit split, TaskAttemptContext context) throws IOException,
 			InterruptedException {
 		// TODO Auto-generated method stub

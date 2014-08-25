@@ -13,6 +13,7 @@ public class KafkaPartitionState {
 	private final KafkaPartition partition;
 	private long latestOffset;
 	private long earliestOffset;
+	private long offset;
 
 	public KafkaPartitionState(KafkaPartition partition) {
 		this.partition = partition;
@@ -38,12 +39,24 @@ public class KafkaPartitionState {
 		this.earliestOffset = earliestOffset;
 	}
 
+	public long getOffset() {
+		return offset;
+	}
+
+	public void setOffset(long offset) {
+		this.offset = offset;
+	}
+
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).add("partition", partition)
 				.add("latestOffset", latestOffset)
-				.add("earliestOffset", earliestOffset).toString();
+				.add("earliestOffset", earliestOffset).add("offset", offset)
+				.toString();
+	}
 
+	public long estimateDataSize() {
+		return latestOffset - offset;
 	}
 
 }
