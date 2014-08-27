@@ -1,0 +1,12 @@
+{
+	"type" : "record",
+	"name" : "CamusMapperTimeKeyAvro",
+	"namespace" : "com.voole.hobbit2.camus.meta.common",
+	"fields" : [ {
+		"name" : "topic",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "categoryTime",
+		"type" : [ "long", "null" ]
+	}]
+}

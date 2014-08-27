@@ -24,7 +24,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKey;
+import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusInputFormat;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusMapper;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusReducer;
@@ -60,14 +60,14 @@ public class CamusJob extends Configured implements Tool {
 		job.setInputFormatClass(CamusInputFormat.class);
 		job.setMapperClass(CamusMapper.class);
 
-		job.setMapOutputKeyClass(CamusMapperTimeKey.class);
+		AvroJob.setMapOutputKeySchema(job,
+				CamusMapperTimeKeyAvro.getClassSchema());
 		AvroJob.setMapOutputValueSchema(job, getMapValueSchema());
 
 		job.setReducerClass(CamusReducer.class);
 		job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
-		job.setOutputKeyClass(CamusMapperTimeKey.class);
 		AvroJob.setOutputValueSchema(job, getMapValueSchema());
-
+		AvroJob.setOutputKeySchema(job, CamusMapperTimeKeyAvro.getClassSchema());
 		job.setNumReduceTasks(6);
 		//
 		try {

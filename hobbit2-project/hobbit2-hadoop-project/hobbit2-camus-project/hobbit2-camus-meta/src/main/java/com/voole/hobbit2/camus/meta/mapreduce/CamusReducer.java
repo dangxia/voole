@@ -6,11 +6,12 @@ package com.voole.hobbit2.camus.meta.mapreduce;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKey;
+import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
 
 /**
  * @author XuehuiHe
@@ -18,9 +19,9 @@ import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKey;
  */
 public class CamusReducer
 		extends
-		Reducer<CamusMapperTimeKey, AvroValue<SpecificRecordBase>, CamusMapperTimeKey, AvroValue<SpecificRecordBase>> {
+		Reducer<AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>, AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> {
 	@Override
-	protected void reduce(CamusMapperTimeKey key,
+	protected void reduce(AvroKey<CamusMapperTimeKeyAvro> key,
 			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
 			throws IOException, InterruptedException {
 		Iterator<AvroValue<SpecificRecordBase>> iterator = iterable.iterator();

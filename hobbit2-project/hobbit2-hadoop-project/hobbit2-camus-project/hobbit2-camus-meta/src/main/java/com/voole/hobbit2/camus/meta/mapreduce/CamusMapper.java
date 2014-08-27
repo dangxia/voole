@@ -5,12 +5,13 @@ package com.voole.hobbit2.camus.meta.mapreduce;
 
 import java.io.IOException;
 
+import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.mapreduce.Mapper;
 
 import com.voole.hobbit2.camus.meta.common.CamusKafkaKey;
-import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKey;
+import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
 import com.voole.hobbit2.kafka.avro.order.util.OrderTopicsUtils;
 import com.voole.hobbit2.kafka.common.KafkaTransformer;
 import com.voole.hobbit2.kafka.common.KafkaTransformerFactory;
@@ -22,11 +23,12 @@ import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
  */
 public class CamusMapper
 		extends
-		Mapper<CamusKafkaKey, byte[], CamusMapperTimeKey, AvroValue<SpecificRecordBase>> {
+		Mapper<CamusKafkaKey, byte[], AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> {
 	private KafkaTransformer<SpecificRecordBase> transformer;
 	private String topic;
 
-	private CamusMapperTimeKey _key;
+	private AvroKey<CamusMapperTimeKeyAvro> _key;
+	private CamusMapperTimeKeyAvro avrokey;
 	private AvroValue<SpecificRecordBase> _value;
 
 	@SuppressWarnings("unchecked")
@@ -44,8 +46,10 @@ public class CamusMapper
 			throw new RuntimeException(e);
 		}
 
-		_key = new CamusMapperTimeKey();
-		_key.setTopic(topic);
+		avrokey = new CamusMapperTimeKeyAvro();
+		avrokey.setTopic(topic);
+
+		_key = new AvroKey<CamusMapperTimeKeyAvro>(avrokey);
 		_value = new AvroValue<SpecificRecordBase>();
 	}
 
@@ -55,7 +59,7 @@ public class CamusMapper
 		try {
 			SpecificRecordBase v = transformer.transform(value);
 			long stamp = getStamp(v);
-			_key.setCategoryTime(stamp / 24 * 60 * 60 * 1000 * 24 * 60 * 60
+			avrokey.setCategoryTime(stamp / 24 * 60 * 60 * 1000 * 24 * 60 * 60
 					* 1000);
 			_value.datum(v);
 			context.write(_key, _value);
