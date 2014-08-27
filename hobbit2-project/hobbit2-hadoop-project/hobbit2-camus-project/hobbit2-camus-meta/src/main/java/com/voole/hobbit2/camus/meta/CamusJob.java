@@ -65,6 +65,7 @@ public class CamusJob extends Configured implements Tool {
 
 		job.setReducerClass(CamusReducer.class);
 		job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
+		job.setOutputKeyClass(CamusMapperTimeKey.class);
 		AvroJob.setOutputValueSchema(job, getMapValueSchema());
 
 		job.setNumReduceTasks(6);
