@@ -10,8 +10,18 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro-mapred</artifactId>
+			<classifier>hadoop2</classifier>
+		</dependency>
+		<dependency>
 			<groupId>com.voole.hobbit2</groupId>
 			<artifactId>hobbit2-tools-kafka</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.voole.hobbit2</groupId>
+			<artifactId>hobbit2-kafka-avro-order</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

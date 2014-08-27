@@ -1,4 +1,4 @@
-package com.voole.hobbit2.camus.meta.map;
+package com.voole.hobbit2.camus.meta.common;
 
 import org.apache.hadoop.io.WritableComparable;
 

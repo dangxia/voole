@@ -8,7 +8,7 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.voole.hobbit2.camus.meta.map.CamusMapperTimeKey;
+import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKey;
 
 /**
  * @author XuehuiHe

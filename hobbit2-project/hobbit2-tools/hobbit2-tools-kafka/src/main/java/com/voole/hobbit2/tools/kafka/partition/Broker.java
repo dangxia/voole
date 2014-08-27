@@ -3,7 +3,13 @@
  */
 package com.voole.hobbit2.tools.kafka.partition;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.io.Serializable;
+
+import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableUtils;
 
 import com.google.common.base.Objects;
 
@@ -11,10 +17,13 @@ import com.google.common.base.Objects;
  * @author XuehuiHe
  * @date 2014年8月21日
  */
-public class Broker implements Serializable {
-	private final String host;
-	private final int port;
-	private final int id;
+public class Broker implements Serializable, Writable {
+	private String host;
+	private int port;
+	private int id;
+
+	public Broker() {
+	}
 
 	public Broker(String host, int port, int id) {
 		this.host = host;
@@ -46,6 +55,18 @@ public class Broker implements Serializable {
 		return id;
 	}
 
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	@Override
 	public int hashCode() {
 		return this.getId();
@@ -70,6 +91,20 @@ public class Broker implements Serializable {
 	public String toString() {
 		return Objects.toStringHelper(this).add("host", host).add("port", port)
 				.add("id", id).toString();
+	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		WritableUtils.writeString(out, getHost());
+		WritableUtils.writeVInt(out, getPort());
+		WritableUtils.writeVInt(out, getId());
+	}
+
+	@Override
+	public void readFields(DataInput in) throws IOException {
+		this.host = WritableUtils.readString(in);
+		this.port = WritableUtils.readVInt(in);
+		this.id = WritableUtils.readVInt(in);
 	}
 
 }

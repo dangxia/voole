@@ -5,19 +5,19 @@ import java.io.IOException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.voole.hobbit2.camus.meta.map.CamusInputSplit;
+import com.voole.hobbit2.camus.meta.mapreduce.CamusInputSplit;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
-import com.voole.hobbit2.tools.kafka.partition.KafkaPartition;
+import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
 
 public class KafkaSplitPartitionStateTest extends WritableTests {
 	@Test
 	public void test() throws IOException {
 		CamusInputSplit s1 = new CamusInputSplit();
-		KafkaPartition p = new KafkaPartition(new Broker("test1", 9092, 1),
-				"topic", 2);
+		BrokerAndTopicPartition p = new BrokerAndTopicPartition(new Broker(
+				"test1", 9092, 1), "topic", 2);
 		s1.setLatestOffset(10000);
 		s1.setOffset(20);
-		s1.setPartition(p);
+		s1.setBrokerAndTopicPartition(p);
 
 		s1.write(getOutput());
 		getOutput().flush();
