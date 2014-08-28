@@ -17,6 +17,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -36,13 +37,16 @@ public class PartionsStatesTest {
 	private Configuration conf;
 	private Path path;
 	private FileSystem fs;
+	private String fileName = "PartionsStatesTest.txt";
+	private Path tmpDir;
 
 	@Before
 	public void before() throws IOException {
-		System.setProperty("HADOOP_USER_NAME", "root");
+		String workDir = System.getProperty("user.dir");
+		tmpDir = new Path(workDir + "/tmp");
 		conf = new Configuration();
 		fs = FileSystem.get(conf);
-		path = new Path("/tmp/PartionsStatesTest.txt");
+		path = new Path(tmpDir, fileName);
 		states = new ArrayList<PartitionState>();
 		prevOffsets = new HashMap<TopicPartition, Long>();
 		clean();
@@ -52,19 +56,26 @@ public class PartionsStatesTest {
 		}
 	}
 
+	@After
+	public void after() throws IOException {
+		fs.delete(tmpDir, true);
+	}
+
 	private void createData() {
 		Random r = new Random();
 
 		PartitionState state = new PartitionState();
-		state.setBrokerAndTopicPartition(new BrokerAndTopicPartition(new Broker(
-				RandomStringUtils.random(5), r.nextInt(10000), r.nextInt(10)),
-				new TopicPartition(RandomStringUtils.random(5), r.nextInt(10))));
+		state.setBrokerAndTopicPartition(new BrokerAndTopicPartition(
+				new Broker(RandomStringUtils.random(5), r.nextInt(10000), r
+						.nextInt(10)), new TopicPartition(RandomStringUtils
+						.random(5), r.nextInt(10))));
 		state.setEarliestOffset(r.nextInt(1000000));
 		state.setLatestOffset(r.nextInt(1000000));
 		state.setOffset(r.nextInt(1000000));
 
 		states.add(state);
-		prevOffsets.put(state.getBrokerAndTopicPartition().getPartition(), state.getOffset());
+		prevOffsets.put(state.getBrokerAndTopicPartition().getPartition(),
+				state.getOffset());
 
 	}
 
@@ -74,9 +85,8 @@ public class PartionsStatesTest {
 
 		Map<TopicPartition, Long> result = CamusHDFSUtils
 				.readPrevPartionsStates(conf, Optional.of(path.getParent()),
-						"PartionsStatesTest.txt");
+						fileName);
 		Assert.assertEquals(prevOffsets.size(), result.size());
-
 		for (Entry<TopicPartition, Long> entry : prevOffsets.entrySet()) {
 			Assert.assertTrue(result.keySet().contains(entry.getKey()));
 			Assert.assertEquals(entry.getValue(), result.get(entry.getKey()));

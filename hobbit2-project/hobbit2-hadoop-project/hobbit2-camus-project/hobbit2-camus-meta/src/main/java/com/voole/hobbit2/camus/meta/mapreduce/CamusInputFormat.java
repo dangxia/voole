@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
@@ -33,7 +34,7 @@ import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
  * @author XuehuiHe
  * @date 2014年8月25日
  */
-public class CamusInputFormat extends InputFormat<CamusKafkaKey, byte[]> {
+public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> {
 	private static final Logger log = org.slf4j.LoggerFactory
 			.getLogger(CamusInputFormat.class);
 
@@ -92,7 +93,7 @@ public class CamusInputFormat extends InputFormat<CamusKafkaKey, byte[]> {
 	}
 
 	@Override
-	public RecordReader<CamusKafkaKey, byte[]> createRecordReader(
+	public RecordReader<CamusKafkaKey, BytesWritable> createRecordReader(
 			InputSplit split, TaskAttemptContext context) throws IOException,
 			InterruptedException {
 		return new CamusRecordReader(split, context);

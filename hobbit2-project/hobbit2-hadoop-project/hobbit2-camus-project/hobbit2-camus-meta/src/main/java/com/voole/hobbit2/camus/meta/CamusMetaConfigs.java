@@ -6,6 +6,11 @@ package com.voole.hobbit2.camus.meta;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
 
+import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMetaInitiator;
+import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMetas;
+import com.voole.hobbit2.kafka.common.partition.PartitionerInitiator;
+import com.voole.hobbit2.kafka.common.partition.Partitioners;
+
 /**
  * @author XuehuiHe
  * @date 2014年8月27日
@@ -32,6 +37,34 @@ public class CamusMetaConfigs {
 	public static final String KAFKA_FETCH_REQUEST_MAX_WAIT = "camus.kafka.fetch.request.max.wait";
 	public static final String KAFKA_FETCH_REQUEST_MIN_BYTES = "camus.kafka.fetch.request.min.bytes";
 	public static final String KAFKA_FETCH_REQUEST_CLIENT_ID = "camus.kafka.fetch.request.client.id";
+
+	public static final String TRANSFORMER_INITS = "camus.transformer.inits";
+	public static final String PARTITION_INITS = "camus.partition.inits";
+
+	private static KafkaTopicTransformMetas kafkaTopicTransformMetas = null;
+
+	public static synchronized KafkaTopicTransformMetas getTopicTransformMetas(
+			JobContext job) {
+		if (kafkaTopicTransformMetas == null) {
+			kafkaTopicTransformMetas = new KafkaTopicTransformMetas(job
+					.getConfiguration()
+					.getInstances(TRANSFORMER_INITS,
+							KafkaTopicTransformMetaInitiator.class)
+					.toArray(new KafkaTopicTransformMetaInitiator[] {}));
+		}
+		return kafkaTopicTransformMetas;
+	}
+
+	private static Partitioners partitioners = null;
+
+	public static synchronized Partitioners getPartitioners(JobContext job) {
+		if (partitioners == null) {
+			partitioners = new Partitioners(job.getConfiguration()
+					.getInstances(PARTITION_INITS, PartitionerInitiator.class)
+					.toArray(new PartitionerInitiator[] {}));
+		}
+		return partitioners;
+	}
 
 	public static String getJobName(JobContext job) {
 		return job.getConfiguration().get(JOB_NAME);

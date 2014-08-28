@@ -3,52 +3,75 @@
  */
 package com.voole.hobbit2.kafka.common.meta;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import com.voole.hobbit2.kafka.common.KafkaTransformer;
+import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
 
 /**
  * @author XuehuiHe
  * @date 2014年8月22日
  */
 public class KafkaTopicTransformMetas {
-	private static class KafkaTopicMetasHolder {
-		private static KafkaTopicTransformMetas _s = new KafkaTopicTransformMetas();
+
+	private final Map<String, KafkaTopicTransformMeta<?, ?>> topicToTransformMetaMap;
+	private final Map<String, KafkaTransformer<?>> topicToTransformerMap;
+
+	public KafkaTopicTransformMetas() {
+		topicToTransformMetaMap = new ConcurrentHashMap<String, KafkaTopicTransformMeta<?, ?>>();
+		topicToTransformerMap = new ConcurrentHashMap<String, KafkaTransformer<?>>();
 	}
 
-	private final Map<String, KafkaTopicTransformMeta<?, ?>> map;
-
-	private KafkaTopicTransformMetas() {
-		map = new HashMap<String, KafkaTopicTransformMeta<?, ?>>();
-	}
-
-	public synchronized KafkaTopicTransformMeta<?, ?> _get(String topic) {
-		if (map.containsKey(topic)) {
-			return map.get(topic);
+	public KafkaTopicTransformMetas(
+			KafkaTopicTransformMetaInitiator... initiators) {
+		this();
+		for (KafkaTopicTransformMetaInitiator kafkaTopicTransformMetaInitiator : initiators) {
+			kafkaTopicTransformMetaInitiator.initialize(this);
 		}
-		return null;
 	}
 
-	public synchronized void _register(KafkaTopicTransformMeta<?, ?> meta) {
-		map.put(meta.getTopic(), meta);
+	public void register(KafkaTopicTransformMeta<?, ?> meta) {
+		Preconditions.checkNotNull(meta, "meta is null");
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(meta.getTopic()),
+				"topic is empty");
+		Preconditions.checkNotNull(meta.getTransformerClass(),
+				"TransformerClass is null");
+		topicToTransformMetaMap.put(meta.getTopic(), meta);
+		try {
+			topicToTransformerMap
+					.put(meta.getTopic(), meta.createTransformer());
+		} catch (KafkaTransformException e) {
+			Throwables.propagate(e);
+		}
 	}
 
-	public synchronized void _unregister(String topic) {
-		map.remove(topic);
+	public void unregister(String topic) {
+		topicToTransformMetaMap.remove(topic);
+		topicToTransformerMap.remove(topic);
 	}
 
-	public static synchronized KafkaTopicTransformMetas getInstance() {
-		return KafkaTopicMetasHolder._s;
+	public KafkaTopicTransformMeta<?, ?> get(String topic) {
+		if (topicToTransformMetaMap.containsKey(topic)) {
+			return topicToTransformMetaMap.get(topic);
+		} else {
+			throw new RuntimeException("topic:" + topic
+					+ " KafkaTopicTransformMeta not found");
+		}
 	}
 
-	public static synchronized void register(KafkaTopicTransformMeta<?, ?> meta) {
-		getInstance()._register(meta);
+	public KafkaTransformer<?> getTransformer(String topic) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(topic),
+				"topic is empty");
+		if (topicToTransformerMap.containsKey(topic)) {
+			return topicToTransformerMap.get(topic);
+		} else {
+			throw new RuntimeException("topic:" + topic
+					+ " KafkaTransformer not found");
+		}
 	}
 
-	public static synchronized void unregister(String topic) {
-		getInstance()._unregister(topic);
-	}
-
-	public static synchronized KafkaTopicTransformMeta<?, ?> get(String topic) {
-		return getInstance()._get(topic);
-	}
 }

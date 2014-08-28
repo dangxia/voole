@@ -8,14 +8,13 @@ import java.io.IOException;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 
+import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
 import com.voole.hobbit2.camus.meta.common.CamusKafkaKey;
 import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
-import com.voole.hobbit2.kafka.avro.order.util.OrderTopicsUtils;
 import com.voole.hobbit2.kafka.common.KafkaTransformer;
-import com.voole.hobbit2.kafka.common.KafkaTransformerFactory;
-import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
 
 /**
  * @author XuehuiHe
@@ -23,41 +22,37 @@ import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
  */
 public class CamusMapper
 		extends
-		Mapper<CamusKafkaKey, byte[], AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> {
+		Mapper<CamusKafkaKey, BytesWritable, AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> {
 	private KafkaTransformer<SpecificRecordBase> transformer;
-	private String topic;
 
 	private AvroKey<CamusMapperTimeKeyAvro> _key;
 	private CamusMapperTimeKeyAvro avrokey;
 	private AvroValue<SpecificRecordBase> _value;
+	private String topic;
 
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		OrderTopicsUtils.registerTransformMetas();
-		CamusInputSplit split = (CamusInputSplit) context.getInputSplit();
-		this.topic = split.getBrokerAndTopicPartition().getPartition()
-				.getTopic();
-		try {
-			transformer = (KafkaTransformer<SpecificRecordBase>) KafkaTransformerFactory
-					.getTransformer(topic);
-		} catch (KafkaTransformException e) {
-			throw new RuntimeException(e);
-		}
-
+		topic = findTopic(context);
+		transformer = (KafkaTransformer<SpecificRecordBase>) CamusMetaConfigs
+				.getTopicTransformMetas(context).getTransformer(topic);
 		avrokey = new CamusMapperTimeKeyAvro();
 		avrokey.setTopic(topic);
-
 		_key = new AvroKey<CamusMapperTimeKeyAvro>(avrokey);
 		_value = new AvroValue<SpecificRecordBase>();
 	}
 
+	protected String findTopic(Context context) {
+		return ((CamusInputSplit) context.getInputSplit())
+				.getBrokerAndTopicPartition().getPartition().getTopic();
+	}
+
 	@Override
-	protected void map(CamusKafkaKey key, byte[] value, Context context)
+	protected void map(CamusKafkaKey key, BytesWritable value, Context context)
 			throws IOException, InterruptedException {
 		try {
-			SpecificRecordBase v = transformer.transform(value);
+			SpecificRecordBase v = transformer.transform(value.getBytes());
 			long stamp = getStamp(v);
 			avrokey.setCategoryTime(stamp / 24 * 60 * 60 * 1000 * 24 * 60 * 60
 					* 1000);
@@ -67,7 +62,6 @@ public class CamusMapper
 			e.printStackTrace();
 			// TODO
 		}
-
 	}
 
 	@Override
@@ -87,4 +81,5 @@ public class CamusMapper
 		}
 		return stamp * 1000;
 	}
+
 }

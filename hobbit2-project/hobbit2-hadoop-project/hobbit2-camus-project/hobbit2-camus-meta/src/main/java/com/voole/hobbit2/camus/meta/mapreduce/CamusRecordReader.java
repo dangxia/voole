@@ -21,7 +21,8 @@ import com.voole.hobbit2.config.props.KafkaConfigKeys;
  * @author XuehuiHe
  * @date 2014年8月26日
  */
-public class CamusRecordReader extends RecordReader<CamusKafkaKey, byte[]> {
+public class CamusRecordReader extends
+		RecordReader<CamusKafkaKey, BytesWritable> {
 	private TaskAttemptContext context;
 	private CamusInputSplit split;
 	private long totalBytes;
@@ -31,7 +32,7 @@ public class CamusRecordReader extends RecordReader<CamusKafkaKey, byte[]> {
 	private final BytesWritable msgValue = new BytesWritable();
 	private final BytesWritable msgKey = new BytesWritable();
 
-	private byte[] value;
+	private BytesWritable value;
 	private CamusKafkaKey key;
 
 	public CamusRecordReader(InputSplit split, TaskAttemptContext context)
@@ -43,6 +44,7 @@ public class CamusRecordReader extends RecordReader<CamusKafkaKey, byte[]> {
 	public void initialize(InputSplit split, TaskAttemptContext context)
 			throws IOException, InterruptedException {
 		this.key = new CamusKafkaKey();
+		this.value = new BytesWritable();
 		this.context = context;
 		this.split = (CamusInputSplit) split;
 		this.totalBytes = this.split.getLength();
@@ -73,12 +75,13 @@ public class CamusRecordReader extends RecordReader<CamusKafkaKey, byte[]> {
 			}
 			while (reader.getNext(key, msgValue, msgKey)) {
 				context.progress();
-				this.value = getBytes(msgValue);
+				byte[] bv = getBytes(msgValue);
+				this.value.set(bv, 0, bv.length);
 				byte[] keyBytes = getBytes(msgKey);
 				if (keyBytes.length == 0) {
-					message = new Message(value);
+					message = new Message(bv);
 				} else {
-					message = new Message(value, keyBytes);
+					message = new Message(bv, keyBytes);
 				}
 				long checksum = key.getChecksum();
 				if (checksum != message.checksum()) {
@@ -104,7 +107,8 @@ public class CamusRecordReader extends RecordReader<CamusKafkaKey, byte[]> {
 	}
 
 	@Override
-	public byte[] getCurrentValue() throws IOException, InterruptedException {
+	public BytesWritable getCurrentValue() throws IOException,
+			InterruptedException {
 		return value;
 	}
 

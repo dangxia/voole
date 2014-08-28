@@ -32,7 +32,6 @@ public class PreviousOffsetsTest {
 
 	@Before
 	public void before() throws IOException {
-		System.setProperty("HADOOP_USER_NAME", "root");
 		conf = new Configuration();
 		fs = FileSystem.get(conf);
 		path = new Path("/tmp/PreviousOffsetsTest.txt");
