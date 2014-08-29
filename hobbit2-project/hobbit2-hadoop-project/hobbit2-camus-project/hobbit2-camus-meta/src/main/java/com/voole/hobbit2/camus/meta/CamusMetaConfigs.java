@@ -6,9 +6,11 @@ package com.voole.hobbit2.camus.meta;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
 
-import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMetaInitiator;
-import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMetas;
-import com.voole.hobbit2.kafka.common.partition.PartitionerInitiator;
+import com.voole.hobbit2.kafka.avro.AvroSchemas;
+import com.voole.hobbit2.kafka.avro.AvroSchemas.AvroSchemaRegister;
+import com.voole.hobbit2.kafka.common.meta.TopicTransformMetaRegister;
+import com.voole.hobbit2.kafka.common.meta.TopicTransformMetas;
+import com.voole.hobbit2.kafka.common.partition.PartitionerRegister;
 import com.voole.hobbit2.kafka.common.partition.Partitioners;
 
 /**
@@ -38,32 +40,46 @@ public class CamusMetaConfigs {
 	public static final String KAFKA_FETCH_REQUEST_MIN_BYTES = "camus.kafka.fetch.request.min.bytes";
 	public static final String KAFKA_FETCH_REQUEST_CLIENT_ID = "camus.kafka.fetch.request.client.id";
 
-	public static final String TRANSFORMER_INITS = "camus.transformer.inits";
-	public static final String PARTITION_INITS = "camus.partition.inits";
+	public static final String TRANSFORMER_REGISTERS = "camus.transformer.registers";
+	public static final String PARTITIONER_REGISTERS = "camus.partitioner.registers";
+	public static final String SCHEMA_REGISTERS = "camus.schema.registers";
 
-	private static KafkaTopicTransformMetas kafkaTopicTransformMetas = null;
+	private volatile static TopicTransformMetas topicTransformMetas = null;
 
-	public static synchronized KafkaTopicTransformMetas getTopicTransformMetas(
+	public static synchronized TopicTransformMetas getTopicTransformMetas(
 			JobContext job) {
-		if (kafkaTopicTransformMetas == null) {
-			kafkaTopicTransformMetas = new KafkaTopicTransformMetas(job
+		if (topicTransformMetas == null) {
+			topicTransformMetas = new TopicTransformMetas(job
 					.getConfiguration()
-					.getInstances(TRANSFORMER_INITS,
-							KafkaTopicTransformMetaInitiator.class)
-					.toArray(new KafkaTopicTransformMetaInitiator[] {}));
+					.getInstances(TRANSFORMER_REGISTERS,
+							TopicTransformMetaRegister.class)
+					.toArray(new TopicTransformMetaRegister[] {}));
 		}
-		return kafkaTopicTransformMetas;
+		return topicTransformMetas;
 	}
 
-	private static Partitioners partitioners = null;
+	private volatile static Partitioners partitioners = null;
 
 	public static synchronized Partitioners getPartitioners(JobContext job) {
 		if (partitioners == null) {
-			partitioners = new Partitioners(job.getConfiguration()
-					.getInstances(PARTITION_INITS, PartitionerInitiator.class)
-					.toArray(new PartitionerInitiator[] {}));
+			partitioners = new Partitioners(job
+					.getConfiguration()
+					.getInstances(PARTITIONER_REGISTERS,
+							PartitionerRegister.class)
+					.toArray(new PartitionerRegister[] {}));
 		}
 		return partitioners;
+	}
+
+	private volatile static AvroSchemas avroSchemas = null;
+
+	public static synchronized AvroSchemas getAvroSchemas(JobContext job) {
+		if (avroSchemas == null) {
+			avroSchemas = new AvroSchemas(job.getConfiguration()
+					.getInstances(SCHEMA_REGISTERS, AvroSchemaRegister.class)
+					.toArray(new AvroSchemaRegister[] {}));
+		}
+		return avroSchemas;
 	}
 
 	public static String getJobName(JobContext job) {

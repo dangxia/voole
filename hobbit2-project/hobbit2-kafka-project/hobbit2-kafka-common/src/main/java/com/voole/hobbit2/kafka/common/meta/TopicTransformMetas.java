@@ -16,25 +16,25 @@ import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
  * @author XuehuiHe
  * @date 2014年8月22日
  */
-public class KafkaTopicTransformMetas {
+public class TopicTransformMetas {
 
-	private final Map<String, KafkaTopicTransformMeta<?, ?>> topicToTransformMetaMap;
+	private final Map<String, TopicTransformMeta<?, ?>> topicToTransformMetaMap;
 	private final Map<String, KafkaTransformer<?>> topicToTransformerMap;
 
-	public KafkaTopicTransformMetas() {
-		topicToTransformMetaMap = new ConcurrentHashMap<String, KafkaTopicTransformMeta<?, ?>>();
+	public TopicTransformMetas() {
+		topicToTransformMetaMap = new ConcurrentHashMap<String, TopicTransformMeta<?, ?>>();
 		topicToTransformerMap = new ConcurrentHashMap<String, KafkaTransformer<?>>();
 	}
 
-	public KafkaTopicTransformMetas(
-			KafkaTopicTransformMetaInitiator... initiators) {
+	public TopicTransformMetas(
+			TopicTransformMetaRegister... initiators) {
 		this();
-		for (KafkaTopicTransformMetaInitiator kafkaTopicTransformMetaInitiator : initiators) {
-			kafkaTopicTransformMetaInitiator.initialize(this);
+		for (TopicTransformMetaRegister kafkaTopicTransformMetaInitiator : initiators) {
+			kafkaTopicTransformMetaInitiator.register(this);
 		}
 	}
 
-	public void register(KafkaTopicTransformMeta<?, ?> meta) {
+	public void register(TopicTransformMeta<?, ?> meta) {
 		Preconditions.checkNotNull(meta, "meta is null");
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(meta.getTopic()),
 				"topic is empty");
@@ -54,12 +54,12 @@ public class KafkaTopicTransformMetas {
 		topicToTransformerMap.remove(topic);
 	}
 
-	public KafkaTopicTransformMeta<?, ?> get(String topic) {
+	public TopicTransformMeta<?, ?> get(String topic) {
 		if (topicToTransformMetaMap.containsKey(topic)) {
 			return topicToTransformMetaMap.get(topic);
 		} else {
 			throw new RuntimeException("topic:" + topic
-					+ " KafkaTopicTransformMeta not found");
+					+ " TopicTransformMeta not found");
 		}
 	}
 

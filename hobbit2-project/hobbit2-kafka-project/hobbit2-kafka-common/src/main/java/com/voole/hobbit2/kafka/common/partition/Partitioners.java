@@ -20,10 +20,10 @@ public class Partitioners {
 		topicToPartitionerMap = new ConcurrentHashMap<String, Partitioner<?, ?, ?>>();
 	}
 
-	public Partitioners(PartitionerInitiator... initiators) {
+	public Partitioners(PartitionerRegister... initiators) {
 		this();
-		for (PartitionerInitiator partitionerInitiator : initiators) {
-			partitionerInitiator.initialize(this);
+		for (PartitionerRegister partitionerInitiator : initiators) {
+			partitionerInitiator.register(this);
 		}
 	}
 

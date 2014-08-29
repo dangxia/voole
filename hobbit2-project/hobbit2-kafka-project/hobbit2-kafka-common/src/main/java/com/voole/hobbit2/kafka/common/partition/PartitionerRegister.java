@@ -10,13 +10,13 @@ import java.util.Map.Entry;
  * @author XuehuiHe
  * @date 2014年8月28日
  */
-public interface PartitionerInitiator {
-	public void initialize(Partitioners partitioners);
+public interface PartitionerRegister {
+	public void register(Partitioners partitioners);
 
-	public abstract class DefaultPartitionerInitiator implements
-			PartitionerInitiator {
+	public abstract class DefaultPartitionerRegister implements
+			PartitionerRegister {
 		@Override
-		public void initialize(Partitioners partitioners) {
+		public void register(Partitioners partitioners) {
 			for (Entry<String, Partitioner<?, ?, ?>> entry : getTopicToPartitionerMap()
 					.entrySet()) {
 				partitioners.register(entry.getKey(), entry.getValue());

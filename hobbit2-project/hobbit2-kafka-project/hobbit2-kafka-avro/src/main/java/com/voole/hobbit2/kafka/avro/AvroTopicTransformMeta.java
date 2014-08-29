@@ -8,14 +8,14 @@ import org.apache.avro.specific.SpecificRecordBase;
 
 import com.google.common.base.Preconditions;
 import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
-import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMeta;
+import com.voole.hobbit2.kafka.common.meta.TopicTransformMeta;
 
 /**
  * @author XuehuiHe
  * @date 2014年8月22日
  */
 public class AvroTopicTransformMeta<T extends AvroKafkaTransformer> extends
-		KafkaTopicTransformMeta<SpecificRecordBase, T> {
+		TopicTransformMeta<SpecificRecordBase, T> {
 	private Schema schema;
 
 	public Schema getSchema() {

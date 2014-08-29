@@ -214,10 +214,10 @@ public class KafkaUtils {
 					state.setEarliestOffset(earliestOffsets[0]);
 				}
 				// // TODO
-				// if (state.getLatestOffset() > 10000) {
-				// state.setOffset(state.getLatestOffset() - 10000);
-				// }
-				state.setOffset(state.getEarliestOffset() - 1);
+				if (state.getLatestOffset() > 10000) {
+					state.setOffset(state.getLatestOffset() - 10000);
+				}
+				// state.setOffset(state.getEarliestOffset() - 1);
 				result.add(state);
 			}
 		} catch (Exception e) {

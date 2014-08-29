@@ -10,7 +10,7 @@ import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
  * @author XuehuiHe
  * @date 2014年8月22日
  */
-public abstract class KafkaTopicTransformMeta<M, N extends KafkaTransformer<M>> {
+public abstract class TopicTransformMeta<M, N extends KafkaTransformer<M>> {
 	private String topic;
 	private Class<N> transformerClass;
 

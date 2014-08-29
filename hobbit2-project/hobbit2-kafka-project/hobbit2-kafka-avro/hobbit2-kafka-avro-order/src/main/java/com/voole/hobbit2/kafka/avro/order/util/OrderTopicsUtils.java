@@ -16,8 +16,6 @@ import com.voole.hobbit2.kafka.avro.order.OrderPlayBgnReqV2;
 import com.voole.hobbit2.kafka.avro.order.OrderPlayBgnReqV3;
 import com.voole.hobbit2.kafka.avro.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.kafka.avro.order.OrderPlayEndReqV3;
-import com.voole.hobbit2.kafka.common.partition.Partitioner;
-import com.voole.hobbit2.kafka.common.partition.PartitionerInitiator.DefaultPartitionerInitiator;
 
 /**
  * @author XuehuiHe
@@ -55,17 +53,6 @@ public class OrderTopicsUtils {
 		topics.add(TOPIC_ORDER_END_V3);
 		topics.add(TOPIC_ORDER_ALIVE_V2);
 		topics.add(TOPIC_ORDER_ALIVE_V3);
-	}
-
-	public static class OrderPartitionerInitiator extends
-			DefaultPartitionerInitiator {
-
-		@Override
-		protected Map<String, Partitioner<?, ?, ?>> getTopicToPartitionerMap() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
 	}
 
 }

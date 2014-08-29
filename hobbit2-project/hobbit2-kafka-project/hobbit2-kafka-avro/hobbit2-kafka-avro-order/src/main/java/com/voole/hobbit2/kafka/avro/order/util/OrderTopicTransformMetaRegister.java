@@ -12,16 +12,16 @@ import org.apache.avro.Schema;
 
 import com.voole.hobbit2.kafka.avro.AvroCtypeKafkaTransformer;
 import com.voole.hobbit2.kafka.avro.AvroTopicTransformMeta;
-import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMeta;
-import com.voole.hobbit2.kafka.common.meta.KafkaTopicTransformMetaInitiator.DefaultKafkaTopicTransformMetaInitiator;
+import com.voole.hobbit2.kafka.common.meta.TopicTransformMeta;
+import com.voole.hobbit2.kafka.common.meta.TopicTransformMetaRegister.DefaultTopicTransformMetaInitiator;
 
-public class OrderKafkaTopicTransformMetaInitiator extends
-		DefaultKafkaTopicTransformMetaInitiator {
-	public OrderKafkaTopicTransformMetaInitiator() {
+public class OrderTopicTransformMetaRegister extends
+		DefaultTopicTransformMetaInitiator {
+	public OrderTopicTransformMetaRegister() {
 	}
 
 	@Override
-	protected Collection<? extends KafkaTopicTransformMeta<?, ?>> getTopicToTransformMetaMap() {
+	protected Collection<? extends TopicTransformMeta<?, ?>> getTopicToTransformMetaMap() {
 		List<AvroTopicTransformMeta<AvroCtypeKafkaTransformer>> metas = new ArrayList<AvroTopicTransformMeta<AvroCtypeKafkaTransformer>>();
 		for (Entry<String, Schema> entry : OrderTopicsUtils.topicToSchema.entrySet()) {
 			AvroTopicTransformMeta<AvroCtypeKafkaTransformer> meta = new AvroTopicTransformMeta<AvroCtypeKafkaTransformer>();

@@ -8,11 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.avro.Schema;
 import org.apache.avro.mapreduce.AvroJob;
-import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -27,14 +25,10 @@ import org.apache.log4j.Logger;
 import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusInputFormat;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusMapper;
+import com.voole.hobbit2.camus.meta.mapreduce.CamusMultiOutputFormat;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusReducer;
 import com.voole.hobbit2.config.props.Hobbit2Configuration;
-import com.voole.hobbit2.kafka.avro.order.OrderPlayAliveReqV2;
-import com.voole.hobbit2.kafka.avro.order.OrderPlayAliveReqV3;
-import com.voole.hobbit2.kafka.avro.order.OrderPlayBgnReqV2;
-import com.voole.hobbit2.kafka.avro.order.OrderPlayBgnReqV3;
-import com.voole.hobbit2.kafka.avro.order.OrderPlayEndReqV2;
-import com.voole.hobbit2.kafka.avro.order.OrderPlayEndReqV3;
+import com.voole.hobbit2.kafka.avro.AvroSchemas;
 
 /**
  * @author XuehuiHe
@@ -62,11 +56,11 @@ public class CamusJob extends Configured implements Tool {
 
 		AvroJob.setMapOutputKeySchema(job,
 				CamusMapperTimeKeyAvro.getClassSchema());
-		AvroJob.setMapOutputValueSchema(job, getMapValueSchema());
+		AvroJob.setMapOutputValueSchema(job, getMapValueSchema(job));
 
 		job.setReducerClass(CamusReducer.class);
-		job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
-		AvroJob.setOutputValueSchema(job, getMapValueSchema());
+		job.setOutputFormatClass(CamusMultiOutputFormat.class);
+		AvroJob.setOutputValueSchema(job, getMapValueSchema(job));
 		AvroJob.setOutputKeySchema(job, CamusMapperTimeKeyAvro.getClassSchema());
 		job.setNumReduceTasks(6);
 		//
@@ -82,19 +76,21 @@ public class CamusJob extends Configured implements Tool {
 		return 0;
 	}
 
-	public static Schema getMapValueSchema() throws IOException {
+	public static Schema getMapValueSchema(Job job) throws IOException {
+		AvroSchemas avroSchemas = CamusMetaConfigs.getAvroSchemas(job);
 
-		List<Schema> schemas = new ArrayList<Schema>();
-		schemas.add(OrderPlayBgnReqV2.getClassSchema());
-		schemas.add(OrderPlayBgnReqV3.getClassSchema());
+		// List<Schema> schemas = new ArrayList<Schema>();
+		// schemas.add(OrderPlayBgnReqV2.getClassSchema());
+		// schemas.add(OrderPlayBgnReqV3.getClassSchema());
+		//
+		// schemas.add(OrderPlayAliveReqV2.getClassSchema());
+		// schemas.add(OrderPlayAliveReqV3.getClassSchema());
+		//
+		// schemas.add(OrderPlayEndReqV2.getClassSchema());
+		// schemas.add(OrderPlayEndReqV3.getClassSchema());
 
-		schemas.add(OrderPlayAliveReqV2.getClassSchema());
-		schemas.add(OrderPlayAliveReqV3.getClassSchema());
-
-		schemas.add(OrderPlayEndReqV2.getClassSchema());
-		schemas.add(OrderPlayEndReqV3.getClassSchema());
-
-		return Schema.createUnion(schemas);
+		return Schema.createUnion(new ArrayList<Schema>(avroSchemas
+				.getAllSchema()));
 	}
 
 	private void check(Job job) throws IOException {
