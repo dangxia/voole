@@ -82,6 +82,7 @@ public class CamusMapper
 			_value.datum(v);
 			context.write(_key, _value);
 		} catch (Exception e) {
+			e.printStackTrace();
 			errorText.set(value.getBytes());
 			errorWriter.append(key, errorText);
 		}
