@@ -24,6 +24,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
@@ -78,7 +79,8 @@ public class CamusMultiOutputFormat
 				AvroValue<SpecificRecordBase> value) throws IOException,
 				InterruptedException {
 			FileSystem fs = FileSystem.get(context.getConfiguration());
-			Path path = context.getWorkingDirectory();
+			Path path = ((FileOutputCommitter) getOutputCommitter(context))
+					.getWorkPath();
 			CamusMapperTimeKeyAvro _key = key.datum();
 			String name = _key.getTopic() + "_" + _key.getCategoryTime();
 			name = getUniqueFile(context, name, ".avro");

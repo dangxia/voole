@@ -14,6 +14,7 @@ import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.SequenceFile.Writer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
@@ -54,6 +55,7 @@ public class CamusMapper
 		avrokey.setTopic(topic);
 		_key = new AvroKey<CamusMapperTimeKeyAvro>(avrokey);
 		_value = new AvroValue<SpecificRecordBase>();
+
 		Path errorPath = new Path(getWorkingDirectory(context),
 				FileOutputFormat.getUniqueFile(context,
 						CamusMetaConfigs.ERRORS_PREFIX, ".error"));
@@ -70,7 +72,8 @@ public class CamusMapper
 	}
 
 	protected Path getWorkingDirectory(Context context) throws IOException {
-		return context.getWorkingDirectory();
+		return ((FileOutputCommitter) context.getOutputCommitter())
+				.getWorkPath();
 	}
 
 	@Override
