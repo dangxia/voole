@@ -152,11 +152,9 @@ public class AvroCtypeKafkaTransformer implements AvroKafkaTransformer {
 		try {
 			return AvroConverts.convert(type, item);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			System.out.println("field:" + field.name() + ",\titem:" + item
-					+ " convert failed");
 			throw new KafkaTransformException("field:" + field.name()
-					+ ",\titem:" + item + " convert failed");
+					+ ",\titem:" + item + " convert failed,root exception msg:"
+					+ e.getMessage());
 		}
 
 	}

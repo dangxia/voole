@@ -5,6 +5,7 @@ package com.voole.hobbit2.camus.meta.mapreduce;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -22,6 +23,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.mapreduce.OutputCommitter;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
@@ -37,15 +39,61 @@ import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
 public class CamusMultiOutputFormat
 		extends
 		FileOutputFormat<AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> {
+	private final Map<AvroKey<CamusMapperTimeKeyAvro>, Long> partitionToTotal;
+	private final Map<Path, AvroKey<CamusMapperTimeKeyAvro>> pathToMeta;
+	private CamusMultiOutputCommitter committer;
 
 	public CamusMultiOutputFormat() {
-
+		partitionToTotal = new HashMap<AvroKey<CamusMapperTimeKeyAvro>, Long>();
+		pathToMeta = new HashMap<Path, AvroKey<CamusMapperTimeKeyAvro>>();
 	}
 
 	@Override
 	public RecordWriter<AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> getRecordWriter(
 			TaskAttemptContext job) throws IOException, InterruptedException {
 		return new CamusMultiRecordWriter(job);
+	}
+
+	@Override
+	public synchronized OutputCommitter getOutputCommitter(
+			TaskAttemptContext context) throws IOException {
+		if (committer == null) {
+			Path output = getOutputPath(context);
+			committer = new CamusMultiOutputCommitter(output, context);
+		}
+		return committer;
+	}
+
+	class CamusMultiOutputCommitter extends FileOutputCommitter {
+
+		public CamusMultiOutputCommitter(Path outputPath,
+				TaskAttemptContext context) throws IOException {
+			super(outputPath, context);
+		}
+
+		@Override
+		public void commitTask(TaskAttemptContext context) throws IOException {
+			for (Entry<Path, AvroKey<CamusMapperTimeKeyAvro>> entry : pathToMeta
+					.entrySet()) {
+				CamusMapperTimeKeyAvro key = entry.getValue().datum();
+				Path sourcePath = entry.getKey();
+				long count = partitionToTotal.get(entry.getValue());
+				String destName = key.getTopic() + "_" + count + "_"
+						+ CamusMetaConfigs.getExecStartTime(context);
+				Calendar c = Calendar.getInstance();
+				c.setTimeInMillis(key.getCategoryTime());
+				Path destPath = CamusMetaConfigs.getDestPath(context);
+				Path targetPath = new Path(destPath, key.getTopic() + "/"
+						+ c.get(Calendar.YEAR) + "/"
+						+ (c.get(Calendar.MONTH) + 1) + "/"
+						+ c.get(Calendar.DAY_OF_MONTH) + "/" + destName
+						+ ".avro");
+				FileSystem fs = FileSystem.get(context.getConfiguration());
+				fs.mkdirs(targetPath.getParent());
+				fs.rename(sourcePath, targetPath);
+			}
+			super.commitTask(context);
+		}
 	}
 
 	class CamusMultiRecordWriter
@@ -68,7 +116,9 @@ public class CamusMultiOutputFormat
 			if (!dataWriters.containsKey(key)) {
 				dataWriters.put(key,
 						getDataRecordWriter(attemptContext, key, value));
+				partitionToTotal.put(key, 0l);
 			}
+			partitionToTotal.put(key, partitionToTotal.get(key) + 1);
 			this.record.datum(value.datum());
 			dataWriters.get(key).write(this.record, NullWritable.get());
 		}
@@ -82,11 +132,11 @@ public class CamusMultiOutputFormat
 			Path path = ((FileOutputCommitter) getOutputCommitter(context))
 					.getWorkPath();
 			CamusMapperTimeKeyAvro _key = key.datum();
-			String name = _key.getTopic() + "_" + _key.getCategoryTime();
+			String name = "data_" + _key.getTopic() + "_"
+					+ _key.getCategoryTime();
 			name = getUniqueFile(context, name, ".avro");
 			path = new Path(path, name);
-			System.out.println("-------------------------------------");
-			System.out.println(path.toUri().getPath());
+			pathToMeta.put(path, key);
 
 			return new AvroKeyRecordWriter<SpecificRecordBase>(CamusMetaConfigs
 					.getAvroSchemas(context).getSchema(
@@ -105,7 +155,7 @@ public class CamusMultiOutputFormat
 				Entry<AvroKey<CamusMapperTimeKeyAvro>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry = iterator
 						.next();
 				entry.getValue().close(context);
-				// iterator.remove();
+				iterator.remove();
 			}
 
 		}

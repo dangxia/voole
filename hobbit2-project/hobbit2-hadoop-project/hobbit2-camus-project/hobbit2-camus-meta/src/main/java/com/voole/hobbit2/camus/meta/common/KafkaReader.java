@@ -184,11 +184,11 @@ public class KafkaReader {
 		}
 	}
 
-	public long getTotalBytes() {
+	public long getTotal() {
 		return (lastOffset > beginOffset) ? lastOffset - beginOffset : 0;
 	}
 
-	public long getReadBytes() {
+	public long getReadedNum() {
 		return currentOffset - beginOffset;
 	}
 

@@ -14,6 +14,7 @@ import org.apache.avro.mapreduce.AvroJob;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.MRJobConfig;
@@ -63,14 +64,17 @@ public class CamusJob extends Configured implements Tool {
 		AvroJob.setOutputValueSchema(job, getMapValueSchema(job));
 		AvroJob.setOutputKeySchema(job, CamusMapperTimeKeyAvro.getClassSchema());
 		job.setNumReduceTasks(6);
+		CamusMetaConfigs.setExecStartTime(job);
 		//
 		try {
 			job.submit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		job.waitForCompletion(true);
+
+		FileSystem fs = FileSystem.get(job.getConfiguration());
+		fs.rename(newExecutionOutput, CamusMetaConfigs.getExecHistoryPath(job));
 
 		// TODO Auto-generated method stub
 		return 0;

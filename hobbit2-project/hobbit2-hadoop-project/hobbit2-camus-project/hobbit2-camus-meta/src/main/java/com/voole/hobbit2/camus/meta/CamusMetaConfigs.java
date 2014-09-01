@@ -44,6 +44,18 @@ public class CamusMetaConfigs {
 	public static final String PARTITIONER_REGISTERS = "camus.partitioner.registers";
 	public static final String SCHEMA_REGISTERS = "camus.schema.registers";
 
+	public static final String EXEC_START_TIME = "camus.exec.start.time";
+
+	public static void setExecStartTime(JobContext job) {
+		job.getConfiguration().setLong(EXEC_START_TIME,
+				System.currentTimeMillis());
+	}
+
+	public static long getExecStartTime(JobContext job) {
+		return job.getConfiguration().getLong(EXEC_START_TIME,
+				System.currentTimeMillis());
+	}
+
 	private volatile static TopicTransformMetas topicTransformMetas = null;
 
 	public static synchronized TopicTransformMetas getTopicTransformMetas(

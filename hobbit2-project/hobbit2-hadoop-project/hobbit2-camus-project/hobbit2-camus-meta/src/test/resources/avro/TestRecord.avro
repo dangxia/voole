@@ -1,0 +1,12 @@
+{
+	"type" : "record",
+	"name" : "TestRecord",
+	"namespace" : "com.voole.hobbit2.camus.meta.avro",
+	"fields" : [ {
+		"name" : "name",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "stamp",
+		"type" : [ "long", "null" ]
+	}]
+}

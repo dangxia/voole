@@ -4,6 +4,7 @@
 package com.voole.hobbit2.camus.meta.mapreduce;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,12 +12,14 @@ import java.util.Map.Entry;
 
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.slf4j.Logger;
 
 import com.voole.hobbit2.camus.meta.CamusHDFSUtils;
@@ -73,6 +76,7 @@ public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> 
 			long offset = entry.getValue();
 			if (partitionToStateMap.containsKey(partition)) {
 				PartitionState state = partitionToStateMap.get(partition);
+				log.info(partition + "\toffset start from:" + offset);
 				state.setOffset(offset);
 				if (state.getEarliestOffset() > state.getOffset()
 						|| state.getOffset() > state.getLatestOffset()) {
@@ -87,6 +91,14 @@ public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> 
 				}
 			}
 		}
+		List<PartitionState> allStates = new ArrayList<PartitionState>();
+		for (List<PartitionState> item : kafkaPartitionStatesMap.values()) {
+			allStates.addAll(item);
+		}
+		CamusHDFSUtils.writePrevPartionsStates(conf,
+				new Path(FileOutputFormat.getOutputPath(context),
+						CamusMetaConfigs.REQUESTS_FILE), allStates);
+
 		return CamusInputSplit.createSplits(kafkaPartitionStatesMap,
 				CamusMetaConfigs.getJobMaps(context),
 				CamusMetaConfigs.getSplitMinSize(context));
