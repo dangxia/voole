@@ -76,10 +76,15 @@ public class CamusMapReduceTest {
 		return _out.toByteArray();
 	}
 
+	private static long stamp = -1;
+
 	private static TestRecord getTestRecord() {
 		TestRecord r = new TestRecord();
 		r.setName("test_name");
-		r.setStamp(System.currentTimeMillis());
+		if (stamp == -1) {
+			stamp = System.currentTimeMillis();
+		}
+		r.setStamp(stamp);
 		return r;
 	}
 
