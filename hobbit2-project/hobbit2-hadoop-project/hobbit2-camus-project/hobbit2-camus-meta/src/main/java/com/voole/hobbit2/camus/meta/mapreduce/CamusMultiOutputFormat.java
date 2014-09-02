@@ -21,6 +21,8 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.mapred.FileAlreadyExistsException;
+import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
@@ -51,6 +53,11 @@ public class CamusMultiOutputFormat
 	public CamusMultiOutputFormat() {
 		partitionToTotal = new HashMap<CamusMapperTimeKeyAvro, Long>();
 		pathToMeta = new HashMap<Path, CamusMapperTimeKeyAvro>();
+	}
+
+	@Override
+	public void checkOutputSpecs(JobContext job)
+			throws FileAlreadyExistsException, IOException {
 	}
 
 	@Override
