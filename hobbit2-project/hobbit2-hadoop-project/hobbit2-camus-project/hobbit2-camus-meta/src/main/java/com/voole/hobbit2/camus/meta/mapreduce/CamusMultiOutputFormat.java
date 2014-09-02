@@ -43,14 +43,14 @@ public class CamusMultiOutputFormat
 	private static Logger log = LoggerFactory
 			.getLogger(CamusMultiOutputFormat.class);
 
-	private final Map<AvroKey<CamusMapperTimeKeyAvro>, Long> partitionToTotal;
-	private final Map<String, AvroKey<CamusMapperTimeKeyAvro>> pathToMeta;
+	private final Map<CamusMapperTimeKeyAvro, Long> partitionToTotal;
+	private final Map<Path, CamusMapperTimeKeyAvro> pathToMeta;
 	private CamusMultiOutputCommitter committer;
 	private static SimpleDateFormat df = new SimpleDateFormat("/yyyy/MM/dd/HH/");
 
 	public CamusMultiOutputFormat() {
-		partitionToTotal = new HashMap<AvroKey<CamusMapperTimeKeyAvro>, Long>();
-		pathToMeta = new HashMap<String, AvroKey<CamusMapperTimeKeyAvro>>();
+		partitionToTotal = new HashMap<CamusMapperTimeKeyAvro, Long>();
+		pathToMeta = new HashMap<Path, CamusMapperTimeKeyAvro>();
 	}
 
 	@Override
@@ -83,10 +83,10 @@ public class CamusMultiOutputFormat
 		@Override
 		public void commitTask(TaskAttemptContext context) throws IOException {
 			log.info("CamusMultiOutputCommitter workPath:" + getWorkPath());
-			for (Entry<String, AvroKey<CamusMapperTimeKeyAvro>> entry : pathToMeta
+			for (Entry<Path, CamusMapperTimeKeyAvro> entry : pathToMeta
 					.entrySet()) {
-				CamusMapperTimeKeyAvro key = entry.getValue().datum();
-				String sourcePath = entry.getKey();
+				CamusMapperTimeKeyAvro key = entry.getValue();
+				Path sourcePath = entry.getKey();
 				long count = partitionToTotal.get(entry.getValue());
 				String destName = key.getTopic() + "_" + count + "_"
 						+ CamusMetaConfigs.getExecStartTime(context);
@@ -96,7 +96,7 @@ public class CamusMultiOutputFormat
 						+ ".avro");
 				FileSystem fs = FileSystem.get(context.getConfiguration());
 				fs.mkdirs(targetPath.getParent());
-				if (!fs.rename(new Path(sourcePath), targetPath)) {
+				if (!fs.rename(sourcePath, targetPath)) {
 					log.info("sourcePath:" + sourcePath + " rename to "
 							+ targetPath + " failed");
 				}
@@ -108,47 +108,49 @@ public class CamusMultiOutputFormat
 	class CamusMultiRecordWriter
 			extends
 			RecordWriter<AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> {
-		private final Map<AvroKey<CamusMapperTimeKeyAvro>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> dataWriters;
+		private final Map<CamusMapperTimeKeyAvro, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> dataWriters;
 		private final TaskAttemptContext attemptContext;
 		private final AvroKey<SpecificRecordBase> record;
 
 		public CamusMultiRecordWriter(TaskAttemptContext attemptContext) {
-			dataWriters = new HashMap<AvroKey<CamusMapperTimeKeyAvro>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
+			dataWriters = new HashMap<CamusMapperTimeKeyAvro, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
 			this.attemptContext = attemptContext;
 			this.record = new AvroKey<SpecificRecordBase>();
 		}
 
 		@Override
-		public void write(AvroKey<CamusMapperTimeKeyAvro> key,
+		public void write(AvroKey<CamusMapperTimeKeyAvro> keyOld,
 				AvroValue<SpecificRecordBase> value) throws IOException,
 				InterruptedException {
-			if (!dataWriters.containsKey(key)) {
-				dataWriters.put(key,
-						getDataRecordWriter(attemptContext, key, value));
-				partitionToTotal.put(key, 0l);
+			CamusMapperTimeKeyAvro avroKey = new CamusMapperTimeKeyAvro();
+			avroKey.setTopic(keyOld.datum().getTopic());
+			avroKey.setCategoryTime(keyOld.datum().getCategoryTime());
+
+			if (!dataWriters.containsKey(avroKey)) {
+				dataWriters.put(avroKey,
+						getDataRecordWriter(attemptContext, avroKey, value));
+				partitionToTotal.put(avroKey, 0l);
 			}
-			partitionToTotal.put(key, partitionToTotal.get(key) + 1);
+			partitionToTotal.put(avroKey, partitionToTotal.get(avroKey) + 1);
 			this.record.datum(value.datum());
-			dataWriters.get(key).write(this.record, NullWritable.get());
+			dataWriters.get(avroKey).write(this.record, NullWritable.get());
 		}
 
 		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> getDataRecordWriter(
-				TaskAttemptContext context,
-				AvroKey<CamusMapperTimeKeyAvro> key,
+				TaskAttemptContext context, CamusMapperTimeKeyAvro key,
 				AvroValue<SpecificRecordBase> value) throws IOException,
 				InterruptedException {
 			FileSystem fs = FileSystem.get(context.getConfiguration());
 			Path path = getOutputCommitter(context).getWorkPath();
-			CamusMapperTimeKeyAvro _key = key.datum();
-			String name = "data_" + _key.getTopic() + "_"
-					+ _key.getCategoryTime();
+			String name = "data_" + key.getTopic() + "_"
+					+ key.getCategoryTime();
 			name = getUniqueFile(context, name, ".avro");
 			path = new Path(path, name);
-			pathToMeta.put(path.toUri().getPath(), key);
+			pathToMeta.put(path, key);
 
 			return new AvroKeyRecordWriter<SpecificRecordBase>(CamusMetaConfigs
 					.getAvroSchemas(context).getSchema(
-							_key.getTopic().toString()),
+							key.getTopic().toString()),
 					AvroSerialization.createDataModel(context
 							.getConfiguration()), getCompressionCodec(context),
 					new BufferedOutputStream(fs.create(path)),
@@ -158,7 +160,7 @@ public class CamusMultiOutputFormat
 		@Override
 		public void close(TaskAttemptContext context) throws IOException,
 				InterruptedException {
-			for (Entry<AvroKey<CamusMapperTimeKeyAvro>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry : dataWriters
+			for (Entry<CamusMapperTimeKeyAvro, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry : dataWriters
 					.entrySet()) {
 				entry.getValue().close(context);
 			}
