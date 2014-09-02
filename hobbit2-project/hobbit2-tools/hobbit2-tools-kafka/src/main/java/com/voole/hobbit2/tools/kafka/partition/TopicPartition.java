@@ -14,12 +14,14 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.ComparisonChain;
 
 /**
  * @author XuehuiHe
  * @date 2014年8月27日
  */
-public class TopicPartition implements Serializable, Writable {
+public class TopicPartition implements Serializable, Writable,
+		Comparable<TopicPartition> {
 	private int partition;
 	private String topic;
 
@@ -88,6 +90,12 @@ public class TopicPartition implements Serializable, Writable {
 	public void readFields(DataInput in) throws IOException {
 		this.topic = WritableUtils.readString(in);
 		this.partition = WritableUtils.readVInt(in);
+	}
+
+	@Override
+	public int compareTo(TopicPartition o) {
+		return ComparisonChain.start().compare(this.topic, o.topic)
+				.compare(this.partition, o.partition).result();
 	}
 
 }

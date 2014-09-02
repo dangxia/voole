@@ -8,8 +8,7 @@ import java.util.Date;
 
 import org.apache.avro.specific.SpecificRecordBase;
 
-import com.voole.hobbit2.camus.meta.common.CamusKafkaKey;
-import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
+import com.voole.hobbit2.camus.meta.common.CamusKey;
 import com.voole.hobbit2.kafka.avro.order.util.AbstractOrderPartitionerRegister.AbstractOrderPartitioner;
 
 /**
@@ -17,14 +16,13 @@ import com.voole.hobbit2.kafka.avro.order.util.AbstractOrderPartitionerRegister.
  * @date 2014年8月29日
  */
 public class OrderPartitioner extends
-		AbstractOrderPartitioner<CamusMapperTimeKeyAvro, CamusKafkaKey> {
+		AbstractOrderPartitioner<CamusKey, CamusKey> {
 	private static SimpleDateFormat df = new SimpleDateFormat("/yyyy/MM/dd/HH/");
 
 	@Override
-	public void partition(CamusMapperTimeKeyAvro p, CamusKafkaKey kafkakey,
+	public void partition(CamusKey p, CamusKey kafkakey,
 			SpecificRecordBase value) {
-		p.setTopic(kafkakey.getPartition().getTopic());
-		p.setCategoryTime(getCategoryTime(value));
+		p.setStamp(getCategoryTime(value));
 	}
 
 	private long getCategoryTime(SpecificRecordBase value) {
@@ -34,8 +32,7 @@ public class OrderPartitioner extends
 	}
 
 	@Override
-	public String getPath(CamusMapperTimeKeyAvro p) {
-		return p.getTopic() + "/hourly"
-				+ df.format(new Date(p.getCategoryTime()));
+	public String getPath(CamusKey p) {
+		return p.getTopic() + "/hourly" + df.format(new Date(p.getStamp()));
 	}
 }
