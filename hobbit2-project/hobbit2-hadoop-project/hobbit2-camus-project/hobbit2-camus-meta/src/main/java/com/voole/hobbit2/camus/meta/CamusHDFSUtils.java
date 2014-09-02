@@ -81,8 +81,10 @@ public class CamusHDFSUtils {
 		SequenceFile.Writer writer = SequenceFile.createWriter(conf,
 				Writer.file(path), Writer.keyClass(TopicPartition.class),
 				Writer.valueClass(LongWritable.class));
+		LongWritable offset = new LongWritable();
 		for (Entry<TopicPartition, Long> entry : partitionStates.entrySet()) {
-			writer.append(entry.getKey(), entry.getValue());
+			offset.set(entry.getValue());
+			writer.append(entry.getKey(), offset);
 		}
 		writer.close();
 	}
