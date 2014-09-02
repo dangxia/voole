@@ -23,6 +23,10 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.SequenceFile.CompressionType;
+import org.apache.hadoop.io.SequenceFile.Writer;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
@@ -139,6 +143,7 @@ public class CamusNoReduceMultiOutputFormat extends
 		private final Map<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> dataWriters;
 		private final TaskAttemptContext attemptContext;
 		private final AvroKey<SpecificRecordBase> record;
+		private SequenceFile.Writer errorWriter;
 
 		public CamusMultiRecordWriter(TaskAttemptContext attemptContext) {
 			dataWriters = new HashMap<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
@@ -161,14 +166,31 @@ public class CamusNoReduceMultiOutputFormat extends
 				if (!dataWriters.containsKey(fileName)) {
 					dataWriters.put(fileName,
 							getDataRecordWriter(attemptContext, fileName, key));
+					pathToMeta.put(fileName, new CamusKey(key));
 				}
 				this.record.datum((SpecificRecordBase) value);
 				dataWriters.get(fileName)
 						.write(this.record, NullWritable.get());
 			} else {
-				// TODO
+				getErrorWriter().append(key, (Text) value);
 			}
 
+		}
+
+		protected SequenceFile.Writer getErrorWriter() throws IOException {
+			if (errorWriter == null) {
+				Path errorPath = new Path(committer.getWorkPath(),
+
+				FileOutputFormat.getUniqueFile(attemptContext,
+						CamusMetaConfigs.ERRORS_PREFIX, ".error"));
+				errorWriter = SequenceFile.createWriter(
+						attemptContext.getConfiguration(),
+						Writer.file(errorPath),
+						Writer.keyClass(CamusKey.class),
+						Writer.valueClass(Text.class),
+						Writer.compression(CompressionType.NONE));
+			}
+			return errorWriter;
 		}
 
 		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> getDataRecordWriter(
@@ -194,6 +216,9 @@ public class CamusNoReduceMultiOutputFormat extends
 			for (Entry<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry : dataWriters
 					.entrySet()) {
 				entry.getValue().close(context);
+			}
+			if (errorWriter != null) {
+				errorWriter.close();
 			}
 		}
 	}

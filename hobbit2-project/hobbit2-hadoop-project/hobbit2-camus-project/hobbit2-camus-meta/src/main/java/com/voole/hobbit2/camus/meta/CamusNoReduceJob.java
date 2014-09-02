@@ -102,7 +102,7 @@ public class CamusNoReduceJob extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.setProperty("HADOOP_USER_NAME", "root");
+//		System.setProperty("HADOOP_USER_NAME", "root");
 		CamusNoReduceJob job = new CamusNoReduceJob();
 		ToolRunner.run(job, args);
 	}
