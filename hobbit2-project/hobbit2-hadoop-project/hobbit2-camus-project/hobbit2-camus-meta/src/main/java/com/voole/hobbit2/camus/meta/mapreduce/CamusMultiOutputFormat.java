@@ -27,6 +27,8 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
 import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
@@ -38,6 +40,9 @@ import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
 public class CamusMultiOutputFormat
 		extends
 		FileOutputFormat<AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> {
+	private static Logger log = LoggerFactory
+			.getLogger(CamusMultiOutputFormat.class);
+
 	private final Map<AvroKey<CamusMapperTimeKeyAvro>, Long> partitionToTotal;
 	private final Map<Path, AvroKey<CamusMapperTimeKeyAvro>> pathToMeta;
 	private CamusMultiOutputCommitter committer;
@@ -90,7 +95,10 @@ public class CamusMultiOutputFormat
 						+ ".avro");
 				FileSystem fs = FileSystem.get(context.getConfiguration());
 				fs.mkdirs(targetPath.getParent());
-				fs.rename(sourcePath, targetPath);
+				if (!fs.rename(sourcePath, targetPath)) {
+					log.info("sourcePath:" + sourcePath + " rename to "
+							+ targetPath + " failed");
+				}
 			}
 			super.commitTask(context);
 		}

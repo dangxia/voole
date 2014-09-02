@@ -129,6 +129,7 @@ public class CamusJob extends Configured implements Tool {
 			conf.set(key, hobbit2Configuration.getString(key));
 		}
 		conf.setBoolean(MRJobConfig.MAP_SPECULATIVE, false);
+		conf.setBoolean(MRJobConfig.REDUCE_SPECULATIVE, false);
 		conf.setBoolean(MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
 		return true;
 	}
