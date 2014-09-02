@@ -117,7 +117,7 @@ public class CamusNoReduceMultiOutputFormat extends
 					new PathFilter() {
 						@Override
 						public boolean accept(Path path) {
-							return path.getName().startsWith("data");
+							return path.getName().startsWith("data_");
 						}
 					});
 			for (FileStatus fileStatus2 : fileStatus) {
@@ -147,7 +147,8 @@ public class CamusNoReduceMultiOutputFormat extends
 		}
 
 		protected String getWorkFileName(CamusKey key) {
-			return Joiner.on('.').join(key.getTopic(), key.getPartition(),
+			return Joiner.on('.').join("data_" + key.getTopic(),
+					key.getPartition(),
 					key.getInputPartition().getStartOffset(),
 					key.getInputPartition().getLatestOffset(), key.getStamp());
 		}
