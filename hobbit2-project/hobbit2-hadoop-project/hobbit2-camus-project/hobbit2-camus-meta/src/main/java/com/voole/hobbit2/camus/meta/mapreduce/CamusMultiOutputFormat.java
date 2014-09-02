@@ -3,7 +3,6 @@
  */
 package com.voole.hobbit2.camus.meta.mapreduce;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -157,6 +156,7 @@ public class CamusMultiOutputFormat
 					+ key.getCategoryTime();
 			name = getUniqueFile(context, name, ".avro");
 			path = new Path(path, name);
+			log.info("create file: " + path);
 			pathToMeta.put(path, key);
 
 			return new AvroKeyRecordWriter<SpecificRecordBase>(CamusMetaConfigs
@@ -164,8 +164,7 @@ public class CamusMultiOutputFormat
 							key.getTopic().toString()),
 					AvroSerialization.createDataModel(context
 							.getConfiguration()), getCompressionCodec(context),
-					new BufferedOutputStream(fs.create(path)),
-					getSyncInterval(context));
+					fs.create(path), getSyncInterval(context));
 		}
 
 		@Override
