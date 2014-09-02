@@ -5,8 +5,6 @@ package com.voole.hobbit2.camus.meta.mapreduce;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,6 +30,8 @@ import org.slf4j.LoggerFactory;
 
 import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
 import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
+import com.voole.hobbit2.kafka.common.partition.Partitioner;
+import com.voole.hobbit2.kafka.common.partition.Partitioners;
 
 /**
  * @author XuehuiHe
@@ -46,7 +46,7 @@ public class CamusMultiOutputFormat
 	private final Map<CamusMapperTimeKeyAvro, Long> partitionToTotal;
 	private final Map<Path, CamusMapperTimeKeyAvro> pathToMeta;
 	private CamusMultiOutputCommitter committer;
-	private static SimpleDateFormat df = new SimpleDateFormat("/yyyy/MM/dd/HH/");
+	private Partitioners partitioners;
 
 	public CamusMultiOutputFormat() {
 		partitionToTotal = new HashMap<CamusMapperTimeKeyAvro, Long>();
@@ -73,6 +73,13 @@ public class CamusMultiOutputFormat
 		return committer;
 	}
 
+	public Partitioners getPartitioners(TaskAttemptContext context) {
+		if (partitioners == null) {
+			partitioners = CamusMetaConfigs.getPartitioners(context);
+		}
+		return partitioners;
+	}
+
 	class CamusMultiOutputCommitter extends FileOutputCommitter {
 
 		public CamusMultiOutputCommitter(Path outputPath,
@@ -91,9 +98,13 @@ public class CamusMultiOutputFormat
 				String destName = key.getTopic() + "_" + count + "_"
 						+ CamusMetaConfigs.getExecStartTime(context);
 				Path destPath = CamusMetaConfigs.getDestPath(context);
-				Path targetPath = new Path(destPath, key.getTopic()
-						+ df.format(new Date(key.getCategoryTime())) + destName
-						+ ".avro");
+
+				@SuppressWarnings("unchecked")
+				Path targetPath = new Path(
+						destPath,
+						((Partitioner<CamusMapperTimeKeyAvro, ?, ?>) getPartitioners(
+								context).get(key.getTopic().toString()))
+								.getPath(key) + destName + ".avro");
 				FileSystem fs = FileSystem.get(context.getConfiguration());
 				fs.mkdirs(targetPath.getParent());
 				if (!fs.rename(sourcePath, targetPath)) {

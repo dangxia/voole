@@ -9,4 +9,6 @@ package com.voole.hobbit2.kafka.common.partition;
  */
 public interface Partitioner<P, K, V> {
 	void partition(P p, K kafkakey, V value);
+
+	String getPath(P p);
 }

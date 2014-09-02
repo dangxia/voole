@@ -28,4 +28,10 @@ public class TestRecordPartitioner implements
 		return stamp;
 	}
 
+	@Override
+	public String getPath(CamusMapperTimeKeyAvro p) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
