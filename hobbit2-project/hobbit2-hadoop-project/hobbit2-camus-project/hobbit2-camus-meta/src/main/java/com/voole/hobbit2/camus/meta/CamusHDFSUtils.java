@@ -5,7 +5,6 @@ package com.voole.hobbit2.camus.meta;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,14 +16,12 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.SequenceFile.Reader;
 import org.apache.hadoop.io.SequenceFile.Writer;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Optional;
-import com.voole.hobbit2.tools.kafka.partition.PartitionState;
 import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
@@ -80,13 +77,12 @@ public class CamusHDFSUtils {
 	}
 
 	public static void writePrevPartionsStates(Configuration conf, Path path,
-			Collection<? extends PartitionState> partitionStates)
-			throws IOException {
+			Map<TopicPartition, Long> partitionStates) throws IOException {
 		SequenceFile.Writer writer = SequenceFile.createWriter(conf,
-				Writer.file(path), Writer.keyClass(PartitionState.class),
-				Writer.valueClass(NullWritable.class));
-		for (PartitionState partitionState : partitionStates) {
-			writer.append(partitionState, NullWritable.get());
+				Writer.file(path), Writer.keyClass(TopicPartition.class),
+				Writer.valueClass(LongWritable.class));
+		for (Entry<TopicPartition, Long> entry : partitionStates.entrySet()) {
+			writer.append(entry.getKey(), entry.getValue());
 		}
 		writer.close();
 	}
@@ -113,18 +109,17 @@ public class CamusHDFSUtils {
 		log.info("readPrevPartionsStates file:" + path.toUri().getPath());
 		SequenceFile.Reader reader = new SequenceFile.Reader(conf,
 				SequenceFile.Reader.file(path));
-		PartitionState state = new PartitionState();
-		while (reader.next(state, NullWritable.get())) {
-			TopicPartition key = state.getBrokerAndTopicPartition().getPartition();
-			long offset = state.getOffset();
+		TopicPartition key = new TopicPartition();
+		LongWritable offset = new LongWritable();
+		while (reader.next(key, offset)) {
 			long oldOffset = 0;
 			if (result.containsKey(key)) {
 				oldOffset = result.get(key);
 			}
-			if (oldOffset < offset) {
-				result.put(key, offset);
+			if (oldOffset < offset.get()) {
+				result.put(key, offset.get());
 			}
-			state = new PartitionState();
+			key = new TopicPartition();
 		}
 		reader.close();
 		return result;

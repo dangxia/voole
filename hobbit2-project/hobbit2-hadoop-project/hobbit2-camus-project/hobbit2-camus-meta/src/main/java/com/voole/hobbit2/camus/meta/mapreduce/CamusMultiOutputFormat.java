@@ -5,7 +5,8 @@ package com.voole.hobbit2.camus.meta.mapreduce;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -42,6 +43,7 @@ public class CamusMultiOutputFormat
 	private final Map<AvroKey<CamusMapperTimeKeyAvro>, Long> partitionToTotal;
 	private final Map<Path, AvroKey<CamusMapperTimeKeyAvro>> pathToMeta;
 	private CamusMultiOutputCommitter committer;
+	private static SimpleDateFormat df = new SimpleDateFormat("/yyyy/MM/dd/");
 
 	public CamusMultiOutputFormat() {
 		partitionToTotal = new HashMap<AvroKey<CamusMapperTimeKeyAvro>, Long>();
@@ -80,13 +82,9 @@ public class CamusMultiOutputFormat
 				long count = partitionToTotal.get(entry.getValue());
 				String destName = key.getTopic() + "_" + count + "_"
 						+ CamusMetaConfigs.getExecStartTime(context);
-				Calendar c = Calendar.getInstance();
-				c.setTimeInMillis(key.getCategoryTime());
 				Path destPath = CamusMetaConfigs.getDestPath(context);
-				Path targetPath = new Path(destPath, key.getTopic() + "/"
-						+ c.get(Calendar.YEAR) + "/"
-						+ (c.get(Calendar.MONTH) + 1) + "/"
-						+ c.get(Calendar.DAY_OF_MONTH) + "/" + destName
+				Path targetPath = new Path(destPath, key.getTopic()
+						+ df.format(new Date(key.getCategoryTime())) + destName
 						+ ".avro");
 				FileSystem fs = FileSystem.get(context.getConfiguration());
 				fs.mkdirs(targetPath.getParent());

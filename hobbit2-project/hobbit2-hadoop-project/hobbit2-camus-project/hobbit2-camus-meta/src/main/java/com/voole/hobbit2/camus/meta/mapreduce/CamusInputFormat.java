@@ -4,7 +4,6 @@
 package com.voole.hobbit2.camus.meta.mapreduce;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +70,10 @@ public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> 
 				.readMixedPreviousOffsets(conf,
 						CamusMetaConfigs.getExecHistoryPath(context));
 
+		CamusHDFSUtils.writePrevPartionsStates(conf,
+				new Path(FileOutputFormat.getOutputPath(context),
+						CamusMetaConfigs.REQUESTS_FILE), prevOffsets);
+
 		for (Entry<TopicPartition, Long> entry : prevOffsets.entrySet()) {
 			TopicPartition partition = entry.getKey();
 			long offset = entry.getValue();
@@ -91,13 +94,6 @@ public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> 
 				}
 			}
 		}
-		List<PartitionState> allStates = new ArrayList<PartitionState>();
-		for (List<PartitionState> item : kafkaPartitionStatesMap.values()) {
-			allStates.addAll(item);
-		}
-		CamusHDFSUtils.writePrevPartionsStates(conf,
-				new Path(FileOutputFormat.getOutputPath(context),
-						CamusMetaConfigs.REQUESTS_FILE), allStates);
 
 		return CamusInputSplit.createSplits(kafkaPartitionStatesMap,
 				CamusMetaConfigs.getJobMaps(context),
