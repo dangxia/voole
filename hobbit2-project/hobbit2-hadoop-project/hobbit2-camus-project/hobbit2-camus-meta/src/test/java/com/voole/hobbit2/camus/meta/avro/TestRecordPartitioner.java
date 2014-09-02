@@ -10,11 +10,10 @@ import com.voole.hobbit2.kafka.common.partition.Partitioner;
  * @author XuehuiHe
  * @date 2014年9月1日
  */
-public class TestRecordPartitioner implements
-		Partitioner<CamusKey, CamusKey, TestRecord> {
+public class TestRecordPartitioner implements Partitioner<CamusKey, TestRecord> {
 
 	@Override
-	public void partition(CamusKey p, CamusKey kafkakey, TestRecord value) {
+	public void partition(CamusKey p, TestRecord value) {
 		p.setStamp(getCategoryTime(value));
 	}
 

@@ -3,12 +3,14 @@
  */
 package com.voole.hobbit2.kafka.common.partition;
 
+import com.voole.hobbit2.kafka.common.IKafkaKey;
+
 /**
  * @author XuehuiHe
  * @date 2014年8月28日
  */
-public interface Partitioner<P, K, V> {
-	void partition(P p, K kafkakey, V value);
+public interface Partitioner<K extends IKafkaKey, V> {
+	void partition(K key, V value);
 
-	String getPath(P p);
+	String getPath(K key);
 }

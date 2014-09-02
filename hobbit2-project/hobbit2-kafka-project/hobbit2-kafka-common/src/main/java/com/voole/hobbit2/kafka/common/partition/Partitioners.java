@@ -8,16 +8,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.voole.hobbit2.kafka.common.IKafkaKey;
 
 /**
  * @author XuehuiHe
  * @date 2014年8月28日
  */
 public class Partitioners {
-	private final Map<String, Partitioner<?, ?, ?>> topicToPartitionerMap;
+	private final Map<String, Partitioner<? extends IKafkaKey, ?>> topicToPartitionerMap;
 
 	public Partitioners() {
-		topicToPartitionerMap = new ConcurrentHashMap<String, Partitioner<?, ?, ?>>();
+		topicToPartitionerMap = new ConcurrentHashMap<String, Partitioner<? extends IKafkaKey, ?>>();
 	}
 
 	public Partitioners(PartitionerRegister... initiators) {
@@ -27,7 +28,8 @@ public class Partitioners {
 		}
 	}
 
-	public void register(String topic, Partitioner<?, ?, ?> partitioner) {
+	public void register(String topic,
+			Partitioner<? extends IKafkaKey, ?> partitioner) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(topic),
 				"topic is empty");
 		Preconditions.checkNotNull(partitioner, "partitioner is null");
@@ -38,7 +40,7 @@ public class Partitioners {
 		topicToPartitionerMap.remove(topic);
 	}
 
-	public Partitioner<?, ?, ?> get(String topic) {
+	public Partitioner<? extends IKafkaKey, ?> get(String topic) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(topic),
 				"topic is empty");
 		if (topicToPartitionerMap.containsKey(topic)) {

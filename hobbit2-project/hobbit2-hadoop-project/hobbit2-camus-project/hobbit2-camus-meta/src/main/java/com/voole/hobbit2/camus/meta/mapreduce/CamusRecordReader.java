@@ -61,9 +61,8 @@ public class CamusRecordReader extends
 	@SuppressWarnings("rawtypes")
 	private Partitioner partitioner;
 
-	public CamusRecordReader(InputSplit split,
-			TaskAttemptContext context) throws IOException,
-			InterruptedException {
+	public CamusRecordReader(InputSplit split, TaskAttemptContext context)
+			throws IOException, InterruptedException {
 		initialize(split, context);
 
 		partitioner = CamusMetaConfigs.getPartitioners(context).get(
@@ -140,7 +139,7 @@ public class CamusRecordReader extends
 						.increment(1l);
 				try {
 					this.value = this.transformer.transform(valueBytes);
-					partitioner.partition(key, null, this.value);
+					partitioner.partition(key, this.value);
 				} catch (KafkaTransformException e) {
 					context.getCounter("transform_failed", key.getTopic())
 							.increment(1l);

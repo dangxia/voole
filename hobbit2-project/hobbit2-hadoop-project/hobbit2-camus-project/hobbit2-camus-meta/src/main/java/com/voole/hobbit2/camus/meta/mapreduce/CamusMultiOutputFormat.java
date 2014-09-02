@@ -35,21 +35,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
+import com.voole.hobbit2.camus.meta.CamusHDFSUtils;
 import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
 import com.voole.hobbit2.camus.meta.common.CamusKey;
 import com.voole.hobbit2.kafka.common.partition.Partitioner;
 import com.voole.hobbit2.kafka.common.partition.Partitioners;
+import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
  * @author XuehuiHe
  * @date 2014年9月2日
  */
-public class CamusMultiOutputFormat extends
-		FileOutputFormat<CamusKey, Object> {
+public class CamusMultiOutputFormat extends FileOutputFormat<CamusKey, Object> {
+	public static class AvroFileStats {
+		private final long beginOffset;
+		private long lastOffset;
+
+		public AvroFileStats(CamusKey key) {
+			this.beginOffset = key.getOffset();
+			this.lastOffset = this.beginOffset;
+		}
+
+		public long getBeginOffset() {
+			return beginOffset;
+		}
+
+		public long getLastOffset() {
+			return lastOffset;
+		}
+
+		public void setLastKey(CamusKey key) {
+			this.lastOffset = key.getOffset();
+		}
+
+	}
+
 	private static Logger log = LoggerFactory
 			.getLogger(CamusMultiOutputFormat.class);
 
 	private final Map<String, CamusKey> pathToMeta;
+	private final Map<String, AvroFileStats> pathToFileStats;
 	private CamusMultiOutputCommitter committer;
 
 	private static Pattern p = Pattern.compile("(.*?)-[mr]-\\d+\\.\\w+$");
@@ -57,6 +82,7 @@ public class CamusMultiOutputFormat extends
 
 	public CamusMultiOutputFormat() {
 		pathToMeta = new HashMap<String, CamusKey>();
+		pathToFileStats = new HashMap<String, AvroFileStats>();
 	}
 
 	@Override
@@ -101,21 +127,24 @@ public class CamusMultiOutputFormat extends
 		}
 
 		@SuppressWarnings({ "rawtypes", "unchecked" })
-		protected Path getDestPath(CamusKey key, TaskAttemptContext context) {
-			String destName = Joiner.on('.').join(key.getTopic(),
-					key.getPartition(),
-					key.getInputPartition().getStartOffset(),
-					key.getInputPartition().getLatestOffset(), key.getStamp(),
-					CamusMetaConfigs.getExecStartTime(context));
+		protected Path getDestPath(CamusKey key, AvroFileStats avroFileStats,
+				TaskAttemptContext context) {
+			String destName = getDestFileName(key, avroFileStats, context);
 			Path destPath = CamusMetaConfigs.getDestPath(context);
 			Partitioner p = partitioners.get(key.getTopic());
 			return new Path(destPath, p.getPath(key) + destName);
 		}
 
+		protected String getDestFileName(CamusKey key,
+				AvroFileStats avroFileStats, TaskAttemptContext context) {
+			return Joiner.on('.').join(key.getTopic(), key.getPartition(),
+					avroFileStats.getBeginOffset(),
+					avroFileStats.getLastOffset(),
+					CamusMetaConfigs.getExecStartTime(context), ".avro");
+		}
+
 		@Override
 		public void commitTask(TaskAttemptContext context) throws IOException {
-			log.info("CamusMultiOutputCommitter workPath:" + getWorkPath());
-
 			FileSystem fs = getWorkPath().getFileSystem(
 					context.getConfiguration());
 			FileStatus[] fileStatus = fs.listStatus(getWorkPath(),
@@ -125,17 +154,33 @@ public class CamusMultiOutputFormat extends
 							return path.getName().startsWith("data_");
 						}
 					});
+			Map<TopicPartition, Long> prevOffsets = new HashMap<TopicPartition, Long>();
 			for (FileStatus fileStatus2 : fileStatus) {
 				String fileName = findName(fileStatus2);
+				AvroFileStats avroFileStats = pathToFileStats.get(fileName);
 				CamusKey key = pathToMeta.get(fileName);
-				Path destPath = getDestPath(key, context);
+				Path destPath = getDestPath(key, avroFileStats, context);
 				fs.mkdirs(destPath.getParent());
 				if (!fs.rename(fileStatus2.getPath(), destPath)) {
 					log.info("sourcePath:" + fileStatus2.getPath()
 							+ " rename to " + destPath + " failed");
 				}
-			}
 
+				TopicPartition topicPartition = new TopicPartition(
+						key.getTopic(), key.getPartition());
+				long oldOffset = 0l;
+				if (prevOffsets.containsKey(topicPartition)) {
+					oldOffset = prevOffsets.get(topicPartition);
+				}
+				if (avroFileStats.lastOffset > oldOffset) {
+					prevOffsets.put(topicPartition, avroFileStats.lastOffset);
+				}
+			}
+			CamusHDFSUtils.writePreviousOffsets(
+					context.getConfiguration(),
+					new Path(getWorkPath(), getUniqueFile(context,
+							CamusMetaConfigs.OFFSET_PREFIX, ".offset")),
+					prevOffsets);
 			super.commitTask(context);
 		}
 	}
@@ -154,9 +199,7 @@ public class CamusMultiOutputFormat extends
 
 		protected String getWorkFileName(CamusKey key) {
 			return Joiner.on('.').join("data_" + key.getTopic(),
-					key.getPartition(),
-					key.getInputPartition().getStartOffset(),
-					key.getInputPartition().getLatestOffset(), key.getStamp());
+					key.getPartition(), key.getBeginOffset(), key.getStamp());
 		}
 
 		@Override
@@ -165,11 +208,13 @@ public class CamusMultiOutputFormat extends
 			if (value instanceof SpecificRecordBase) {
 				String fileName = getWorkFileName(key);
 				if (!dataWriters.containsKey(fileName)) {
-					dataWriters.put(fileName,
-							getDataRecordWriter(attemptContext, fileName, key));
-					pathToMeta.put(fileName, new CamusKey(key));
+					dataWriters.put(
+							fileName,
+							createDataRecordWriter(attemptContext, fileName,
+									key));
 				}
 				this.record.datum((SpecificRecordBase) value);
+				pathToFileStats.get(fileName).setLastKey(key);
 				dataWriters.get(fileName)
 						.write(this.record, NullWritable.get());
 			} else {
@@ -194,9 +239,12 @@ public class CamusMultiOutputFormat extends
 			return errorWriter;
 		}
 
-		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> getDataRecordWriter(
+		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createDataRecordWriter(
 				TaskAttemptContext context, String fileName, CamusKey key)
 				throws IOException, InterruptedException {
+			pathToMeta.put(fileName, new CamusKey(key));
+			pathToFileStats.put(fileName, new AvroFileStats(key));
+
 			FileSystem fs = FileSystem.get(context.getConfiguration());
 			Path path = getOutputCommitter(context).getWorkPath();
 			fileName = getUniqueFile(context, fileName, ".avro");

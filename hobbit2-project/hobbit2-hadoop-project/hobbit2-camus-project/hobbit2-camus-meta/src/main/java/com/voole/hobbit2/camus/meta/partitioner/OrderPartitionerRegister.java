@@ -3,17 +3,23 @@
  */
 package com.voole.hobbit2.camus.meta.partitioner;
 
-import com.voole.hobbit2.kafka.avro.order.util.AbstractOrderPartitionerRegister;
+import com.voole.hobbit2.kafka.avro.order.util.OrderTopicsUtils;
+import com.voole.hobbit2.kafka.common.partition.PartitionerRegister;
+import com.voole.hobbit2.kafka.common.partition.Partitioners;
 
 /**
  * @author XuehuiHe
  * @date 2014年8月29日
  */
-public class OrderPartitionerRegister extends AbstractOrderPartitionerRegister {
+public class OrderPartitionerRegister implements PartitionerRegister {
 
 	@Override
-	protected AbstractOrderPartitioner<?, ?> getOrderPartitioner() {
-		return new OrderPartitioner();
+	public void register(Partitioners partitioners) {
+		OrderPartitioner partitioner = new OrderPartitioner();
+		for (String topic : OrderTopicsUtils.topics) {
+			partitioners.register(topic, partitioner);
+		}
+
 	}
 
 }
