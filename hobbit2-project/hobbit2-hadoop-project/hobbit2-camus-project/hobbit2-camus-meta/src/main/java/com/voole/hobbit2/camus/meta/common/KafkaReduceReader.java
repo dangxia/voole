@@ -1,3 +1,6 @@
+/*
+ * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
+ */
 package com.voole.hobbit2.camus.meta.common;
 
 import java.io.IOException;
@@ -23,14 +26,12 @@ import com.voole.hobbit2.camus.meta.mapreduce.CamusInputSplit;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
 
 /**
- * Poorly named class that handles kafka pull events within each
- * KafkaRecordReader.
- * 
- * @author Richard Park
+ * @author XuehuiHe
+ * @date 2014年9月2日
  */
-public class KafkaReader {
+public class KafkaReduceReader {
 	// index of context
-	private static Logger log = Logger.getLogger(KafkaReader.class);
+	private static Logger log = Logger.getLogger(KafkaReduceReader.class);
 	private CamusInputSplit split = null;
 	private SimpleConsumer simpleConsumer = null;
 
@@ -53,8 +54,9 @@ public class KafkaReader {
 	/**
 	 * Construct using the json representation of the kafka request
 	 */
-	public KafkaReader(TaskAttemptContext context, CamusInputSplit split,
-			int clientTimeout, int fetchBufferSize) throws Exception {
+	public KafkaReduceReader(TaskAttemptContext context,
+			CamusInputSplit split, int clientTimeout, int fetchBufferSize)
+			throws Exception {
 		this.broker = split.getBrokerAndTopicPartition().getBroker();
 		this.fetchBufferSize = fetchBufferSize;
 		this.context = context;
@@ -87,7 +89,7 @@ public class KafkaReader {
 
 	}
 
-	public boolean getNext(CamusKafkaKey key, BytesWritable payload,
+	public boolean getNext(CamusKey key, BytesWritable payload,
 			BytesWritable pKey) throws IOException {
 		if (hasNext()) {
 			MessageAndOffset msgAndOffset = messageIter.next();
@@ -108,8 +110,7 @@ public class KafkaReader {
 			}
 
 			key.clear();
-			key.set(split.getBrokerAndTopicPartition().getPartition(),
-					msgAndOffset.offset(), message.checksum());
+			key.set(msgAndOffset.offset(), message.checksum());
 			currentOffset = msgAndOffset.offset(); // increase offset
 			currentCount++; // increase count
 			return true;

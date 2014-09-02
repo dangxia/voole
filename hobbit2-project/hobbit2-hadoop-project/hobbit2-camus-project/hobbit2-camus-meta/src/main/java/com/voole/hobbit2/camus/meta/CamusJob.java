@@ -5,12 +5,9 @@ package com.voole.hobbit2.camus.meta;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.apache.avro.Schema;
-import org.apache.avro.mapreduce.AvroJob;
 import org.apache.commons.cli.ParseException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -23,17 +20,13 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusInputFormat;
-import com.voole.hobbit2.camus.meta.mapreduce.CamusMapper;
 import com.voole.hobbit2.camus.meta.mapreduce.CamusMultiOutputFormat;
-import com.voole.hobbit2.camus.meta.mapreduce.CamusReducer;
 import com.voole.hobbit2.config.props.Hobbit2Configuration;
-import com.voole.hobbit2.kafka.avro.AvroSchemas;
 
 /**
  * @author XuehuiHe
- * @date 2014年8月27日
+ * @date 2014年9月2日
  */
 public class CamusJob extends Configured implements Tool {
 	private static org.apache.log4j.Logger log = Logger
@@ -51,19 +44,10 @@ public class CamusJob extends Configured implements Tool {
 		FileOutputFormat.setOutputPath(job, newExecutionOutput);
 		log.info("New execution temp location: "
 				+ newExecutionOutput.toString());
-
 		job.setInputFormatClass(CamusInputFormat.class);
-		job.setMapperClass(CamusMapper.class);
-
-		AvroJob.setMapOutputKeySchema(job,
-				CamusMapperTimeKeyAvro.getClassSchema());
-		AvroJob.setMapOutputValueSchema(job, getMapValueSchema(job));
-
-		job.setReducerClass(CamusReducer.class);
 		job.setOutputFormatClass(CamusMultiOutputFormat.class);
-		AvroJob.setOutputValueSchema(job, getMapValueSchema(job));
-		AvroJob.setOutputKeySchema(job, CamusMapperTimeKeyAvro.getClassSchema());
-		job.setNumReduceTasks(10);
+
+		job.setNumReduceTasks(0);
 		CamusMetaConfigs.setExecStartTime(job);
 		//
 		try {
@@ -76,25 +60,7 @@ public class CamusJob extends Configured implements Tool {
 		FileSystem fs = FileSystem.get(job.getConfiguration());
 		fs.rename(newExecutionOutput, CamusMetaConfigs.getExecHistoryPath(job));
 
-		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	public static Schema getMapValueSchema(Job job) throws IOException {
-		AvroSchemas avroSchemas = CamusMetaConfigs.getAvroSchemas(job);
-
-		// List<Schema> schemas = new ArrayList<Schema>();
-		// schemas.add(OrderPlayBgnReqV2.getClassSchema());
-		// schemas.add(OrderPlayBgnReqV3.getClassSchema());
-		//
-		// schemas.add(OrderPlayAliveReqV2.getClassSchema());
-		// schemas.add(OrderPlayAliveReqV3.getClassSchema());
-		//
-		// schemas.add(OrderPlayEndReqV2.getClassSchema());
-		// schemas.add(OrderPlayEndReqV3.getClassSchema());
-
-		return Schema.createUnion(new ArrayList<Schema>(avroSchemas
-				.getAllSchema()));
 	}
 
 	private void check(Job job) throws IOException {
@@ -135,7 +101,7 @@ public class CamusJob extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.setProperty("HADOOP_USER_NAME", "root");
+		// System.setProperty("HADOOP_USER_NAME", "root");
 		CamusJob job = new CamusJob();
 		ToolRunner.run(job, args);
 	}

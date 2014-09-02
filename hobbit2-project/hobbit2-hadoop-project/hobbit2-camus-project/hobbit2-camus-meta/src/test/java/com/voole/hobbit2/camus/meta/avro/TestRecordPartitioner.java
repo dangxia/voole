@@ -3,8 +3,7 @@
  */
 package com.voole.hobbit2.camus.meta.avro;
 
-import com.voole.hobbit2.camus.meta.common.CamusKafkaKey;
-import com.voole.hobbit2.camus.meta.common.CamusMapperTimeKeyAvro;
+import com.voole.hobbit2.camus.meta.common.CamusKey;
 import com.voole.hobbit2.kafka.common.partition.Partitioner;
 
 /**
@@ -12,13 +11,11 @@ import com.voole.hobbit2.kafka.common.partition.Partitioner;
  * @date 2014年9月1日
  */
 public class TestRecordPartitioner implements
-		Partitioner<CamusMapperTimeKeyAvro, CamusKafkaKey, TestRecord> {
+		Partitioner<CamusKey, CamusKey, TestRecord> {
 
 	@Override
-	public void partition(CamusMapperTimeKeyAvro p, CamusKafkaKey kafkakey,
-			TestRecord value) {
-		p.setTopic(kafkakey.getPartition().getTopic());
-		p.setCategoryTime(getCategoryTime(value));
+	public void partition(CamusKey p, CamusKey kafkakey, TestRecord value) {
+		p.setStamp(getCategoryTime(value));
 	}
 
 	private long getCategoryTime(TestRecord value) {
@@ -29,7 +26,7 @@ public class TestRecordPartitioner implements
 	}
 
 	@Override
-	public String getPath(CamusMapperTimeKeyAvro p) {
+	public String getPath(CamusKey p) {
 		// TODO Auto-generated method stub
 		return null;
 	}

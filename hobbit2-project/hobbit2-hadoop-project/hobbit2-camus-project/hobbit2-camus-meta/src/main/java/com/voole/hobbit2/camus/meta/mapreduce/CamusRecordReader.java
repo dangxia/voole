@@ -7,46 +7,91 @@ import java.io.IOException;
 
 import kafka.message.Message;
 
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.ChecksumException;
 import org.apache.hadoop.io.BytesWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
-import com.voole.hobbit2.camus.meta.common.CamusKafkaKey;
-import com.voole.hobbit2.camus.meta.common.KafkaReader;
+import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
+import com.voole.hobbit2.camus.meta.common.CamusKey;
+import com.voole.hobbit2.camus.meta.common.KafkaReduceReader;
 import com.voole.hobbit2.config.props.KafkaConfigKeys;
+import com.voole.hobbit2.kafka.common.KafkaTransformer;
+import com.voole.hobbit2.kafka.common.exception.KafkaTransformException;
+import com.voole.hobbit2.kafka.common.partition.Partitioner;
+import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
  * @author XuehuiHe
- * @date 2014年8月26日
+ * @date 2014年9月2日
  */
 public class CamusRecordReader extends
-		RecordReader<CamusKafkaKey, BytesWritable> {
+		RecordReader<CamusKey, SpecificRecordBase> {
+	private static final Logger log = LoggerFactory
+			.getLogger(CamusRecordReader.class);
+
+	private Mapper<CamusKey, Writable, CamusKey, Writable>.Context mapperContext;
 	private TaskAttemptContext context;
+
 	private CamusInputSplit split;
+	private TopicPartition topicPartition;
+
+	private KafkaTransformer<SpecificRecordBase> transformer;
+
 	private long total;
 	private long readedNum = 0;
-	private KafkaReader reader;
+	private KafkaReduceReader reader;
 
 	private final BytesWritable msgValue = new BytesWritable();
 	private final BytesWritable msgKey = new BytesWritable();
 
-	private CamusKafkaKey key;
+	private CamusKey key;
 
-	public CamusRecordReader(InputSplit split, TaskAttemptContext context)
-			throws IOException, InterruptedException {
+	private SpecificRecordBase value;
+	private final Text errorRecord = new Text();
+
+	@SuppressWarnings("rawtypes")
+	private Partitioner partitioner;
+
+	public CamusRecordReader(InputSplit split,
+			TaskAttemptContext context) throws IOException,
+			InterruptedException {
 		initialize(split, context);
+
+		partitioner = CamusMetaConfigs.getPartitioners(context).get(
+				this.split.getBrokerAndTopicPartition().getPartition()
+						.getTopic());
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
 			throws IOException, InterruptedException {
-		this.key = new CamusKafkaKey();
-		this.context = context;
 		this.split = (CamusInputSplit) split;
+		this.key = new CamusKey(this.split);
 		this.total = this.split.getLength();
+		this.topicPartition = this.split.getBrokerAndTopicPartition()
+				.getPartition();
+		log.info(this.topicPartition + " start from :" + this.split.getOffset()
+				+ ", end with:" + this.split.getLatestOffset()
+				+ ",RecordReader initialize");
+		this.context = context;
+		if (context instanceof Mapper.Context) {
+			mapperContext = (Mapper.Context) context;
+		}
+
+		transformer = (KafkaTransformer<SpecificRecordBase>) CamusMetaConfigs
+				.getTopicTransformMetas(context).getTransformer(
+						topicPartition.getTopic());
+
 	}
 
 	private static byte[] getBytes(BytesWritable val) {
@@ -61,12 +106,13 @@ public class CamusRecordReader extends
 		return bytes;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean nextKeyValue() throws IOException, InterruptedException {
 		Message message = null;
 		try {
 			if (reader == null) {
-				reader = new KafkaReader(context, split, context
+				reader = new KafkaReduceReader(context, split, context
 						.getConfiguration().getInt(
 								KafkaConfigKeys.KAFKA_TIME_OUT_MS, 40000),
 						context.getConfiguration().getInt(
@@ -90,6 +136,18 @@ public class CamusRecordReader extends
 							+ message.checksum() + ". Expected "
 							+ key.getChecksum(), key.getOffset());
 				}
+				context.getCounter("fetch_topic_num", key.getTopic())
+						.increment(1l);
+				try {
+					this.value = this.transformer.transform(valueBytes);
+					partitioner.partition(key, null, this.value);
+				} catch (KafkaTransformException e) {
+					context.getCounter("transform_failed", key.getTopic())
+							.increment(1l);
+					errorRecord.set(valueBytes);
+					mapperContext.write(key, errorRecord);
+					continue;
+				}
 				return true;
 			}
 			reader = null;
@@ -100,14 +158,14 @@ public class CamusRecordReader extends
 	}
 
 	@Override
-	public CamusKafkaKey getCurrentKey() throws IOException {
+	public CamusKey getCurrentKey() throws IOException {
 		return key;
 	}
 
 	@Override
-	public BytesWritable getCurrentValue() throws IOException,
+	public SpecificRecordBase getCurrentValue() throws IOException,
 			InterruptedException {
-		return msgValue;
+		return value;
 	}
 
 	private long getPos() throws IOException {

@@ -10,9 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.mapreduce.InputFormat;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
@@ -21,9 +21,10 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.slf4j.Logger;
 
+import com.google.common.base.Joiner;
 import com.voole.hobbit2.camus.meta.CamusHDFSUtils;
 import com.voole.hobbit2.camus.meta.CamusMetaConfigs;
-import com.voole.hobbit2.camus.meta.common.CamusKafkaKey;
+import com.voole.hobbit2.camus.meta.common.CamusKey;
 import com.voole.hobbit2.config.props.KafkaConfigKeys;
 import com.voole.hobbit2.config.props.ZookeeperConfigKeys;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
@@ -34,9 +35,10 @@ import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
  * @author XuehuiHe
- * @date 2014年8月25日
+ * @date 2014年9月2日
  */
-public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> {
+public class CamusInputFormat extends
+		InputFormat<CamusKey, SpecificRecordBase> {
 	private static final Logger log = org.slf4j.LoggerFactory
 			.getLogger(CamusInputFormat.class);
 
@@ -45,7 +47,7 @@ public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> 
 			InterruptedException {
 		Configuration conf = context.getConfiguration();
 		String[] topics = CamusMetaConfigs.getWhiteTopics(context);
-		log.info("camus topics:" + topics);
+		log.info("camus topics:" + Joiner.on(",").join(topics));
 		ZkClient client = ZookeeperUtils.createZKClient(conf
 				.get(KafkaConfigKeys.KAFKA_ZOOKEEPER_CONNECT), conf.getInt(
 				ZookeeperConfigKeys.ZOOKEEPER_ROOT_SESSION_TIMEOUT_MS, 40000),
@@ -101,7 +103,7 @@ public class CamusInputFormat extends InputFormat<CamusKafkaKey, BytesWritable> 
 	}
 
 	@Override
-	public RecordReader<CamusKafkaKey, BytesWritable> createRecordReader(
+	public RecordReader<CamusKey, SpecificRecordBase> createRecordReader(
 			InputSplit split, TaskAttemptContext context) throws IOException,
 			InterruptedException {
 		return new CamusRecordReader(split, context);

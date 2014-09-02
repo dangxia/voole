@@ -8,4 +8,5 @@
 		<relativePath>../../</relativePath>
 	</parent>
 	<artifactId>hobbit2-kafka-common</artifactId>
+
 </project>
