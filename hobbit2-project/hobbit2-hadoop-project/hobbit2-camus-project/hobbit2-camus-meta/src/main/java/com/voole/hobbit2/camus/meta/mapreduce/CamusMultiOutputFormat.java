@@ -82,6 +82,7 @@ public class CamusMultiOutputFormat
 
 		@Override
 		public void commitTask(TaskAttemptContext context) throws IOException {
+			log.info("CamusMultiOutputCommitter workPath:" + getWorkPath());
 			for (Entry<String, AvroKey<CamusMapperTimeKeyAvro>> entry : pathToMeta
 					.entrySet()) {
 				CamusMapperTimeKeyAvro key = entry.getValue().datum();
