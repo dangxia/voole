@@ -56,11 +56,18 @@ public class CamusInputSplit extends InputSplit implements Writable {
 		for (PartitionState kafkaPartitionState : list) {
 			long offset = kafkaPartitionState.getOffset();
 			long latestOffset = kafkaPartitionState.getLatestOffset();
-			while (latestOffset - offset >= 1.2 * size) {
+			while (latestOffset - offset >= 2 * size) {
 				splits.add(newSplit(
 						kafkaPartitionState.getBrokerAndTopicPartition(),
 						offset, offset + size));
 				offset += size;
+			}
+			if (latestOffset - offset > 1.1 * size) {
+				long halfSize = (latestOffset - offset) / 2;
+				splits.add(newSplit(
+						kafkaPartitionState.getBrokerAndTopicPartition(),
+						offset, offset + halfSize));
+				offset += halfSize;
 			}
 			splits.add(newSplit(
 					kafkaPartitionState.getBrokerAndTopicPartition(), offset,
