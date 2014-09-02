@@ -44,13 +44,13 @@ public class CamusMultiOutputFormat
 			.getLogger(CamusMultiOutputFormat.class);
 
 	private final Map<AvroKey<CamusMapperTimeKeyAvro>, Long> partitionToTotal;
-	private final Map<Path, AvroKey<CamusMapperTimeKeyAvro>> pathToMeta;
+	private final Map<String, AvroKey<CamusMapperTimeKeyAvro>> pathToMeta;
 	private CamusMultiOutputCommitter committer;
 	private static SimpleDateFormat df = new SimpleDateFormat("/yyyy/MM/dd/HH/");
 
 	public CamusMultiOutputFormat() {
 		partitionToTotal = new HashMap<AvroKey<CamusMapperTimeKeyAvro>, Long>();
-		pathToMeta = new HashMap<Path, AvroKey<CamusMapperTimeKeyAvro>>();
+		pathToMeta = new HashMap<String, AvroKey<CamusMapperTimeKeyAvro>>();
 	}
 
 	@Override
@@ -82,10 +82,10 @@ public class CamusMultiOutputFormat
 
 		@Override
 		public void commitTask(TaskAttemptContext context) throws IOException {
-			for (Entry<Path, AvroKey<CamusMapperTimeKeyAvro>> entry : pathToMeta
+			for (Entry<String, AvroKey<CamusMapperTimeKeyAvro>> entry : pathToMeta
 					.entrySet()) {
 				CamusMapperTimeKeyAvro key = entry.getValue().datum();
-				Path sourcePath = entry.getKey();
+				String sourcePath = entry.getKey();
 				long count = partitionToTotal.get(entry.getValue());
 				String destName = key.getTopic() + "_" + count + "_"
 						+ CamusMetaConfigs.getExecStartTime(context);
@@ -95,7 +95,7 @@ public class CamusMultiOutputFormat
 						+ ".avro");
 				FileSystem fs = FileSystem.get(context.getConfiguration());
 				fs.mkdirs(targetPath.getParent());
-				if (!fs.rename(sourcePath, targetPath)) {
+				if (!fs.rename(new Path(sourcePath), targetPath)) {
 					log.info("sourcePath:" + sourcePath + " rename to "
 							+ targetPath + " failed");
 				}
@@ -143,7 +143,7 @@ public class CamusMultiOutputFormat
 					+ _key.getCategoryTime();
 			name = getUniqueFile(context, name, ".avro");
 			path = new Path(path, name);
-			pathToMeta.put(path, key);
+			pathToMeta.put(path.toUri().getPath(), key);
 
 			return new AvroKeyRecordWriter<SpecificRecordBase>(CamusMetaConfigs
 					.getAvroSchemas(context).getSchema(
