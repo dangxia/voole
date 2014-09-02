@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,7 +23,6 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.mapreduce.OutputCommitter;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
@@ -43,7 +41,7 @@ public class CamusMultiOutputFormat
 	private final Map<AvroKey<CamusMapperTimeKeyAvro>, Long> partitionToTotal;
 	private final Map<Path, AvroKey<CamusMapperTimeKeyAvro>> pathToMeta;
 	private CamusMultiOutputCommitter committer;
-	private static SimpleDateFormat df = new SimpleDateFormat("/yyyy/MM/dd/");
+	private static SimpleDateFormat df = new SimpleDateFormat("/yyyy/MM/dd/HH/");
 
 	public CamusMultiOutputFormat() {
 		partitionToTotal = new HashMap<AvroKey<CamusMapperTimeKeyAvro>, Long>();
@@ -53,11 +51,15 @@ public class CamusMultiOutputFormat
 	@Override
 	public RecordWriter<AvroKey<CamusMapperTimeKeyAvro>, AvroValue<SpecificRecordBase>> getRecordWriter(
 			TaskAttemptContext job) throws IOException, InterruptedException {
+		if (committer == null) {
+			Path output = getOutputPath(job);
+			committer = new CamusMultiOutputCommitter(output, job);
+		}
 		return new CamusMultiRecordWriter(job);
 	}
 
 	@Override
-	public synchronized OutputCommitter getOutputCommitter(
+	public synchronized CamusMultiOutputCommitter getOutputCommitter(
 			TaskAttemptContext context) throws IOException {
 		if (committer == null) {
 			Path output = getOutputPath(context);
@@ -127,8 +129,7 @@ public class CamusMultiOutputFormat
 				AvroValue<SpecificRecordBase> value) throws IOException,
 				InterruptedException {
 			FileSystem fs = FileSystem.get(context.getConfiguration());
-			Path path = ((FileOutputCommitter) getOutputCommitter(context))
-					.getWorkPath();
+			Path path = getOutputCommitter(context).getWorkPath();
 			CamusMapperTimeKeyAvro _key = key.datum();
 			String name = "data_" + _key.getTopic() + "_"
 					+ _key.getCategoryTime();
@@ -148,16 +149,11 @@ public class CamusMultiOutputFormat
 		@Override
 		public void close(TaskAttemptContext context) throws IOException,
 				InterruptedException {
-			for (Iterator<Entry<AvroKey<CamusMapperTimeKeyAvro>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>> iterator = dataWriters
-					.entrySet().iterator(); iterator.hasNext();) {
-				Entry<AvroKey<CamusMapperTimeKeyAvro>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry = iterator
-						.next();
+			for (Entry<AvroKey<CamusMapperTimeKeyAvro>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry : dataWriters
+					.entrySet()) {
 				entry.getValue().close(context);
-				iterator.remove();
 			}
-
 		}
-
 	}
 
 	protected static CodecFactory getCompressionCodec(TaskAttemptContext context) {

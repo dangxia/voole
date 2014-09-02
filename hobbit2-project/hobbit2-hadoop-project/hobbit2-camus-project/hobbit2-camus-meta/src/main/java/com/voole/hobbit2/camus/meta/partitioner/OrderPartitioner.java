@@ -25,8 +25,7 @@ public class OrderPartitioner extends
 
 	private long getCategoryTime(SpecificRecordBase value) {
 		long stamp = getStamp(value);
-		stamp = stamp / (24 * 60 * 60 * 1000) * 24 * 60 * 60 * 1000;
-		stamp -= 8 * 60 * 60 * 1000;
+		stamp = stamp / (60 * 60 * 1000) * 60 * 60 * 1000;
 		return stamp;
 	}
 }
