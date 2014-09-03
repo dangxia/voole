@@ -20,7 +20,7 @@ import com.voole.hobbit2.camus.api.TestCamusKey;
  * @date 2014年9月3日
  */
 public class CamusTransformerManagerTest {
-	private static CamusTransformerManager manager;
+	private static DefaultTransformerManager manager;
 	private static TestCamusKey key1;
 	private static TestCamusKey key2;
 	private static TestCamusKey key3;
@@ -44,7 +44,7 @@ public class CamusTransformerManagerTest {
 				throw new CamusTransformException("kkkk");
 			}
 		});
-		manager = new CamusTransformerManager(new ICamusTransformerRegister() {
+		manager = new DefaultTransformerManager(new ICamusTransformerRegister() {
 			@Override
 			public void add(Map<ICamusKey, ICamusTransformer<?, ?>> targetMap) {
 				targetMap.putAll(temp);

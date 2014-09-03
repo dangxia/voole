@@ -16,10 +16,10 @@ import com.voole.hobbit2.camus.api.ICamusKey;
  * @author XuehuiHe
  * @date 2014年9月3日
  */
-public class CamusTransformerManager {
+public class DefaultTransformerManager implements ICamusTransformerManager{
 	private final Map<ICamusKey, ICamusTransformer<?, ?>> transformerMap;
 
-	public CamusTransformerManager(ICamusTransformerRegister... registers) {
+	public DefaultTransformerManager(ICamusTransformerRegister... registers) {
 		Map<ICamusKey, ICamusTransformer<?, ?>> temp = new HashMap<ICamusKey, ICamusTransformer<?, ?>>();
 		for (ICamusTransformerRegister register : registers) {
 			register.add(temp);

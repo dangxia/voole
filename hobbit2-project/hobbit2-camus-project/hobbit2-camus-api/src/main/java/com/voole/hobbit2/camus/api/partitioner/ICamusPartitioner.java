@@ -12,5 +12,5 @@ import com.voole.hobbit2.camus.api.ICamusKey;
 public interface ICamusPartitioner<Key extends ICamusKey, Value> {
 	void partition(Key key, Value value);
 
-	String getDest(Key key);
+	String getPath(Key key);
 }

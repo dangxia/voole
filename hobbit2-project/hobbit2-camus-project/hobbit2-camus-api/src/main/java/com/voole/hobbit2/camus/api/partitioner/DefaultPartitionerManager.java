@@ -13,10 +13,10 @@ import com.voole.hobbit2.camus.api.ICamusKey;
  * @author XuehuiHe
  * @date 2014年9月3日
  */
-public class CamusPartitionerManager {
+public class DefaultPartitionerManager implements ICamusPartitionerManager {
 	private final Map<ICamusKey, ICamusPartitioner<?, ?>> partitionerMap;
 
-	public CamusPartitionerManager(ICamusPartitionerRegister... registers) {
+	public DefaultPartitionerManager(ICamusPartitionerRegister... registers) {
 		Map<ICamusKey, ICamusPartitioner<?, ?>> tempPartitionerMap = new HashMap<ICamusKey, ICamusPartitioner<?, ?>>();
 		for (ICamusPartitionerRegister register : registers) {
 			register.add(tempPartitionerMap);
