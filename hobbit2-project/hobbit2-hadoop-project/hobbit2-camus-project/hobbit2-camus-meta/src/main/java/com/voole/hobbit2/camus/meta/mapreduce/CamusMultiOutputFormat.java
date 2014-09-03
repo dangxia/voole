@@ -140,7 +140,7 @@ public class CamusMultiOutputFormat extends FileOutputFormat<CamusKey, Object> {
 			return Joiner.on('.').join(key.getTopic(), key.getPartition(),
 					avroFileStats.getBeginOffset(),
 					avroFileStats.getLastOffset(),
-					CamusMetaConfigs.getExecStartTime(context), ".avro");
+					CamusMetaConfigs.getExecStartTime(context), "avro");
 		}
 
 		@Override
