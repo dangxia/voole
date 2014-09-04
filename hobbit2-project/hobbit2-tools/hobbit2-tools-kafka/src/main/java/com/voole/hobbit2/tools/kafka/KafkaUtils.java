@@ -37,8 +37,6 @@ import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
-import com.voole.hobbit2.config.props.Hobbit2Configuration;
-import com.voole.hobbit2.config.props.KafkaConfigKeys;
 import com.voole.hobbit2.tools.kafka.KafkaJsonUtils.BrokerShadow;
 import com.voole.hobbit2.tools.kafka.KafkaJsonUtils.PartitionsInfo;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
@@ -341,20 +339,4 @@ public class KafkaUtils {
 		return topicMetadataList;
 	}
 
-	public static void main(String[] args) {
-		Hobbit2Configuration conf = new Hobbit2Configuration();
-		ZkClient client = ZookeeperUtils.createZKClient(
-				conf.getString(KafkaConfigKeys.KAFKA_ZOOKEEPER_CONNECT),
-				conf.getInt(KafkaConfigKeys.KAFKA_TIME_OUT_MS),
-				conf.getInt(KafkaConfigKeys.KAFKA_TIME_OUT_MS));
-		Map<Broker, List<PartitionState>> map = getPartitionState(client,
-				"t_playbgn_v2", "t_playbgn_v3");
-		for (Entry<Broker, List<PartitionState>> entry : map.entrySet()) {
-			List<PartitionState> list = entry.getValue();
-			for (PartitionState kafkaPartition : list) {
-				System.out.println(kafkaPartition);
-			}
-		}
-		client.close();
-	}
 }

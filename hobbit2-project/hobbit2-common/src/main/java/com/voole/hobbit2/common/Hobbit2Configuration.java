@@ -17,8 +17,8 @@ import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 
 public class Hobbit2Configuration {
-	public static final String PROP_FILE_LIST = "prop.file.list";
-
+	public static final String PROP_SITE_FILE_LIST = "prop.site.file.list";
+	public static final String PROP_OTHER_FILE_LIST = "prop.other.file.list";
 	private static Logger logger = LoggerFactory
 			.getLogger(Hobbit2Configuration.class);
 
@@ -35,34 +35,9 @@ public class Hobbit2Configuration {
 
 	public static CompositeConfiguration initConfig(Properties props)
 			throws ConfigurationException, FileNotFoundException {
-		String[] propFileNames = null;
-		if (props != null && props.containsKey(PROP_FILE_LIST)) {
-			String listStr = props.getProperty(PROP_FILE_LIST);
-			propFileNames = Splitter.on(',').splitToList(listStr)
-					.toArray(new String[] {});
-		} else {
-			PropertiesConfiguration item = new PropertiesConfiguration();
-			Optional<URL> url = findPropFileUrl("prop.file.site.properties");
-			if (url.isPresent()) {
-				logger.info("load props from file : prop.file.site.properties");
-				item.load(url.get());
-			} else {
-				url = findPropFileUrl("prop.file.default.properties");
-				if (url.isPresent()) {
-					logger.info("load props from file : prop.file.default.properties");
-					item.load(url.get());
-				} else {
-					throw new FileNotFoundException(
-							"file:prop.file.default.properties not found");
-				}
-			}
-			propFileNames = item.getStringArray(PROP_FILE_LIST);
-		}
-
 		CompositeConfiguration configuration = new CompositeConfiguration();
-		for (String name : propFileNames) {
-			configuration.addConfiguration(getProps(name));
-		}
+		initSiteProps(props, configuration);
+		initOtherProps(props, configuration);
 		if (props != null) {
 			for (Object key : props.keySet()) {
 				String _k = (String) key;
@@ -72,7 +47,81 @@ public class Hobbit2Configuration {
 		return configuration;
 	}
 
-	public static PropertiesConfiguration getProps(String name)
+	private static void initOtherProps(Properties props,
+			CompositeConfiguration configuration)
+			throws ConfigurationException, FileNotFoundException {
+		String[] otherPropsName = null;
+		if (props != null && props.containsKey(PROP_OTHER_FILE_LIST)) {
+			String listStr = props.getProperty(PROP_OTHER_FILE_LIST);
+			otherPropsName = Splitter.on(',').splitToList(listStr)
+					.toArray(new String[] {});
+		} else {
+			PropertiesConfiguration item = getPropListProps();
+			otherPropsName = item.getStringArray(PROP_SITE_FILE_LIST);
+		}
+
+		for (String name : otherPropsName) {
+			configuration.addConfiguration(getSiteConfiguration(name));
+		}
+	}
+
+	private static void initSiteProps(Properties props,
+			CompositeConfiguration configuration)
+			throws ConfigurationException, FileNotFoundException {
+		String[] sitePropsName = null;
+		if (props != null && props.containsKey(PROP_SITE_FILE_LIST)) {
+			String listStr = props.getProperty(PROP_SITE_FILE_LIST);
+			sitePropsName = Splitter.on(',').splitToList(listStr)
+					.toArray(new String[] {});
+		} else {
+			PropertiesConfiguration item = getPropListProps();
+			sitePropsName = item.getStringArray(PROP_SITE_FILE_LIST);
+		}
+
+		for (String name : sitePropsName) {
+			configuration.addConfiguration(getSiteConfiguration(name));
+		}
+	}
+
+	private static PropertiesConfiguration propListProps = null;
+
+	private static PropertiesConfiguration getPropListProps()
+			throws ConfigurationException, FileNotFoundException {
+		if (propListProps == null) {
+			propListProps = new PropertiesConfiguration();
+			Optional<URL> url = findPropFileUrl("prop.file.site.properties");
+			if (url.isPresent()) {
+				logger.info("load props from file : prop.file.site.properties");
+				propListProps.load(url.get());
+			} else {
+				url = findPropFileUrl("prop.file.default.properties");
+				if (url.isPresent()) {
+					logger.info("load props from file : prop.file.default.properties");
+					propListProps.load(url.get());
+				} else {
+					throw new FileNotFoundException(
+							"file:prop.file.default.properties not found");
+				}
+			}
+		}
+		return propListProps;
+	}
+
+	public static PropertiesConfiguration getOtherConfiguration(String name)
+			throws ConfigurationException {
+		PropertiesConfiguration item = new PropertiesConfiguration();
+		item.setDelimiterParsingDisabled(true);
+		Optional<URL> url = findPropFileUrl(name);
+		if (url.isPresent()) {
+			logger.info("load props from file : " + name);
+			item.load(url.get());
+		} else {
+			logger.warn("file:" + name + " not found");
+		}
+		return item;
+	}
+
+	public static PropertiesConfiguration getSiteConfiguration(String name)
 			throws ConfigurationException {
 		PropertiesConfiguration item = new PropertiesConfiguration();
 		item.setDelimiterParsingDisabled(true);

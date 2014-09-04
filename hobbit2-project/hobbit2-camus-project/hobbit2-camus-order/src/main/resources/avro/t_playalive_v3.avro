@@ -1,0 +1,82 @@
+{
+	"type" : "record",
+	"name" : "OrderPlayAliveReqV3",
+	"namespace" : "com.voole.hobbit2.camus.order",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "adjPlayTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "accID",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "aliveTick",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "seekNum",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "readNum",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "unsuccRead",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "readPos",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "sessAvgSpeed",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "sessSpeed",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "linkNum",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "cacheSizeCur",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "_srvs",
+		"type" : [ "null", {
+			"type" : "array",
+			"items" : {
+				"type" : "record",
+				"name" : "OrderPlayAliveReqSrvV3",
+				"fields" : [ {
+					"name" : "srvIP",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "connTimes",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "transNum",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "avgRTT",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "accBytes",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "accTime",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "avgSpeed",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "speed",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "RTT",
+					"type" : [ "long", "null" ]
+				}, {
+					"name" : "nodeID",
+					"type" : [ "long", "null" ]
+				} ]
+			}
+		} ]
+	} ]
+}
