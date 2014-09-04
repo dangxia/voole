@@ -305,18 +305,11 @@
 		</profile>
 	</profiles>
 	<modules>
-		<module>hobbit2-configs/hobbit2-config-props</module>
-		<module>hobbit2-configs/hobbit2-config-spring</module>
-		<module>hobbit2-tools/hobbit2-tools-common</module>
+		<module>hobbit2-camus-project/hobbit2-camus-api</module>
+		<module>hobbit2-camus-project/hobbit2-camus-mr</module>
+		<module>hobbit2-camus-project/hobbit2-camus-order</module>
+		<module>hobbit2-common</module>
+		<module>hobbit2-configs</module>
 		<module>hobbit2-tools/hobbit2-tools-kafka</module>
-		<module>hobbit2-kafka-project/hobbit2-kafka-avro</module>
-		<module>
-			hobbit2-kafka-project/hobbit2-kafka-avro/hobbit2-kafka-avro-order
-		</module>
-		<module>hobbit2-kafka-project/hobbit2-kafka-common</module>
-		<module>hobbit2-tools/hobbit2-tools-avro</module>
-		<module>
-			hobbit2-hadoop-project/hobbit2-camus-project/hobbit2-camus-meta
-		</module>
 	</modules>
 </project>
