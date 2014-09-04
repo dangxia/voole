@@ -57,7 +57,7 @@ public class Hobbit2Configuration {
 					.toArray(new String[] {});
 		} else {
 			PropertiesConfiguration item = getPropListProps();
-			otherPropsName = item.getStringArray(PROP_SITE_FILE_LIST);
+			otherPropsName = item.getStringArray(PROP_OTHER_FILE_LIST);
 		}
 
 		for (String name : otherPropsName) {
