@@ -162,8 +162,10 @@ public class CamusMultiOutputFormat extends FileOutputFormat<CamusKey, Object> {
 				TaskAttemptContext context) {
 			String destName = getDestFileName(key, avroFileStats, context);
 			Path destPath = CamusMetaConfigs.getDestPath(context);
-			return new Path(destPath, getPartitioner(context, key.getTopic())
-					.getPath(key.getStamp()) + destName);
+			return new Path(destPath, key.getTopic()
+					+ "/"
+					+ getPartitioner(context, key.getTopic()).getPath(
+							key.getStamp()) + destName);
 		}
 
 		protected String getDestFileName(CamusKey key,

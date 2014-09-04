@@ -16,7 +16,7 @@ public class HourlyPartitioner implements ICamusPartitioner {
 
 	@Override
 	public String getPath(long partitionStamp) {
-		return "/hourly/" + df.format(new Date(partitionStamp));
+		return "hourly/" + df.format(new Date(partitionStamp));
 	}
 
 	@Override
