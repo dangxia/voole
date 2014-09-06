@@ -1,0 +1,58 @@
+{
+	"type" : "record",
+	"name" : "HiveOrderDryRecord",
+	"namespace" : "com.voole.hobbit2.hive.order.avro",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : "string"
+	}, {
+		"name" : "UID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "HID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "OEMID",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "natip",
+		"type" : [ "long", "null" ]
+	},  {
+		"name" : "FID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "playBgnTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playAliveTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playEndTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playDurationTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "avgspeed",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "isAdMod",
+		"type" : "boolean",
+		"default" : false
+	}, {
+		"name" : "isRepeatMod",
+		"type" : "boolean",
+		"default" : false
+	}, {
+		"name" : "pid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "epgid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "secid",
+		"type" : [ "string", "null" ]
+	} ]
+}
+
+// MID、当前剧集

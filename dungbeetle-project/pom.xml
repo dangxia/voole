@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.voole.hobbit2</groupId>
-	<artifactId>hobbit2-project</artifactId>
+	<groupId>com.voole.dungbeetle</groupId>
+	<artifactId>dungbeetle-project</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
@@ -311,12 +311,6 @@
 		</profile>
 	</profiles>
 	<modules>
-		<module>hobbit2-camus-project/hobbit2-camus-api</module>
-		<module>hobbit2-camus-project/hobbit2-camus-mr</module>
-		<module>hobbit2-camus-project/hobbit2-camus-order</module>
-		<module>hobbit2-common</module>
-		<module>hobbit2-configs</module>
-		<module>hobbit2-tools/hobbit2-tools-kafka</module>
-		<module>hobbit2-hadoop-project/hobbit2-hive-order</module>
+		<module>dungbeetle-api</module>
 	</modules>
 </project>
