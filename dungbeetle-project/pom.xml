@@ -312,5 +312,6 @@
 	</profiles>
 	<modules>
 		<module>dungbeetle-api</module>
+		<module>dungbeetle-order-record</module>
 	</modules>
 </project>

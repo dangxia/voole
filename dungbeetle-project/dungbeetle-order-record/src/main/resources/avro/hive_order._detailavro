@@ -1,0 +1,73 @@
+{
+	"type" : "record",
+	"name" : "HiveOrderDetailRecord",
+	"namespace" : "com.voole.dungbeetle.order.record.avro",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : "string"
+	},{
+		"name" : "spid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "UID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "HID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "OEMID",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "natip",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "areaid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "FID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "playBgnTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playAliveTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playEndTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playDurationTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "avgspeed",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "isAdMod",
+		"type" : "boolean",
+		"default" : false
+	}, {
+		"name" : "isRepeatMod",
+		"type" : "boolean",
+		"default" : false
+	}, {
+		"name" : "pid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "epgid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "secid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "bitrate",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "mid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "currSeries",
+		"type" : [ "long", "null" ]
+	} ]
+}
+
+// MID、当前剧集

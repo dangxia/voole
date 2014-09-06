@@ -14,6 +14,10 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.voole.dungbeetle.api.DumgBeetleResult;
+import com.voole.dungbeetle.api.DumgBeetleResultReader;
+import com.voole.dungbeetle.api.DumgBeetleTransformException;
+import com.voole.dungbeetle.order.record.OrderDetailDumgBeetleTransformer;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV3;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
@@ -37,6 +41,8 @@ public class HiveOrderInputReducer
 	private OrderSessionInfo sessionInfo;
 	private NullWritable outValue;
 	private AvroMultipleOutputs ass;
+	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
+	private DumgBeetleResultReader resultReader;
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -44,6 +50,10 @@ public class HiveOrderInputReducer
 		sessionInfo = new OrderSessionInfo();
 		outValue = NullWritable.get();
 		ass = new AvroMultipleOutputs(context);
+
+		resultReader = new DumgBeetleResultReader();
+		orderDetailDumgBeetleTransformer = new OrderDetailDumgBeetleTransformer();
+		orderDetailDumgBeetleTransformer.setup(context);
 	}
 
 	@Override
@@ -53,6 +63,9 @@ public class HiveOrderInputReducer
 		ass = null;
 		sessionInfo = null;
 		outValue = null;
+		if (orderDetailDumgBeetleTransformer != null) {
+			orderDetailDumgBeetleTransformer.cleanup(context);
+		}
 	}
 
 	@Override
@@ -89,6 +102,17 @@ public class HiveOrderInputReducer
 				writeNoEnd(iterable, context);
 				return;
 			}
+
+			Iterable<DumgBeetleResult> results = orderDetailDumgBeetleTransformer
+					.transform(orderRecord);
+			if (results != null) {
+				for (DumgBeetleResult dumgBeetleResult : results) {
+					resultReader.setDumgBeetleResult(dumgBeetleResult);
+					if (!resultReader.isEmpty()) {
+
+					}
+				}
+			}
 			// TODO
 		} catch (OrderSessionInfoBgnNullException e) {
 			if (isDelayBgn()) {
@@ -98,6 +122,9 @@ public class HiveOrderInputReducer
 			}
 		} catch (OrderSessionInfoException e) {
 			writeError(e, iterable, context);
+		} catch (DumgBeetleTransformException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}

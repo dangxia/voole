@@ -59,5 +59,15 @@
 		</dependency>
 		<!--/ hadoop mapreduce -->
 
+		<dependency>
+			<groupId>com.voole.hobbit2</groupId>
+			<artifactId>hobbit2-hive-order-avro</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.voole.dungbeetle</groupId>
+			<artifactId>dungbeetle-order-record</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

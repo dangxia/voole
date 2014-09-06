@@ -318,5 +318,7 @@
 		<module>hobbit2-configs</module>
 		<module>hobbit2-tools/hobbit2-tools-kafka</module>
 		<module>hobbit2-hadoop-project/hobbit2-hive-order</module>
+		<module>hobbit2-cache</module>
+		<module>hobbit2-hadoop-project/hobbit2-hive-order-avro</module>
 	</modules>
 </project>

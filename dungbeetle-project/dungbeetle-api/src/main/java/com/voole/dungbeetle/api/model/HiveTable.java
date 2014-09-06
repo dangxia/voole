@@ -62,9 +62,9 @@ public class HiveTable {
 			sb.append(" PARTITIONED BY( " + getPartitionSchema(table) + " )\n ");
 		}
 		sb.append(" ROW FORMAT SERDE \n  'org.apache.hadoop.hive.serde2.avro.AvroSerDe' \n  STORED AS INPUTFORMAT \n  'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat' \n  OUTPUTFORMAT \n  'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat' \n");
-		sb.append(" TBLPROPERTIES (\n 'avro.schema.literal'='\n ");
+		sb.append(" TBLPROPERTIES (\n 'avro.schema.literal'=\n'");
 		sb.append(table.getSchema().toString());
-		sb.append("  ')");
+		sb.append("'\n)");
 		return sb.toString();
 	}
 }

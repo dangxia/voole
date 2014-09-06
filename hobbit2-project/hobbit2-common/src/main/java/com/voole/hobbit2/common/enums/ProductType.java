@@ -41,4 +41,6 @@ public enum ProductType {
 		return productType != ProductType.FREE
 				&& productType != ProductType.OTHER;
 	}
+
+	public static final Long VOOLE_SPID = 10002001l;
 }
