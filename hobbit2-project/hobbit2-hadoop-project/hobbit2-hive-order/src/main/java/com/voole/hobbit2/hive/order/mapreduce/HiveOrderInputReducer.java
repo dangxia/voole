@@ -6,16 +6,12 @@ package com.voole.hobbit2.hive.order.mapreduce;
 import java.io.IOException;
 
 import org.apache.avro.mapred.AvroValue;
-import org.apache.avro.mapreduce.AvroMultipleOutputs;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.voole.dungbeetle.api.DumgBeetleResult;
-import com.voole.dungbeetle.api.DumgBeetleResultReader;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.order.record.OrderDetailDumgBeetleTransformer;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
@@ -34,24 +30,18 @@ import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException;
  * @author XuehuiHe
  * @date 2014年7月29日
  */
-public class HiveOrderInputReducer
-		extends
-		Reducer<Text, AvroValue<SpecificRecordBase>, HiveOrderDryRecord, NullWritable> {
-	private Logger log = LoggerFactory.getLogger(HiveOrderInputReducer.class);
+public class HiveOrderInputReducer extends
+		Reducer<Text, AvroValue<SpecificRecordBase>, Object, Object> {
+	// private Logger log =
+	// LoggerFactory.getLogger(HiveOrderInputReducer.class);
 	private OrderSessionInfo sessionInfo;
-	private NullWritable outValue;
-	private AvroMultipleOutputs ass;
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
-	private DumgBeetleResultReader resultReader;
 
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 		sessionInfo = new OrderSessionInfo();
-		outValue = NullWritable.get();
-		ass = new AvroMultipleOutputs(context);
 
-		resultReader = new DumgBeetleResultReader();
 		orderDetailDumgBeetleTransformer = new OrderDetailDumgBeetleTransformer();
 		orderDetailDumgBeetleTransformer.setup(context);
 	}
@@ -59,10 +49,7 @@ public class HiveOrderInputReducer
 	@Override
 	protected void cleanup(Context context) throws IOException,
 			InterruptedException {
-		ass.close();
-		ass = null;
 		sessionInfo = null;
-		outValue = null;
 		if (orderDetailDumgBeetleTransformer != null) {
 			orderDetailDumgBeetleTransformer.cleanup(context);
 		}
@@ -106,14 +93,8 @@ public class HiveOrderInputReducer
 			Iterable<DumgBeetleResult> results = orderDetailDumgBeetleTransformer
 					.transform(orderRecord);
 			if (results != null) {
-				for (DumgBeetleResult dumgBeetleResult : results) {
-					resultReader.setDumgBeetleResult(dumgBeetleResult);
-					if (!resultReader.isEmpty()) {
-
-					}
-				}
+				context.write(NullWritable.get(), results);
 			}
-			// TODO
 		} catch (OrderSessionInfoBgnNullException e) {
 			if (isDelayBgn()) {
 				writeNoEnd(iterable, context);
