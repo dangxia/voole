@@ -60,7 +60,7 @@ public class OrderTopicsUtils {
 		topicToClazz.put(topic, clazz);
 	}
 
-	public boolean containsTopic(String topic) {
+	public static boolean containsTopic(String topic) {
 		return topicBiSchema.keySet().contains(topic);
 	}
 }
