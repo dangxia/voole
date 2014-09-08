@@ -22,7 +22,7 @@ import org.apache.hadoop.io.SequenceFile.Writer;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
-import org.apache.hadoop.mapreduce.TaskInputOutputContext;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +39,12 @@ public class HiveOrderMultiOutputFormat extends
 	public RecordWriter<Object, Object> getRecordWriter(TaskAttemptContext job)
 			throws IOException, InterruptedException {
 		return new HiveOrderMultiRecordWriter(job);
+	}
+
+	@Override
+	public synchronized FileOutputCommitter getOutputCommitter(
+			TaskAttemptContext context) throws IOException {
+		return (FileOutputCommitter) super.getOutputCommitter(context);
 	}
 
 	class HiveOrderMultiRecordWriter extends RecordWriter<Object, Object> {
@@ -84,7 +90,7 @@ public class HiveOrderMultiOutputFormat extends
 				TaskAttemptContext context, String fileName, HiveTable table)
 				throws IOException, InterruptedException {
 			FileSystem fs = FileSystem.get(context.getConfiguration());
-			Path path = getWorkOutputPath((TaskInputOutputContext<?, ?, ?, ?>) context);
+			Path path = getOutputCommitter(context).getWorkPath();
 			fileName = getUniqueFile(context, fileName, ".avro");
 			fileNameToHiveTableMap.put(fileName, table);
 			path = new Path(path, fileName);
@@ -106,7 +112,7 @@ public class HiveOrderMultiOutputFormat extends
 				entry.getValue().close(context);
 			}
 			if (fileNameToHiveTableMap.size() > 0) {
-				Path workPath = getWorkOutputPath((TaskInputOutputContext<?, ?, ?, ?>) context);
+				Path workPath = getOutputCommitter(context).getWorkPath();
 				String fileName = getUniqueFile(context,
 						HiveOrderMetaConfigs.FILE_INFO_PREFIX, ".fileInfo");
 				Path path = new Path(workPath, fileName);
