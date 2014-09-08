@@ -48,7 +48,7 @@ public class HiveOrderInputFileFilter {
 				log.warn(path.toUri().getPath() + " not found exectime");
 			}
 		} else {
-			if (name.startsWith(HiveOrderMetaConfigs.NOEND_prefix)) {
+			if (name.startsWith(HiveOrderMetaConfigs.NOEND_PREFIX)) {
 				log.info("find noedn file:" + path.toUri().getPath());
 				return true;
 			}

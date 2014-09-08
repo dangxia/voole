@@ -10,7 +10,9 @@ import org.apache.hadoop.mapreduce.JobContext;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 
 public class HiveOrderMetaConfigs {
-	public static final String NOEND_prefix = "noend_";
+	public static final String NOEND_PREFIX = "noend_";
+
+	public static final String FILE_INFO_PREFIX = "hive_table_file_info_";
 
 	public static final String CAMUS_DEST_PATH = "camus.dest.path";
 	public static final String CURR_CAMUS_EXEC_TIME = "curr.camus.exec.time";

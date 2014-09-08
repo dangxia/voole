@@ -4,8 +4,13 @@
 package com.voole.dungbeetle.api;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+
+import com.voole.dungbeetle.api.model.HiveTable;
 
 /**
  * @author XuehuiHe
@@ -18,6 +23,6 @@ public interface IDumgBeetleTransformer<SOURCE> {
 	public void cleanup(TaskAttemptContext context) throws IOException,
 			InterruptedException;
 
-	public Iterable<DumgBeetleResult> transform(SOURCE source)
+	public Map<HiveTable, List<SpecificRecordBase>> transform(SOURCE source)
 			throws DumgBeetleTransformException;
 }

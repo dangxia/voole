@@ -6,13 +6,17 @@ package com.voole.dungbeetle.order.record;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 import com.google.common.collect.Lists;
-import com.voole.dungbeetle.api.DumgBeetleResult;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.api.IDumgBeetleTransformer;
+import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
 import com.voole.hobbit2.cache.AreaInfoCache;
 import com.voole.hobbit2.cache.AreaInfoCacheImpl;
@@ -37,8 +41,13 @@ public class OrderDetailDumgBeetleTransformer implements
 	private AreaInfoCache areaInfoCache;
 	private OemInfoCache oemInfoCache;
 	private ResourceInfoCache resourceInfoCache;
+	private final Map<String, HiveTable> partitionCache;
 
 	private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+	public OrderDetailDumgBeetleTransformer() {
+		partitionCache = new HashMap<String, HiveTable>();
+	}
 
 	@Override
 	public void setup(TaskAttemptContext context) throws IOException,
@@ -58,8 +67,8 @@ public class OrderDetailDumgBeetleTransformer implements
 	}
 
 	@Override
-	public Iterable<DumgBeetleResult> transform(HiveOrderDryRecord dry)
-			throws DumgBeetleTransformException {
+	public Map<HiveTable, List<SpecificRecordBase>> transform(
+			HiveOrderDryRecord dry) throws DumgBeetleTransformException {
 		HiveOrderDetailRecord record = new HiveOrderDetailRecord();
 		fillDetail(record, dry);
 		String spid = getSpid(record.getOEMID());
@@ -80,11 +89,26 @@ public class OrderDetailDumgBeetleTransformer implements
 				record.setBitrate(null);
 			}
 		}
-		DumgBeetleResult result = new DumgBeetleResult(
-				OrderDetailHiveTable.get());
-		result.partition("day", getDayPartition(record.getPlayBgnTime()));
-		result.addRecord(record);
-		return Lists.newArrayList(result);
+		String partition = getDayPartition(record.getPlayBgnTime());
+		Map<HiveTable, List<SpecificRecordBase>> result = new HashMap<HiveTable, List<SpecificRecordBase>>();
+		result.put(getTable(partition),
+				Lists.newArrayList((SpecificRecordBase) record));
+		return result;
+	}
+
+	public HiveTable getTable(String partition) {
+		if (!partitionCache.containsKey(partition)) {
+			createHiveTable(partition);
+		}
+		return partitionCache.get(partition);
+	}
+
+	private synchronized void createHiveTable(String partition) {
+		if (partitionCache.containsKey(partition)) {
+			return;
+		}
+		partitionCache.put(partition,
+				OrderDetailHiveTableCreator.create(partition));
 	}
 
 	private String getDayPartition(long stamp) {

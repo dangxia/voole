@@ -40,7 +40,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		Job job = createJob();
 		checkAndLoad(job);
 
-//		FileSystem fs = FileSystem.get(job.getConfiguration());
+		// FileSystem fs = FileSystem.get(job.getConfiguration());
 		Path execBasePath = HiveOrderMetaConfigs.getExecBasePath(job);
 		Path newExecutionOutput = new Path(execBasePath, df.format(new Date()));
 		FileOutputFormat.setOutputPath(job, newExecutionOutput);
@@ -57,6 +57,7 @@ public class HiveOrderJob extends Configured implements Tool {
 
 		job.setReducerClass(HiveOrderInputReducer.class);
 		job.setOutputFormatClass(HiveOrderMultiOutputFormat.class);
+		HiveOrderMetaConfigs.setExecStartTime(job);
 		try {
 			job.submit();
 		} catch (Exception e) {

@@ -4,6 +4,9 @@
 package com.voole.hobbit2.hive.order.mapreduce;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -11,8 +14,9 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import com.voole.dungbeetle.api.DumgBeetleResult;
+import com.google.common.base.Throwables;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
+import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.OrderDetailDumgBeetleTransformer;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV3;
@@ -21,10 +25,11 @@ import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
 import com.voole.hobbit2.hive.order.HiveOrderDryRecordGenerator;
+import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
 import com.voole.hobbit2.hive.order.OrderSessionInfo;
 import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
-import com.voole.hobbit2.hive.order.exception.OrderSessionInfoBgnNullException;
 import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException;
+import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException.OrderSessionInfoExceptionType;
 
 /**
  * @author XuehuiHe
@@ -36,10 +41,12 @@ public class HiveOrderInputReducer extends
 	// LoggerFactory.getLogger(HiveOrderInputReducer.class);
 	private OrderSessionInfo sessionInfo;
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
+	private long currCamusExecTime;
 
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
+		currCamusExecTime = HiveOrderMetaConfigs.getCurrCamusExecTime(context) / 1000;
 		sessionInfo = new OrderSessionInfo();
 
 		orderDetailDumgBeetleTransformer = new OrderDetailDumgBeetleTransformer();
@@ -90,46 +97,59 @@ public class HiveOrderInputReducer extends
 				return;
 			}
 
-			Iterable<DumgBeetleResult> results = orderDetailDumgBeetleTransformer
+			Map<HiveTable, List<SpecificRecordBase>> result = orderDetailDumgBeetleTransformer
 					.transform(orderRecord);
-			if (results != null) {
-				context.write(NullWritable.get(), results);
+			if (result != null && result.size() > 0) {
+				for (Entry<HiveTable, List<SpecificRecordBase>> entry : result
+						.entrySet()) {
+					context.write(entry.getKey(), entry.getValue());
+				}
 			}
-		} catch (OrderSessionInfoBgnNullException e) {
-			if (isDelayBgn()) {
+		} catch (OrderSessionInfoException e) {
+			if (e.getType() == OrderSessionInfoExceptionType.BGN_IS_NULL
+					&& isDelayBgn()) {
 				writeNoEnd(iterable, context);
 			} else {
 				writeError(e, iterable, context);
 			}
-		} catch (OrderSessionInfoException e) {
-			writeError(e, iterable, context);
 		} catch (DumgBeetleTransformException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Throwables.propagate(e);
 		}
 
 	}
 
 	public void writeNoEnd(Iterable<AvroValue<SpecificRecordBase>> iterable,
-			Context context) {
-		// TODO
+			Context context) throws IOException, InterruptedException {
+		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+			context.write(NullWritable.get(), avroValue.datum());
+		}
 	}
 
 	public void writeError(OrderSessionInfoException e,
-			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context) {
+			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
+			throws IOException, InterruptedException {
 		// TODO
+		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+			context.write(e, avroValue.datum());
+		}
 	}
 
 	private boolean isDelayBgn() {
-		return true;
-		// TODO
+		Long last = null;
+		if (sessionInfo._end != null) {
+			last = sessionInfo._endTime;
+		} else if (last == null && sessionInfo._lastAlive != null) {
+			last = sessionInfo._lastAliveTime;
+		}
+		if (last != null) {
+			return last > currCamusExecTime - 10 * 60;
+		}
+		return false;
 	}
 
 	private boolean isEnd(HiveOrderDryRecord orderRecord, Context context) {
 		Long last = null;
-		long startTime = 0l;
-		// TODO
-		// long startTime = HiveOrderConfigs.getCurrCamusStartTime(context);
 		if (orderRecord.getPlayEndTime() != null) {
 			last = orderRecord.getPlayEndTime();
 		} else if (orderRecord.getPlayAliveTime() != null) {
@@ -138,7 +158,7 @@ public class HiveOrderInputReducer extends
 			last = orderRecord.getPlayBgnTime();
 		}
 		if (last != null) {
-			return last < startTime - 10 * 60;
+			return last < currCamusExecTime - 10 * 60;
 		}
 		return true;
 	}

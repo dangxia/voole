@@ -8,30 +8,46 @@ package com.voole.hobbit2.hive.order.exception;
  * @date 2014年9月6日
  */
 public class OrderSessionInfoException extends Exception {
+	public static enum OrderSessionInfoExceptionType {
+		BGN_IS_NULL, BGN_IS_MULTI, END_IS_MULTI, BGN_TIME_GT_END_TIME, BGN_TIME_GT_ALIVE_TIME, ALIVE_TIME_GT_END_TIME;
+	}
+
 	private final CharSequence sessionId;
+	private final OrderSessionInfoExceptionType type;
 
 	public CharSequence getSessionId() {
 		return sessionId;
 	}
 
-	public OrderSessionInfoException(CharSequence sessionId) {
-		super();
-		this.sessionId = sessionId;
+	public OrderSessionInfoExceptionType getType() {
+		return type;
 	}
 
-	public OrderSessionInfoException(CharSequence sessionId, String message) {
-		super(message);
+	public OrderSessionInfoException(CharSequence sessionId,
+			OrderSessionInfoExceptionType type) {
+		super();
 		this.sessionId = sessionId;
+		this.type = type;
 	}
 
 	public OrderSessionInfoException(CharSequence sessionId, String message,
-			Throwable cause) {
-		super(message, cause);
+			OrderSessionInfoExceptionType type) {
+		super(message);
 		this.sessionId = sessionId;
+		this.type = type;
 	}
 
-	public OrderSessionInfoException(CharSequence sessionId, Throwable cause) {
+	public OrderSessionInfoException(CharSequence sessionId, String message,
+			Throwable cause, OrderSessionInfoExceptionType type) {
+		super(message, cause);
+		this.sessionId = sessionId;
+		this.type = type;
+	}
+
+	public OrderSessionInfoException(CharSequence sessionId, Throwable cause,
+			OrderSessionInfoExceptionType type) {
 		super(cause);
 		this.sessionId = sessionId;
+		this.type = type;
 	}
 }

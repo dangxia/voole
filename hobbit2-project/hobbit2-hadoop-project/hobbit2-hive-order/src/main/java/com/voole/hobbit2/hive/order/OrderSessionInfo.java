@@ -9,8 +9,8 @@ import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
-import com.voole.hobbit2.hive.order.exception.OrderSessionInfoBgnNullException;
 import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException;
+import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException.OrderSessionInfoExceptionType;
 
 /**
  * 该点播session处理的前提为sessionID唯一，sessionID不唯一结果可能有一定出入
@@ -43,20 +43,21 @@ public class OrderSessionInfo {
 
 	public void verify() throws OrderSessionInfoException {
 		if (_bgn == null) {
-			throw new OrderSessionInfoBgnNullException(sessionId, "bgn is null");
+			throw new OrderSessionInfoException(sessionId,
+					OrderSessionInfoExceptionType.BGN_IS_NULL);
 		}
 		if (_end != null && _bgnTime > _endTime) {
-			throw new OrderSessionInfoException(getSessionId(),
-					"_bgnTime > _endTime");
+			throw new OrderSessionInfoException(sessionId,
+					OrderSessionInfoExceptionType.BGN_TIME_GT_END_TIME);
 		}
 		if (_lastAlive != null && _bgnTime > _lastAliveTime) {
-			throw new OrderSessionInfoException(getSessionId(),
-					"_bgnTime > _lastAliveTime");
+			throw new OrderSessionInfoException(sessionId,
+					OrderSessionInfoExceptionType.BGN_TIME_GT_ALIVE_TIME);
 		}
 
 		if (_lastAlive != null && _end != null && _endTime < _lastAliveTime) {
-			throw new OrderSessionInfoException(getSessionId(),
-					"_endTime < _lastAliveTime");
+			throw new OrderSessionInfoException(sessionId,
+					OrderSessionInfoExceptionType.ALIVE_TIME_GT_END_TIME);
 		}
 	}
 
@@ -71,7 +72,8 @@ public class OrderSessionInfo {
 	public void setBgn(Object bgn, Long bgnTime)
 			throws OrderSessionInfoException {
 		if (_bgn != null) {
-			throw new OrderSessionInfoException(getSessionId(), "bgn is multi!");
+			throw new OrderSessionInfoException(sessionId,
+					OrderSessionInfoExceptionType.BGN_IS_MULTI);
 		}
 		_bgn = bgn;
 		_bgnTime = bgnTime;
@@ -92,7 +94,8 @@ public class OrderSessionInfo {
 	public void setEnd(Object end, Long endTime)
 			throws OrderSessionInfoException {
 		if (_end != null) {
-			throw new OrderSessionInfoException(getSessionId(), "end is multi!");
+			throw new OrderSessionInfoException(sessionId,
+					OrderSessionInfoExceptionType.END_IS_MULTI);
 		}
 		_end = end;
 		_endTime = endTime;

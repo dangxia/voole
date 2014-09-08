@@ -1,70 +1,83 @@
-/*
- * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
- */
 package com.voole.dungbeetle.api.model;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.avro.Schema;
+import org.apache.hadoop.io.Writable;
+import org.apache.hadoop.io.WritableUtils;
 
 import com.google.common.base.Joiner;
 
-/**
- * @author XuehuiHe
- * @date 2014年9月6日
- */
-public class HiveTable {
-	final private String tableName;
-	final private List<HiveTablePartition> partitions;
-	final private Schema schema;
+public class HiveTable implements Writable {
+	private String name;
+	private List<HiveTablePartition> partitions;
+	private Schema schema;
 
-	public HiveTable(String tableName, List<HiveTablePartition> partitions,
-			Schema schema) {
-		this.tableName = tableName;
-		this.partitions = partitions;
-		this.schema = schema;
+	public HiveTable() {
+		this.partitions = new ArrayList<HiveTablePartition>();
 	}
 
-	public HiveTable(String tableName, Schema schema) {
-		this(tableName, null, schema);
-	}
-
-	public boolean hasPartitions() {
+	public boolean hasPartition() {
 		return partitions != null && partitions.size() > 0;
 	}
 
-	public String getTableName() {
-		return tableName;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public List<HiveTablePartition> getPartitions() {
 		return partitions;
 	}
 
+	public void setPartitions(List<HiveTablePartition> partitions) {
+		this.partitions = partitions;
+	}
+
 	public Schema getSchema() {
 		return schema;
 	}
 
-	public static String getPartitionSchema(HiveTable table) {
-		List<String> partitionStrList = new ArrayList<String>();
-		for (HiveTablePartition partition : table.getPartitions()) {
-			partitionStrList.add(partition.getName() + " "
-					+ partition.getType().getName());
-		}
-		return Joiner.on(" , ").join(partitionStrList);
+	public void setSchema(Schema schema) {
+		this.schema = schema;
 	}
 
-	public static String getCreateHiveTableSchema(HiveTable table) {
-		StringBuffer sb = new StringBuffer("CREATE TABLE ");
-		sb.append(table.getTableName() + "\n ");
-		if (table.hasPartitions()) {
-			sb.append(" PARTITIONED BY( " + getPartitionSchema(table) + " )\n ");
+	public String getFileName() {
+		List<String> list = new ArrayList<String>();
+		list.add(getName());
+		for (HiveTablePartition partition : partitions) {
+			list.add(partition.getName());
+			list.add(partition.getValue().toString());
 		}
-		sb.append(" ROW FORMAT SERDE \n  'org.apache.hadoop.hive.serde2.avro.AvroSerDe' \n  STORED AS INPUTFORMAT \n  'org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat' \n  OUTPUTFORMAT \n  'org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat' \n");
-		sb.append(" TBLPROPERTIES (\n 'avro.schema.literal'=\n'");
-		sb.append(table.getSchema().toString());
-		sb.append("'\n)");
-		return sb.toString();
+		return Joiner.on(',').join(list);
 	}
+
+	@Override
+	public void write(DataOutput out) throws IOException {
+		WritableUtils.writeString(out, this.name);
+		WritableUtils.writeVInt(out, partitions.size());
+		for (HiveTablePartition partition : partitions) {
+			partition.write(out);
+		}
+	}
+
+	@Override
+	public void readFields(DataInput in) throws IOException {
+		this.name = WritableUtils.readString(in);
+		int size = WritableUtils.readVInt(in);
+		for (int i = 0; i < size; i++) {
+			HiveTablePartition partition = new HiveTablePartition();
+			partition.readFields(in);
+			partitions.add(partition);
+		}
+
+	}
+
 }
