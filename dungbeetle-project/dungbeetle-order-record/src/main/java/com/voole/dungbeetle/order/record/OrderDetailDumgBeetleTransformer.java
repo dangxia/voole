@@ -112,7 +112,7 @@ public class OrderDetailDumgBeetleTransformer implements
 	}
 
 	private String getDayPartition(long stamp) {
-		return df.format(new Date(stamp));
+		return df.format(new Date(stamp * 1000));
 	}
 
 	private void fillDetail(HiveOrderDetailRecord record, HiveOrderDryRecord dry) {
