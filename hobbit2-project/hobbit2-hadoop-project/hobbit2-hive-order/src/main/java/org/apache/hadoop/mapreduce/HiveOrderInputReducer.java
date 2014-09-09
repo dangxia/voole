@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit2.hive.order.mapreduce;
+package org.apache.hadoop.mapreduce;
 
 import java.io.IOException;
 import java.util.List;
@@ -13,7 +13,6 @@ import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Reducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +43,8 @@ public class HiveOrderInputReducer extends
 	private OrderSessionInfo sessionInfo;
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
 	private long currCamusExecTime;
+	private long total = 0l;
+	private long noendTotal = 0l;
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -71,8 +72,15 @@ public class HiveOrderInputReducer extends
 		sessionInfo.clear();
 		sessionInfo.setSessionId(sessionId.toString());
 
+		total = 0l;
+		noendTotal = 0l;
+		MarkableIteratorInterface<AvroValue<SpecificRecordBase>> iterator = (MarkableIteratorInterface<AvroValue<SpecificRecordBase>>) iterable
+				.iterator();
 		try {
-			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+			iterator.mark();
+			while (iterator.hasNext()) {
+				total++;
+				AvroValue<SpecificRecordBase> avroValue = iterator.next();
 				SpecificRecordBase record = avroValue.datum();
 				if (record instanceof OrderPlayBgnReqV2) {
 					sessionInfo.setBgn((OrderPlayBgnReqV2) record);
@@ -95,7 +103,7 @@ public class HiveOrderInputReducer extends
 			HiveOrderDryRecord orderRecord = HiveOrderDryRecordGenerator
 					.generate(sessionInfo);
 			if (!isEnd(orderRecord, context)) {
-				writeNoEnd(iterable, context);
+				writeNoEnd(iterator, context);
 				return;
 			}
 
@@ -110,23 +118,30 @@ public class HiveOrderInputReducer extends
 		} catch (OrderSessionInfoException e) {
 			if (e.getType() == OrderSessionInfoExceptionType.BGN_IS_NULL
 					&& isDelayBgn()) {
-				writeNoEnd(iterable, context);
+				writeNoEnd(iterator, context);
 			} else {
 				writeError(e, iterable, context);
 			}
 		} catch (DumgBeetleTransformException e) {
 			Throwables.propagate(e);
+		} finally {
+			iterator.clearMark();
 		}
 
 	}
 
-	public void writeNoEnd(Iterable<AvroValue<SpecificRecordBase>> iterable,
+	public void writeNoEnd(
+			MarkableIteratorInterface<AvroValue<SpecificRecordBase>> iterator,
 			Context context) throws IOException, InterruptedException {
 		log.info("write no end");
-		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-			log.info("write no end item");
+		iterator.reset();
+		while (iterator.hasNext()) {
+			noendTotal++;
+			AvroValue<SpecificRecordBase> avroValue = iterator.next();
 			context.write(NullWritable.get(), avroValue.datum());
 		}
+		log.info(sessionInfo.getSessionId() + "total:" + total
+				+ "\tnoendTotal:" + noendTotal);
 	}
 
 	public void writeError(OrderSessionInfoException e,
