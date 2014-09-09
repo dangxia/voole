@@ -135,7 +135,7 @@ public class HiveOrderInputReducer extends
 		log.info("write no end");
 		iterator.reset();
 		long num = total;
-		while (num > 0) {
+		while (num > 1) {
 			num--;
 			noendTotal++;
 			AvroValue<SpecificRecordBase> avroValue = iterator.next();
