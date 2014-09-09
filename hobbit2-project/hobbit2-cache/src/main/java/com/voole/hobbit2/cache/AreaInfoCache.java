@@ -6,28 +6,36 @@ package com.voole.hobbit2.cache;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.RangeMap;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.BoxStoreAreaInfo;
-import com.voole.hobbit2.cache.entity.IpRange;
+import com.voole.hobbit2.cache.exception.CacheQueryException;
+import com.voole.hobbit2.cache.exception.CacheRefreshException;
 
 /**
  * @author XuehuiHe
  * @date 2014年6月13日
  */
 public interface AreaInfoCache extends HobbitCache {
-	public AreaInfo getAreaInfoNormal(long ip);
+	public Optional<AreaInfo> getAreaInfoNormal(Long ip)
+			throws CacheQueryException, CacheRefreshException;
 
-	public AreaInfo getAreaInfoFromBoxStore(String oemid, String hid);
+	public Optional<AreaInfo> getAreaInfoFromBoxStore(String oemid, String hid)
+			throws CacheQueryException, CacheRefreshException;
 
-	public AreaInfo getAreaInfoFromSp(String spid, long ip);
+	public Optional<AreaInfo> getAreaInfoFromSp(String spid, Long ip)
+			throws CacheQueryException, CacheRefreshException;
 
-	public AreaInfo getAreaInfo(String hid, String oemid, String spid, long ip);
+	public Optional<AreaInfo> getAreaInfo(String hid, String oemid,
+			String spid, Long ip) throws CacheQueryException,
+			CacheRefreshException;
 
 	public static interface AreaInfosFetch {
 		public List<BoxStoreAreaInfo> getLiveBoxStoreAreaInfos();
 
-		public Map<String, List<IpRange>> getSpIpRanges();
+		public Map<String, RangeMap<Long, AreaInfo>> getSpIpRanges();
 
-		public List<IpRange> getVooleIpRanges();
+		public RangeMap<Long, AreaInfo> getVooleIpRanges();
 	}
 }

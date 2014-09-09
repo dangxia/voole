@@ -5,11 +5,13 @@ package com.voole.hobbit2.cache;
 
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.voole.hobbit2.cache.HobbitCache.AbstractHobbitCache;
 import com.voole.hobbit2.cache.entity.ResourceInfo;
+import com.voole.hobbit2.cache.exception.CacheQueryException;
+import com.voole.hobbit2.cache.exception.CacheRefreshException;
 import com.voole.hobbit2.common.Tuple;
 
 /**
@@ -18,61 +20,60 @@ import com.voole.hobbit2.common.Tuple;
  */
 public class ResourceInfoCacheImpl extends AbstractHobbitCache implements
 		ResourceInfoCache {
-	private static final Logger logger = LoggerFactory
-			.getLogger(ResourceInfoCacheImpl.class);
 	private final ResourceInfoFetch fetch;
 	// spid=>movie_spid
-	private Map<String, String> spidToMovieSpid;
+	private volatile Map<String, String> spidToMovieSpid;
 	// (movie_spid,fid)=>ResourceInfo
-	private Map<Tuple<String, String>, ResourceInfo> resourceMap;
+	private volatile Map<Tuple<String, String>, ResourceInfo> resourceMap;
 
-	private Map<String, String> spidToMovieSpidSwap;
-	private Map<Tuple<String, String>, ResourceInfo> resourceMapSwap;
+	private volatile Map<String, String> spidToMovieSpidSwap;
+	private volatile Map<Tuple<String, String>, ResourceInfo> resourceMapSwap;
+
+	private final Function<Tuple<String, String>, Optional<ResourceInfo>> getResourceInfoFunction;
 
 	public ResourceInfoCacheImpl(ResourceInfoFetch fetch) {
-		super("resource-info-cache");
 		this.fetch = fetch;
-		refreshImmediately();
-	}
-
-	@Override
-	public ResourceInfo getResourceInfo(String spid, String fid) {
-		if (spid == null || fid == null) {
-			return null;
-		}
-		fid = fid.toUpperCase();
-		ResourceInfo info = null;
-		try {
-			String movieSpid = spidToMovieSpid.get(spid);
-			if (movieSpid != null) {
-				info = resourceMap
-						.get(new Tuple<String, String>(movieSpid, fid));
+		this.getResourceInfoFunction = new Function<Tuple<String, String>, Optional<ResourceInfo>>() {
+			@Override
+			public Optional<ResourceInfo> apply(Tuple<String, String> input) {
+				String spid = input.getA();
+				String fid = input.getB();
+				fid = fid.toUpperCase();
+				ResourceInfo info = null;
+				String movieSpid = spidToMovieSpid.get(spid);
+				if (movieSpid != null) {
+					info = resourceMap.get(new Tuple<String, String>(movieSpid,
+							fid));
+				}
+				if (info != null) {
+					return Optional.of(info);
+				}
+				return Optional.absent();
 			}
-		} catch (Exception e) {
-			getLogger().warn(getName() + " getBitrate error", e);
-		}
-		return info;
+		};
 	}
 
 	@Override
-	protected void _swop() {
+	public Optional<ResourceInfo> getResourceInfo(String spid, String fid)
+			throws CacheRefreshException, CacheQueryException {
+		if (spid == null || fid == null) {
+			return Optional.absent();
+		}
+		return query(this.getResourceInfoFunction, new Tuple<String, String>(
+				spid, fid));
+	}
+
+	@Override
+	protected void swop() {
 		spidToMovieSpid = spidToMovieSpidSwap;
 		resourceMap = resourceMapSwap;
 	}
 
 	@Override
-	protected void _fetch() {
-		try {
-			spidToMovieSpidSwap = getFetch().getSpidToMovieSpidMap();
-			resourceMapSwap = getFetch().getResourceMap();
-		} catch (Exception e) {
-			getLogger().warn(getName() + " doRefresh error", e);
-		}
-	}
-
-	@Override
-	protected Logger getLogger() {
-		return logger;
+	protected void fetch() {
+		spidToMovieSpidSwap = ImmutableMap.copyOf(getFetch()
+				.getSpidToMovieSpidMap());
+		resourceMapSwap = ImmutableMap.copyOf(getFetch().getResourceMap());
 	}
 
 	public ResourceInfoFetch getFetch() {

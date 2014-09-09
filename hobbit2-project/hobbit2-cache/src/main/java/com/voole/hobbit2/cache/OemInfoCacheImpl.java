@@ -7,11 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import com.voole.hobbit2.cache.HobbitCache.AbstractHobbitCache;
 import com.voole.hobbit2.cache.entity.OemInfo;
+import com.voole.hobbit2.cache.exception.CacheQueryException;
+import com.voole.hobbit2.cache.exception.CacheRefreshException;
 
 /**
  * @author XuehuiHe
@@ -19,53 +21,48 @@ import com.voole.hobbit2.cache.entity.OemInfo;
  */
 public class OemInfoCacheImpl extends AbstractHobbitCache implements
 		OemInfoCache {
-	private static final Logger logger = LoggerFactory
-			.getLogger(OemInfoCacheImpl.class);
 	private final OemInfoFetch fetch;
 
-	private Map<Long, OemInfo> oemInfoMap;
-	private Map<Long, OemInfo> oemInfoMapSwap;
+	private volatile Map<Long, OemInfo> oemInfoMap;
+	private volatile Map<Long, OemInfo> oemInfoMapSwap;
+
+	private final Function<Long, Optional<OemInfo>> getOemInfoFunction;
 
 	public OemInfoCacheImpl(OemInfoFetch fetch) {
-		super("oeminfo-cache");
 		this.fetch = fetch;
-		refreshImmediately();
+		this.getOemInfoFunction = new Function<Long, Optional<OemInfo>>() {
+			@Override
+			public Optional<OemInfo> apply(Long oemid) {
+				OemInfo info = oemInfoMap.get(oemid);
+				if (info != null) {
+					return Optional.of(info);
+				} else {
+					return Optional.absent();
+				}
+			}
+		};
 	}
 
 	@Override
-	public OemInfo getOemInfo(Long oemid) {
-		swop();
-		OemInfo info = null;
-		try {
-			info = oemInfoMap.get(oemid);
-		} catch (Exception e) {
-			getLogger().warn(getName() + " getOemInfo error", e);
-		}
-		return info;
+	public Optional<OemInfo> getOemInfo(Long oemid)
+			throws CacheRefreshException, CacheQueryException {
+		return query(getOemInfoFunction, oemid);
 	}
 
 	@Override
-	protected void _swop() {
+	protected void swop() {
 		oemInfoMap = oemInfoMapSwap;
 	}
 
 	@Override
-	protected void _fetch() {
-		try {
-			List<OemInfo> list = getFetch().getOemInfos();
-			oemInfoMapSwap = new HashMap<Long, OemInfo>();
-			for (OemInfo oemInfo : list) {
-				oemInfoMapSwap.put(oemInfo.getOemid(), oemInfo);
-			}
-		} catch (Exception e) {
-			getLogger().warn(getName() + " _fetch error", e);
+	protected void fetch() {
+		List<OemInfo> list = getFetch().getOemInfos();
+		oemInfoMapSwap = new HashMap<Long, OemInfo>();
+		for (OemInfo oemInfo : list) {
+			oemInfoMapSwap.put(oemInfo.getOemid(), oemInfo);
 		}
+		oemInfoMapSwap = ImmutableMap.copyOf(oemInfoMapSwap);
 
-	}
-
-	@Override
-	protected Logger getLogger() {
-		return logger;
 	}
 
 	public OemInfoFetch getFetch() {

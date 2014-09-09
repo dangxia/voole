@@ -18,7 +18,7 @@ import com.voole.dungbeetle.api.model.HiveTable;
  */
 public interface IDumgBeetleTransformer<SOURCE> {
 	public void setup(TaskAttemptContext context) throws IOException,
-			InterruptedException;
+			InterruptedException, DumgBeetleTransformException;
 
 	public void cleanup(TaskAttemptContext context) throws IOException,
 			InterruptedException;

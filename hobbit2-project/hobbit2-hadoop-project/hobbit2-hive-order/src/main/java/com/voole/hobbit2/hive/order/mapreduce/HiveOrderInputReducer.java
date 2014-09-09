@@ -91,7 +91,7 @@ public class HiveOrderInputReducer extends
 			}
 			sessionInfo.verify();
 			HiveOrderDryRecord orderRecord = HiveOrderDryRecordGenerator
-					.generate(sessionId.toString(), sessionInfo);
+					.generate(sessionInfo);
 			if (!isEnd(orderRecord, context)) {
 				writeNoEnd(iterable, context);
 				return;
@@ -121,18 +121,18 @@ public class HiveOrderInputReducer extends
 
 	public void writeNoEnd(Iterable<AvroValue<SpecificRecordBase>> iterable,
 			Context context) throws IOException, InterruptedException {
-		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-			context.write(NullWritable.get(), avroValue.datum());
-		}
+//		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+//			context.write(NullWritable.get(), avroValue.datum());
+//		}
 	}
 
 	public void writeError(OrderSessionInfoException e,
 			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
 			throws IOException, InterruptedException {
 		// TODO
-		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-			context.write(e, avroValue.datum());
-		}
+//		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+//			context.write(e, avroValue.datum());
+//		}
 	}
 
 	private boolean isDelayBgn() {

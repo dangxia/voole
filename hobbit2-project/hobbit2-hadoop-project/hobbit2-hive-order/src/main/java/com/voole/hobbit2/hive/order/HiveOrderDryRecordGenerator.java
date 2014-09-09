@@ -19,10 +19,9 @@ import com.voole.monitor2.playurl.PlayurlAnalyzer;
  * @date 2014年9月6日
  */
 public class HiveOrderDryRecordGenerator {
-	public static HiveOrderDryRecord generate(String sessionId,
-			OrderSessionInfo orderSessionInfo) {
+	public static HiveOrderDryRecord generate(OrderSessionInfo orderSessionInfo) {
 		HiveOrderDryRecord record = new HiveOrderDryRecord();
-		record.setSessID(sessionId);
+		record.setSessID(orderSessionInfo.getSessionId());
 		fillBgn(record, orderSessionInfo._bgn);
 
 		if (orderSessionInfo._lastAlive != null) {

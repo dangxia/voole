@@ -5,6 +5,8 @@ package com.voole.hobbit2.cache.entity;
 
 import java.io.Serializable;
 
+import com.google.common.base.Objects;
+
 /**
  * @author XuehuiHe
  * @date 2013年10月30日
@@ -38,6 +40,30 @@ public class AreaInfo implements Serializable {
 
 	public void setNettype(Integer nettype) {
 		this.nettype = nettype;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(areaid, nettype);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj != null && obj instanceof AreaInfo) {
+			AreaInfo that = (AreaInfo) obj;
+			return Objects.equal(this.areaid, that.areaid)
+					&& Objects.equal(this.nettype, that.nettype);
+		}
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("areaid", areaid)
+				.add("nettype", nettype).toString();
 	}
 
 }

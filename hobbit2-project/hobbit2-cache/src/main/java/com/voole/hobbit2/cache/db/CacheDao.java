@@ -16,13 +16,16 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import com.google.common.collect.Range;
+import com.google.common.collect.RangeMap;
+import com.google.common.collect.TreeRangeMap;
 import com.voole.hobbit2.cache.AreaInfoCache.AreaInfosFetch;
 import com.voole.hobbit2.cache.OemInfoCache.OemInfoFetch;
 import com.voole.hobbit2.cache.ResourceInfoCache.ResourceInfoFetch;
+import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.BoxStoreAreaInfo;
 import com.voole.hobbit2.cache.entity.DeviceInfo;
 import com.voole.hobbit2.cache.entity.EpgInfo;
-import com.voole.hobbit2.cache.entity.IpRange;
 import com.voole.hobbit2.cache.entity.OemInfo;
 import com.voole.hobbit2.cache.entity.ParentSectionInfo;
 import com.voole.hobbit2.cache.entity.ProductInfo;
@@ -44,21 +47,21 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 
 	private JdbcTemplate realtimeJt;
 
-	public List<IpRange> getVooleIpRanges() {
+	public RangeMap<Long, AreaInfo> getVooleIpRanges() {
 		String sql = " SELECT si.areaid, si.type AS nettype, si.`minip`, si.`maxip` FROM sys_ipzone si WHERE si.`maxip`>si.`minip` ";
-		return realtimeJt.query(sql, new RowMapper<IpRange>() {
+		final RangeMap<Long, AreaInfo> result = TreeRangeMap.create();
+		realtimeJt.query(sql, new RowMapper<Void>() {
 
 			@Override
-			public IpRange mapRow(ResultSet rs, int rowNum) throws SQLException {
-				IpRange l = new IpRange();
-				l.setAreaid(rs.getInt("areaid"));
-				l.setMaxip(rs.getLong("maxip"));
-				l.setMinip(rs.getLong("minip"));
-				l.setNettype(rs.getInt("nettype"));
+			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
+				result.put(
+						Range.closed(rs.getLong("minip"), rs.getLong("maxip")),
+						new AreaInfo(rs.getInt("areaid"), rs.getInt("nettype")));
 
-				return l;
+				return null;
 			}
 		});
+		return result;
 	}
 
 	public List<BoxStoreAreaInfo> getLiveBoxStoreAreaInfos() {
@@ -78,27 +81,30 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		});
 	}
 
-	public Map<String, List<IpRange>> getSpIpRanges() {
-		final Map<String, List<IpRange>> map = new HashMap<String, List<IpRange>>();
+	public Map<String, RangeMap<Long, AreaInfo>> getSpIpRanges() {
+		final Map<String, RangeMap<Long, AreaInfo>> map = new HashMap<String, RangeMap<Long, AreaInfo>>();
 		String sql = "SELECT  si.areaid, si.type AS nettype, si.`spid`, si.`minip`, si.`maxip` FROM sp_ipzone si WHERE si.`maxip`>si.`minip` ";
-		realtimeJt.query(sql, new RowMapper<IpRange>() {
+		realtimeJt.query(sql, new RowMapper<Void>() {
 
 			@Override
-			public IpRange mapRow(ResultSet rs, int rowNum) throws SQLException {
-				IpRange l = new IpRange();
-				l.setAreaid(rs.getInt("areaid"));
-				l.setMaxip(rs.getLong("maxip"));
-				l.setMinip(rs.getLong("minip"));
-				l.setNettype(rs.getInt("nettype"));
+			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
 
 				String spid = rs.getString("spid");
 				if (spid != null && spid.length() > 0) {
+					RangeMap<Long, AreaInfo> rangeMap = null;
 					if (!map.containsKey(spid)) {
-						map.put(spid, new ArrayList<IpRange>());
+						rangeMap = TreeRangeMap.create();
+						map.put(spid, rangeMap);
+					} else {
+						rangeMap = map.get(spid);
 					}
-					map.get(spid).add(l);
+					rangeMap.put(
+							Range.closed(rs.getLong("minip"),
+									rs.getLong("maxip")),
+							new AreaInfo(rs.getInt("areaid"), rs
+									.getInt("nettype")));
 				}
-				return l;
+				return null;
 			}
 		});
 

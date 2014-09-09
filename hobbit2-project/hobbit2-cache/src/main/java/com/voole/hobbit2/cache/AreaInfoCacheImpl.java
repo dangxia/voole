@@ -3,20 +3,19 @@
  */
 package com.voole.hobbit2.cache;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.RangeMap;
 import com.voole.hobbit2.cache.HobbitCache.AbstractHobbitCache;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.BoxStoreAreaInfo;
-import com.voole.hobbit2.cache.entity.IpRange;
+import com.voole.hobbit2.cache.exception.CacheQueryException;
+import com.voole.hobbit2.cache.exception.CacheRefreshException;
 import com.voole.hobbit2.common.Tuple;
 
 /**
@@ -25,114 +24,124 @@ import com.voole.hobbit2.common.Tuple;
  */
 public class AreaInfoCacheImpl extends AbstractHobbitCache implements
 		AreaInfoCache {
-	private static final Logger logger = LoggerFactory
-			.getLogger(AreaInfoCacheImpl.class);
 	private final AreaInfosFetch fetch;
 
 	// OEMID HID=>AREAINFO
-	private Map<Tuple<String, String>, AreaInfo> boxStoreMap;
+	private volatile Map<Tuple<String, String>, AreaInfo> boxStoreMap;
 	// SPID=>(IP=>AREEINFO)
-	private Map<String, TreeMap<Long, AreaInfo>> spIpRangeMap;
+	private volatile Map<String, RangeMap<Long, AreaInfo>> spIpRangeMap;
 	// IP=>AREAINFO
-	private TreeMap<Long, AreaInfo> vooleIpRangeMap;
+	private volatile RangeMap<Long, AreaInfo> vooleIpRangeMap;
 
-	private Map<Tuple<String, String>, AreaInfo> boxStoreMapSwap;
-	private Map<String, TreeMap<Long, AreaInfo>> spIpRangeMapSwap;
-	private TreeMap<Long, AreaInfo> vooleIpRangeMapSwap;
+	private volatile Map<Tuple<String, String>, AreaInfo> boxStoreMapSwap;
+	private volatile Map<String, RangeMap<Long, AreaInfo>> spIpRangeMapSwap;
+	private volatile RangeMap<Long, AreaInfo> vooleIpRangeMapSwap;
+
+	private final Function<Long, Optional<AreaInfo>> getAreaInfoNormalFunction;
+	private final Function<Tuple<String, String>, Optional<AreaInfo>> getAreaInfoFromBoxStoreFunction;
+	private final Function<Tuple<String, Long>, Optional<AreaInfo>> getAreaInfoFromSpFunction;
 
 	public AreaInfoCacheImpl(AreaInfosFetch fetch) {
-		super("areainfo-cache-impl");
 		this.fetch = fetch;
-		refreshImmediately();
+
+		this.getAreaInfoNormalFunction = new Function<Long, Optional<AreaInfo>>() {
+			@Override
+			public Optional<AreaInfo> apply(Long ip) {
+				AreaInfo areaInfo = vooleIpRangeMap.get(ip);
+				if (areaInfo != null) {
+					return Optional.of(areaInfo);
+				}
+				return Optional.absent();
+			}
+		};
+
+		this.getAreaInfoFromBoxStoreFunction = new Function<Tuple<String, String>, Optional<AreaInfo>>() {
+
+			@Override
+			public Optional<AreaInfo> apply(Tuple<String, String> key) {
+				if (boxStoreMap.containsKey(key)) {
+					return Optional.of(boxStoreMap.get(key));
+				}
+				return Optional.absent();
+			}
+		};
+
+		this.getAreaInfoFromSpFunction = new Function<Tuple<String, Long>, Optional<AreaInfo>>() {
+
+			@Override
+			public Optional<AreaInfo> apply(Tuple<String, Long> input) {
+				String spid = input.getA();
+				Long ip = input.getB();
+				if (spIpRangeMap.containsKey(spid)) {
+					RangeMap<Long, AreaInfo> ipRang = spIpRangeMap.get(spid);
+					AreaInfo areaInfo = ipRang.get(ip);
+					if (areaInfo != null) {
+						return Optional.of(areaInfo);
+					}
+				}
+				return Optional.absent();
+			}
+		};
 	}
 
 	@Override
-	public AreaInfo getAreaInfoNormal(long ip) {
-		swop();
-		AreaInfo rs = null;
-		Entry<Long, AreaInfo> entry = vooleIpRangeMap.floorEntry(ip);
-		if (entry != null) {
-			rs = entry.getValue();
-		}
-		return rs;
+	public Optional<AreaInfo> getAreaInfoNormal(Long ip)
+			throws CacheRefreshException, CacheQueryException {
+		return query(getAreaInfoNormalFunction, ip);
 	}
 
 	@Override
-	public AreaInfo getAreaInfoFromBoxStore(String oemid, String hid) {
-		swop();
-		AreaInfo rs = null;
+	public Optional<AreaInfo> getAreaInfoFromBoxStore(String oemid, String hid)
+			throws CacheRefreshException, CacheQueryException {
 		if (hid != null) {
 			hid = hid.toUpperCase();
 		}
-		Tuple<String, String> key1 = new Tuple<String, String>(oemid, hid);
-		if (boxStoreMap.containsKey(key1)) {
-			rs = boxStoreMap.get(key1);
+		return query(this.getAreaInfoFromBoxStoreFunction,
+				new Tuple<String, String>(oemid, hid));
+	}
+
+	@Override
+	public Optional<AreaInfo> getAreaInfoFromSp(String spid, Long ip)
+			throws CacheRefreshException, CacheQueryException {
+		return query(getAreaInfoFromSpFunction, new Tuple<String, Long>(spid,
+				ip));
+	}
+
+	@Override
+	public Optional<AreaInfo> getAreaInfo(String hid, String oemid,
+			String spid, Long ip) throws CacheRefreshException,
+			CacheQueryException {
+		Optional<AreaInfo> rs = null;
+		rs = getAreaInfoFromBoxStore(oemid, hid);
+		if (!rs.isPresent()) {
+			rs = getAreaInfoFromSp(spid, ip);
+		}
+		if (!rs.isPresent()) {
+			rs = getAreaInfoNormal(ip);
 		}
 		return rs;
 	}
 
 	@Override
-	public AreaInfo getAreaInfoFromSp(String spid, long ip) {
-		swop();
-		AreaInfo rs = null;
-		if (spIpRangeMap.containsKey(spid)) {
-			TreeMap<Long, AreaInfo> ipRang = spIpRangeMap.get(spid);
-			Entry<Long, AreaInfo> entry = ipRang.floorEntry(ip);
-			if (entry != null) {
-				rs = entry.getValue();
-			}
-		}
-		return rs;
-	}
-
-	@Override
-	public AreaInfo getAreaInfo(String hid, String oemid, String spid, long ip) {
-		swop();
-		AreaInfo rs = null;
-		try {
-			rs = getAreaInfoFromBoxStore(oemid, hid);
-			if (rs == null) {
-				rs = getAreaInfoFromSp(spid, ip);
-			}
-			if (rs == null) {
-				rs = getAreaInfoNormal(ip);
-			}
-		} catch (Exception e) {
-			logger.warn(getName() + " getAreaInfo error", e);
-		}
-		return rs;
-	}
-
-	@Override
-	protected void _swop() {
+	protected void swop() {
 		boxStoreMap = boxStoreMapSwap;
 		spIpRangeMap = spIpRangeMapSwap;
 		vooleIpRangeMap = vooleIpRangeMapSwap;
+
+		boxStoreMapSwap = null;
+		spIpRangeMapSwap = null;
+		vooleIpRangeMapSwap = null;
 	}
 
 	@Override
-	protected void _fetch() {
-		try {
-			boxStoreMapSwap = getBoxStoreMapFromDb();
-			spIpRangeMapSwap = getSpIpRangeMapFromDb();
-			vooleIpRangeMapSwap = getVooleIpRangeMapFromDb();
-		} catch (Exception e) {
-			logger.warn(getName() + " _fetch error", e);
-		}
-	}
-
-	@Override
-	protected Logger getLogger() {
-		return logger;
+	protected void fetch() {
+		boxStoreMapSwap = ImmutableMap.copyOf(getBoxStoreMapFromDb());
+		spIpRangeMapSwap = ImmutableMap.copyOf(getFetch().getSpIpRanges());
+		vooleIpRangeMapSwap = getFetch().getVooleIpRanges();
 	}
 
 	public AreaInfosFetch getFetch() {
 		return fetch;
-	}
-
-	protected TreeMap<Long, AreaInfo> getVooleIpRangeMapFromDb() {
-		List<IpRange> ipRanges = getFetch().getVooleIpRanges();
-		return analyzeIpRange(ipRanges);
 	}
 
 	protected Map<Tuple<String, String>, AreaInfo> getBoxStoreMapFromDb() {
@@ -149,50 +158,6 @@ public class AreaInfoCacheImpl extends AbstractHobbitCache implements
 					new AreaInfo(areaInfo.getAreaid(), areaInfo.getNettype()));
 		}
 		return boxStoreMap;
-	}
-
-	protected Map<String, TreeMap<Long, AreaInfo>> getSpIpRangeMapFromDb() {
-		Map<String, TreeMap<Long, AreaInfo>> spidRangMap = new HashMap<String, TreeMap<Long, AreaInfo>>();
-		Map<String, List<IpRange>> spidToIpRanges = getFetch().getSpIpRanges();
-		for (Entry<String, List<IpRange>> entry : spidToIpRanges.entrySet()) {
-			spidRangMap.put(entry.getKey(), analyzeIpRange(entry.getValue()));
-		}
-		return spidRangMap;
-	}
-
-	private TreeMap<Long, AreaInfo> analyzeIpRange(List<IpRange> ipRanges) {
-		TreeMap<Long, Tuple<IpRange, Boolean>> map = new TreeMap<Long, Tuple<IpRange, Boolean>>();
-		for (IpRange liveIpRange : ipRanges) {
-			map.put(liveIpRange.getMinip(), new Tuple<IpRange, Boolean>(
-					liveIpRange, true));
-			map.put(liveIpRange.getMaxip(), new Tuple<IpRange, Boolean>(
-					liveIpRange, false));
-		}
-		TreeMap<Long, AreaInfo> map2 = new TreeMap<Long, AreaInfo>();
-		List<IpRange> stack = new ArrayList<IpRange>();
-		map2.put(0l, null);
-		for (Long ip : map.keySet()) {
-			Tuple<IpRange, Boolean> t = map.get(ip);
-			IpRange l = t.getA();
-			if (t.getB()) {// ip start
-				stack.add(l);
-				map2.put(ip, new AreaInfo(l.getAreaid(), l.getNettype()));
-			} else {// ip end
-				if (stack.isEmpty()) {
-					map2.put(ip, null);
-				} else {
-					stack.remove(l);
-					if (stack.isEmpty()) {
-						map2.put(ip + 1l, null);
-					} else {
-						IpRange p = stack.get(stack.size() - 1);
-						map2.put(ip,
-								new AreaInfo(p.getAreaid(), p.getNettype()));
-					}
-				}
-			}
-		}
-		return map2;
 	}
 
 }
