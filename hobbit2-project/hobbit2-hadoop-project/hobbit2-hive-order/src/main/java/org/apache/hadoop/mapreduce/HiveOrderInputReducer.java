@@ -13,6 +13,7 @@ import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.ReduceContext.ValueIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +75,7 @@ public class HiveOrderInputReducer extends
 
 		total = 0l;
 		noendTotal = 0l;
-		MarkableIteratorInterface<AvroValue<SpecificRecordBase>> iterator = (MarkableIteratorInterface<AvroValue<SpecificRecordBase>>) iterable
+		ValueIterator<AvroValue<SpecificRecordBase>> iterator = (ValueIterator<AvroValue<SpecificRecordBase>>) iterable
 				.iterator();
 		try {
 			iterator.mark();
@@ -125,7 +126,7 @@ public class HiveOrderInputReducer extends
 		} catch (DumgBeetleTransformException e) {
 			Throwables.propagate(e);
 		} finally {
-			iterator.clearMark();
+			iterator.resetBackupStore();
 		}
 
 	}
