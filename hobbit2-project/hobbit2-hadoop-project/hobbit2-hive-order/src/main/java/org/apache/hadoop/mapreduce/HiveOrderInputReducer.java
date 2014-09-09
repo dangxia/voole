@@ -134,7 +134,9 @@ public class HiveOrderInputReducer extends
 			Context context) throws IOException, InterruptedException {
 		log.info("write no end");
 		iterator.reset();
-		while (iterator.hasNext()) {
+		long num = total;
+		while (num > 0) {
+			num--;
 			noendTotal++;
 			AvroValue<SpecificRecordBase> avroValue = iterator.next();
 			context.write(NullWritable.get(), avroValue.datum());
