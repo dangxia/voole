@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.avro.Schema;
 import org.apache.avro.file.CodecFactory;
 import org.apache.avro.file.DataFileConstants;
 import org.apache.avro.hadoop.file.HadoopCodecFactory;
@@ -28,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.voole.dungbeetle.api.model.HiveTable;
+import com.voole.hobbit2.camus.OrderTopicsUtils;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
 
 public class HiveOrderMultiOutputFormat extends
@@ -49,6 +51,7 @@ public class HiveOrderMultiOutputFormat extends
 
 	class HiveOrderMultiRecordWriter extends RecordWriter<Object, Object> {
 		private final Map<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> dataWriters;
+		private final Map<Class<?>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> noendDataWriters;
 		private final Map<String, HiveTable> fileNameToHiveTableMap;
 		private final TaskAttemptContext attemptContext;
 		private final AvroKey<SpecificRecordBase> record;
@@ -56,6 +59,7 @@ public class HiveOrderMultiOutputFormat extends
 		public HiveOrderMultiRecordWriter(TaskAttemptContext job) {
 			this.attemptContext = job;
 			dataWriters = new HashMap<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
+			noendDataWriters = new HashMap<Class<?>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
 			this.record = new AvroKey<SpecificRecordBase>();
 			fileNameToHiveTableMap = new HashMap<String, HiveTable>();
 		}
@@ -82,8 +86,35 @@ public class HiveOrderMultiOutputFormat extends
 					writer.write(this.record, NullWritable.get());
 				}
 			} else {// noend
-
+				SpecificRecordBase data = (SpecificRecordBase) value;
+				RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> writer = null;
+				if (!noendDataWriters.containsKey(data.getClass())) {
+					writer = createNoendDataRecordWriter(attemptContext, data);
+					noendDataWriters.put(data.getClass(), writer);
+				} else {
+					writer = noendDataWriters.get(data.getClass());
+				}
+				this.record.datum(data);
+				writer.write(this.record, NullWritable.get());
 			}
+		}
+
+		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createNoendDataRecordWriter(
+				TaskAttemptContext context, SpecificRecordBase data)
+				throws IOException, InterruptedException {
+			String topic = OrderTopicsUtils.topicBiClazz.inverse().get(
+					data.getClass());
+			FileSystem fs = FileSystem.get(context.getConfiguration());
+			Path workPath = getOutputCommitter(context).getWorkPath();
+			Schema schema = OrderTopicsUtils.topicBiSchema.get(topic);
+			String fileName = HiveOrderMetaConfigs.NOEND_PREFIX + topic;
+			fileName = getUniqueFile(context, fileName, ".avro");
+			Path path = new Path(workPath, fileName);
+			log.info("create file: " + path);
+			return new AvroKeyRecordWriter<SpecificRecordBase>(schema,
+					AvroSerialization.createDataModel(context
+							.getConfiguration()), getCompressionCodec(context),
+					fs.create(path), getSyncInterval(context));
 		}
 
 		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createDataRecordWriter(
@@ -108,6 +139,11 @@ public class HiveOrderMultiOutputFormat extends
 		public void close(TaskAttemptContext context) throws IOException,
 				InterruptedException {
 			for (Entry<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry : dataWriters
+					.entrySet()) {
+				entry.getValue().close(context);
+			}
+
+			for (Entry<Class<?>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry : noendDataWriters
 					.entrySet()) {
 				entry.getValue().close(context);
 			}

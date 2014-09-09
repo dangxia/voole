@@ -113,7 +113,6 @@ public class HiveOrderInputReducer extends
 				writeError(e, iterable, context);
 			}
 		} catch (DumgBeetleTransformException e) {
-			// TODO Auto-generated catch block
 			Throwables.propagate(e);
 		}
 
@@ -121,18 +120,18 @@ public class HiveOrderInputReducer extends
 
 	public void writeNoEnd(Iterable<AvroValue<SpecificRecordBase>> iterable,
 			Context context) throws IOException, InterruptedException {
-//		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-//			context.write(NullWritable.get(), avroValue.datum());
-//		}
+		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+			context.write(NullWritable.get(), avroValue.datum());
+		}
 	}
 
 	public void writeError(OrderSessionInfoException e,
 			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
 			throws IOException, InterruptedException {
 		// TODO
-//		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-//			context.write(e, avroValue.datum());
-//		}
+		// for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+		// context.write(e, avroValue.datum());
+		// }
 	}
 
 	private boolean isDelayBgn() {
