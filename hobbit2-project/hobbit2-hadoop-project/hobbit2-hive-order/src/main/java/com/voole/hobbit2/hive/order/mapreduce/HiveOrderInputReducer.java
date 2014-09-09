@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -146,6 +147,7 @@ public class HiveOrderInputReducer extends
 		}
 		return false;
 	}
+	Random r = new Random();
 
 	private boolean isEnd(HiveOrderDryRecord orderRecord, Context context) {
 		Long last = null;
@@ -157,10 +159,11 @@ public class HiveOrderInputReducer extends
 			last = orderRecord.getPlayBgnTime();
 		}
 		if (last != null) {
-			return last%2==0;
+//			return last%2==0;
 //			return last < currCamusExecTime - 10 * 60;
 		}
-		return true;
+		return r.nextBoolean();
+//		return true;
 	}
 
 }
