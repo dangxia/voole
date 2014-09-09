@@ -157,7 +157,8 @@ public class HiveOrderInputReducer extends
 			last = orderRecord.getPlayBgnTime();
 		}
 		if (last != null) {
-			return last < currCamusExecTime - 10 * 60;
+			return last%2==0;
+//			return last < currCamusExecTime - 10 * 60;
 		}
 		return true;
 	}
