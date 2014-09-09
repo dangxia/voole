@@ -125,8 +125,6 @@ public class HiveOrderInputReducer extends
 			}
 		} catch (DumgBeetleTransformException e) {
 			Throwables.propagate(e);
-		} finally {
-			iterator.resetBackupStore();
 		}
 
 	}
