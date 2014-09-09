@@ -14,6 +14,8 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Throwables;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
@@ -38,8 +40,7 @@ import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException.OrderSes
  */
 public class HiveOrderInputReducer extends
 		Reducer<Text, AvroValue<SpecificRecordBase>, Object, Object> {
-	// private Logger log =
-	// LoggerFactory.getLogger(HiveOrderInputReducer.class);
+	private Logger log = LoggerFactory.getLogger(HiveOrderInputReducer.class);
 	private OrderSessionInfo sessionInfo;
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
 	private long currCamusExecTime;
@@ -121,7 +122,9 @@ public class HiveOrderInputReducer extends
 
 	public void writeNoEnd(Iterable<AvroValue<SpecificRecordBase>> iterable,
 			Context context) throws IOException, InterruptedException {
+		log.info("write no end");
 		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+			log.info("write no end item");
 			context.write(NullWritable.get(), avroValue.datum());
 		}
 	}
@@ -147,6 +150,7 @@ public class HiveOrderInputReducer extends
 		}
 		return false;
 	}
+
 	Random r = new Random();
 
 	private boolean isEnd(HiveOrderDryRecord orderRecord, Context context) {
@@ -159,11 +163,11 @@ public class HiveOrderInputReducer extends
 			last = orderRecord.getPlayBgnTime();
 		}
 		if (last != null) {
-//			return last%2==0;
-//			return last < currCamusExecTime - 10 * 60;
+			// return last%2==0;
+			// return last < currCamusExecTime - 10 * 60;
 		}
 		return r.nextBoolean();
-//		return true;
+		// return true;
 	}
 
 }
