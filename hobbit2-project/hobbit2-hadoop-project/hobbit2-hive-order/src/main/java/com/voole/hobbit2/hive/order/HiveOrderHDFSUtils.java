@@ -43,7 +43,7 @@ public class HiveOrderHDFSUtils {
 					@Override
 					public boolean accept(Path path) {
 						return path.getName().startsWith(
-								HiveOrderMetaConfigs.NOEND_PREFIX);
+								HiveOrderMetaConfigs.FILE_INFO_PREFIX);
 					}
 				});
 		for (FileStatus fileStatus : files) {
