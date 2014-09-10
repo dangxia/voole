@@ -18,9 +18,6 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
-import org.apache.hadoop.io.SequenceFile;
-import org.apache.hadoop.io.SequenceFile.Writer;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
@@ -30,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
+import com.voole.hobbit2.hive.order.HiveOrderHDFSUtils;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
 
 public class HiveOrderMultiOutputFormat extends
@@ -152,17 +150,9 @@ public class HiveOrderMultiOutputFormat extends
 				String fileName = getUniqueFile(context,
 						HiveOrderMetaConfigs.FILE_INFO_PREFIX, ".fileInfo");
 				Path path = new Path(workPath, fileName);
-				Writer writer = SequenceFile.createWriter(
-						context.getConfiguration(), Writer.file(path),
-						Writer.keyClass(Text.class),
-						Writer.valueClass(HiveTable.class));
-				Text filePath = new Text();
-				for (Entry<String, HiveTable> entry : fileNameToHiveTableMap
-						.entrySet()) {
-					filePath.set(entry.getKey());
-					writer.append(filePath, entry.getValue());
-				}
-				writer.close();
+
+				HiveOrderHDFSUtils.writeFileNameToHiveTableMap(
+						fileNameToHiveTableMap, path, context);
 			}
 		}
 

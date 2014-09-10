@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Random;
 
 import org.apache.avro.Schema;
 import org.apache.avro.hadoop.io.AvroSerialization;
@@ -154,7 +153,8 @@ public class HiveOrderInputReducer extends
 			throws IOException, InterruptedException {
 		context.getCounter("session_error", e.getType().name()).increment(1l);
 		if (e.getDiff() != null) {
-			context.getCounter("session_error_diff", e.getType().name()).increment(e.getDiff());
+			context.getCounter("session_error_diff", e.getType().name())
+					.increment(e.getDiff());
 		}
 		// RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> errorWriter =
 		// createErrorWriter(
@@ -167,6 +167,7 @@ public class HiveOrderInputReducer extends
 		// errorWriter.close(context);
 	}
 
+	@SuppressWarnings("unused")
 	private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createErrorWriter(
 			OrderSessionInfoException e, Context context) throws IOException {
 		String fileName = e.getFileName();
@@ -193,8 +194,6 @@ public class HiveOrderInputReducer extends
 		}
 		return false;
 	}
-
-	Random r = new Random();
 
 	private boolean isEnd(HiveOrderDryRecord orderRecord, Context context) {
 		Long last = null;

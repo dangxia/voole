@@ -2,8 +2,12 @@ package com.voole.hobbit2.hive.order;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.avro.mapreduce.AvroJob;
 import org.apache.commons.cli.ParseException;
@@ -21,8 +25,13 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.voole.dungbeetle.api.model.HiveTable;
+import com.voole.dungbeetle.api.model.HiveTablePartition;
 import com.voole.hobbit2.common.Hobbit2Configuration;
 import com.voole.hobbit2.hive.order.mapreduce.HiveOrderInputMapper;
 import com.voole.hobbit2.hive.order.mapreduce.HiveOrderInputReducer;
@@ -66,33 +75,46 @@ public class HiveOrderJob extends Configured implements Tool {
 
 		job.waitForCompletion(true);
 		log.info("Job finished");
-//		if (job.isSuccessful()) {
-//			FileStatus[] files = fs.listStatus(newExecutionOutput,
-//					new PathFilter() {
-//						@Override
-//						public boolean accept(Path path) {
-//							return path.getName().startsWith("record");
-//						}
-//					});
-//			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
-//					"hive-db.xml");
-//			JdbcTemplate hiveClient = cxt.getBean(JdbcTemplate.class);
-//			System.out.println("files site:" + files.length);
-//			for (FileStatus fileStatus : files) {
-//				String resultFilePath = fileStatus.getPath().toUri().getPath();
-//				String sql = "LOAD DATA  INPATH '" + resultFilePath
-//						+ "'  INTO TABLE order_record";
-//				hiveClient.execute(sql);
-//			}
-//			cxt.close();
-//
-//			fs.rename(newExecutionOutput,
-//					HiveOrderMetaConfigs.getExecHistoryPath(job));
-//			log.info("Job finished");
-//		} else {
-//			log.info("Job failed");
-//		}
+		if (job.isSuccessful()) {
+			insertIntoHive(newExecutionOutput, job);
+			fs.rename(newExecutionOutput,
+					HiveOrderMetaConfigs.getExecHistoryPath(job));
+			log.info("Job finished");
+		} else {
+			log.info("Job failed");
+		}
 		return 0;
+	}
+
+	private void insertIntoHive(Path newExecutionOutput, Job job)
+			throws IOException {
+		Map<String, HiveTable> fileNameToHiveTableMap = HiveOrderHDFSUtils
+				.readFileNameToHiveTableMap(newExecutionOutput, job);
+		ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
+				"hive-db.xml");
+		JdbcTemplate hiveClient = cxt.getBean(JdbcTemplate.class);
+		System.out.println("load in hive file size:"
+				+ fileNameToHiveTableMap.size());
+		for (Entry<String, HiveTable> entry : fileNameToHiveTableMap.entrySet()) {
+			String fileName = entry.getKey();
+			HiveTable table = entry.getValue();
+			String resultFilePath = new Path(newExecutionOutput, fileName)
+					.toUri().getPath();
+			String sql = "LOAD DATA  INPATH '" + resultFilePath
+					+ "'  INTO TABLE " + table.getName();
+			if (table.hasPartition()) {
+				List<String> paritionStrs = new ArrayList<String>();
+				for (HiveTablePartition partition : table.getPartitions()) {
+					paritionStrs.add(partition.getName() + "="
+							+ partition.getValue().toString());
+				}
+				sql += " PARTITION (" + Joiner.on(',').join(paritionStrs)
+						+ ") ";
+			}
+			hiveClient.execute(sql);
+			System.out.println("load file:" + resultFilePath);
+		}
+		cxt.close();
 	}
 
 	private Job createJob() throws IOException {
@@ -129,6 +151,8 @@ public class HiveOrderJob extends Configured implements Tool {
 		}
 		long prevCamusExecTime = HiveOrderHDFSUtils.readPrevCamusExecTime(job,
 				prevExecPath);
+		log.info("prevCamusExecTime:" + prevCamusExecTime + ",format:"
+				+ df.format(new Date(prevCamusExecTime)));
 		HiveOrderMetaConfigs.setPrevCamusExecTime(job, prevCamusExecTime);
 	}
 

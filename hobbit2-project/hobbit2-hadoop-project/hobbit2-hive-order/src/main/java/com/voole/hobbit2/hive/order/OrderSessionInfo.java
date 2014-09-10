@@ -29,6 +29,8 @@ public class OrderSessionInfo {
 	public Object _lastAlive;
 	public long _lastAliveTime;
 
+	private long maxDiff = 30;
+
 	public void clear() {
 		this.sessionId = null;
 		_bgn = null;
@@ -47,20 +49,29 @@ public class OrderSessionInfo {
 					OrderSessionInfoExceptionType.BGN_IS_NULL, null);
 		}
 		if (_end != null && _bgnTime > _endTime) {
-			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.BGN_TIME_GT_END_TIME,
-					Math.abs(_endTime - _bgnTime));
+			long diff = _bgnTime - _endTime;
+			if (diff > maxDiff) {
+				throw new OrderSessionInfoException(sessionId,
+						OrderSessionInfoExceptionType.BGN_TIME_GT_END_TIME,
+						diff);
+			}
 		}
 		if (_lastAlive != null && _bgnTime > _lastAliveTime) {
-			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.BGN_TIME_GT_ALIVE_TIME,
-					Math.abs(_lastAliveTime - _bgnTime));
+			long diff = _bgnTime - _lastAliveTime;
+			if (diff > maxDiff) {
+				throw new OrderSessionInfoException(sessionId,
+						OrderSessionInfoExceptionType.BGN_TIME_GT_ALIVE_TIME,
+						diff);
+			}
 		}
 
 		if (_lastAlive != null && _end != null && _endTime < _lastAliveTime) {
-			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.ALIVE_TIME_GT_END_TIME,
-					Math.abs(_lastAliveTime - _bgnTime));
+			long diff = _lastAliveTime - _endTime;
+			if (diff > maxDiff) {
+				throw new OrderSessionInfoException(sessionId,
+						OrderSessionInfoExceptionType.ALIVE_TIME_GT_END_TIME,
+						diff);
+			}
 		}
 	}
 
@@ -75,16 +86,17 @@ public class OrderSessionInfo {
 	public void setBgn(Object bgn, Long bgnTime)
 			throws OrderSessionInfoException {
 		if (_bgn != null) {
-			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.BGN_IS_MULTI,
-					Math.abs(_bgnTime - bgnTime));
+			long diff = Math.abs(_bgnTime - bgnTime);
+			if (diff > maxDiff) {
+				throw new OrderSessionInfoException(sessionId,
+						OrderSessionInfoExceptionType.BGN_IS_MULTI, diff);
+			}
+
 		}
-		_bgn = bgn;
-		_bgnTime = bgnTime;
-		// if (_bgn == null || bgnTime > _bgnTime) {
-		// _bgn = bgn;
-		// _bgnTime = bgnTime;
-		// }
+		if (_bgn == null || bgnTime < _bgnTime) {
+			_bgn = bgn;
+			_bgnTime = bgnTime;
+		}
 	}
 
 	public void setEnd(OrderPlayEndReqV2 end) throws OrderSessionInfoException {
@@ -98,16 +110,16 @@ public class OrderSessionInfo {
 	public void setEnd(Object end, Long endTime)
 			throws OrderSessionInfoException {
 		if (_end != null) {
-			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.END_IS_MULTI,
-					Math.abs(_endTime - endTime));
+			long diff = Math.abs(_endTime - endTime);
+			if (diff > maxDiff) {
+				throw new OrderSessionInfoException(sessionId,
+						OrderSessionInfoExceptionType.END_IS_MULTI, diff);
+			}
 		}
-		_end = end;
-		_endTime = endTime;
-		// if (_end == null || endTime > _endTime) {
-		// _end = end;
-		// _endTime = endTime;
-		// }
+		if (_end == null || endTime < _endTime) {
+			_end = end;
+			_endTime = endTime;
+		}
 	}
 
 	public void setAlive(OrderPlayAliveReqV2 alive) {

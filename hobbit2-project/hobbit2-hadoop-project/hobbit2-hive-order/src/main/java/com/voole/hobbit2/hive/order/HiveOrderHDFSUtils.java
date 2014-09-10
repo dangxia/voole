@@ -2,17 +2,22 @@ package com.voole.hobbit2.hive.order;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ContentSummary;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.SequenceFile.Reader;
 import org.apache.hadoop.io.SequenceFile.Writer;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -22,11 +27,57 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 
 public class HiveOrderHDFSUtils {
 	private static Logger log = LoggerFactory
 			.getLogger(HiveOrderHDFSUtils.class);
+
+	public static Map<String, HiveTable> readFileNameToHiveTableMap(
+			Path newExecutionOutput, JobContext context) throws IOException {
+		Map<String, HiveTable> fileNameToHiveTableMap = new HashMap<String, HiveTable>();
+		FileSystem fs = FileSystem.get(context.getConfiguration());
+		FileStatus[] files = fs.listStatus(newExecutionOutput,
+				new PathFilter() {
+					@Override
+					public boolean accept(Path path) {
+						return path.getName().startsWith(
+								HiveOrderMetaConfigs.NOEND_PREFIX);
+					}
+				});
+		for (FileStatus fileStatus : files) {
+			Reader r = new SequenceFile.Reader(context.getConfiguration(),
+					SequenceFile.Reader.file(fileStatus.getPath()));
+			Text filePath = new Text();
+			HiveTable table = new HiveTable();
+			while (r.next(filePath, table)) {
+				fileNameToHiveTableMap.put(filePath.toString(), table);
+				table = new HiveTable();
+			}
+			r.close();
+		}
+		return fileNameToHiveTableMap;
+
+	}
+
+	public static void writeFileNameToHiveTableMap(
+			Map<String, HiveTable> fileNameToHiveTableMap, Path path,
+			JobContext context) throws IOException {
+		if (fileNameToHiveTableMap.size() > 0) {
+			Writer writer = SequenceFile.createWriter(
+					context.getConfiguration(), Writer.file(path),
+					Writer.keyClass(Text.class),
+					Writer.valueClass(HiveTable.class));
+			Text filePath = new Text();
+			for (Entry<String, HiveTable> entry : fileNameToHiveTableMap
+					.entrySet()) {
+				filePath.set(entry.getKey());
+				writer.append(filePath, entry.getValue());
+			}
+			writer.close();
+		}
+	}
 
 	public static void checkAndLoadCamsuPath(Job job, Path destPath,
 			String... topics) throws IOException {
@@ -120,7 +171,6 @@ public class HiveOrderHDFSUtils {
 		}
 		r.close();
 		return lastStartTime;
-		// return 1410079475002l;
 	}
 
 	public static Optional<Path> getPrevExecPath(Configuration conf,

@@ -4,7 +4,9 @@
 package com.voole.hobbit2.hive.order.mapreduce;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.avro.mapred.AvroKey;
@@ -16,6 +18,8 @@ import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.RecordReader;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.voole.hobbit2.hive.order.HiveOrderHDFSUtils;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
@@ -26,6 +30,11 @@ import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
  */
 public class HiveOrderRecordInputFormat<T> extends
 		FileInputFormat<AvroKey<T>, NullWritable> {
+	private static SimpleDateFormat df = new SimpleDateFormat(
+			"yyyy-MM-dd-HH-mm-ss");
+	private static Logger log = LoggerFactory
+			.getLogger(HiveOrderRecordInputFormat.class);
+
 	@Override
 	public RecordReader<AvroKey<T>, NullWritable> createRecordReader(
 			InputSplit split, TaskAttemptContext context) throws IOException,
@@ -46,8 +55,10 @@ public class HiveOrderRecordInputFormat<T> extends
 		if (result.size() == 0) {
 			throw new IOException("No input paths specified in job");
 		}
-		HiveOrderHDFSUtils.writeCurrCamusExecTime(job,
-				fileFilter.getCurrCamusExecTime());
+		long currCamusExecTime = fileFilter.getCurrCamusExecTime();
+		log.info("currCamusExecTime:" + currCamusExecTime + ",format:"
+				+ df.format(new Date(currCamusExecTime)));
+		HiveOrderHDFSUtils.writeCurrCamusExecTime(job, currCamusExecTime);
 		return result;
 
 	}
