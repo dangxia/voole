@@ -44,20 +44,23 @@ public class OrderSessionInfo {
 	public void verify() throws OrderSessionInfoException {
 		if (_bgn == null) {
 			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.BGN_IS_NULL);
+					OrderSessionInfoExceptionType.BGN_IS_NULL, null);
 		}
 		if (_end != null && _bgnTime > _endTime) {
 			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.BGN_TIME_GT_END_TIME);
+					OrderSessionInfoExceptionType.BGN_TIME_GT_END_TIME,
+					Math.abs(_endTime - _bgnTime));
 		}
 		if (_lastAlive != null && _bgnTime > _lastAliveTime) {
 			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.BGN_TIME_GT_ALIVE_TIME);
+					OrderSessionInfoExceptionType.BGN_TIME_GT_ALIVE_TIME,
+					Math.abs(_lastAliveTime - _bgnTime));
 		}
 
 		if (_lastAlive != null && _end != null && _endTime < _lastAliveTime) {
 			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.ALIVE_TIME_GT_END_TIME);
+					OrderSessionInfoExceptionType.ALIVE_TIME_GT_END_TIME,
+					Math.abs(_lastAliveTime - _bgnTime));
 		}
 	}
 
@@ -73,7 +76,8 @@ public class OrderSessionInfo {
 			throws OrderSessionInfoException {
 		if (_bgn != null) {
 			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.BGN_IS_MULTI);
+					OrderSessionInfoExceptionType.BGN_IS_MULTI,
+					Math.abs(_bgnTime - bgnTime));
 		}
 		_bgn = bgn;
 		_bgnTime = bgnTime;
@@ -95,7 +99,8 @@ public class OrderSessionInfo {
 			throws OrderSessionInfoException {
 		if (_end != null) {
 			throw new OrderSessionInfoException(sessionId,
-					OrderSessionInfoExceptionType.END_IS_MULTI);
+					OrderSessionInfoExceptionType.END_IS_MULTI,
+					Math.abs(_endTime - endTime));
 		}
 		_end = end;
 		_endTime = endTime;

@@ -14,6 +14,7 @@ public class OrderSessionInfoException extends Exception {
 
 	private final CharSequence sessionId;
 	private final OrderSessionInfoExceptionType type;
+	private Long diff;
 
 	public CharSequence getSessionId() {
 		return sessionId;
@@ -27,11 +28,20 @@ public class OrderSessionInfoException extends Exception {
 		return "error_" + type.name() + "_" + sessionId+".avro";
 	}
 
+	public Long getDiff() {
+		return diff;
+	}
+
+	public void setDiff(Long diff) {
+		this.diff = diff;
+	}
+
 	public OrderSessionInfoException(CharSequence sessionId,
-			OrderSessionInfoExceptionType type) {
+			OrderSessionInfoExceptionType type,Long diff) {
 		super();
 		this.sessionId = sessionId;
 		this.type = type;
+		this.diff = diff;
 	}
 
 	public OrderSessionInfoException(CharSequence sessionId, String message,

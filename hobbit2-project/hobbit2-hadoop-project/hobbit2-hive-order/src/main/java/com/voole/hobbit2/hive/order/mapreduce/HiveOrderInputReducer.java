@@ -153,14 +153,18 @@ public class HiveOrderInputReducer extends
 	public void writeError(OrderSessionInfoException e, Context context)
 			throws IOException, InterruptedException {
 		context.getCounter("session_error", e.getType().name()).increment(1l);
-//		RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> errorWriter = createErrorWriter(
-//				e, context);
-//		AvroKey<SpecificRecordBase> key = new AvroKey<SpecificRecordBase>();
-//		for (SpecificRecordBase record : cache) {
-//			key.datum(record);
-//			errorWriter.write(key, NullWritable.get());
-//		}
-//		errorWriter.close(context);
+		if (e.getDiff() != null) {
+			context.getCounter("session_error_diff", e.getType().name()).increment(e.getDiff());
+		}
+		// RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> errorWriter =
+		// createErrorWriter(
+		// e, context);
+		// AvroKey<SpecificRecordBase> key = new AvroKey<SpecificRecordBase>();
+		// for (SpecificRecordBase record : cache) {
+		// key.datum(record);
+		// errorWriter.write(key, NullWritable.get());
+		// }
+		// errorWriter.close(context);
 	}
 
 	private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createErrorWriter(
