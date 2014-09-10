@@ -11,6 +11,7 @@ import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -39,8 +40,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		initConfigs(args);
 		Job job = createJob();
 		checkAndLoad(job);
-
-		// FileSystem fs = FileSystem.get(job.getConfiguration());
+		FileSystem fs = FileSystem.get(job.getConfiguration());
 		Path execBasePath = HiveOrderMetaConfigs.getExecBasePath(job);
 		Path newExecutionOutput = new Path(execBasePath, df.format(new Date()));
 		FileOutputFormat.setOutputPath(job, newExecutionOutput);
@@ -65,6 +65,33 @@ public class HiveOrderJob extends Configured implements Tool {
 		}
 
 		job.waitForCompletion(true);
+		log.info("Job finished");
+//		if (job.isSuccessful()) {
+//			FileStatus[] files = fs.listStatus(newExecutionOutput,
+//					new PathFilter() {
+//						@Override
+//						public boolean accept(Path path) {
+//							return path.getName().startsWith("record");
+//						}
+//					});
+//			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
+//					"hive-db.xml");
+//			JdbcTemplate hiveClient = cxt.getBean(JdbcTemplate.class);
+//			System.out.println("files site:" + files.length);
+//			for (FileStatus fileStatus : files) {
+//				String resultFilePath = fileStatus.getPath().toUri().getPath();
+//				String sql = "LOAD DATA  INPATH '" + resultFilePath
+//						+ "'  INTO TABLE order_record";
+//				hiveClient.execute(sql);
+//			}
+//			cxt.close();
+//
+//			fs.rename(newExecutionOutput,
+//					HiveOrderMetaConfigs.getExecHistoryPath(job));
+//			log.info("Job finished");
+//		} else {
+//			log.info("Job failed");
+//		}
 		return 0;
 	}
 
