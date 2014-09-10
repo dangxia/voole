@@ -104,14 +104,21 @@ public class HiveOrderJob extends Configured implements Tool {
 					+ "'  INTO TABLE " + table.getName();
 			if (table.hasPartition()) {
 				List<String> paritionStrs = new ArrayList<String>();
+				List<Object> args = new ArrayList<Object>();
+				List<Integer> types = new ArrayList<Integer>();
 				for (HiveTablePartition partition : table.getPartitions()) {
-					paritionStrs.add(partition.getName() + "="
-							+ partition.getValue().toString());
+					paritionStrs.add(partition.getName() + "=?");
+					args.add(partition.getValue());
+					types.add(partition.getType().toJavaSQLType());
 				}
 				sql += " PARTITION (" + Joiner.on(',').join(paritionStrs)
 						+ ") ";
+				hiveClient.update(sql, args.toArray(new Object[] {}),
+						types.toArray(new Integer[] {}));
+			} else {
+				hiveClient.update(sql);
 			}
-			hiveClient.execute(sql);
+
 			System.out.println("load file:" + resultFilePath);
 		}
 		cxt.close();
