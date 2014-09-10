@@ -1,9 +1,10 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package org.apache.hadoop.mapreduce;
+package com.voole.hobbit2.hive.order.mapreduce;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,9 +14,7 @@ import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.ReduceContext.ValueIterator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.hadoop.mapreduce.Reducer;
 
 import com.google.common.base.Throwables;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
@@ -40,12 +39,13 @@ import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException.OrderSes
  */
 public class HiveOrderInputReducer extends
 		Reducer<Text, AvroValue<SpecificRecordBase>, Object, Object> {
-	private Logger log = LoggerFactory.getLogger(HiveOrderInputReducer.class);
+	// private Logger log =
+	// LoggerFactory.getLogger(HiveOrderInputReducer.class);
 	private OrderSessionInfo sessionInfo;
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
 	private long currCamusExecTime;
-	private long total = 0l;
-	private long noendTotal = 0l;
+
+	private LinkedList<SpecificRecordBase> cache;
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -55,6 +55,8 @@ public class HiveOrderInputReducer extends
 
 		orderDetailDumgBeetleTransformer = new OrderDetailDumgBeetleTransformer();
 		orderDetailDumgBeetleTransformer.setup(context);
+
+		cache = new LinkedList<SpecificRecordBase>();
 	}
 
 	@Override
@@ -64,6 +66,7 @@ public class HiveOrderInputReducer extends
 		if (orderDetailDumgBeetleTransformer != null) {
 			orderDetailDumgBeetleTransformer.cleanup(context);
 		}
+		cache.clear();
 	}
 
 	@Override
@@ -72,17 +75,15 @@ public class HiveOrderInputReducer extends
 			throws IOException, InterruptedException {
 		sessionInfo.clear();
 		sessionInfo.setSessionId(sessionId.toString());
+		cache.clear();
 
-		total = 0l;
-		noendTotal = 0l;
-		ValueIterator<AvroValue<SpecificRecordBase>> iterator = (ValueIterator<AvroValue<SpecificRecordBase>>) iterable
-				.iterator();
+		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+			cache.add(avroValue.datum());
+		}
+
 		try {
-			iterator.mark();
-			while (iterator.hasNext()) {
-				total++;
-				AvroValue<SpecificRecordBase> avroValue = iterator.next();
-				SpecificRecordBase record = avroValue.datum();
+
+			for (SpecificRecordBase record : cache) {
 				if (record instanceof OrderPlayBgnReqV2) {
 					sessionInfo.setBgn((OrderPlayBgnReqV2) record);
 				} else if (record instanceof OrderPlayBgnReqV3) {
@@ -104,7 +105,7 @@ public class HiveOrderInputReducer extends
 			HiveOrderDryRecord orderRecord = HiveOrderDryRecordGenerator
 					.generate(sessionInfo);
 			if (!isEnd(orderRecord, context)) {
-				writeNoEnd(iterator, context);
+				writeNoEnd(context);
 				return;
 			}
 
@@ -119,7 +120,7 @@ public class HiveOrderInputReducer extends
 		} catch (OrderSessionInfoException e) {
 			if (e.getType() == OrderSessionInfoExceptionType.BGN_IS_NULL
 					&& isDelayBgn()) {
-				writeNoEnd(iterator, context);
+				writeNoEnd(context);
 			} else {
 				writeError(e, iterable, context);
 			}
@@ -130,19 +131,11 @@ public class HiveOrderInputReducer extends
 	}
 
 	public void writeNoEnd(
-			MarkableIteratorInterface<AvroValue<SpecificRecordBase>> iterator,
-			Context context) throws IOException, InterruptedException {
-		log.info("write no end");
-		iterator.reset();
-		long num = total;
-		while (num > 1) {
-			num--;
-			noendTotal++;
-			AvroValue<SpecificRecordBase> avroValue = iterator.next();
-			context.write(NullWritable.get(), avroValue.datum());
+
+	Context context) throws IOException, InterruptedException {
+		for (SpecificRecordBase record : cache) {
+			context.write(NullWritable.get(), record);
 		}
-		log.info(sessionInfo.getSessionId() + "total:" + total
-				+ "\tnoendTotal:" + noendTotal);
 	}
 
 	public void writeError(OrderSessionInfoException e,
