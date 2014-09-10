@@ -44,7 +44,7 @@ public class InsertIntoHive extends Configured implements Tool {
 
 	private Job createJob() throws IOException {
 		Job job = Job.getInstance(getConf());
-		job.setJarByClass(HiveOrderJob.class);
+		job.setJarByClass(InsertIntoHive.class);
 		job.setJobName(HiveOrderMetaConfigs.getJobName(job));
 		job.setNumReduceTasks(HiveOrderMetaConfigs.getJobReduces(job));
 		return job;
