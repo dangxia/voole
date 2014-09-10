@@ -103,24 +103,24 @@ public class HiveOrderHDFSUtils {
 
 	public static long readPrevCamusExecTime(JobContext job,
 			Optional<Path> prevExecPath) throws IOException {
-//		if (!prevExecPath.isPresent()) {
-//			return 0l;
-//		}
-//		FileSystem fs = FileSystem.get(job.getConfiguration());
-//		Path prevCamusLastExecStartTimeFile = new Path(prevExecPath.get(),
-//				HiveOrderMetaConfigs.PREV_CAMUS_EXEC_TIME_FILE_NAME);
-//		Preconditions.checkArgument(fs.exists(prevCamusLastExecStartTimeFile),
-//				"PREV_CAMUS_EXEC_TIME_FILE_NAME does not exist");
-//		Reader r = new SequenceFile.Reader(job.getConfiguration(),
-//				SequenceFile.Reader.file(prevCamusLastExecStartTimeFile));
-//		LongWritable prevCamusLastExecStartTimeWritable = new LongWritable();
-//		long lastStartTime = 0;
-//		if (r.next(NullWritable.get(), prevCamusLastExecStartTimeWritable)) {
-//			lastStartTime = prevCamusLastExecStartTimeWritable.get();
-//		}
-//		r.close();
-//		return lastStartTime;
-		 return 1410079475002l;
+		if (!prevExecPath.isPresent()) {
+			return 0l;
+		}
+		FileSystem fs = FileSystem.get(job.getConfiguration());
+		Path prevCamusLastExecStartTimeFile = new Path(prevExecPath.get(),
+				HiveOrderMetaConfigs.PREV_CAMUS_EXEC_TIME_FILE_NAME);
+		Preconditions.checkArgument(fs.exists(prevCamusLastExecStartTimeFile),
+				"PREV_CAMUS_EXEC_TIME_FILE_NAME does not exist");
+		Reader r = new SequenceFile.Reader(job.getConfiguration(),
+				SequenceFile.Reader.file(prevCamusLastExecStartTimeFile));
+		LongWritable prevCamusLastExecStartTimeWritable = new LongWritable();
+		long lastStartTime = 0;
+		if (r.next(NullWritable.get(), prevCamusLastExecStartTimeWritable)) {
+			lastStartTime = prevCamusLastExecStartTimeWritable.get();
+		}
+		r.close();
+		return lastStartTime;
+		// return 1410079475002l;
 	}
 
 	public static Optional<Path> getPrevExecPath(Configuration conf,
