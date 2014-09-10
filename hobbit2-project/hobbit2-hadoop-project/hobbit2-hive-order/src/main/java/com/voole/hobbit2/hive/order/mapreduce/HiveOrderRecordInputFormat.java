@@ -58,6 +58,7 @@ public class HiveOrderRecordInputFormat<T> extends
 		long currCamusExecTime = fileFilter.getCurrCamusExecTime();
 		log.info("currCamusExecTime:" + currCamusExecTime + ",format:"
 				+ df.format(new Date(currCamusExecTime)));
+		HiveOrderMetaConfigs.setCurrCamusExecTime(job, currCamusExecTime);
 		HiveOrderHDFSUtils.writeCurrCamusExecTime(job, currCamusExecTime);
 		return result;
 
