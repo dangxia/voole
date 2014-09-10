@@ -22,13 +22,14 @@ public class HiveOrderInputFileFilter {
 			.getLogger(HiveOrderInputFileFilter.class);
 	private final long prevCamusExecTime;
 	private final Pattern p = Pattern.compile("(\\d+)\\.\\w+$");
-	private long currCamusExecTime = 0l;
+	private long currCamusExecTime;
 	private String camusDestPath;
 
 	public HiveOrderInputFileFilter(JobContext job) {
 		prevCamusExecTime = HiveOrderMetaConfigs.getPrevCamusExecTime(job);
 		camusDestPath = HiveOrderMetaConfigs.getCamusDestPath(job).toUri()
 				.getPath();
+		currCamusExecTime = prevCamusExecTime;
 	}
 
 	public boolean accept(Path path) {
