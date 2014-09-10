@@ -69,4 +69,8 @@ public class HiveOrderInputFileFilter {
 		this.currCamusExecTime = currCamusExecTime;
 	}
 
+	public long getPrevCamusExecTime() {
+		return prevCamusExecTime;
+	}
+
 }

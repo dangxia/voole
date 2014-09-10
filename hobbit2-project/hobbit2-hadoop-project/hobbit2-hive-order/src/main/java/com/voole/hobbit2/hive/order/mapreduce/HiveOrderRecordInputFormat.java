@@ -52,10 +52,12 @@ public class HiveOrderRecordInputFormat<T> extends
 				result.add(fileStatus);
 			}
 		}
-		if (result.size() == 0) {
+		long currCamusExecTime = fileFilter.getCurrCamusExecTime();
+		if (result.size() == 0
+				|| currCamusExecTime == fileFilter.getPrevCamusExecTime()) {
 			throw new IOException("No input paths specified in job");
 		}
-		long currCamusExecTime = fileFilter.getCurrCamusExecTime();
+
 		log.info("currCamusExecTime:" + currCamusExecTime + ",format:"
 				+ df.format(new Date(currCamusExecTime)));
 		HiveOrderMetaConfigs.setCurrCamusExecTime(job, currCamusExecTime);
