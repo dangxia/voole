@@ -23,6 +23,10 @@ public class OrderSessionInfoException extends Exception {
 		return type;
 	}
 
+	public String getFileName() {
+		return "error_" + type.name() + "_" + sessionId+".avro";
+	}
+
 	public OrderSessionInfoException(CharSequence sessionId,
 			OrderSessionInfoExceptionType type) {
 		super();

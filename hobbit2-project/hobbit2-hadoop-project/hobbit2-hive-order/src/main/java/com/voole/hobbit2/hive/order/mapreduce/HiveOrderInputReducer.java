@@ -10,11 +10,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import org.apache.avro.Schema;
+import org.apache.avro.hadoop.io.AvroSerialization;
+import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
+import org.apache.avro.mapreduce.AvroKeyRecordWriter;
 import org.apache.avro.specific.SpecificRecordBase;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 
 import com.google.common.base.Throwables;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
@@ -47,6 +55,9 @@ public class HiveOrderInputReducer extends
 
 	private LinkedList<SpecificRecordBase> cache;
 
+	private FileSystem fs;
+	private Schema errorSchema;
+
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
@@ -57,6 +68,8 @@ public class HiveOrderInputReducer extends
 		orderDetailDumgBeetleTransformer.setup(context);
 
 		cache = new LinkedList<SpecificRecordBase>();
+		fs = FileSystem.get(context.getConfiguration());
+		errorSchema = HiveOrderMetaConfigs.getOrderUnionSchema(context);
 	}
 
 	@Override
@@ -122,7 +135,7 @@ public class HiveOrderInputReducer extends
 					&& isDelayBgn()) {
 				writeNoEnd(context);
 			} else {
-				writeError(e, iterable, context);
+				writeError(e, context);
 			}
 		} catch (DumgBeetleTransformException e) {
 			Throwables.propagate(e);
@@ -130,21 +143,37 @@ public class HiveOrderInputReducer extends
 
 	}
 
-	public void writeNoEnd(
-
-	Context context) throws IOException, InterruptedException {
+	public void writeNoEnd(Context context) throws IOException,
+			InterruptedException {
 		for (SpecificRecordBase record : cache) {
 			context.write(NullWritable.get(), record);
 		}
 	}
 
-	public void writeError(OrderSessionInfoException e,
-			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
+	public void writeError(OrderSessionInfoException e, Context context)
 			throws IOException, InterruptedException {
-		// TODO
-		// for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-		// context.write(e, avroValue.datum());
-		// }
+		RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> errorWriter = createErrorWriter(
+				e, context);
+		AvroKey<SpecificRecordBase> key = new AvroKey<SpecificRecordBase>();
+		for (SpecificRecordBase record : cache) {
+			key.datum(record);
+			errorWriter.write(key, NullWritable.get());
+		}
+		errorWriter.close(context);
+	}
+
+	private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createErrorWriter(
+			OrderSessionInfoException e, Context context) throws IOException {
+		String fileName = e.getFileName();
+		Path workPath = ((FileOutputCommitter) context.getOutputCommitter())
+				.getWorkPath();
+		Path path = new Path(workPath, fileName);
+		return new AvroKeyRecordWriter<SpecificRecordBase>(errorSchema,
+				AvroSerialization.createDataModel(context.getConfiguration()),
+				HiveOrderMultiOutputFormat.getCompressionCodec(context),
+				fs.create(path),
+				HiveOrderMultiOutputFormat.getSyncInterval(context));
+
 	}
 
 	private boolean isDelayBgn() {
@@ -172,11 +201,9 @@ public class HiveOrderInputReducer extends
 			last = orderRecord.getPlayBgnTime();
 		}
 		if (last != null) {
-			// return last%2==0;
-			// return last < currCamusExecTime - 10 * 60;
+			return last < currCamusExecTime - 10 * 60;
 		}
-		return r.nextBoolean();
-		// return true;
+		return true;
 	}
 
 }

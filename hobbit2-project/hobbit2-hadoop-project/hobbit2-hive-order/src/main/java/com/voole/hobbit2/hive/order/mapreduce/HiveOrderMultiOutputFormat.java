@@ -168,7 +168,7 @@ public class HiveOrderMultiOutputFormat extends
 
 	}
 
-	protected static CodecFactory getCompressionCodec(TaskAttemptContext context) {
+	public static CodecFactory getCompressionCodec(TaskAttemptContext context) {
 		if (FileOutputFormat.getCompressOutput(context)) {
 			// Default to deflate compression.
 			int deflateLevel = context.getConfiguration().getInt(
@@ -208,7 +208,7 @@ public class HiveOrderMultiOutputFormat extends
 		return CodecFactory.nullCodec();
 	}
 
-	protected static int getSyncInterval(TaskAttemptContext context) {
+	public static int getSyncInterval(TaskAttemptContext context) {
 		return context.getConfiguration().getInt(
 				org.apache.avro.mapred.AvroOutputFormat.SYNC_INTERVAL_KEY,
 				DataFileConstants.DEFAULT_SYNC_INTERVAL);
