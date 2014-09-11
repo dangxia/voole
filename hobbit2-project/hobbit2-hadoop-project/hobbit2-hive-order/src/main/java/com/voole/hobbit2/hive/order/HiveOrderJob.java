@@ -93,8 +93,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
 				"hive-db.xml");
 		JdbcTemplate hiveClient = cxt.getBean(JdbcTemplate.class);
-		System.out.println("load in hive file size:"
-				+ fileNameToHiveTableMap.size());
+		log.info("load in hive file size:" + fileNameToHiveTableMap.size());
 		for (Entry<String, HiveTable> entry : fileNameToHiveTableMap.entrySet()) {
 			String fileName = entry.getKey();
 			HiveTable table = entry.getValue();
@@ -112,7 +111,7 @@ public class HiveOrderJob extends Configured implements Tool {
 						+ ") ";
 			}
 			hiveClient.update(sql);
-			System.out.println("load file:" + resultFilePath);
+			log.info("load file:" + resultFilePath);
 		}
 		cxt.close();
 	}
