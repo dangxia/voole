@@ -41,6 +41,7 @@ public class CamusJob extends Configured implements Tool {
 	public int run(String[] args) throws Exception {
 		initConfigs(args);
 		Job job = createJob();
+		PropertyConfigurator.configure(CamusJob.class.getClassLoader().getResource("log4j.properties"));
 		check(job);
 		Path newExecutionOutput = new Path(
 				CamusMetaConfigs.getExecBasePath(job), df.format(new Date()));
