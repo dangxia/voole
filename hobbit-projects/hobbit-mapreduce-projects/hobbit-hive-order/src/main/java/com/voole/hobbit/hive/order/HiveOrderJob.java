@@ -39,6 +39,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -191,6 +192,7 @@ public class HiveOrderJob extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
+		DOMConfigurator.configure("log4j.properties");
 		HiveOrderJob job = new HiveOrderJob();
 		ToolRunner.run(job, args);
 	}

@@ -21,6 +21,7 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 
 import com.voole.hobbit2.camus.mr.mapreduce.CamusInputFormat;
 import com.voole.hobbit2.camus.mr.mapreduce.CamusMultiOutputFormat;
@@ -106,6 +107,7 @@ public class CamusJob extends Configured implements Tool {
 
 	public static void main(String[] args) throws Exception {
 		// System.setProperty("HADOOP_USER_NAME", "root");
+		DOMConfigurator.configure("log4j.properties");
 		CamusJob job = new CamusJob();
 		ToolRunner.run(job, args);
 	}
