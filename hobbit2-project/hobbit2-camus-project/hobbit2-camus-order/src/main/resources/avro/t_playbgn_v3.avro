@@ -6,13 +6,7 @@
 		"name" : "OEMID",
 		"type" : [ "long", "null" ]
 	}, {
-		"name" : "vendorID",
-		"type" : [ "long", "null" ]
-	}, {
 		"name" : "curVer",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "buildTime",
 		"type" : [ "long", "null" ]
 	}, {
 		"name" : "HID",
@@ -27,26 +21,8 @@
 		"name" : "sessID",
 		"type" : [ "string", "null" ]
 	}, {
-		"name" : "sessType",
-		"type" : [ "int", "null" ]
-	}, {
-		"name" : "sessStatus",
-		"type" : [ "int", "null" ]
-	}, {
 		"name" : "FID",
 		"type" : [ "string", "null" ]
-	}, {
-		"name" : "mSize",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "mmime",
-		"type" : [ "int", "null" ]
-	}, {
-		"name" : "idxLen",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "urlLen",
-		"type" : [ "int", "null" ]
 	}, {
 		"name" : "URL",
 		"type" : [ "string", "null" ]

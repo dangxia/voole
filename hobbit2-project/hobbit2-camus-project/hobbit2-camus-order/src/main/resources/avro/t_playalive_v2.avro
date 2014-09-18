@@ -6,18 +6,9 @@
 		"name" : "sessID",
 		"type" : [ "string", "null" ]
 	}, {
-		"name" : "adjPlayTime",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "accID",
-		"type" : [ "long", "null" ]
-	}, {
 		"name" : "aliveTick",
 		"type" : [ "long", "null" ]
-	}, {
-		"name" : "seekNum",
-		"type" : [ "long", "null" ]
-	}, {
+	},{
 		"name" : "readNum",
 		"type" : [ "long", "null" ]
 	}, {
@@ -63,5 +54,8 @@
 				} ]
 			}
 		} ]
-	} ]
+	}, {
+		"name" : "natip",
+		"type" : [ "long", "null" ]
+	}  ]
 }

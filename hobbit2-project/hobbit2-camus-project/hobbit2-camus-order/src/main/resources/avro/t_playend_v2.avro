@@ -14,17 +14,8 @@
 	}, {
 		"name" : "sessID",
 		"type" : [ "string", "null" ]
-	}, {
-		"name" : "adjPlayTime",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "accID",
-		"type" : [ "long", "null" ]
-	}, {
+	},  {
 		"name" : "endTick",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "seekNum",
 		"type" : [ "long", "null" ]
 	}, {
 		"name" : "readNum",
@@ -72,5 +63,8 @@
 				} ]
 			}
 		} ]
+	} , {
+		"name" : "natip",
+		"type" : [ "long", "null" ]
 	} ]
 }

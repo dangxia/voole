@@ -329,5 +329,6 @@
 		<module>hobbit2-hadoop-project/hobbit2-hive-order</module>
 		<module>hobbit2-cache</module>
 		<module>hobbit2-hadoop-project/hobbit2-hive-order-avro</module>
+		<module>hobbit2-storm-project/hobbit2-storm-order</module>
 	</modules>
 </project>

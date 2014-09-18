@@ -6,16 +6,7 @@
 		"name" : "sessID",
 		"type" : [ "string", "null" ]
 	}, {
-		"name" : "adjPlayTime",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "accID",
-		"type" : [ "long", "null" ]
-	}, {
 		"name" : "aliveTick",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "seekNum",
 		"type" : [ "long", "null" ]
 	}, {
 		"name" : "readNum",
@@ -35,9 +26,6 @@
 	}, {
 		"name" : "linkNum",
 		"type" : [ "int", "null" ]
-	}, {
-		"name" : "cacheSizeCur",
-		"type" : [ "long", "null" ]
 	}, {
 		"name" : "_srvs",
 		"type" : [ "null", {
@@ -78,5 +66,11 @@
 				} ]
 			}
 		} ]
-	} ]
+	}, {
+		"name" : "cacheSizeCur",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "natip",
+		"type" : [ "long", "null" ]
+	}  ]
 }

@@ -7,22 +7,20 @@ package com.voole.hobbit2.camus.order;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlayEndReqV2\",\"namespace\":\"com.voole.hobbit2.camus.order\",\"fields\":[{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"localIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessID\",\"type\":[\"string\",\"null\"]},{\"name\":\"adjPlayTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"accID\",\"type\":[\"long\",\"null\"]},{\"name\":\"endTick\",\"type\":[\"long\",\"null\"]},{\"name\":\"seekNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"readNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"unsuccRead\",\"type\":[\"long\",\"null\"]},{\"name\":\"stopPos\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessAvgSpeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"linkNum\",\"type\":[\"int\",\"null\"]},{\"name\":\"_srvs\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"OrderPlayEndReqSrvV2\",\"fields\":[{\"name\":\"srvIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"connTimes\",\"type\":[\"long\",\"null\"]},{\"name\":\"transNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgRTT\",\"type\":[\"long\",\"null\"]},{\"name\":\"accBytes\",\"type\":[\"long\",\"null\"]},{\"name\":\"accTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgSpeed\",\"type\":[\"long\",\"null\"]}]}}]}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlayEndReqV2\",\"namespace\":\"com.voole.hobbit2.camus.order\",\"fields\":[{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"localIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessID\",\"type\":[\"string\",\"null\"]},{\"name\":\"endTick\",\"type\":[\"long\",\"null\"]},{\"name\":\"readNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"unsuccRead\",\"type\":[\"long\",\"null\"]},{\"name\":\"stopPos\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessAvgSpeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"linkNum\",\"type\":[\"int\",\"null\"]},{\"name\":\"_srvs\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"OrderPlayEndReqSrvV2\",\"fields\":[{\"name\":\"srvIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"connTimes\",\"type\":[\"long\",\"null\"]},{\"name\":\"transNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgRTT\",\"type\":[\"long\",\"null\"]},{\"name\":\"accBytes\",\"type\":[\"long\",\"null\"]},{\"name\":\"accTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgSpeed\",\"type\":[\"long\",\"null\"]}]}}]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence HID;
   @Deprecated public java.lang.CharSequence UID;
   @Deprecated public java.lang.Long localIP;
   @Deprecated public java.lang.CharSequence sessID;
-  @Deprecated public java.lang.Long adjPlayTime;
-  @Deprecated public java.lang.Long accID;
   @Deprecated public java.lang.Long endTick;
-  @Deprecated public java.lang.Long seekNum;
   @Deprecated public java.lang.Long readNum;
   @Deprecated public java.lang.Long unsuccRead;
   @Deprecated public java.lang.Long stopPos;
   @Deprecated public java.lang.Long sessAvgSpeed;
   @Deprecated public java.lang.Integer linkNum;
   @Deprecated public java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2> _srvs;
+  @Deprecated public java.lang.Long natip;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -34,21 +32,19 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
   /**
    * All-args constructor.
    */
-  public OrderPlayEndReqV2(java.lang.CharSequence HID, java.lang.CharSequence UID, java.lang.Long localIP, java.lang.CharSequence sessID, java.lang.Long adjPlayTime, java.lang.Long accID, java.lang.Long endTick, java.lang.Long seekNum, java.lang.Long readNum, java.lang.Long unsuccRead, java.lang.Long stopPos, java.lang.Long sessAvgSpeed, java.lang.Integer linkNum, java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2> _srvs) {
+  public OrderPlayEndReqV2(java.lang.CharSequence HID, java.lang.CharSequence UID, java.lang.Long localIP, java.lang.CharSequence sessID, java.lang.Long endTick, java.lang.Long readNum, java.lang.Long unsuccRead, java.lang.Long stopPos, java.lang.Long sessAvgSpeed, java.lang.Integer linkNum, java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2> _srvs, java.lang.Long natip) {
     this.HID = HID;
     this.UID = UID;
     this.localIP = localIP;
     this.sessID = sessID;
-    this.adjPlayTime = adjPlayTime;
-    this.accID = accID;
     this.endTick = endTick;
-    this.seekNum = seekNum;
     this.readNum = readNum;
     this.unsuccRead = unsuccRead;
     this.stopPos = stopPos;
     this.sessAvgSpeed = sessAvgSpeed;
     this.linkNum = linkNum;
     this._srvs = _srvs;
+    this.natip = natip;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -59,16 +55,14 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     case 1: return UID;
     case 2: return localIP;
     case 3: return sessID;
-    case 4: return adjPlayTime;
-    case 5: return accID;
-    case 6: return endTick;
-    case 7: return seekNum;
-    case 8: return readNum;
-    case 9: return unsuccRead;
-    case 10: return stopPos;
-    case 11: return sessAvgSpeed;
-    case 12: return linkNum;
-    case 13: return _srvs;
+    case 4: return endTick;
+    case 5: return readNum;
+    case 6: return unsuccRead;
+    case 7: return stopPos;
+    case 8: return sessAvgSpeed;
+    case 9: return linkNum;
+    case 10: return _srvs;
+    case 11: return natip;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -80,16 +74,14 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     case 1: UID = (java.lang.CharSequence)value$; break;
     case 2: localIP = (java.lang.Long)value$; break;
     case 3: sessID = (java.lang.CharSequence)value$; break;
-    case 4: adjPlayTime = (java.lang.Long)value$; break;
-    case 5: accID = (java.lang.Long)value$; break;
-    case 6: endTick = (java.lang.Long)value$; break;
-    case 7: seekNum = (java.lang.Long)value$; break;
-    case 8: readNum = (java.lang.Long)value$; break;
-    case 9: unsuccRead = (java.lang.Long)value$; break;
-    case 10: stopPos = (java.lang.Long)value$; break;
-    case 11: sessAvgSpeed = (java.lang.Long)value$; break;
-    case 12: linkNum = (java.lang.Integer)value$; break;
-    case 13: _srvs = (java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2>)value$; break;
+    case 4: endTick = (java.lang.Long)value$; break;
+    case 5: readNum = (java.lang.Long)value$; break;
+    case 6: unsuccRead = (java.lang.Long)value$; break;
+    case 7: stopPos = (java.lang.Long)value$; break;
+    case 8: sessAvgSpeed = (java.lang.Long)value$; break;
+    case 9: linkNum = (java.lang.Integer)value$; break;
+    case 10: _srvs = (java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2>)value$; break;
+    case 11: natip = (java.lang.Long)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -155,36 +147,6 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
   }
 
   /**
-   * Gets the value of the 'adjPlayTime' field.
-   */
-  public java.lang.Long getAdjPlayTime() {
-    return adjPlayTime;
-  }
-
-  /**
-   * Sets the value of the 'adjPlayTime' field.
-   * @param value the value to set.
-   */
-  public void setAdjPlayTime(java.lang.Long value) {
-    this.adjPlayTime = value;
-  }
-
-  /**
-   * Gets the value of the 'accID' field.
-   */
-  public java.lang.Long getAccID() {
-    return accID;
-  }
-
-  /**
-   * Sets the value of the 'accID' field.
-   * @param value the value to set.
-   */
-  public void setAccID(java.lang.Long value) {
-    this.accID = value;
-  }
-
-  /**
    * Gets the value of the 'endTick' field.
    */
   public java.lang.Long getEndTick() {
@@ -197,21 +159,6 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
    */
   public void setEndTick(java.lang.Long value) {
     this.endTick = value;
-  }
-
-  /**
-   * Gets the value of the 'seekNum' field.
-   */
-  public java.lang.Long getSeekNum() {
-    return seekNum;
-  }
-
-  /**
-   * Sets the value of the 'seekNum' field.
-   * @param value the value to set.
-   */
-  public void setSeekNum(java.lang.Long value) {
-    this.seekNum = value;
   }
 
   /**
@@ -304,6 +251,21 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     this._srvs = value;
   }
 
+  /**
+   * Gets the value of the 'natip' field.
+   */
+  public java.lang.Long getNatip() {
+    return natip;
+  }
+
+  /**
+   * Sets the value of the 'natip' field.
+   * @param value the value to set.
+   */
+  public void setNatip(java.lang.Long value) {
+    this.natip = value;
+  }
+
   /** Creates a new OrderPlayEndReqV2 RecordBuilder */
   public static com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder newBuilder() {
     return new com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder();
@@ -329,16 +291,14 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     private java.lang.CharSequence UID;
     private java.lang.Long localIP;
     private java.lang.CharSequence sessID;
-    private java.lang.Long adjPlayTime;
-    private java.lang.Long accID;
     private java.lang.Long endTick;
-    private java.lang.Long seekNum;
     private java.lang.Long readNum;
     private java.lang.Long unsuccRead;
     private java.lang.Long stopPos;
     private java.lang.Long sessAvgSpeed;
     private java.lang.Integer linkNum;
     private java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2> _srvs;
+    private java.lang.Long natip;
 
     /** Creates a new Builder */
     private Builder() {
@@ -364,45 +324,37 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
         this.sessID = data().deepCopy(fields()[3].schema(), other.sessID);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.adjPlayTime)) {
-        this.adjPlayTime = data().deepCopy(fields()[4].schema(), other.adjPlayTime);
+      if (isValidValue(fields()[4], other.endTick)) {
+        this.endTick = data().deepCopy(fields()[4].schema(), other.endTick);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.accID)) {
-        this.accID = data().deepCopy(fields()[5].schema(), other.accID);
+      if (isValidValue(fields()[5], other.readNum)) {
+        this.readNum = data().deepCopy(fields()[5].schema(), other.readNum);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.endTick)) {
-        this.endTick = data().deepCopy(fields()[6].schema(), other.endTick);
+      if (isValidValue(fields()[6], other.unsuccRead)) {
+        this.unsuccRead = data().deepCopy(fields()[6].schema(), other.unsuccRead);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.seekNum)) {
-        this.seekNum = data().deepCopy(fields()[7].schema(), other.seekNum);
+      if (isValidValue(fields()[7], other.stopPos)) {
+        this.stopPos = data().deepCopy(fields()[7].schema(), other.stopPos);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.readNum)) {
-        this.readNum = data().deepCopy(fields()[8].schema(), other.readNum);
+      if (isValidValue(fields()[8], other.sessAvgSpeed)) {
+        this.sessAvgSpeed = data().deepCopy(fields()[8].schema(), other.sessAvgSpeed);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.unsuccRead)) {
-        this.unsuccRead = data().deepCopy(fields()[9].schema(), other.unsuccRead);
+      if (isValidValue(fields()[9], other.linkNum)) {
+        this.linkNum = data().deepCopy(fields()[9].schema(), other.linkNum);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.stopPos)) {
-        this.stopPos = data().deepCopy(fields()[10].schema(), other.stopPos);
+      if (isValidValue(fields()[10], other._srvs)) {
+        this._srvs = data().deepCopy(fields()[10].schema(), other._srvs);
         fieldSetFlags()[10] = true;
       }
-      if (isValidValue(fields()[11], other.sessAvgSpeed)) {
-        this.sessAvgSpeed = data().deepCopy(fields()[11].schema(), other.sessAvgSpeed);
+      if (isValidValue(fields()[11], other.natip)) {
+        this.natip = data().deepCopy(fields()[11].schema(), other.natip);
         fieldSetFlags()[11] = true;
-      }
-      if (isValidValue(fields()[12], other.linkNum)) {
-        this.linkNum = data().deepCopy(fields()[12].schema(), other.linkNum);
-        fieldSetFlags()[12] = true;
-      }
-      if (isValidValue(fields()[13], other._srvs)) {
-        this._srvs = data().deepCopy(fields()[13].schema(), other._srvs);
-        fieldSetFlags()[13] = true;
       }
     }
     
@@ -425,45 +377,37 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
         this.sessID = data().deepCopy(fields()[3].schema(), other.sessID);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.adjPlayTime)) {
-        this.adjPlayTime = data().deepCopy(fields()[4].schema(), other.adjPlayTime);
+      if (isValidValue(fields()[4], other.endTick)) {
+        this.endTick = data().deepCopy(fields()[4].schema(), other.endTick);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.accID)) {
-        this.accID = data().deepCopy(fields()[5].schema(), other.accID);
+      if (isValidValue(fields()[5], other.readNum)) {
+        this.readNum = data().deepCopy(fields()[5].schema(), other.readNum);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.endTick)) {
-        this.endTick = data().deepCopy(fields()[6].schema(), other.endTick);
+      if (isValidValue(fields()[6], other.unsuccRead)) {
+        this.unsuccRead = data().deepCopy(fields()[6].schema(), other.unsuccRead);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.seekNum)) {
-        this.seekNum = data().deepCopy(fields()[7].schema(), other.seekNum);
+      if (isValidValue(fields()[7], other.stopPos)) {
+        this.stopPos = data().deepCopy(fields()[7].schema(), other.stopPos);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.readNum)) {
-        this.readNum = data().deepCopy(fields()[8].schema(), other.readNum);
+      if (isValidValue(fields()[8], other.sessAvgSpeed)) {
+        this.sessAvgSpeed = data().deepCopy(fields()[8].schema(), other.sessAvgSpeed);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.unsuccRead)) {
-        this.unsuccRead = data().deepCopy(fields()[9].schema(), other.unsuccRead);
+      if (isValidValue(fields()[9], other.linkNum)) {
+        this.linkNum = data().deepCopy(fields()[9].schema(), other.linkNum);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.stopPos)) {
-        this.stopPos = data().deepCopy(fields()[10].schema(), other.stopPos);
+      if (isValidValue(fields()[10], other._srvs)) {
+        this._srvs = data().deepCopy(fields()[10].schema(), other._srvs);
         fieldSetFlags()[10] = true;
       }
-      if (isValidValue(fields()[11], other.sessAvgSpeed)) {
-        this.sessAvgSpeed = data().deepCopy(fields()[11].schema(), other.sessAvgSpeed);
+      if (isValidValue(fields()[11], other.natip)) {
+        this.natip = data().deepCopy(fields()[11].schema(), other.natip);
         fieldSetFlags()[11] = true;
-      }
-      if (isValidValue(fields()[12], other.linkNum)) {
-        this.linkNum = data().deepCopy(fields()[12].schema(), other.linkNum);
-        fieldSetFlags()[12] = true;
-      }
-      if (isValidValue(fields()[13], other._srvs)) {
-        this._srvs = data().deepCopy(fields()[13].schema(), other._srvs);
-        fieldSetFlags()[13] = true;
       }
     }
 
@@ -567,56 +511,6 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
       return this;
     }
 
-    /** Gets the value of the 'adjPlayTime' field */
-    public java.lang.Long getAdjPlayTime() {
-      return adjPlayTime;
-    }
-    
-    /** Sets the value of the 'adjPlayTime' field */
-    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setAdjPlayTime(java.lang.Long value) {
-      validate(fields()[4], value);
-      this.adjPlayTime = value;
-      fieldSetFlags()[4] = true;
-      return this; 
-    }
-    
-    /** Checks whether the 'adjPlayTime' field has been set */
-    public boolean hasAdjPlayTime() {
-      return fieldSetFlags()[4];
-    }
-    
-    /** Clears the value of the 'adjPlayTime' field */
-    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearAdjPlayTime() {
-      adjPlayTime = null;
-      fieldSetFlags()[4] = false;
-      return this;
-    }
-
-    /** Gets the value of the 'accID' field */
-    public java.lang.Long getAccID() {
-      return accID;
-    }
-    
-    /** Sets the value of the 'accID' field */
-    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setAccID(java.lang.Long value) {
-      validate(fields()[5], value);
-      this.accID = value;
-      fieldSetFlags()[5] = true;
-      return this; 
-    }
-    
-    /** Checks whether the 'accID' field has been set */
-    public boolean hasAccID() {
-      return fieldSetFlags()[5];
-    }
-    
-    /** Clears the value of the 'accID' field */
-    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearAccID() {
-      accID = null;
-      fieldSetFlags()[5] = false;
-      return this;
-    }
-
     /** Gets the value of the 'endTick' field */
     public java.lang.Long getEndTick() {
       return endTick;
@@ -624,46 +518,21 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     
     /** Sets the value of the 'endTick' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setEndTick(java.lang.Long value) {
-      validate(fields()[6], value);
+      validate(fields()[4], value);
       this.endTick = value;
-      fieldSetFlags()[6] = true;
+      fieldSetFlags()[4] = true;
       return this; 
     }
     
     /** Checks whether the 'endTick' field has been set */
     public boolean hasEndTick() {
-      return fieldSetFlags()[6];
+      return fieldSetFlags()[4];
     }
     
     /** Clears the value of the 'endTick' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearEndTick() {
       endTick = null;
-      fieldSetFlags()[6] = false;
-      return this;
-    }
-
-    /** Gets the value of the 'seekNum' field */
-    public java.lang.Long getSeekNum() {
-      return seekNum;
-    }
-    
-    /** Sets the value of the 'seekNum' field */
-    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setSeekNum(java.lang.Long value) {
-      validate(fields()[7], value);
-      this.seekNum = value;
-      fieldSetFlags()[7] = true;
-      return this; 
-    }
-    
-    /** Checks whether the 'seekNum' field has been set */
-    public boolean hasSeekNum() {
-      return fieldSetFlags()[7];
-    }
-    
-    /** Clears the value of the 'seekNum' field */
-    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearSeekNum() {
-      seekNum = null;
-      fieldSetFlags()[7] = false;
+      fieldSetFlags()[4] = false;
       return this;
     }
 
@@ -674,21 +543,21 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     
     /** Sets the value of the 'readNum' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setReadNum(java.lang.Long value) {
-      validate(fields()[8], value);
+      validate(fields()[5], value);
       this.readNum = value;
-      fieldSetFlags()[8] = true;
+      fieldSetFlags()[5] = true;
       return this; 
     }
     
     /** Checks whether the 'readNum' field has been set */
     public boolean hasReadNum() {
-      return fieldSetFlags()[8];
+      return fieldSetFlags()[5];
     }
     
     /** Clears the value of the 'readNum' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearReadNum() {
       readNum = null;
-      fieldSetFlags()[8] = false;
+      fieldSetFlags()[5] = false;
       return this;
     }
 
@@ -699,21 +568,21 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     
     /** Sets the value of the 'unsuccRead' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setUnsuccRead(java.lang.Long value) {
-      validate(fields()[9], value);
+      validate(fields()[6], value);
       this.unsuccRead = value;
-      fieldSetFlags()[9] = true;
+      fieldSetFlags()[6] = true;
       return this; 
     }
     
     /** Checks whether the 'unsuccRead' field has been set */
     public boolean hasUnsuccRead() {
-      return fieldSetFlags()[9];
+      return fieldSetFlags()[6];
     }
     
     /** Clears the value of the 'unsuccRead' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearUnsuccRead() {
       unsuccRead = null;
-      fieldSetFlags()[9] = false;
+      fieldSetFlags()[6] = false;
       return this;
     }
 
@@ -724,21 +593,21 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     
     /** Sets the value of the 'stopPos' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setStopPos(java.lang.Long value) {
-      validate(fields()[10], value);
+      validate(fields()[7], value);
       this.stopPos = value;
-      fieldSetFlags()[10] = true;
+      fieldSetFlags()[7] = true;
       return this; 
     }
     
     /** Checks whether the 'stopPos' field has been set */
     public boolean hasStopPos() {
-      return fieldSetFlags()[10];
+      return fieldSetFlags()[7];
     }
     
     /** Clears the value of the 'stopPos' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearStopPos() {
       stopPos = null;
-      fieldSetFlags()[10] = false;
+      fieldSetFlags()[7] = false;
       return this;
     }
 
@@ -749,21 +618,21 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     
     /** Sets the value of the 'sessAvgSpeed' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setSessAvgSpeed(java.lang.Long value) {
-      validate(fields()[11], value);
+      validate(fields()[8], value);
       this.sessAvgSpeed = value;
-      fieldSetFlags()[11] = true;
+      fieldSetFlags()[8] = true;
       return this; 
     }
     
     /** Checks whether the 'sessAvgSpeed' field has been set */
     public boolean hasSessAvgSpeed() {
-      return fieldSetFlags()[11];
+      return fieldSetFlags()[8];
     }
     
     /** Clears the value of the 'sessAvgSpeed' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearSessAvgSpeed() {
       sessAvgSpeed = null;
-      fieldSetFlags()[11] = false;
+      fieldSetFlags()[8] = false;
       return this;
     }
 
@@ -774,21 +643,21 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     
     /** Sets the value of the 'linkNum' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setLinkNum(java.lang.Integer value) {
-      validate(fields()[12], value);
+      validate(fields()[9], value);
       this.linkNum = value;
-      fieldSetFlags()[12] = true;
+      fieldSetFlags()[9] = true;
       return this; 
     }
     
     /** Checks whether the 'linkNum' field has been set */
     public boolean hasLinkNum() {
-      return fieldSetFlags()[12];
+      return fieldSetFlags()[9];
     }
     
     /** Clears the value of the 'linkNum' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearLinkNum() {
       linkNum = null;
-      fieldSetFlags()[12] = false;
+      fieldSetFlags()[9] = false;
       return this;
     }
 
@@ -799,21 +668,46 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
     
     /** Sets the value of the '_srvs' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setSrvs$1(java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2> value) {
-      validate(fields()[13], value);
+      validate(fields()[10], value);
       this._srvs = value;
-      fieldSetFlags()[13] = true;
+      fieldSetFlags()[10] = true;
       return this; 
     }
     
     /** Checks whether the '_srvs' field has been set */
     public boolean hasSrvs$1() {
-      return fieldSetFlags()[13];
+      return fieldSetFlags()[10];
     }
     
     /** Clears the value of the '_srvs' field */
     public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearSrvs$1() {
       _srvs = null;
-      fieldSetFlags()[13] = false;
+      fieldSetFlags()[10] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'natip' field */
+    public java.lang.Long getNatip() {
+      return natip;
+    }
+    
+    /** Sets the value of the 'natip' field */
+    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder setNatip(java.lang.Long value) {
+      validate(fields()[11], value);
+      this.natip = value;
+      fieldSetFlags()[11] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'natip' field has been set */
+    public boolean hasNatip() {
+      return fieldSetFlags()[11];
+    }
+    
+    /** Clears the value of the 'natip' field */
+    public com.voole.hobbit2.camus.order.OrderPlayEndReqV2.Builder clearNatip() {
+      natip = null;
+      fieldSetFlags()[11] = false;
       return this;
     }
 
@@ -825,16 +719,14 @@ public class OrderPlayEndReqV2 extends org.apache.avro.specific.SpecificRecordBa
         record.UID = fieldSetFlags()[1] ? this.UID : (java.lang.CharSequence) defaultValue(fields()[1]);
         record.localIP = fieldSetFlags()[2] ? this.localIP : (java.lang.Long) defaultValue(fields()[2]);
         record.sessID = fieldSetFlags()[3] ? this.sessID : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.adjPlayTime = fieldSetFlags()[4] ? this.adjPlayTime : (java.lang.Long) defaultValue(fields()[4]);
-        record.accID = fieldSetFlags()[5] ? this.accID : (java.lang.Long) defaultValue(fields()[5]);
-        record.endTick = fieldSetFlags()[6] ? this.endTick : (java.lang.Long) defaultValue(fields()[6]);
-        record.seekNum = fieldSetFlags()[7] ? this.seekNum : (java.lang.Long) defaultValue(fields()[7]);
-        record.readNum = fieldSetFlags()[8] ? this.readNum : (java.lang.Long) defaultValue(fields()[8]);
-        record.unsuccRead = fieldSetFlags()[9] ? this.unsuccRead : (java.lang.Long) defaultValue(fields()[9]);
-        record.stopPos = fieldSetFlags()[10] ? this.stopPos : (java.lang.Long) defaultValue(fields()[10]);
-        record.sessAvgSpeed = fieldSetFlags()[11] ? this.sessAvgSpeed : (java.lang.Long) defaultValue(fields()[11]);
-        record.linkNum = fieldSetFlags()[12] ? this.linkNum : (java.lang.Integer) defaultValue(fields()[12]);
-        record._srvs = fieldSetFlags()[13] ? this._srvs : (java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2>) defaultValue(fields()[13]);
+        record.endTick = fieldSetFlags()[4] ? this.endTick : (java.lang.Long) defaultValue(fields()[4]);
+        record.readNum = fieldSetFlags()[5] ? this.readNum : (java.lang.Long) defaultValue(fields()[5]);
+        record.unsuccRead = fieldSetFlags()[6] ? this.unsuccRead : (java.lang.Long) defaultValue(fields()[6]);
+        record.stopPos = fieldSetFlags()[7] ? this.stopPos : (java.lang.Long) defaultValue(fields()[7]);
+        record.sessAvgSpeed = fieldSetFlags()[8] ? this.sessAvgSpeed : (java.lang.Long) defaultValue(fields()[8]);
+        record.linkNum = fieldSetFlags()[9] ? this.linkNum : (java.lang.Integer) defaultValue(fields()[9]);
+        record._srvs = fieldSetFlags()[10] ? this._srvs : (java.util.List<com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2>) defaultValue(fields()[10]);
+        record.natip = fieldSetFlags()[11] ? this.natip : (java.lang.Long) defaultValue(fields()[11]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);
