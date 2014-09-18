@@ -5,6 +5,8 @@ package com.voole.hobbit2.hive.order;
 
 import java.util.Map;
 
+import org.apache.avro.specific.SpecificRecordBase;
+
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV3;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
@@ -21,7 +23,8 @@ import com.voole.monitor2.playurl.PlayurlAnalyzer;
 public class HiveOrderDryRecordGenerator {
 	public static HiveOrderDryRecord generate(OrderSessionInfo orderSessionInfo) {
 		HiveOrderDryRecord record = new HiveOrderDryRecord();
-		record.setSessID(orderSessionInfo.getSessionId());
+		record.setSessID((CharSequence) ((SpecificRecordBase) orderSessionInfo._bgn)
+				.get("sessID"));
 		fillBgn(record, orderSessionInfo._bgn);
 
 		if (orderSessionInfo._lastAlive != null) {

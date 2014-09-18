@@ -82,11 +82,11 @@ public class HiveOrderInputReducer extends
 	}
 
 	@Override
-	protected void reduce(Text sessionId,
+	protected void reduce(Text sessionIdAndNatip,
 			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
 			throws IOException, InterruptedException {
 		sessionInfo.clear();
-		sessionInfo.setSessionId(sessionId.toString());
+		sessionInfo.setSessionIdAndNatip(sessionIdAndNatip.toString());
 		cache.clear();
 
 		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
