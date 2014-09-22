@@ -44,6 +44,7 @@ public class HiveOrderJob extends Configured implements Tool {
 			.getLogger(HiveOrderJob.class);
 	private static SimpleDateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd-HH-mm-ss");
+	private static String fileEnd;
 
 	@Override
 	public int run(String[] args) throws Exception {
@@ -52,7 +53,8 @@ public class HiveOrderJob extends Configured implements Tool {
 		checkAndLoad(job);
 		FileSystem fs = FileSystem.get(job.getConfiguration());
 		Path execBasePath = HiveOrderMetaConfigs.getExecBasePath(job);
-		Path newExecutionOutput = new Path(execBasePath, df.format(new Date()));
+		fileEnd = df.format(new Date());
+		Path newExecutionOutput = new Path(execBasePath, fileEnd);
 		FileOutputFormat.setOutputPath(job, newExecutionOutput);
 		log.info("New execution temp location: "
 				+ newExecutionOutput.toString());
@@ -95,11 +97,15 @@ public class HiveOrderJob extends Configured implements Tool {
 				"hive-db.xml");
 		JdbcTemplate hiveClient = cxt.getBean(JdbcTemplate.class);
 		log.info("load in hive file size:" + fileNameToHiveTableMap.size());
+		FileSystem fs = FileSystem.get(job.getConfiguration());
 		for (Entry<String, HiveTable> entry : fileNameToHiveTableMap.entrySet()) {
 			String fileName = entry.getKey();
 			HiveTable table = entry.getValue();
-			String resultFilePath = new Path(newExecutionOutput, fileName)
-					.toUri().getPath();
+			Path sourcePath = new Path(newExecutionOutput, fileName);
+			Path targetPath = new Path(newExecutionOutput, fileName + "-"
+					+ fileEnd);
+			fs.rename(sourcePath, targetPath);
+			String resultFilePath = targetPath.toUri().getPath();
 			String sql = "LOAD DATA  INPATH '" + resultFilePath
 					+ "'  INTO TABLE " + table.getName();
 			if (table.hasPartition()) {
@@ -157,7 +163,8 @@ public class HiveOrderJob extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		PropertyConfigurator.configure(HiveOrderJob.class.getClassLoader().getResource("log4j.properties"));
+		PropertyConfigurator.configure(HiveOrderJob.class.getClassLoader()
+				.getResource("log4j.properties"));
 		HiveOrderJob job = new HiveOrderJob();
 		ToolRunner.run(job, args);
 	}
