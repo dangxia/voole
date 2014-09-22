@@ -9,9 +9,10 @@ import java.util.List;
 
 import org.apache.hadoop.fs.Path;
 
-import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
-
 import storm.trident.spout.ISpoutPartition;
+
+import com.google.common.base.Objects;
+import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
 
 /**
  * @author XuehuiHe
@@ -19,6 +20,7 @@ import storm.trident.spout.ISpoutPartition;
  */
 public class KafkaSpoutPartition implements ISpoutPartition, Serializable {
 	private BrokerAndTopicPartition brokerAndTopicPartition;
+	private long offset;
 	private final List<Path> noendPaths;
 
 	public KafkaSpoutPartition() {
@@ -42,4 +44,20 @@ public class KafkaSpoutPartition implements ISpoutPartition, Serializable {
 	public List<Path> getNoendPaths() {
 		return noendPaths;
 	}
+
+	public long getOffset() {
+		return offset;
+	}
+
+	public void setOffset(long offset) {
+		this.offset = offset;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("brokerAndTopicPartition", brokerAndTopicPartition)
+				.add("offset", offset).add("noendPaths", noendPaths).toString();
+	}
+
 }

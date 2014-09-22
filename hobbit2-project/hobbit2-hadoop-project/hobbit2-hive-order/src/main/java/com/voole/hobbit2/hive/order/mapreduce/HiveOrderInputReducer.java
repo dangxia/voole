@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.hadoop.io.AvroSerialization;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
@@ -56,6 +57,7 @@ public class HiveOrderInputReducer extends
 
 	private FileSystem fs;
 	private Schema errorSchema;
+	private Schema orderUnionSchema;
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -69,6 +71,7 @@ public class HiveOrderInputReducer extends
 		cache = new LinkedList<SpecificRecordBase>();
 		fs = FileSystem.get(context.getConfiguration());
 		errorSchema = HiveOrderMetaConfigs.getOrderUnionSchema(context);
+		orderUnionSchema = HiveOrderMetaConfigs.getOrderUnionSchema(context);
 	}
 
 	@Override
@@ -90,7 +93,8 @@ public class HiveOrderInputReducer extends
 		cache.clear();
 
 		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-			cache.add(avroValue.datum());
+			cache.add(GenericData.get().deepCopy(orderUnionSchema,
+					avroValue.datum()));
 		}
 
 		try {

@@ -22,6 +22,24 @@ public class Hobbit2Configuration {
 	private static Logger logger = LoggerFactory
 			.getLogger(Hobbit2Configuration.class);
 
+	private static volatile CompositeConfiguration _inst;
+
+	public static CompositeConfiguration getInstance()
+			throws ConfigurationException, FileNotFoundException {
+		if (_inst == null) {
+			_create();
+		}
+		return _inst;
+	}
+
+	private static synchronized void _create() throws ConfigurationException,
+			FileNotFoundException {
+		if (_inst != null) {
+			return;
+		}
+		_inst = initConfig();
+	}
+
 	public static CompositeConfiguration initConfig()
 			throws ConfigurationException, FileNotFoundException {
 		return initConfig(new Properties());

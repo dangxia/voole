@@ -30,9 +30,9 @@ public class TestKafka {
 	}
 
 	public static void main(String[] args) throws UnsupportedEncodingException {
-		String topic = TopicProtoClassUtils.ORDER_ALIVE_V3;
-		int partition = 3;
-		SimpleConsumer consumer = new SimpleConsumer("data-slave2.voole.com",
+		String topic = TopicProtoClassUtils.ORDER_BGN_V3;
+		int partition = 2;
+		SimpleConsumer consumer = new SimpleConsumer("data-slave1.voole.com",
 				9092, 1000, 10000, "sdsdsd");
 		TopicAndPartition topicAndPartition = new TopicAndPartition(topic,
 				partition);
@@ -49,23 +49,23 @@ public class TestKafka {
 			offset = l;
 		}
 		System.out.println(offset);
-		// offset -= 100;
-		// FetchRequestBuilder requestBuilder = new FetchRequestBuilder();
-		// kafka.api.FetchRequest fetchRequest = requestBuilder.addFetch(topic,
-		// partition, offset, 5000).build();
-		// FetchResponse fetchResponse = consumer.fetch(fetchRequest);
-		// Iterator<MessageAndOffset> iterator = fetchResponse.messageSet(topic,
-		// partition).iterator();
-		// while (iterator.hasNext()) {
-		// MessageAndOffset msg = iterator.next();
-		// System.out.println("offset:" + msg.offset());
-		//
-		// ByteBuffer payload = msg.message().payload();
-		//
-		// byte[] bytes = new byte[payload.limit()];
-		// payload.get(bytes);
-		//
-		// System.out.println("msg:" + new String(bytes, "UTF-8"));
-		// }
+		offset -= 10;
+		FetchRequestBuilder requestBuilder = new FetchRequestBuilder();
+		kafka.api.FetchRequest fetchRequest = requestBuilder.addFetch(topic,
+				partition, offset, 5000).build();
+		FetchResponse fetchResponse = consumer.fetch(fetchRequest);
+		Iterator<MessageAndOffset> iterator = fetchResponse.messageSet(topic,
+				partition).iterator();
+		while (iterator.hasNext()) {
+			MessageAndOffset msg = iterator.next();
+			System.out.println("offset:" + msg.offset());
+
+			ByteBuffer payload = msg.message().payload();
+
+			byte[] bytes = new byte[payload.limit()];
+			payload.get(bytes);
+
+			System.out.println("msg:" + new String(bytes, "UTF-8"));
+		}
 	}
 }
