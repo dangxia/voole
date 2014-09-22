@@ -41,14 +41,20 @@ public class StormOrderHDFSUtils {
 	private static final Logger log = LoggerFactory
 			.getLogger(StormOrderSpoutPartitionCreator.class);
 	private static final Configuration conf = new Configuration();
+	static {
+		conf.addResource("core-site2.xml");
+	}
 	private static final GenericData dataModel = AvroSerialization
 			.createDataModel(conf);
 	@SuppressWarnings("unchecked")
 	private static final DatumReader<SpecificRecordBase> datumReader = dataModel
 			.createDatumReader(StormOrderMetaConfigs.getOrderUnionSchema());
-	static {
-		conf.addResource("core-site2.xml");
+	
+	
+	public static void main(String[] args) throws IOException {
+		FileSystem.get(conf);
 	}
+	
 
 	public static DataFileReader<SpecificRecordBase> getNoendReader(Path path)
 			throws IOException {
