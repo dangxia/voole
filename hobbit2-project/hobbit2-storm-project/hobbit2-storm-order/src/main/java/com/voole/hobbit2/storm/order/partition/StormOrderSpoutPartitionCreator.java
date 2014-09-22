@@ -35,15 +35,6 @@ public class StormOrderSpoutPartitionCreator {
 	private static final Logger log = LoggerFactory
 			.getLogger(StormOrderSpoutPartitionCreator.class);
 
-	public static void main(String[] args) throws FileNotFoundException,
-			IOException {
-		List<ISpoutPartition> list = StormOrderSpoutPartitionCreator
-				.create(false);
-		for (ISpoutPartition iSpoutPartition : list) {
-			System.out.println(iSpoutPartition);
-		}
-	}
-
 	public static List<ISpoutPartition> create(boolean loadNoend)
 			throws FileNotFoundException, IOException {
 		String[] topics = StormOrderMetaConfigs.getWhiteTopics().toArray(
@@ -73,7 +64,7 @@ public class StormOrderSpoutPartitionCreator {
 				partitionIterator = partitions.iterator();
 			}
 			partitionIterator.next().getNoendPaths()
-					.add(noendPathIterator.next());
+					.add(noendPathIterator.next().toUri().getPath());
 		}
 	}
 

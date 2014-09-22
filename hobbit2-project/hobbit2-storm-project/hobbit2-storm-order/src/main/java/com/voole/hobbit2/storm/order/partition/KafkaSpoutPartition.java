@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.hadoop.fs.Path;
-
 import storm.trident.spout.ISpoutPartition;
 
 import com.google.common.base.Objects;
@@ -21,10 +19,10 @@ import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
 public class KafkaSpoutPartition implements ISpoutPartition, Serializable {
 	private BrokerAndTopicPartition brokerAndTopicPartition;
 	private long offset;
-	private final List<Path> noendPaths;
+	private final List<String> noendPaths;
 
 	public KafkaSpoutPartition() {
-		noendPaths = new ArrayList<Path>();
+		noendPaths = new ArrayList<String>();
 	}
 
 	@Override
@@ -41,7 +39,7 @@ public class KafkaSpoutPartition implements ISpoutPartition, Serializable {
 		this.brokerAndTopicPartition = brokerAndTopicPartition;
 	}
 
-	public List<Path> getNoendPaths() {
+	public List<String> getNoendPaths() {
 		return noendPaths;
 	}
 

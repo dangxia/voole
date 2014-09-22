@@ -6,6 +6,8 @@ package com.voole.hobbit2.storm.order;
 import java.util.ArrayList;
 import java.util.List;
 
+import kafka.javaapi.consumer.SimpleConsumer;
+
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.avro.Schema;
 import org.apache.commons.configuration.CompositeConfiguration;
@@ -20,6 +22,7 @@ import com.voole.hobbit2.common.Hobbit2Configuration;
 import com.voole.hobbit2.common.config.KafkaMetaConfigs;
 import com.voole.hobbit2.common.config.ZookeeperMetaConfigs;
 import com.voole.hobbit2.tools.kafka.ZookeeperUtils;
+import com.voole.hobbit2.tools.kafka.partition.Broker;
 
 /**
  * @author XuehuiHe
@@ -79,6 +82,22 @@ public class StormOrderMetaConfigs {
 						ZookeeperMetaConfigs.ZOOKEEPER_ROOT_SESSION_TIMEOUT_MS,
 						40000));
 
+	}
+
+	public static SimpleConsumer createSimpleConsumer(Broker broker) {
+		return new SimpleConsumer(broker.host(), broker.port(),
+				hobbit2Configuration.getInt(KafkaMetaConfigs.KAFKA_TIME_OUT_MS,
+						40000), getKafkafetchSize(), "");
+	}
+
+	volatile static Integer fetchSize = null;
+
+	public static int getKafkafetchSize() {
+		if (fetchSize == null) {
+			fetchSize = hobbit2Configuration.getInt(
+					KafkaMetaConfigs.KAFKA_BUFFER_SIZE_BYTES, 10240);
+		}
+		return fetchSize;
 	}
 
 }

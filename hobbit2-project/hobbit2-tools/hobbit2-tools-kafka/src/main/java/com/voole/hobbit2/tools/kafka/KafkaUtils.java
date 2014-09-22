@@ -15,15 +15,18 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import kafka.api.FetchRequestBuilder;
 import kafka.api.PartitionOffsetRequestInfo;
 import kafka.common.ErrorMapping;
 import kafka.common.TopicAndPartition;
+import kafka.javaapi.FetchResponse;
 import kafka.javaapi.OffsetRequest;
 import kafka.javaapi.OffsetResponse;
 import kafka.javaapi.PartitionMetadata;
 import kafka.javaapi.TopicMetadata;
 import kafka.javaapi.TopicMetadataRequest;
 import kafka.javaapi.consumer.SimpleConsumer;
+import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.utils.ZkUtils;
 
 import org.I0Itec.zkclient.ZkClient;
@@ -42,6 +45,7 @@ import com.voole.hobbit2.tools.kafka.KafkaJsonUtils.PartitionsInfo;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
 import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
 import com.voole.hobbit2.tools.kafka.partition.PartitionState;
+import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
  * @author XuehuiHe
@@ -50,23 +54,21 @@ import com.voole.hobbit2.tools.kafka.partition.PartitionState;
 public class KafkaUtils {
 	private static final Logger log = LoggerFactory.getLogger(KafkaUtils.class);
 
-	// @Deprecated
-	// public static ByteBufferMessageSet fetch(SimpleConsumer consumer,
-	// BrokerAndTopicPartition partition, long offset, int fetchSize) {
-	// return fetch(consumer, partition.getTopic(), partition.getPartition(),
-	// offset, fetchSize);
-	// }
-	//
-	// @Deprecated
-	// public static ByteBufferMessageSet fetch(SimpleConsumer consumer,
-	// String topic, int partition, long offset, int fetchSize) {
-	// FetchRequestBuilder requestBuilder = new FetchRequestBuilder();
-	// kafka.api.FetchRequest fetchRequest = requestBuilder.addFetch(topic,
-	// partition, offset, fetchSize).build();
-	// FetchResponse fetchResponse = consumer.fetch(fetchRequest);
-	// return fetchResponse.messageSet(topic, partition);
-	//
-	// }
+	public static ByteBufferMessageSet fetch(SimpleConsumer consumer,
+			TopicPartition partition, long offset, int fetchSize) {
+		return fetch(consumer, partition.getTopic(), partition.getPartition(),
+				offset, fetchSize);
+	}
+
+	public static ByteBufferMessageSet fetch(SimpleConsumer consumer,
+			String topic, int partition, long offset, int fetchSize) {
+		FetchRequestBuilder requestBuilder = new FetchRequestBuilder();
+		kafka.api.FetchRequest fetchRequest = requestBuilder.addFetch(topic,
+				partition, offset, fetchSize).build();
+		FetchResponse fetchResponse = consumer.fetch(fetchRequest);
+		return fetchResponse.messageSet(topic, partition);
+
+	}
 
 	public static List<Broker> getBrokerInfosInCluster(ZkClient zkClient) {
 		List<Integer> borkerIds = getBrokerIdsInCluster(zkClient);

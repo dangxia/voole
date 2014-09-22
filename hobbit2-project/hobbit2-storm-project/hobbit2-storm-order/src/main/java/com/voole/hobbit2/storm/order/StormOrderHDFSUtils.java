@@ -8,11 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.generic.GenericData;
@@ -20,7 +18,6 @@ import org.apache.avro.hadoop.io.AvroSerialization;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.mapred.FsInput;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.commons.collections.MultiMap;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -33,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.Multimaps;
 import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionCreator;
 import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
@@ -54,33 +50,10 @@ public class StormOrderHDFSUtils {
 		conf.addResource("core-site2.xml");
 	}
 
-	public static void readNoend(Path path) throws IOException {
-		DataFileReader<SpecificRecordBase> mAvroFileReader = new DataFileReader<SpecificRecordBase>(
-				new FsInput(path, conf), datumReader);
-		SpecificRecordBase record = null;
-		Set<String> ids = new HashSet<String>();
-		while (mAvroFileReader.hasNext()) {
-			// Reuse user object by passing it to next(). This saves us from
-			// allocating and garbage collecting many objects for files with
-			// many items.
-			record = mAvroFileReader.next(record);
-			String sessID = (String) record.get("sessID");
-			if (ids.contains(sessID)) {
-				System.out.println(sessID);
-			} else {
-				ids.add(sessID);
-			}
-			System.out.println(record);
-		}
-		mAvroFileReader.close();
-	}
-
-	public static void main(String[] args) throws IOException {
-		Path path = new Path(
-				"/hive_order/history/2014-09-22-12-11-39/noend_t_playbgn_v2-r-00000.avro");
-		readNoend(path);
-		readNoend(new Path(
-				"/hive_order/history/2014-09-22-12-11-39/noend_t_playalive_v2-r-00001.avro"));
+	public static DataFileReader<SpecificRecordBase> getNoendReader(Path path)
+			throws IOException {
+		return new DataFileReader<SpecificRecordBase>(new FsInput(path, conf),
+				datumReader);
 	}
 
 	private static Map<TopicPartition, Long> readPrevPartionsStates(
