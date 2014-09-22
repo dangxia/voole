@@ -11,7 +11,9 @@ import storm.trident.operation.BaseFilter;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
+import backtype.storm.generated.AlreadyAliveException;
+import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.tuple.Fields;
 
 import com.google.gson.Gson;
@@ -26,9 +28,9 @@ import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout;
 public class TestOrderTopology {
 	public static Config getConfig() {
 		Config conf = new Config();
-		conf.setMaxSpoutPending(10);
+		conf.setMaxSpoutPending(20);
 		conf.setNumWorkers(2);
-		conf.setMaxTaskParallelism(10);
+		// conf.setMaxTaskParallelism(10);
 		conf.setKryoFactory(AvroKryoFactory.class);
 
 		return conf;
@@ -64,12 +66,14 @@ public class TestOrderTopology {
 		return topology;
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
 
 		TridentTopology topology = createTopology();
 		Config conf = getConfig();
 
-		LocalCluster cluster = new LocalCluster();
-		cluster.submitTopology("test-kafka-spout-name", conf, topology.build());
+		StormSubmitter.submitTopology(args[0], conf, topology.build());
+		// LocalCluster cluster = new LocalCluster();
+		// cluster.submitTopology("test-kafka-spout-name", conf,
+		// topology.build());
 	}
 }
