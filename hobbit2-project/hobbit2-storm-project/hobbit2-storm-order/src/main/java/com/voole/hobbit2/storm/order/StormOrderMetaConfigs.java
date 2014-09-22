@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 import com.voole.hobbit2.common.Hobbit2Configuration;
 import com.voole.hobbit2.common.config.KafkaMetaConfigs;
@@ -70,7 +71,7 @@ public class StormOrderMetaConfigs {
 	public static List<String> getWhiteTopics() {
 		String topicArrayStr = hobbit2Configuration
 				.getString(STORM_ORDER_WHITELIST_TOPICS);
-		return Splitter.on(',').splitToList(topicArrayStr);
+		return Lists.newArrayList(Splitter.on(',').split(topicArrayStr));
 	}
 
 	public static ZkClient createZKClient() {
