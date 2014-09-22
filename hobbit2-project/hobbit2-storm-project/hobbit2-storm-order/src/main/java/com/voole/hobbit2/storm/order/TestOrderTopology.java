@@ -5,6 +5,9 @@ package com.voole.hobbit2.storm.order;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import storm.trident.operation.BaseFilter;
@@ -16,8 +19,6 @@ import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.tuple.Fields;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.voole.hobbit2.storm.order.serializer.AvroKryoFactory;
 import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout;
 
@@ -26,6 +27,9 @@ import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout;
  * @date 2014年9月22日
  */
 public class TestOrderTopology {
+	private static final Logger log = LoggerFactory
+			.getLogger(TestOrderTopology.class);
+
 	public static Config getConfig() {
 		Config conf = new Config();
 		conf.setMaxSpoutPending(20);
@@ -37,23 +41,23 @@ public class TestOrderTopology {
 	}
 
 	public static class Print extends BaseFilter {
-		private Gson gson;
+		// private Gson gson;
 
 		@Override
 		public void prepare(@SuppressWarnings("rawtypes") Map conf,
 				TridentOperationContext context) {
-			GsonBuilder gb = new GsonBuilder();
-			gb.setPrettyPrinting();
-			gson = gb.create();
+			// GsonBuilder gb = new GsonBuilder();
+			// gb.setPrettyPrinting();
+			// gson = gb.create();
 			super.prepare(conf, context);
 		}
 
 		@Override
 		public boolean isKeep(TridentTuple tuple) {
-			System.out.println(gson.toJson(tuple));
-			return true;
+			log.info(tuple.get(0).getClass().toString());
+			// System.out.println(gson.toJson(tuple));
+			return false;
 		}
-
 	}
 
 	public static TridentTopology createTopology() {
@@ -66,7 +70,8 @@ public class TestOrderTopology {
 		return topology;
 	}
 
-	public static void main(String[] args) throws AlreadyAliveException, InvalidTopologyException {
+	public static void main(String[] args) throws AlreadyAliveException,
+			InvalidTopologyException {
 
 		TridentTopology topology = createTopology();
 		Config conf = getConfig();
