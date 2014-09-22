@@ -4,13 +4,16 @@
 package com.voole.hobbit2.hive.order.mapreduce;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
+import org.apache.avro.data.RecordBuilder;
 import org.apache.avro.hadoop.io.AvroSerialization;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroValue;
@@ -57,7 +60,12 @@ public class HiveOrderInputReducer extends
 
 	private FileSystem fs;
 	private Schema errorSchema;
-	private Schema orderUnionSchema;
+
+	private final Map<Class<?>, Method> clazzToCreateBuilderMethod;
+
+	public HiveOrderInputReducer() {
+		clazzToCreateBuilderMethod = new HashMap<Class<?>, Method>();
+	}
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -71,7 +79,6 @@ public class HiveOrderInputReducer extends
 		cache = new LinkedList<SpecificRecordBase>();
 		fs = FileSystem.get(context.getConfiguration());
 		errorSchema = HiveOrderMetaConfigs.getOrderUnionSchema(context);
-		orderUnionSchema = HiveOrderMetaConfigs.getOrderUnionSchema(context);
 	}
 
 	@Override
@@ -84,6 +91,24 @@ public class HiveOrderInputReducer extends
 		cache.clear();
 	}
 
+	protected SpecificRecordBase deepCopy(SpecificRecordBase record)
+			throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
+		RecordBuilder<?> builder = (RecordBuilder<?>) getBuilderMethod(record)
+				.invoke(null, record);
+		return (SpecificRecordBase) builder.build();
+	}
+
+	protected Method getBuilderMethod(SpecificRecordBase record)
+			throws NoSuchMethodException, SecurityException {
+		Class<?> clazz = record.getClass();
+		if (!clazzToCreateBuilderMethod.containsKey(clazz)) {
+			clazzToCreateBuilderMethod.put(clazz,
+					clazz.getMethod("newBuilder", clazz));
+		}
+		return clazzToCreateBuilderMethod.get(clazz);
+	}
+
 	@Override
 	protected void reduce(Text sessionIdAndNatip,
 			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
@@ -91,12 +116,13 @@ public class HiveOrderInputReducer extends
 		sessionInfo.clear();
 		sessionInfo.setSessionIdAndNatip(sessionIdAndNatip.toString());
 		cache.clear();
-
-		for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-			cache.add(GenericData.get().deepCopy(orderUnionSchema,
-					avroValue.datum()));
+		try {
+			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+				cache.add(deepCopy(avroValue.datum()));
+			}
+		} catch (Exception e) {
+			Throwables.propagate(e);
 		}
-
 		try {
 
 			for (SpecificRecordBase record : cache) {
