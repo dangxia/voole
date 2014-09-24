@@ -36,7 +36,7 @@ public class TestOrderTopology {
 	public static Config getConfig() {
 		Config conf = new Config();
 		conf.setMaxSpoutPending(20);
-		conf.setNumWorkers(2);
+		conf.setNumWorkers(12);
 		conf.registerDecorator(StromOrderKryoDecorator.class);
 		conf.put(Config.TOPOLOGY_NAME, "storm_order_" + UUID.randomUUID());
 
@@ -85,7 +85,7 @@ public class TestOrderTopology {
 		TridentTopology topology = new TridentTopology();
 		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
 		Stream stream = topology.newStream("order-kafka-stream",
-				orderKafkaSpout).parallelismHint(4);
+				orderKafkaSpout).parallelismHint(24);
 		stream.shuffle().each(new Fields("data"), new Print())
 				.parallelismHint(1);
 		return topology;
