@@ -169,11 +169,11 @@ public class OpaqueTridentKafkaSpout
 		 * @param msg
 		 */
 		private void emit(TridentCollector collector, MessageAndOffset msg) {
-			ByteBuffer payload = msg.message().payload();
-			byte[] bytes = new byte[payload.limit()];
-			payload.get(bytes);
-
-			collector.emit(new Values(bytes));
+//			ByteBuffer payload = msg.message().payload();
+//			byte[] bytes = new byte[payload.limit()];
+//			payload.get(bytes);
+//
+//			collector.emit(new Values(bytes));
 
 		}
 
