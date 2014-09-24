@@ -36,6 +36,7 @@ public class TestKryoDecorator implements IKryoDecorator {
 	@Override
 	public void decorate(Kryo k) {
 		for (Class<? extends SpecificRecordBase> clazz : list) {
+//			k.register(clazz,AvroSerializer.SpecificRecordBinarySerializer(getManifest(clazz)));
 			k.register(clazz,
 					AvroSerializer.SpecificRecordSerializer(getManifest(clazz)));
 		}

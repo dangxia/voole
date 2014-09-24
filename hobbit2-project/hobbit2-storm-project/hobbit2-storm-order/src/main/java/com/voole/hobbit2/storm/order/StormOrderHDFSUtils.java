@@ -13,10 +13,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.avro.file.DataFileReader;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.hadoop.io.AvroSerialization;
+import org.apache.avro.file.FileReader;
+import org.apache.avro.file.SeekableInput;
 import org.apache.avro.io.DatumReader;
 import org.apache.avro.mapred.FsInput;
+import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -44,22 +45,18 @@ public class StormOrderHDFSUtils {
 	static {
 		conf.addResource("core-site2.xml");
 	}
-	private static final GenericData dataModel = AvroSerialization
-			.createDataModel(conf);
-	@SuppressWarnings("unchecked")
-	private static final DatumReader<SpecificRecordBase> datumReader = dataModel
-			.createDatumReader(StormOrderMetaConfigs.getOrderUnionSchema());
-	
-	
+
 	public static void main(String[] args) throws IOException {
 		FileSystem.get(conf);
 	}
-	
 
-	public static DataFileReader<SpecificRecordBase> getNoendReader(Path path)
+	public static FileReader<SpecificRecordBase> getNoendReader(Path path)
 			throws IOException {
-		return new DataFileReader<SpecificRecordBase>(new FsInput(path, conf),
-				datumReader);
+		SeekableInput input = new FsInput(path, conf);
+		DatumReader<SpecificRecordBase> reader = new SpecificDatumReader<SpecificRecordBase>();
+		FileReader<SpecificRecordBase> fileReader = DataFileReader.openReader(
+				input, reader);
+		return fileReader;
 	}
 
 	private static Map<TopicPartition, Long> readPrevPartionsStates(

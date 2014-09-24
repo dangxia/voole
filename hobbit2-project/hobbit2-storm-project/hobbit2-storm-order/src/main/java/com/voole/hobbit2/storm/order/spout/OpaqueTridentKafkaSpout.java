@@ -12,7 +12,7 @@ import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.MessageAndOffset;
 
-import org.apache.avro.file.DataFileReader;
+import org.apache.avro.file.FileReader;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.Path;
 
@@ -134,7 +134,7 @@ public class OpaqueTridentKafkaSpout
 				// first emit
 				for (String pathStr : partition.getNoendPaths()) {
 					Path path = new Path(pathStr);
-					DataFileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
+					FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
 							.getNoendReader(path);
 					SpecificRecordBase recordBase = null;
 					while (reader.hasNext()) {
