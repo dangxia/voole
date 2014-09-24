@@ -18,6 +18,8 @@ import org.apache.avro.specific.SpecificDatumReader;
 import org.apache.avro.specific.SpecificDatumWriter;
 import org.apache.avro.specific.SpecificRecordBase;
 
+import backtype.storm.serialization.IKryoDecorator;
+
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
@@ -43,6 +45,8 @@ public class AvroSerializer<T extends SpecificRecordBase> extends Serializer<T> 
 	}
 
 	public AvroSerializer(Schema schema) {
+		IKryoDecorator t;
+		
 		writer = new SpecificDatumWriter<SpecificRecordBase>(schema);
 		outPutWapper = new OutPutWapper();
 		encoder = EncoderFactory.get().binaryEncoder(outPutWapper, null);

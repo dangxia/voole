@@ -19,12 +19,48 @@
 		<!-- kafka deps -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.8.0</artifactId>
+			<artifactId>kafka_2.10</artifactId>
+			<version>0.8.1.1</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.zookeeper</groupId>
+					<artifactId>zookeeper</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- kafka deps -->
 
 		<!-- storm deps -->
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>bijection-core_2.10</artifactId>
+			<version>0.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>bijection-avro_2.10</artifactId>
+			<version>0.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>chill-avro</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>chill_2.10</artifactId>
+			<version>0.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>chill-bijection_2.10</artifactId>
+			<version>0.4.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.storm</groupId>
 			<artifactId>storm-core</artifactId>

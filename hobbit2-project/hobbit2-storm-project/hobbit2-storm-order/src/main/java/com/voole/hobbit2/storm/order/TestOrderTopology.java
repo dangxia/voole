@@ -17,9 +17,9 @@ import backtype.storm.Config;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
+import backtype.storm.testing.TestKryoDecorator;
 import backtype.storm.tuple.Fields;
 
-import com.voole.hobbit2.storm.order.serializer.AvroKryoFactory;
 import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout;
 
 /**
@@ -35,7 +35,8 @@ public class TestOrderTopology {
 		conf.setMaxSpoutPending(20);
 		conf.setNumWorkers(2);
 		// conf.setMaxTaskParallelism(10);
-		conf.setKryoFactory(AvroKryoFactory.class);
+//		conf.setKryoFactory(AvroKryoFactory.class);
+		conf.registerDecorator(TestKryoDecorator.class);
 
 		return conf;
 	}
