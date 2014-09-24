@@ -87,7 +87,7 @@ public class TestOrderTopology {
 		Stream stream = topology.newStream("order-kafka-stream",
 				orderKafkaSpout).parallelismHint(24);
 		stream.shuffle().each(new Fields("data"), new Print())
-				.parallelismHint(1);
+				.parallelismHint(4);
 		return topology;
 	}
 
