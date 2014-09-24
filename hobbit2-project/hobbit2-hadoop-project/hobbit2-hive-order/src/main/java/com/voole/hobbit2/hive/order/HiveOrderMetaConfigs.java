@@ -10,11 +10,15 @@ import org.apache.hadoop.mapreduce.JobContext;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 
 public class HiveOrderMetaConfigs {
+	public static final String CAMUS_REQUESTS_FILE = "previous.partition.states";
+	public static final String CAMUS_OFFSET_PREFIX = "offsets";
+
 	public static final String NOEND_PREFIX = "noend_";
 
 	public static final String FILE_INFO_PREFIX = "hive_table_file_info_";
 
 	public static final String CAMUS_DEST_PATH = "camus.dest.path";
+	public static final String CAMUS_EXEC_HISTORY_PATH = "camus.exec.history.path";
 	public static final String CURR_CAMUS_EXEC_TIME = "curr.camus.exec.time";
 	public static final String PREV_CAMUS_EXEC_TIME = "prev.camus.exec.time";
 	public static final String PREV_CAMUS_EXEC_TIME_FILE_NAME = "prev_camus_exec_time.save";
@@ -42,6 +46,10 @@ public class HiveOrderMetaConfigs {
 
 	public static Path getCamusDestPath(JobContext job) {
 		return new Path(job.getConfiguration().get(CAMUS_DEST_PATH));
+	}
+
+	public static Path getCamusExecHistoryPath(JobContext job) {
+		return new Path(job.getConfiguration().get(CAMUS_EXEC_HISTORY_PATH));
 	}
 
 	public static void setCurrCamusExecTime(JobContext job,

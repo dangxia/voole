@@ -16,13 +16,31 @@ import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
  * @author XuehuiHe
  * @date 2014年9月18日
  */
-public class KafkaSpoutPartition implements ISpoutPartition, Serializable {
+public class KafkaSpoutPartition implements ISpoutPartition, Serializable,
+		Comparable<KafkaSpoutPartition> {
 	private BrokerAndTopicPartition brokerAndTopicPartition;
 	private long offset;
 	private final List<String> noendPaths;
 
 	public KafkaSpoutPartition() {
 		noendPaths = new ArrayList<String>();
+	}
+
+	@Override
+	public int hashCode() {
+		return brokerAndTopicPartition.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
+		if (obj != null && obj instanceof KafkaSpoutPartition) {
+			return brokerAndTopicPartition
+					.equals(((KafkaSpoutPartition) obj).brokerAndTopicPartition);
+		}
+		return false;
 	}
 
 	@Override
@@ -56,6 +74,12 @@ public class KafkaSpoutPartition implements ISpoutPartition, Serializable {
 		return Objects.toStringHelper(this)
 				.add("brokerAndTopicPartition", brokerAndTopicPartition)
 				.add("offset", offset).add("noendPaths", noendPaths).toString();
+	}
+
+	@Override
+	public int compareTo(KafkaSpoutPartition that) {
+		return this.brokerAndTopicPartition
+				.compareTo(that.brokerAndTopicPartition);
 	}
 
 }

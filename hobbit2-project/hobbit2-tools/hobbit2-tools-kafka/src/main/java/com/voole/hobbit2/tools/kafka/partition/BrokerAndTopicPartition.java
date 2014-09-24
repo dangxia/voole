@@ -14,12 +14,14 @@ import org.apache.hadoop.io.Writable;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Objects.ToStringHelper;
+import com.google.common.collect.ComparisonChain;
 
 /**
  * @author XuehuiHe
  * @date 2014年5月28日
  */
-public class BrokerAndTopicPartition implements Serializable, Writable {
+public class BrokerAndTopicPartition implements Serializable, Writable,
+		Comparable<BrokerAndTopicPartition> {
 	private Broker broker;
 	private TopicPartition partition;
 
@@ -107,6 +109,12 @@ public class BrokerAndTopicPartition implements Serializable, Writable {
 		}
 		this.broker.readFields(in);
 		this.partition.readFields(in);
+	}
+
+	@Override
+	public int compareTo(BrokerAndTopicPartition that) {
+		return ComparisonChain.start().compare(this.broker, that.broker)
+				.compare(this.partition, that.partition).result();
 	}
 
 }

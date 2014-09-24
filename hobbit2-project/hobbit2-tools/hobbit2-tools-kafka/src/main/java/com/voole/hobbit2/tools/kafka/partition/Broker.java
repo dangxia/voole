@@ -17,7 +17,7 @@ import com.google.common.base.Objects;
  * @author XuehuiHe
  * @date 2014年8月21日
  */
-public class Broker implements Serializable, Writable {
+public class Broker implements Serializable, Writable, Comparable<Broker> {
 	private String host;
 	private int port;
 	private int id;
@@ -105,6 +105,11 @@ public class Broker implements Serializable, Writable {
 		this.host = WritableUtils.readString(in);
 		this.port = WritableUtils.readVInt(in);
 		this.id = WritableUtils.readVInt(in);
+	}
+
+	@Override
+	public int compareTo(Broker o) {
+		return this.id - o.id;
 	}
 
 }

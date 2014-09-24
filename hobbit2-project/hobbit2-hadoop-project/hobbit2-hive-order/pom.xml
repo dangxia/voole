@@ -10,7 +10,11 @@
 	<artifactId>hobbit2-hive-order</artifactId>
 
 	<dependencies>
-
+		<dependency>
+			<groupId>com.voole.hobbit2</groupId>
+			<artifactId>hobbit2-tools-kafka</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.voole.hobbit2</groupId>
 			<artifactId>hobbit2-camus-order</artifactId>

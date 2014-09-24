@@ -5,6 +5,7 @@ package com.voole.hobbit2.storm.order.spout;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ import kafka.message.MessageAndOffset;
 import org.apache.avro.file.FileReader;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.Path;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import storm.trident.operation.TridentCollector;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
@@ -30,6 +33,7 @@ import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 import com.voole.hobbit2.storm.order.partition.GCSpoutPartition;
 import com.voole.hobbit2.storm.order.partition.KafkaSpoutPartition;
+import com.voole.hobbit2.storm.order.partition.SpoutPartitionComparator;
 import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionCreator;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
 
@@ -40,6 +44,8 @@ import com.voole.hobbit2.tools.kafka.KafkaUtils;
 public class OpaqueTridentKafkaSpout
 		implements
 		IOpaquePartitionedTridentSpout<List<ISpoutPartition>, ISpoutPartition, Long> {
+	private static final Logger log = LoggerFactory
+			.getLogger(OpaqueTridentKafkaSpout.class);
 
 	@Override
 	public Emitter<List<ISpoutPartition>, ISpoutPartition, Long> getEmitter(
@@ -84,6 +90,7 @@ public class OpaqueTridentKafkaSpout
 
 		@Override
 		public void close() {
+			log.info("OpaqueTridentKafkaSpoutCoordinator close");
 		}
 
 	}
@@ -102,6 +109,8 @@ public class OpaqueTridentKafkaSpout
 		public Long emitPartitionBatch(TransactionAttempt tx,
 				TridentCollector collector, ISpoutPartition partition,
 				Long lastPartitionMeta) {
+			log.info("spout partition:" + partition + "offset:"
+					+ lastPartitionMeta);
 			if (partition instanceof GCSpoutPartition) {
 				return emitPartitionBatchGc(tx, collector,
 						(GCSpoutPartition) partition, lastPartitionMeta);
@@ -191,6 +200,7 @@ public class OpaqueTridentKafkaSpout
 		@Override
 		public List<ISpoutPartition> getOrderedPartitions(
 				List<ISpoutPartition> allPartitionInfo) {
+			Collections.sort(allPartitionInfo, new SpoutPartitionComparator());
 			return allPartitionInfo;
 		}
 
