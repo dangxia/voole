@@ -96,11 +96,7 @@
 		</dependency>
 		<!--/ storm deps -->
 		<!-- hadoop deps -->
-		<dependency>
-			<groupId>org.apache.avro</groupId>
-			<artifactId>avro-mapred</artifactId>
-			<classifier>hadoop2</classifier>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-common</artifactId>
