@@ -162,6 +162,41 @@ public class KafkaUtils {
 		return result;
 	}
 
+	public static Optional<Long> findEarliestOffset(
+			BrokerAndTopicPartition brokerAndTopicPartition) {
+		Broker broker = brokerAndTopicPartition.getBroker();
+		TopicAndPartition topicAndPartition = brokerAndTopicPartition
+				.getTopicAndPartition();
+
+		TopicPartition kafkaPartition = brokerAndTopicPartition.getPartition();
+		Map<TopicAndPartition, PartitionOffsetRequestInfo> earliestOffsetInfo = new HashMap<TopicAndPartition, PartitionOffsetRequestInfo>();
+		PartitionOffsetRequestInfo partitionEarliestOffsetRequestInfo = new PartitionOffsetRequestInfo(
+				kafka.api.OffsetRequest.EarliestTime(), 1);
+
+		earliestOffsetInfo.put(topicAndPartition,
+				partitionEarliestOffsetRequestInfo);
+		SimpleConsumer consumer = new SimpleConsumer(broker.host(),
+				broker.port(), 10000, 1024 * 1024,
+				kafka.api.OffsetRequest.DefaultClientId());
+		try {
+			OffsetResponse earliestOffsetResponse = consumer
+					.getOffsetsBefore(new OffsetRequest(earliestOffsetInfo,
+							kafka.api.OffsetRequest.CurrentVersion(),
+							kafka.api.OffsetRequest.DefaultClientId()));
+			long[] earliestOffsets = earliestOffsetResponse.offsets(
+					kafkaPartition.getTopic(), kafkaPartition.getPartition());
+			if (earliestOffsets != null && earliestOffsets.length > 0) {
+				return Optional.of(earliestOffsets[0]);
+			}
+		} catch (Exception e) {
+			Throwables.propagate(e);
+		} finally {
+			consumer.close();
+		}
+
+		return Optional.absent();
+	}
+
 	public static List<PartitionState> fillKafkaPartitionOffsets(Broker broker,
 			List<BrokerAndTopicPartition> partitions) {
 		Map<TopicAndPartition, PartitionOffsetRequestInfo> latestOffsetInfo = new HashMap<TopicAndPartition, PartitionOffsetRequestInfo>();

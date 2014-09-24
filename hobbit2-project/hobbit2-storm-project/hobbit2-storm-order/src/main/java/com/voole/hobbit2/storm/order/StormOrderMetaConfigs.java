@@ -42,17 +42,12 @@ public class StormOrderMetaConfigs {
 		}
 	}
 
-	public static final String CAMUS_OFFSET_PREFIX = "offsets";
 	public static final String CAMUS_REQUESTS_FILE = "previous.partition.states";
-	public static final String CAMUS_EXEC_HISTORY_PATH = "camus.exec.history.path";
 	public static final String HIVE_ORDER_NOEND_PREFIX = "noend_";
 	public static final String HIVE_ORDER_EXEC_HISTORY_PATH = "hive.order.exec.history.path";
 
 	public static final String STORM_ORDER_WHITELIST_TOPICS = "storm.order.whitelist.topics";
 
-	public static Path getCamusExecHistoryPath() {
-		return new Path(hobbit2Configuration.getString(CAMUS_EXEC_HISTORY_PATH));
-	}
 
 	public static Path getHiveOrderExecHistoryPath() {
 		return new Path(

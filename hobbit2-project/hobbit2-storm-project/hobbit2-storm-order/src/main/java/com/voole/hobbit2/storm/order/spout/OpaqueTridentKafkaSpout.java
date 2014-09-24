@@ -5,7 +5,7 @@ package com.voole.hobbit2.storm.order.spout;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,18 +23,20 @@ import storm.trident.operation.TridentCollector;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
 import storm.trident.spout.ISpoutPartition;
 import storm.trident.topology.TransactionAttempt;
+import backtype.storm.Config;
 import backtype.storm.task.TopologyContext;
 import backtype.storm.tuple.Fields;
 import backtype.storm.tuple.Values;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.voole.hobbit2.storm.order.DynamicPartitionConnections;
 import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 import com.voole.hobbit2.storm.order.partition.GCSpoutPartition;
 import com.voole.hobbit2.storm.order.partition.KafkaSpoutPartition;
-import com.voole.hobbit2.storm.order.partition.SpoutPartitionComparator;
 import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionCreator;
+import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout.PartitionMeta;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
 
 /**
@@ -43,20 +45,20 @@ import com.voole.hobbit2.tools.kafka.KafkaUtils;
  */
 public class OpaqueTridentKafkaSpout
 		implements
-		IOpaquePartitionedTridentSpout<List<ISpoutPartition>, ISpoutPartition, Long> {
+		IOpaquePartitionedTridentSpout<List<ISpoutPartition>, ISpoutPartition, PartitionMeta> {
 	private static final Logger log = LoggerFactory
 			.getLogger(OpaqueTridentKafkaSpout.class);
 
 	@Override
-	public Emitter<List<ISpoutPartition>, ISpoutPartition, Long> getEmitter(
+	public Emitter<List<ISpoutPartition>, ISpoutPartition, PartitionMeta> getEmitter(
 			@SuppressWarnings("rawtypes") Map conf, TopologyContext context) {
-		return new OpaqueTridentKafkaSpoutEmitter();
+		return new OpaqueTridentKafkaSpoutEmitter(conf);
 	}
 
 	@Override
 	public Coordinator<List<ISpoutPartition>> getCoordinator(
 			@SuppressWarnings("rawtypes") Map conf, TopologyContext context) {
-		return new OpaqueTridentKafkaSpoutCoordinator();
+		return new OpaqueTridentKafkaSpoutCoordinator(conf);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -72,6 +74,10 @@ public class OpaqueTridentKafkaSpout
 
 	class OpaqueTridentKafkaSpoutCoordinator implements
 			IOpaquePartitionedTridentSpout.Coordinator<List<ISpoutPartition>> {
+
+		public OpaqueTridentKafkaSpoutCoordinator(
+				@SuppressWarnings("rawtypes") Map conf) {
+		}
 
 		@Override
 		public boolean isReady(long txid) {
@@ -90,76 +96,96 @@ public class OpaqueTridentKafkaSpout
 
 		@Override
 		public void close() {
-			log.info("OpaqueTridentKafkaSpoutCoordinator close");
 		}
 
 	}
 
 	class OpaqueTridentKafkaSpoutEmitter
 			implements
-			IOpaquePartitionedTridentSpout.Emitter<List<ISpoutPartition>, ISpoutPartition, Long> {
+			IOpaquePartitionedTridentSpout.Emitter<List<ISpoutPartition>, ISpoutPartition, PartitionMeta> {
 
 		private final DynamicPartitionConnections connections;
+		String _topologyName;
 
-		public OpaqueTridentKafkaSpoutEmitter() {
+		public OpaqueTridentKafkaSpoutEmitter(
+				@SuppressWarnings("rawtypes") Map conf) {
 			connections = new DynamicPartitionConnections();
+			_topologyName = (String) conf.get(Config.TOPOLOGY_NAME);
 		}
 
 		@Override
-		public Long emitPartitionBatch(TransactionAttempt tx,
+		public PartitionMeta emitPartitionBatch(TransactionAttempt tx,
 				TridentCollector collector, ISpoutPartition partition,
-				Long lastPartitionMeta) {
-			log.info("spout partition:" + partition + "offset:"
-					+ lastPartitionMeta);
-			if (partition instanceof GCSpoutPartition) {
-				return emitPartitionBatchGc(tx, collector,
-						(GCSpoutPartition) partition, lastPartitionMeta);
-			} else {
-				try {
+				PartitionMeta lastPartitionMeta) {
+			try {
+				if (partition instanceof GCSpoutPartition) {
+					return emitPartitionBatchGc(tx, collector,
+							(GCSpoutPartition) partition, lastPartitionMeta);
+				} else {
 					return emitPartitionBatchKafka(tx, collector,
 							(KafkaSpoutPartition) partition, lastPartitionMeta);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
 				}
+			} catch (IOException e) {
+				Throwables.propagate(e);
 			}
-			// TODO
 			return null;
 		}
 
-		protected Long emitPartitionBatchGc(TransactionAttempt tx,
+		protected PartitionMeta emitPartitionBatchGc(TransactionAttempt tx,
 				TridentCollector collector, GCSpoutPartition partition,
-				Long lastPartitionMeta) {
+				PartitionMeta lastPartitionMeta) {
 			// TODO
 			return null;
 		}
 
-		protected Long emitPartitionBatchKafka(TransactionAttempt tx,
+		protected PartitionMeta emitPartitionBatchKafka(TransactionAttempt tx,
 				TridentCollector collector, KafkaSpoutPartition partition,
-				Long lastPartitionMeta) throws IOException {
-			long offset = partition.getOffset();
-			if (partition.getNoendPaths() != null
-					&& partition.getNoendPaths().size() > 0) {
+				PartitionMeta lastPartitionMeta) throws IOException {
+			long offset = 0l;
+			if (lastPartitionMeta == null
+					|| !lastPartitionMeta.getTopologyName().equals(
+							_topologyName)) {
 				// first emit
-				for (String pathStr : partition.getNoendPaths()) {
-					Path path = new Path(pathStr);
-					FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
-							.getNoendReader(path);
-					SpecificRecordBase recordBase = null;
-					while (reader.hasNext()) {
-						recordBase = reader.next();
-						emit(collector, recordBase);
+				log.info("first emit for partition:" + partition);
+				// emit noend
+				if (partition.getPartition().getPartition() == 0) {
+					List<Path> paths = StormOrderHDFSUtils
+							.getNoendFilePaths(partition.getPartition()
+									.getTopic());
+					if (paths != null && paths.size() > 0) {
+						for (Path path : paths) {
+							FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
+									.getNoendReader(path);
+							log.info("read noend records for partition:"
+									+ partition + ",file:"
+									+ path.toUri().getPath());
+							SpecificRecordBase recordBase = null;
+							while (reader.hasNext()) {
+								recordBase = reader.next();
+								emit(collector, recordBase);
+							}
+							reader.close();
+						}
 					}
-					reader.close();
 				}
-				partition.getNoendPaths().clear();
-			} else if (lastPartitionMeta != null) {
-				offset = lastPartitionMeta;
+				Optional<Long> foundOffset = StormOrderHDFSUtils
+						.findOffset(partition);
+				if (foundOffset.isPresent()) {
+					offset = foundOffset.get();
+					log.info("offset set to:" + offset + " for partition:"
+							+ partition);
+				} else {
+					throw new RuntimeException("partition:" + partition
+							+ " is empty!!");
+				}
+			} else {
+				offset = lastPartitionMeta.getOffset();
 			}
-			SimpleConsumer consumer = connections.register(partition
-					.getBrokerAndTopicPartition());
-			ByteBufferMessageSet msgs = KafkaUtils.fetch(consumer, partition
-					.getBrokerAndTopicPartition().getPartition(), offset + 1,
+
+			SimpleConsumer consumer = connections.register(partition);
+			ByteBufferMessageSet msgs = KafkaUtils.fetch(consumer,
+					partition.getPartition(), offset + 1,
 					StormOrderMetaConfigs.getKafkafetchSize());
 			long lastOffset = 0l;
 			for (MessageAndOffset msg : msgs) {
@@ -167,9 +193,9 @@ public class OpaqueTridentKafkaSpout
 				lastOffset = msg.offset();
 			}
 			if (lastOffset == 0l) {
-				return offset;
+				return new PartitionMeta(_topologyName, offset);
 			} else {
-				return lastOffset;
+				return new PartitionMeta(_topologyName, offset);
 			}
 		}
 
@@ -200,7 +226,6 @@ public class OpaqueTridentKafkaSpout
 		@Override
 		public List<ISpoutPartition> getOrderedPartitions(
 				List<ISpoutPartition> allPartitionInfo) {
-			Collections.sort(allPartitionInfo, new SpoutPartitionComparator());
 			return allPartitionInfo;
 		}
 
@@ -209,6 +234,33 @@ public class OpaqueTridentKafkaSpout
 			connections.clear();
 		}
 
+	}
+
+	public static class PartitionMeta extends HashMap<String, Object> {
+
+		public PartitionMeta() {
+		}
+
+		public PartitionMeta(String topologyName, long offset) {
+			setTopologyName(topologyName);
+			setOffset(offset);
+		}
+
+		public void setTopologyName(String topologyName) {
+			this.put("topologyName", topologyName);
+		}
+
+		public String getTopologyName() {
+			return (String) this.get("topologyName");
+		}
+
+		public void setOffset(long offset) {
+			this.put("offset", offset);
+		}
+
+		public Long getOffset() {
+			return (Long) this.get("offset");
+		}
 	}
 
 }

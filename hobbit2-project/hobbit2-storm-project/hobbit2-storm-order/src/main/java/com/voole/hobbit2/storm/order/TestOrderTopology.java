@@ -5,6 +5,7 @@ package com.voole.hobbit2.storm.order;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -16,7 +17,7 @@ import storm.trident.operation.BaseFilter;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.tuple.Fields;
@@ -35,9 +36,9 @@ public class TestOrderTopology {
 	public static Config getConfig() {
 		Config conf = new Config();
 		conf.setMaxSpoutPending(20);
-		conf.setNumWorkers(1);
-		// conf.setMaxTaskParallelism(10);
+		conf.setNumWorkers(4);
 		conf.registerDecorator(StromOrderKryoDecorator.class);
+		conf.put(Config.TOPOLOGY_NAME, "storm_order_" + UUID.randomUUID());
 
 		return conf;
 	}
@@ -84,7 +85,7 @@ public class TestOrderTopology {
 		TridentTopology topology = new TridentTopology();
 		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
 		Stream stream = topology.newStream("order-kafka-stream",
-				orderKafkaSpout).parallelismHint(1);
+				orderKafkaSpout).parallelismHint(24);
 		stream.shuffle().each(new Fields("data"), new Print())
 				.parallelismHint(1);
 		return topology;
@@ -96,8 +97,7 @@ public class TestOrderTopology {
 		TridentTopology topology = createTopology();
 		Config conf = getConfig();
 
-		// StormSubmitter.submitTopology(args[0], conf, topology.build());
-		LocalCluster cluster = new LocalCluster();
-		cluster.submitTopology("test-kafka-spout-name", conf, topology.build());
+		StormSubmitter.submitTopology((String) conf.get(Config.TOPOLOGY_NAME),
+				conf, topology.build());
 	}
 }

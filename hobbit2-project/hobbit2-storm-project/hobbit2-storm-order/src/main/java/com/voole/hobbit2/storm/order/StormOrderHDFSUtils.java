@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.FileReader;
@@ -28,12 +25,13 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.PathFilter;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.SequenceFile;
-import org.apache.hadoop.io.SequenceFile.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionCreator;
+import com.voole.hobbit2.tools.kafka.KafkaUtils;
+import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
 import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
@@ -61,11 +59,42 @@ public class StormOrderHDFSUtils {
 		return fileReader;
 	}
 
-	private static Map<TopicPartition, Long> readPrevPartionsStates(
-			Optional<Path> previousPath) throws IOException {
-		return readPrevPartionsStates(previousPath,
+	private static Map<TopicPartition, Long> readPrevPartionsStates()
+			throws IOException {
+		return readPrevPartionsStates(
+				getPreviousExecPath(StormOrderMetaConfigs
+						.getHiveOrderExecHistoryPath()),
 				StormOrderMetaConfigs.CAMUS_REQUESTS_FILE);
+	}
 
+	public static Optional<Long> findOffset(
+			BrokerAndTopicPartition brokerAndTopicPartition) throws IOException {
+		Optional<Long> hiveOffset = getHiveOrderOffset(brokerAndTopicPartition
+				.getPartition());
+		Optional<Long> kakfaEarliestOffset = KafkaUtils
+				.findEarliestOffset(brokerAndTopicPartition);
+		if (!kakfaEarliestOffset.isPresent()) {
+			return Optional.absent();
+		}
+		long kakfaOffset = kakfaEarliestOffset.get() - 1;
+		if (!hiveOffset.isPresent()) {
+			return Optional.of(kakfaOffset);
+		}
+		if (kakfaOffset > hiveOffset.get()) {
+			log.warn(brokerAndTopicPartition + " kafka offset:" + kakfaOffset
+					+ ",hive order offset:" + hiveOffset.get() + ",reset");
+			return Optional.of(kakfaOffset);
+		}
+		return hiveOffset;
+	}
+
+	public static Optional<Long> getHiveOrderOffset(TopicPartition partition)
+			throws IOException {
+		Map<TopicPartition, Long> partitionsMap = readPrevPartionsStates();
+		if (partitionsMap.containsKey(partition)) {
+			return Optional.of(partitionsMap.get(partition));
+		}
+		return Optional.absent();
 	}
 
 	private static Map<TopicPartition, Long> readPrevPartionsStates(
@@ -113,72 +142,23 @@ public class StormOrderHDFSUtils {
 		}
 	}
 
-	private static Map<TopicPartition, Long> readPreviousOffsets(
-			Optional<Path> previousPath) throws IOException {
-		return readPreviousOffsets(previousPath, new OffsetFileFilter());
-	}
+	protected static List<Path> getNoendFilePaths(String topic, int partition,
+			int partitions) throws IOException {
+		List<Path> paths = getNoendFilePaths(topic);
+		List<Path> result = new ArrayList<Path>();
 
-	public static Map<TopicPartition, Long> readMixedPreviousOffsets()
-			throws FileNotFoundException, IOException {
-		Optional<Path> previousPath = getPreviousExecPath(StormOrderMetaConfigs
-				.getCamusExecHistoryPath());
-		return readMixedPreviousOffsets(previousPath);
-	}
-
-	private static Map<TopicPartition, Long> readMixedPreviousOffsets(
-			Optional<Path> previousPath) throws IOException {
-		Map<TopicPartition, Long> map1 = readPrevPartionsStates(previousPath);
-		Map<TopicPartition, Long> map2 = readPreviousOffsets(previousPath);
-		for (Entry<TopicPartition, Long> entry : map2.entrySet()) {
-			TopicPartition key = entry.getKey();
-			long offset2 = entry.getValue();
-			if (map1.containsKey(key)) {
-				long offset1 = map1.get(key);
-				if (offset1 < offset2) {
-					map1.put(key, offset2);
-				}
-			} else {
-				map1.put(key, offset2);
-			}
+		int size = paths.size();
+		int index = partition;
+		while (index < size) {
+			result.add(paths.get(index));
+			index += partitions;
 		}
-
-		return map1;
-	}
-
-	private static Map<TopicPartition, Long> readPreviousOffsets(
-			Optional<Path> previousPath, PathFilter filter) throws IOException {
-		Map<TopicPartition, Long> result = new HashMap<TopicPartition, Long>();
-		if (!previousPath.isPresent()) {
-			return result;
-		}
-		FileSystem fs = FileSystem.get(conf);
-		for (FileStatus f : fs.listStatus(previousPath.get(), filter)) {
-			log.info("previous offset file:" + f.getPath().toString());
-			SequenceFile.Reader reader = new SequenceFile.Reader(conf,
-					Reader.file(f.getPath()));
-			TopicPartition key = new TopicPartition();
-			LongWritable value = new LongWritable();
-			while (reader.next(key, value)) {
-				long oldOffset = 0;
-				if (result.containsKey(key)) {
-					oldOffset = result.get(key);
-				}
-				if (oldOffset < value.get()) {
-					result.put(key, value.get());
-				}
-				key = new TopicPartition();
-			}
-			reader.close();
-		}
-
 		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<Path> getNoendFilePaths() throws FileNotFoundException,
-			IOException {
-		final Set<String> topics = new HashSet<String>(
-				StormOrderMetaConfigs.getWhiteTopics());
+	public static List<Path> getNoendFilePaths(final String topic)
+			throws IOException {
 		Optional<Path> prevExecPath = getPreviousExecPath(StormOrderMetaConfigs
 				.getHiveOrderExecHistoryPath());
 		if (!prevExecPath.isPresent()) {
@@ -192,7 +172,7 @@ public class StormOrderHDFSUtils {
 					public boolean accept(Path path) {
 						return path.getName().startsWith(
 								StormOrderMetaConfigs.HIVE_ORDER_NOEND_PREFIX)
-								&& cantianTopic(path.getName(), topics);
+								&& (path.getName().indexOf(topic) != -1);
 					}
 				});
 		List<Path> paths = new ArrayList<Path>();
@@ -201,23 +181,6 @@ public class StormOrderHDFSUtils {
 		}
 
 		return paths;
-
 	}
 
-	private static boolean cantianTopic(String path, Set<String> topics) {
-		for (String topic : topics) {
-			if (path.indexOf(topic) != -1) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private static class OffsetFileFilter implements PathFilter {
-		@Override
-		public boolean accept(Path arg0) {
-			return arg0.getName().startsWith(
-					StormOrderMetaConfigs.CAMUS_OFFSET_PREFIX);
-		}
-	}
 }

@@ -28,6 +28,10 @@ public class BrokerAndTopicPartition implements Serializable, Writable,
 	public BrokerAndTopicPartition() {
 	}
 
+	public BrokerAndTopicPartition(BrokerAndTopicPartition that) {
+		this(that.broker, that.partition);
+	}
+
 	public BrokerAndTopicPartition(Broker broker, String topic, int partition) {
 		this(broker, new TopicPartition(topic, partition));
 	}
