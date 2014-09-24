@@ -55,7 +55,7 @@ public class TestOrderTopology {
 
 		@Override
 		public boolean isKeep(TridentTuple tuple) {
-			log.info(tuple.get(0).getClass().toString());
+//			log.info(tuple.get(0).getClass().toString());
 			// System.out.println(gson.toJson(tuple));
 			return false;
 		}
