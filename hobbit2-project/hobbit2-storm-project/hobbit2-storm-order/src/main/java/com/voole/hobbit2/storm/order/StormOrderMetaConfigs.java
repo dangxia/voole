@@ -48,7 +48,6 @@ public class StormOrderMetaConfigs {
 
 	public static final String STORM_ORDER_WHITELIST_TOPICS = "storm.order.whitelist.topics";
 
-
 	public static Path getHiveOrderExecHistoryPath() {
 		return new Path(
 				hobbit2Configuration.getString(HIVE_ORDER_EXEC_HISTORY_PATH));
@@ -90,8 +89,9 @@ public class StormOrderMetaConfigs {
 
 	public static int getKafkafetchSize() {
 		if (fetchSize == null) {
-			fetchSize = hobbit2Configuration.getInt(
-					KafkaMetaConfigs.KAFKA_BUFFER_SIZE_BYTES, 10240);
+			fetchSize = 1024 * 4;
+			// fetchSize = hobbit2Configuration.getInt(
+			// KafkaMetaConfigs.KAFKA_BUFFER_SIZE_BYTES, 10240);
 		}
 		return fetchSize;
 	}
