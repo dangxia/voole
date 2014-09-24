@@ -16,6 +16,12 @@
 			<version>4.8.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.avro</groupId>
+			<artifactId>avro</artifactId>
+			<version>1.7.6</version>
+		</dependency>
+
 		<!-- kafka deps -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
