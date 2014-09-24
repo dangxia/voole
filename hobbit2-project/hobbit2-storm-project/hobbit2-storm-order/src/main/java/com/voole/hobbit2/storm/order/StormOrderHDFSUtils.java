@@ -8,9 +8,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.FileReader;
@@ -175,6 +177,8 @@ public class StormOrderHDFSUtils {
 	@SuppressWarnings("unchecked")
 	public static List<Path> getNoendFilePaths() throws FileNotFoundException,
 			IOException {
+		final Set<String> topics = new HashSet<String>(
+				StormOrderMetaConfigs.getWhiteTopics());
 		Optional<Path> prevExecPath = getPreviousExecPath(StormOrderMetaConfigs
 				.getHiveOrderExecHistoryPath());
 		if (!prevExecPath.isPresent()) {
@@ -187,7 +191,8 @@ public class StormOrderHDFSUtils {
 					@Override
 					public boolean accept(Path path) {
 						return path.getName().startsWith(
-								StormOrderMetaConfigs.HIVE_ORDER_NOEND_PREFIX);
+								StormOrderMetaConfigs.HIVE_ORDER_NOEND_PREFIX)
+								&& cantianTopic(path.getName(), topics);
 					}
 				});
 		List<Path> paths = new ArrayList<Path>();
@@ -197,6 +202,15 @@ public class StormOrderHDFSUtils {
 
 		return paths;
 
+	}
+
+	private static boolean cantianTopic(String path, Set<String> topics) {
+		for (String topic : topics) {
+			if (path.indexOf(topic) != -1) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static class OffsetFileFilter implements PathFilter {

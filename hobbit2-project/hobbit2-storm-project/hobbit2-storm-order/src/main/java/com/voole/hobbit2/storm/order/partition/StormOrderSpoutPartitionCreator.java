@@ -63,8 +63,9 @@ public class StormOrderSpoutPartitionCreator {
 			if (!partitionIterator.hasNext()) {
 				partitionIterator = partitions.iterator();
 			}
-			partitionIterator.next().getNoendPaths()
-					.add(noendPathIterator.next().toUri().getPath());
+			String path = noendPathIterator.next().toUri().getPath();
+			log.info("noend file:" + path);
+			partitionIterator.next().getNoendPaths().add(path);
 		}
 	}
 

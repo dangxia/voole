@@ -18,6 +18,7 @@ import com.twitter.chill.KryoSerializer;
 import com.twitter.chill.avro.AvroSerializer;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
+import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 
 /**
  * @author XuehuiHe
@@ -29,14 +30,16 @@ public class TestKryoDecorator implements IKryoDecorator {
 
 	public TestKryoDecorator() {
 		list = new ArrayList<Class<? extends SpecificRecordBase>>();
-		list.addAll(OrderTopicsUtils.topicBiClazz.values());
-		list.addAll(OrderTopicsUtils.topicBiSrvClazz.values());
+		for (String topic : StormOrderMetaConfigs.getWhiteTopics()) {
+			list.add(OrderTopicsUtils.topicBiClazz.get(topic));
+			list.add(OrderTopicsUtils.topicBiSrvClazz.get(topic));
+		}
 	}
 
 	@Override
 	public void decorate(Kryo k) {
 		for (Class<? extends SpecificRecordBase> clazz : list) {
-//			k.register(clazz,AvroSerializer.SpecificRecordBinarySerializer(getManifest(clazz)));
+			// k.register(clazz,AvroSerializer.SpecificRecordBinarySerializer(getManifest(clazz)));
 			k.register(clazz,
 					AvroSerializer.SpecificRecordSerializer(getManifest(clazz)));
 		}
