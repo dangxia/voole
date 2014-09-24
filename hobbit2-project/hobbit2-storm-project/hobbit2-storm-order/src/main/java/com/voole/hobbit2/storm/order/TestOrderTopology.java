@@ -14,7 +14,7 @@ import storm.trident.operation.BaseFilter;
 import storm.trident.operation.TridentOperationContext;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.Config;
-import backtype.storm.LocalCluster;
+import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.tuple.Fields;
@@ -77,9 +77,9 @@ public class TestOrderTopology {
 		TridentTopology topology = createTopology();
 		Config conf = getConfig();
 
-//		StormSubmitter.submitTopology(args[0], conf, topology.build());
-		 LocalCluster cluster = new LocalCluster();
-		 cluster.submitTopology("test-kafka-spout-name", conf,
-		 topology.build());
+		StormSubmitter.submitTopology(args[0], conf, topology.build());
+		// LocalCluster cluster = new LocalCluster();
+		// cluster.submitTopology("test-kafka-spout-name", conf,
+		// topology.build());
 	}
 }
