@@ -25,6 +25,6 @@ public class KafkaSpoutPartition extends BrokerAndTopicPartition implements
 
 	@Override
 	public String getId() {
-		return getPartition().toString();
+		return getPartition().getTopic() + "_" + getPartition().getPartition();
 	}
 }
