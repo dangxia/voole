@@ -17,7 +17,6 @@ import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.KryoSerializer;
 import com.twitter.chill.avro.AvroSerializer;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
-import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 
 /**
@@ -48,7 +47,7 @@ public class TestKryoDecorator implements IKryoDecorator {
 	}
 
 	protected <T> Manifest<T> getManifest(Class<T> clazz) {
-		return ManifestFactory.classType(OrderPlayEndReqV2.class);
+		return ManifestFactory.classType(clazz);
 	}
 
 }
