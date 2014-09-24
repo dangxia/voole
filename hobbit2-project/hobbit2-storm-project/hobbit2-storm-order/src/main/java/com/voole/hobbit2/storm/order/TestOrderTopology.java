@@ -84,8 +84,9 @@ public class TestOrderTopology {
 	public static TridentTopology createTopology() {
 		TridentTopology topology = new TridentTopology();
 		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
-		Stream stream = topology.newStream("order-kafka-stream",
-				orderKafkaSpout).parallelismHint(4);
+		Stream stream = topology.newStream(
+				"order-kafka-stream" + UUID.randomUUID(), orderKafkaSpout)
+				.parallelismHint(4);
 		stream.shuffle().each(new Fields("data"), new Print())
 				.parallelismHint(1);
 		return topology;
