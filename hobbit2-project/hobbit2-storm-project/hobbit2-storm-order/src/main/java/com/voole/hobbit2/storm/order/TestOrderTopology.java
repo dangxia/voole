@@ -17,9 +17,9 @@ import backtype.storm.Config;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
-import backtype.storm.testing.TestKryoDecorator;
 import backtype.storm.tuple.Fields;
 
+import com.voole.hobbit2.storm.order.kryodecorator.TestKryoDecorator;
 import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout;
 
 /**
