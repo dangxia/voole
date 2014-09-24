@@ -13,7 +13,7 @@
 		<storm.version>0.9.1-incubating</storm.version>
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<protobuf.version>2.5.0</protobuf.version>
-		<avro.version>1.7.7</avro.version>
+		<avro.version>1.7.6</avro.version>
 		<hive.version>0.13.1</hive.version>
 		<mrunit.version>1.0.0</mrunit.version>
 	</properties>
