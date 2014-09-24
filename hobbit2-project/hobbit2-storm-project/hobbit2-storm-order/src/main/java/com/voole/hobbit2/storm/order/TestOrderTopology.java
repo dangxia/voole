@@ -35,7 +35,7 @@ public class TestOrderTopology {
 		conf.setMaxSpoutPending(20);
 		conf.setNumWorkers(2);
 		// conf.setMaxTaskParallelism(10);
-//		conf.setKryoFactory(AvroKryoFactory.class);
+		conf.setKryoFactory(AvroKryoFactory.class);
 
 		return conf;
 	}

@@ -12,7 +12,6 @@ import backtype.storm.serialization.DefaultKryoFactory;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
-import com.google.protobuf.GeneratedMessage;
 
 /**
  * @author XuehuiHe
@@ -31,7 +30,7 @@ public class AvroKryoFactory extends DefaultKryoFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
 		public Serializer getDefaultSerializer(Class type) {
-			if (GeneratedMessage.class.isAssignableFrom(type)) {
+			if (SpecificRecordBase.class.isAssignableFrom(type)) {
 				return serializer;
 			}
 			return super.getDefaultSerializer(type);
