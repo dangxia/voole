@@ -21,6 +21,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.voole.hobbit2.hive.order.CamusHDFSUtils;
 import com.voole.hobbit2.hive.order.HiveOrderHDFSUtils;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
 
@@ -44,6 +45,7 @@ public class HiveOrderRecordInputFormat<T> extends
 	}
 
 	protected List<FileStatus> listStatus(JobContext job) throws IOException {
+		CamusHDFSUtils.writePrevPartionsStates(job);
 		HiveOrderInputFileFilter fileFilter = new HiveOrderInputFileFilter(job);
 		List<FileStatus> result = new ArrayList<FileStatus>();
 		List<FileStatus> list = super.listStatus(job);

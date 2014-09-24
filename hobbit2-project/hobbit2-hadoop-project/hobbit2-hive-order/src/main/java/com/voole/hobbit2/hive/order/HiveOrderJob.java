@@ -69,7 +69,6 @@ public class HiveOrderJob extends Configured implements Tool {
 
 		job.setReducerClass(HiveOrderInputReducer.class);
 		job.setOutputFormatClass(HiveOrderMultiOutputFormat.class);
-		CamusHDFSUtils.writePrevPartionsStates(job);
 		HiveOrderMetaConfigs.setExecStartTime(job);
 		try {
 			job.submit();
