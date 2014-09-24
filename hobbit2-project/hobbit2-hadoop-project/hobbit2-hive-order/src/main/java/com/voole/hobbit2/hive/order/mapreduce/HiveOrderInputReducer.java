@@ -180,9 +180,12 @@ public class HiveOrderInputReducer extends
 		if (sessionInfo._lastAlive != null) {
 			context.write(NullWritable.get(), sessionInfo._lastAlive);
 		}
-//		for (SpecificRecordBase record : cache) {
-//			context.write(NullWritable.get(), record);
-//		}
+		if (sessionInfo._end != null) {
+			context.write(NullWritable.get(), sessionInfo._end);
+		}
+		// for (SpecificRecordBase record : cache) {
+		// context.write(NullWritable.get(), record);
+		// }
 	}
 
 	public void writeError(OrderSessionInfoException e, Context context)
