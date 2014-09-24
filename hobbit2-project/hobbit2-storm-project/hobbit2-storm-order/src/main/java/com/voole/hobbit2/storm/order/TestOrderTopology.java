@@ -33,7 +33,7 @@ public class TestOrderTopology {
 	public static Config getConfig() {
 		Config conf = new Config();
 		conf.setMaxSpoutPending(20);
-		conf.setNumWorkers(5);
+		conf.setNumWorkers(2);
 		// conf.setMaxTaskParallelism(10);
 //		conf.setKryoFactory(AvroKryoFactory.class);
 		conf.registerDecorator(TestKryoDecorator.class);
