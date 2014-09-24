@@ -22,6 +22,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.google.common.base.Throwables;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 
 /**
@@ -58,8 +59,7 @@ public class AvroSerializer<T extends SpecificRecordBase> extends Serializer<T> 
 			writer.write(object, encoder);
 			encoder.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Throwables.propagate(e);
 		}
 	}
 
@@ -70,7 +70,7 @@ public class AvroSerializer<T extends SpecificRecordBase> extends Serializer<T> 
 		try {
 			return (T) reader.read(null, decoder);
 		} catch (IOException e) {
-			e.printStackTrace();
+			Throwables.propagate(e);
 		}
 
 		return null;
