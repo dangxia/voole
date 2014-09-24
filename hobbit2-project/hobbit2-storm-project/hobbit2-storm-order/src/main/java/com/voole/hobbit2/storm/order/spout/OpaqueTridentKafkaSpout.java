@@ -139,49 +139,65 @@ public class OpaqueTridentKafkaSpout
 			return null;
 		}
 
+		protected PartitionMeta emitNoend(KafkaSpoutPartition partition,
+				PartitionMeta meta, int noendIndex, TridentCollector collector)
+				throws IOException {
+			List<Path> paths = StormOrderHDFSUtils.getNoendFilePaths(partition
+					.getPartition().getTopic());
+			if (paths != null && paths.size() > noendIndex) {
+				Path path = paths.get(noendIndex);
+				FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
+						.getNoendReader(path);
+				log.info("read noend records for partition:" + partition
+						+ ", index:" + noendIndex + " file:"
+						+ path.toUri().getPath());
+				SpecificRecordBase recordBase = null;
+				while (reader.hasNext()) {
+					recordBase = reader.next();
+					emit(collector, recordBase);
+				}
+				reader.close();
+				if (paths.size() > noendIndex + 1) {
+					meta.setNoend(noendIndex + 1);
+				} else {
+					meta.setNoend(-1);
+				}
+			}
+			return meta;
+		}
+
 		protected PartitionMeta emitPartitionBatchKafka(TransactionAttempt tx,
 				TridentCollector collector, KafkaSpoutPartition partition,
 				PartitionMeta lastPartitionMeta) throws IOException {
-			long offset = 0l;
+
 			if (lastPartitionMeta == null
 					|| !lastPartitionMeta.getTopologyName().equals(
 							_topologyName)) {
+				PartitionMeta meta = new PartitionMeta();
+				meta.setTopologyName(_topologyName);
 				// first emit
 				log.info("first emit for partition:" + partition);
 				// emit noend
 				if (partition.getPartition().getPartition() == 0) {
-					List<Path> paths = StormOrderHDFSUtils
-							.getNoendFilePaths(partition.getPartition()
-									.getTopic());
-					if (paths != null && paths.size() > 0) {
-						for (Path path : paths) {
-							FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
-									.getNoendReader(path);
-							log.info("read noend records for partition:"
-									+ partition + ",file:"
-									+ path.toUri().getPath());
-							SpecificRecordBase recordBase = null;
-							while (reader.hasNext()) {
-								recordBase = reader.next();
-								emit(collector, recordBase);
-							}
-							reader.close();
-						}
-					}
+					emitNoend(partition, meta, 0, collector);
 				}
 				Optional<Long> foundOffset = StormOrderHDFSUtils
 						.findOffset(partition);
 				if (foundOffset.isPresent()) {
-					offset = foundOffset.get();
-					log.info("offset set to:" + offset + " for partition:"
-							+ partition);
+					meta.setOffset(foundOffset.get());
+					log.info("offset set to:" + foundOffset.get()
+							+ " for partition:" + partition);
+					return meta;
 				} else {
 					throw new RuntimeException("partition:" + partition
 							+ " is empty!!");
 				}
-			} else {
-				offset = lastPartitionMeta.getOffset();
+
+			} else if (lastPartitionMeta.hasNoend()) {
+				return emitNoend(partition, lastPartitionMeta,
+						lastPartitionMeta.getNoendIndex(), collector);
 			}
+			long offset = lastPartitionMeta.getOffset();
 
 			SimpleConsumer consumer = connections.register(partition);
 			ByteBufferMessageSet msgs = KafkaUtils.fetch(consumer,
@@ -244,6 +260,23 @@ public class OpaqueTridentKafkaSpout
 		public PartitionMeta(String topologyName, long offset) {
 			setTopologyName(topologyName);
 			setOffset(offset);
+		}
+
+		public boolean hasNoend() {
+			Integer hasNoend = (Integer) this.get("hasNoend");
+			return hasNoend != null && hasNoend != -1;
+		}
+
+		public int getNoendIndex() {
+			return (Integer) this.get("hasNoend");
+		}
+
+		public void setNoend(int noendIndex) {
+			if (noendIndex == -1) {
+				this.remove(noendIndex);
+			} else {
+				this.put("hasNoend", noendIndex);
+			}
 		}
 
 		public void setTopologyName(String topologyName) {
