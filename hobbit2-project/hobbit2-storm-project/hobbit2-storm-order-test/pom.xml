@@ -6,7 +6,7 @@
 		<artifactId>hobbit2-project</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>hobbit2-storm-order</artifactId>
+	<artifactId>hobbit2-storm-order-test</artifactId>
 
 	<dependencies>
 
@@ -28,24 +28,6 @@
 			<artifactId>avro</artifactId>
 		</dependency>
 
-		<!-- kafka deps -->
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.10</artifactId>
-			<version>0.8.1.1</version>
-			<exclusions>
-				<exclusion>
-					<groupId>log4j</groupId>
-					<artifactId>log4j</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.apache.zookeeper</groupId>
-					<artifactId>zookeeper</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<!-- kafka deps -->
 
 		<!-- storm deps -->
 		<dependency>
@@ -131,11 +113,6 @@
 			<version>${project.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>com.voole.hobbit2</groupId>
-			<artifactId>hobbit2-tools-kafka</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<dependency>
 			<groupId>com.voole.hobbit2</groupId>

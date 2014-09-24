@@ -138,7 +138,7 @@ public class OpaqueTridentKafkaSpout
 							.getNoendReader(path);
 					SpecificRecordBase recordBase = null;
 					while (reader.hasNext()) {
-						recordBase = reader.next(recordBase);
+						recordBase = reader.next();
 						emit(collector, recordBase);
 					}
 					reader.close();
