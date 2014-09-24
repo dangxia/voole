@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.avro.specific.SpecificRecordBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import scala.reflect.Manifest;
 import scala.reflect.ManifestFactory;
@@ -23,11 +25,12 @@ import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
  * @author XuehuiHe
  * @date 2014年9月24日
  */
-public class TestKryoDecorator implements IKryoDecorator {
-
+public class StromOrderKryoDecorator implements IKryoDecorator {
+	private static final Logger log = LoggerFactory
+			.getLogger(StromOrderKryoDecorator.class);
 	private final List<Class<? extends SpecificRecordBase>> list;
 
-	public TestKryoDecorator() {
+	public StromOrderKryoDecorator() {
 		list = new ArrayList<Class<? extends SpecificRecordBase>>();
 		for (String topic : StormOrderMetaConfigs.getWhiteTopics()) {
 			list.add(OrderTopicsUtils.topicBiClazz.get(topic));
@@ -38,7 +41,7 @@ public class TestKryoDecorator implements IKryoDecorator {
 	@Override
 	public void decorate(Kryo k) {
 		for (Class<? extends SpecificRecordBase> clazz : list) {
-			// k.register(clazz,AvroSerializer.SpecificRecordBinarySerializer(getManifest(clazz)));
+			log.info("avro KryoDecorator Registe: Class-->" + clazz.getName());
 			k.register(clazz,
 					AvroSerializer.SpecificRecordSerializer(getManifest(clazz)));
 		}

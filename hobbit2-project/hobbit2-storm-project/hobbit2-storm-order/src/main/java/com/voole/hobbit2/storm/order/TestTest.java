@@ -11,7 +11,7 @@ import org.apache.hadoop.fs.Path;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Output;
-import com.voole.hobbit2.storm.order.kryodecorator.TestKryoDecorator;
+import com.voole.hobbit2.storm.order.kryodecorator.StromOrderKryoDecorator;
 
 /**
  * @author XuehuiHe
@@ -21,7 +21,7 @@ public class TestTest {
 	public static void main(String[] args) throws IOException {
 
 		Kryo k = new Kryo();
-		TestKryoDecorator t = new TestKryoDecorator();
+		StromOrderKryoDecorator t = new StromOrderKryoDecorator();
 		t.decorate(k);
 		SpecificRecordBase recordBase = null;
 		Output out = new com.esotericsoftware.kryo.io.Output(System.out);

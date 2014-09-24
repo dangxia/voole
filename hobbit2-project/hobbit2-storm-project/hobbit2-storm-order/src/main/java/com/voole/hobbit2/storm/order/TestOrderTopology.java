@@ -3,7 +3,9 @@
  */
 package com.voole.hobbit2.storm.order;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +21,7 @@ import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.tuple.Fields;
 
-import com.voole.hobbit2.storm.order.kryodecorator.TestKryoDecorator;
+import com.voole.hobbit2.storm.order.kryodecorator.StromOrderKryoDecorator;
 import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout;
 
 /**
@@ -35,28 +37,45 @@ public class TestOrderTopology {
 		conf.setMaxSpoutPending(20);
 		conf.setNumWorkers(2);
 		// conf.setMaxTaskParallelism(10);
-//		conf.setKryoFactory(AvroKryoFactory.class);
-		conf.registerDecorator(TestKryoDecorator.class);
+		conf.registerDecorator(StromOrderKryoDecorator.class);
 
 		return conf;
 	}
 
 	public static class Print extends BaseFilter {
-		// private Gson gson;
+		private final Map<String, AtomicLong> total;
+		private final AtomicLong arrayLen;
+
+		public Print() {
+			total = new HashMap<String, AtomicLong>();
+			arrayLen = new AtomicLong(0l);
+		}
 
 		@Override
 		public void prepare(@SuppressWarnings("rawtypes") Map conf,
 				TridentOperationContext context) {
-			// GsonBuilder gb = new GsonBuilder();
-			// gb.setPrettyPrinting();
-			// gson = gb.create();
 			super.prepare(conf, context);
 		}
 
 		@Override
 		public boolean isKeep(TridentTuple tuple) {
-//			log.info(tuple.get(0).getClass().toString());
-			// System.out.println(gson.toJson(tuple));
+
+			if (tuple.get(0).getClass().isArray()) {
+				long result = arrayLen.incrementAndGet();
+				if (result % 10000 == 0) {
+					log.info(" array size:" + result);
+				}
+			} else {
+				String name = tuple.get(0).getClass().toString();
+				if (!total.containsKey(name)) {
+					total.put(name, new AtomicLong(0l));
+				}
+				long result = total.get(name).incrementAndGet();
+				if (result % 100 == 0) {
+					log.info(name + " size:" + result);
+				}
+			}
+
 			return false;
 		}
 	}
