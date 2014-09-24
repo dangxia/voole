@@ -211,7 +211,7 @@ public class OpaqueTridentKafkaSpout
 			if (lastOffset == 0l) {
 				return new PartitionMeta(_topologyName, offset);
 			} else {
-				return new PartitionMeta(_topologyName, offset);
+				return new PartitionMeta(_topologyName, lastOffset);
 			}
 		}
 
