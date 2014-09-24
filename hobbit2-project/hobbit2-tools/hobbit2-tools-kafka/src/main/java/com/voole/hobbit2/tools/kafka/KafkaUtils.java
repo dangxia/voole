@@ -7,6 +7,7 @@ import static com.voole.hobbit2.tools.kafka.ZookeeperUtils.getChildrenParentMayN
 import static com.voole.hobbit2.tools.kafka.ZookeeperUtils.readDataMaybeNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,8 +33,6 @@ import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import scala.actors.threadpool.Arrays;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -230,7 +229,6 @@ public class KafkaUtils {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Deprecated
 	public static List<BrokerAndTopicPartition> getPartitions(
 			ZkClient zkClient, String... topics) {
@@ -269,7 +267,6 @@ public class KafkaUtils {
 			ZkClient zkClient, String... topics) {
 		List<TopicMetadata> topicMetadatas = getKafkaMetadata(zkClient);
 		List<BrokerAndTopicPartition> partitions = new ArrayList<BrokerAndTopicPartition>();
-		@SuppressWarnings("unchecked")
 		Set<String> queryTopics = new HashSet<String>(Arrays.asList(topics));
 		for (TopicMetadata topicMetadata : topicMetadatas) {
 			String topic = topicMetadata.topic();
