@@ -273,7 +273,7 @@ public class OpaqueTridentKafkaSpout
 
 		public void setNoend(int noendIndex) {
 			if (noendIndex == -1) {
-				this.remove(noendIndex);
+				this.remove("hasNoend");
 			} else {
 				this.put("hasNoend", noendIndex);
 			}
