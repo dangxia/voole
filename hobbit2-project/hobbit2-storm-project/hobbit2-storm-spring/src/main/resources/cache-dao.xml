@@ -14,7 +14,7 @@
 
 	<import resource="classpath:/realtime-db.xml" />
 
-	<bean class="com.voole.hobbit2.storm.spring.TestBean">
+	<bean id="cacheDao" class="com.voole.hobbit2.cache.db.CacheDao">
 		<property name="realtimeJt" ref="realtimeJt" />
 	</bean>
 </beans>

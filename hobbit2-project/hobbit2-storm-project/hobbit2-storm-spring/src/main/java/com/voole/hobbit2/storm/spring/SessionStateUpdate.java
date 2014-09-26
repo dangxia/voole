@@ -31,7 +31,7 @@ public class SessionStateUpdate implements StateUpdater<SessionState> {
 			TridentOperationContext context) {
 		cxt = new ClassPathXmlApplicationContext("test-spring.xml");
 		TestBean dao = cxt.getBean(TestBean.class);
-		log.info(dao.toString());
+		log.info(dao.getRealtimeJt().toString());
 	}
 
 	@Override
