@@ -31,7 +31,7 @@ public class TestOrderTopology2 {
 
 	public static Config getConfig() {
 		Config conf = new Config();
-		conf.setMaxSpoutPending(10);
+		conf.setMaxSpoutPending(1);
 		conf.setNumWorkers(1);
 		conf.setMaxTaskParallelism(1);
 		conf.registerDecorator(StromOrderKryoDecorator.class);
@@ -47,8 +47,8 @@ public class TestOrderTopology2 {
 				orderKafkaSpout).parallelismHint(12);
 		stream.shuffle()
 				.partitionPersist(new SessionStateFactory(),
-						new Fields("data"), new SessionStateUpdate(),
-						new Fields()).parallelismHint(4);
+						new Fields("data"), new SessionStateUpdate())
+				.parallelismHint(4);
 
 		return topology;
 	}

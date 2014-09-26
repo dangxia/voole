@@ -26,7 +26,7 @@ public class TestOrderTopology {
 
 	public static Config getConfig() {
 		Config conf = new Config();
-		conf.setMaxSpoutPending(10);
+		conf.setMaxSpoutPending(1);
 		conf.setNumWorkers(8);
 		conf.registerDecorator(StromOrderKryoDecorator.class);
 		conf.put(Config.TOPOLOGY_NAME, "storm_order_" + UUID.randomUUID());
@@ -42,7 +42,7 @@ public class TestOrderTopology {
 		stream.shuffle()
 				.partitionPersist(new SessionStateFactory(),
 						new Fields("data"), new SessionStateUpdate())
-				.parallelismHint(4);
+				.parallelismHint(2);
 
 		return topology;
 	}

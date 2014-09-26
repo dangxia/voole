@@ -126,14 +126,13 @@ public class OpaqueTridentKafkaSpout
 								.equals(_topologyName)) {
 					JSONObject meta = new JSONObject();
 					PartitionMeta.setTopologyName(meta, _topologyName);
-					// // first emit
-					// log.info("first emit for spout partition:" +
-					// spoutPartition);
-					// // emit noend
-					// if (spoutPartition.getBrokerAndTopicPartition()
-					// .getPartition().getPartition() == 0) {
-					// emitNoend(spoutPartition, meta, 0, collector);
-					// }
+					// first emit
+					log.info("first emit for spout partition:" + spoutPartition);
+					// emit noend
+					if (spoutPartition.getBrokerAndTopicPartition()
+							.getPartition().getPartition() == 0) {
+						emitNoend(spoutPartition, meta, 0, collector);
+					}
 					Optional<Long> foundOffset = StormOrderHDFSUtils
 							.findOffset(spoutPartition
 									.getBrokerAndTopicPartition());
