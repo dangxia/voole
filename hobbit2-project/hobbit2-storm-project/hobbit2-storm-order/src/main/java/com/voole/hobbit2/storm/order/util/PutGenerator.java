@@ -115,6 +115,7 @@ public class PutGenerator {
 	}
 
 	public static byte[] getBytes(Object o) {
+
 		if (o instanceof Boolean) {
 			return Bytes.toBytes((Boolean) o);
 		} else if (o instanceof Integer || o instanceof Character) {
@@ -129,6 +130,8 @@ public class PutGenerator {
 			return Bytes.toBytes((Short) o);
 		} else if (o instanceof String) {
 			return Bytes.toBytes((String) o);
+		} else if (o instanceof org.apache.avro.util.Utf8) {
+			return Bytes.toBytes(((org.apache.avro.util.Utf8) o).toString());
 		}
 		throw new RuntimeException("don't support getBytes Type:"
 				+ o.getClass().getName());
