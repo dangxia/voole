@@ -36,29 +36,6 @@ public class PutGenerator {
 		return null;
 	}
 
-	public static Put generateHid(SpecificRecordBase base) {
-		if (base instanceof PlayBgnDryRecord) {
-			return generateBgnHid((PlayBgnDryRecord) base);
-		} else if (base instanceof PlayAliveDryRecord) {
-			return generateAlive((PlayAliveDryRecord) base);
-		} else if (base instanceof PlayEndDryRecord) {
-			return generateEnd((PlayEndDryRecord) base);
-		}
-		return null;
-	}
-
-	public static Put generateBgnHid(PlayBgnDryRecord bgn) {
-		return null;
-	}
-
-	public static Put generateAliveHid(PlayAliveDryRecord alive) {
-		return null;
-	}
-
-	public static Put generateEndHid(PlayEndDryRecord end) {
-		return null;
-	}
-
 	public static Put generateBgn(PlayBgnDryRecord bgn) {
 		StringBuffer sb = new StringBuffer();
 		sb.append(bgn.getSessID());

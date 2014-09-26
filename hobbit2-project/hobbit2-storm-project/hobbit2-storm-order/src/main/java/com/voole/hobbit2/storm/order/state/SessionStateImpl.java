@@ -15,7 +15,6 @@ import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import storm.trident.state.State;
 import storm.trident.state.StateFactory;
@@ -30,6 +29,7 @@ import com.voole.hobbit2.cache.OemInfoCacheImpl;
 import com.voole.hobbit2.cache.ResourceInfoCache;
 import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
 import com.voole.hobbit2.cache.db.CacheDao;
+import com.voole.hobbit2.cache.db.CacheDaoUtil;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.OemInfo;
 import com.voole.hobbit2.cache.entity.ResourceInfo;
@@ -53,7 +53,8 @@ public class SessionStateImpl implements SessionState {
 	private final ResourceInfoCache resourceInfoCache;
 	private HConnection hConnection;
 
-	public SessionStateImpl(CacheDao dao) {
+	public SessionStateImpl() {
+		CacheDao dao = CacheDaoUtil.getCacheDao();
 		areaInfoCache = new AreaInfoCacheImpl(dao);
 		oemInfoCache = new OemInfoCacheImpl(dao);
 		resourceInfoCache = new ResourceInfoCacheImpl(dao);
@@ -118,23 +119,6 @@ public class SessionStateImpl implements SessionState {
 				sessionTable.close();
 			}
 
-			// List<Put> hidPuts = new ArrayList<Put>();
-			// for (SpecificRecordBase specificRecordBase : result) {
-			// try {
-			// hidPuts.add(PutGenerator
-			// .generateSession(specificRecordBase));
-			// } catch (Exception e) {
-			// log.warn("hid put generate failed");
-			// continue;
-			// }
-			//
-			// }
-			// if (hidPuts.size() > 0) {
-			// HTableInterface hidTable = hConnection
-			// .getTable("storm_order_hid");
-			// hidTable.put(hidPuts);
-			// hidTable.close();
-			// }
 		} catch (Exception e) {
 			log.warn("insert hbase failed", e);
 		}
@@ -196,9 +180,7 @@ public class SessionStateImpl implements SessionState {
 		@Override
 		public State makeState(@SuppressWarnings("rawtypes") Map conf,
 				IMetricsContext metrics, int partitionIndex, int numPartitions) {
-			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
-					"cache-dao.xml");
-			return new SessionStateImpl(cxt.getBean(CacheDao.class));
+			return new SessionStateImpl();
 		}
 
 	}

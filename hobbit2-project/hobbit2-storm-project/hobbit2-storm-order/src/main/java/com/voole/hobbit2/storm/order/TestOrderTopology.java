@@ -5,9 +5,6 @@ package com.voole.hobbit2.storm.order;
 
 import java.util.UUID;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import storm.trident.Stream;
 import storm.trident.TridentTopology;
 import backtype.storm.Config;
@@ -26,8 +23,6 @@ import com.voole.hobbit2.storm.order.state.SessionStateUpdate;
  * @date 2014年9月22日
  */
 public class TestOrderTopology {
-	private static final Logger log = LoggerFactory
-			.getLogger(TestOrderTopology.class);
 
 	public static Config getConfig() {
 		Config conf = new Config();
@@ -46,8 +41,8 @@ public class TestOrderTopology {
 				orderKafkaSpout).parallelismHint(12);
 		stream.shuffle()
 				.partitionPersist(new SessionStateFactory(),
-						new Fields("data"), new SessionStateUpdate(),
-						new Fields()).parallelismHint(4);
+						new Fields("data"), new SessionStateUpdate())
+				.parallelismHint(4);
 
 		return topology;
 	}
