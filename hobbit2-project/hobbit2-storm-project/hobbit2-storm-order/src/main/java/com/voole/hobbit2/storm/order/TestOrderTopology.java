@@ -49,7 +49,7 @@ public class TestOrderTopology {
 		stream = ExtraInfoQueryStateFunction.query(stream, queryState);
 		stream.shuffle()
 				.partitionPersist(new SessionStateFactory(),
-						new Fields("data"), new SessionStateUpdate())
+						new Fields("dry"), new SessionStateUpdate())
 				.parallelismHint(10);
 
 		return topology;
