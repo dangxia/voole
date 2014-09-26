@@ -49,8 +49,8 @@ public class TestOrderTopology {
 		TridentTopology topology = new TridentTopology();
 		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
 		Stream stream = topology.newStream("order-kafka-stream",
-				orderKafkaSpout).parallelismHint(24);
-		stream.each(new Fields("data"), new TestFilter());
+				orderKafkaSpout).parallelismHint(24).shuffle();
+		stream.each(new Fields("data"), new TestFilter()).parallelismHint(12);
 
 		return topology;
 	}
