@@ -1,0 +1,18 @@
+{
+	"type" : "record",
+	"name" : "PlayEndDryRecord",
+	"namespace" : "com.voole.hobbit2.camus.order.dry",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : "string"
+	}, {
+		"name" : "natip",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playEndTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "avgspeed",
+		"type" : [ "long", "null" ]
+	}]
+}

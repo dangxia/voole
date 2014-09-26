@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import storm.trident.operation.TridentCollector;
 import storm.trident.spout.IOpaquePartitionedTridentSpout;
-import storm.trident.spout.ISpoutPartition;
 import storm.trident.topology.TransactionAttempt;
 import backtype.storm.Config;
 import backtype.storm.task.TopologyContext;
@@ -30,13 +29,14 @@ import backtype.storm.tuple.Values;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
+import com.voole.hobbit2.camus.api.transform.TransformException;
 import com.voole.hobbit2.storm.order.DynamicPartitionConnections;
 import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
-import com.voole.hobbit2.storm.order.partition.GCSpoutPartition;
 import com.voole.hobbit2.storm.order.partition.KafkaSpoutPartition;
-import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionCreator;
+import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
 import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout.PartitionMeta;
+import com.voole.hobbit2.storm.order.util.TopicMetaManagerUtil;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
 
 /**
@@ -45,18 +45,18 @@ import com.voole.hobbit2.tools.kafka.KafkaUtils;
  */
 public class OpaqueTridentKafkaSpout
 		implements
-		IOpaquePartitionedTridentSpout<List<ISpoutPartition>, ISpoutPartition, PartitionMeta> {
+		IOpaquePartitionedTridentSpout<List<KafkaSpoutPartition>, KafkaSpoutPartition, PartitionMeta> {
 	private static final Logger log = LoggerFactory
 			.getLogger(OpaqueTridentKafkaSpout.class);
 
 	@Override
-	public Emitter<List<ISpoutPartition>, ISpoutPartition, PartitionMeta> getEmitter(
+	public Emitter<List<KafkaSpoutPartition>, KafkaSpoutPartition, PartitionMeta> getEmitter(
 			@SuppressWarnings("rawtypes") Map conf, TopologyContext context) {
 		return new OpaqueTridentKafkaSpoutEmitter(conf);
 	}
 
 	@Override
-	public Coordinator<List<ISpoutPartition>> getCoordinator(
+	public Coordinator<List<KafkaSpoutPartition>> getCoordinator(
 			@SuppressWarnings("rawtypes") Map conf, TopologyContext context) {
 		return new OpaqueTridentKafkaSpoutCoordinator(conf);
 	}
@@ -72,11 +72,14 @@ public class OpaqueTridentKafkaSpout
 		return new Fields("data");
 	}
 
-	class OpaqueTridentKafkaSpoutCoordinator implements
-			IOpaquePartitionedTridentSpout.Coordinator<List<ISpoutPartition>> {
+	class OpaqueTridentKafkaSpoutCoordinator
+			implements
+			IOpaquePartitionedTridentSpout.Coordinator<List<KafkaSpoutPartition>> {
+		private final StormOrderSpoutPartitionFetcher spoutPartitionFetcher;
 
 		public OpaqueTridentKafkaSpoutCoordinator(
 				@SuppressWarnings("rawtypes") Map conf) {
+			spoutPartitionFetcher = new StormOrderSpoutPartitionFetcher();
 		}
 
 		@Override
@@ -85,9 +88,9 @@ public class OpaqueTridentKafkaSpout
 		}
 
 		@Override
-		public List<ISpoutPartition> getPartitionsForBatch() {
+		public List<KafkaSpoutPartition> getPartitionsForBatch() {
 			try {
-				return StormOrderSpoutPartitionCreator.create();
+				return spoutPartitionFetcher.fetch();
 			} catch (Exception e) {
 				Throwables.propagate(e);
 			}
@@ -102,7 +105,7 @@ public class OpaqueTridentKafkaSpout
 
 	class OpaqueTridentKafkaSpoutEmitter
 			implements
-			IOpaquePartitionedTridentSpout.Emitter<List<ISpoutPartition>, ISpoutPartition, PartitionMeta> {
+			IOpaquePartitionedTridentSpout.Emitter<List<KafkaSpoutPartition>, KafkaSpoutPartition, PartitionMeta> {
 
 		private final DynamicPartitionConnections connections;
 		String _topologyName;
@@ -115,16 +118,57 @@ public class OpaqueTridentKafkaSpout
 
 		@Override
 		public PartitionMeta emitPartitionBatch(TransactionAttempt tx,
-				TridentCollector collector, ISpoutPartition partition,
+				TridentCollector collector, KafkaSpoutPartition spoutPartition,
 				PartitionMeta lastPartitionMeta) {
 			try {
-				if (partition instanceof GCSpoutPartition) {
-					return emitPartitionBatchGc(tx, collector,
-							(GCSpoutPartition) partition, lastPartitionMeta);
-				} else {
-					return emitPartitionBatchKafka(tx, collector,
-							(KafkaSpoutPartition) partition, lastPartitionMeta);
+				if (lastPartitionMeta == null
+						|| !lastPartitionMeta.getTopologyName().equals(
+								_topologyName)) {
+					PartitionMeta meta = new PartitionMeta();
+					meta.setTopologyName(_topologyName);
+					// first emit
+					log.info("first emit for spout partition:" + spoutPartition);
+					// emit noend
+					if (spoutPartition.getBrokerAndTopicPartition()
+							.getPartition().getPartition() == 0) {
+						emitNoend(spoutPartition, meta, 0, collector);
+					}
+					Optional<Long> foundOffset = StormOrderHDFSUtils
+							.findOffset(spoutPartition
+									.getBrokerAndTopicPartition());
+					if (foundOffset.isPresent()) {
+						meta.setOffset(foundOffset.get());
+						log.info("offset set to:" + foundOffset.get()
+								+ " for spout partition:" + spoutPartition);
+						return meta;
+					} else {
+						throw new RuntimeException("spout partition:"
+								+ spoutPartition + " is empty!!");
+					}
 
+				} else if (lastPartitionMeta.hasNoend()) {
+					return emitNoend(spoutPartition, lastPartitionMeta,
+							lastPartitionMeta.getNoendIndex(), collector);
+				}
+				long offset = lastPartitionMeta.getOffset();
+
+				SimpleConsumer consumer = connections.register(spoutPartition
+						.getBrokerAndTopicPartition());
+				ByteBufferMessageSet msgs = KafkaUtils.fetch(consumer,
+						spoutPartition.getBrokerAndTopicPartition()
+								.getPartition(), offset + 1,
+						StormOrderMetaConfigs.getKafkafetchSize());
+				long lastOffset = 0l;
+				for (MessageAndOffset msg : msgs) {
+					emit(collector, msg, spoutPartition
+							.getBrokerAndTopicPartition().getPartition()
+							.getTopic());
+					lastOffset = msg.offset();
+				}
+				if (lastOffset == 0l) {
+					return new PartitionMeta(_topologyName, offset);
+				} else {
+					return new PartitionMeta(_topologyName, lastOffset);
 				}
 			} catch (IOException e) {
 				Throwables.propagate(e);
@@ -132,18 +176,11 @@ public class OpaqueTridentKafkaSpout
 			return null;
 		}
 
-		protected PartitionMeta emitPartitionBatchGc(TransactionAttempt tx,
-				TridentCollector collector, GCSpoutPartition partition,
-				PartitionMeta lastPartitionMeta) {
-			// TODO
-			return null;
-		}
-
 		protected PartitionMeta emitNoend(KafkaSpoutPartition partition,
 				PartitionMeta meta, int noendIndex, TridentCollector collector)
 				throws IOException {
 			List<Path> paths = StormOrderHDFSUtils.getNoendFilePaths(partition
-					.getPartition().getTopic());
+					.getBrokerAndTopicPartition().getPartition().getTopic());
 			if (paths != null && paths.size() > noendIndex) {
 				Path path = paths.get(noendIndex);
 				FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
@@ -166,65 +203,22 @@ public class OpaqueTridentKafkaSpout
 			return meta;
 		}
 
-		protected PartitionMeta emitPartitionBatchKafka(TransactionAttempt tx,
-				TridentCollector collector, KafkaSpoutPartition partition,
-				PartitionMeta lastPartitionMeta) throws IOException {
-
-			if (lastPartitionMeta == null
-					|| !lastPartitionMeta.getTopologyName().equals(
-							_topologyName)) {
-				PartitionMeta meta = new PartitionMeta();
-				meta.setTopologyName(_topologyName);
-				// first emit
-				log.info("first emit for partition:" + partition);
-				// emit noend
-				if (partition.getPartition().getPartition() == 0) {
-					emitNoend(partition, meta, 0, collector);
-				}
-				Optional<Long> foundOffset = StormOrderHDFSUtils
-						.findOffset(partition);
-				if (foundOffset.isPresent()) {
-					meta.setOffset(foundOffset.get());
-					log.info("offset set to:" + foundOffset.get()
-							+ " for partition:" + partition);
-					return meta;
-				} else {
-					throw new RuntimeException("partition:" + partition
-							+ " is empty!!");
-				}
-
-			} else if (lastPartitionMeta.hasNoend()) {
-				return emitNoend(partition, lastPartitionMeta,
-						lastPartitionMeta.getNoendIndex(), collector);
-			}
-			long offset = lastPartitionMeta.getOffset();
-
-			SimpleConsumer consumer = connections.register(partition);
-			ByteBufferMessageSet msgs = KafkaUtils.fetch(consumer,
-					partition.getPartition(), offset + 1,
-					StormOrderMetaConfigs.getKafkafetchSize());
-			long lastOffset = 0l;
-			for (MessageAndOffset msg : msgs) {
-				emit(collector, msg);
-				lastOffset = msg.offset();
-			}
-			if (lastOffset == 0l) {
-				return new PartitionMeta(_topologyName, offset);
-			} else {
-				return new PartitionMeta(_topologyName, lastOffset);
-			}
-		}
-
-		/**
-		 * @param collector
-		 * @param msg
-		 */
-		private void emit(TridentCollector collector, MessageAndOffset msg) {
+		private void emit(TridentCollector collector, MessageAndOffset msg,
+				String topic) {
 			ByteBuffer payload = msg.message().payload();
 			byte[] bytes = new byte[payload.limit()];
 			payload.get(bytes);
 
-			collector.emit(new Values(bytes));
+			try {
+				Optional<SpecificRecordBase> target = TopicMetaManagerUtil
+						.get().findTopicMeta(topic).getTransformer()
+						.transform(bytes);
+				if (target.isPresent()) {
+					collector.emit(new Values(target.get()));
+				}
+			} catch (TransformException e) {
+				log.warn("transform failed", e);
+			}
 
 		}
 
@@ -235,13 +229,13 @@ public class OpaqueTridentKafkaSpout
 
 		@Override
 		public void refreshPartitions(
-				List<ISpoutPartition> partitionResponsibilities) {
+				List<KafkaSpoutPartition> partitionResponsibilities) {
 			connections.clear();
 		}
 
 		@Override
-		public List<ISpoutPartition> getOrderedPartitions(
-				List<ISpoutPartition> allPartitionInfo) {
+		public List<KafkaSpoutPartition> getOrderedPartitions(
+				List<KafkaSpoutPartition> allPartitionInfo) {
 			return allPartitionInfo;
 		}
 

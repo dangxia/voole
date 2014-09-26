@@ -1,0 +1,56 @@
+{
+	"type" : "record",
+	"name" : "PlayBgnDryRecord",
+	"namespace" : "com.voole.hobbit2.camus.order.dry",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : "string"
+	}, {
+		"name" : "UID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "HID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "OEMID",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "natip",
+		"type" : [ "long", "null" ]
+	},  {
+		"name" : "FID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "playBgnTime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "avgspeed",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "bitrate",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "isAdMod",
+		"type" : "boolean",
+		"default" : false
+	}, {
+		"name" : "isRepeatMod",
+		"type" : "boolean",
+		"default" : false
+	}, {
+		"name" : "pid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "epgid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "secid",
+		"type" : [ "string", "null" ]
+	} , {
+		"name" : "areaid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "spid",
+		"type" : [ "string", "null" ]
+	}]
+}

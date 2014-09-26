@@ -10,7 +10,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<hadoop.version>2.2.0</hadoop.version>
 		<kafka.versin>0.8.1.1</kafka.versin>
-		<storm.version>0.9.1-incubating</storm.version>
+		<storm.version>0.9.2-incubating</storm.version>
 		<spring.version>3.2.0.RELEASE</spring.version>
 		<protobuf.version>2.5.0</protobuf.version>
 		<avro.version>1.7.6</avro.version>

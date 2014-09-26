@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
-import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionCreator;
+import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
 import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
 import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
@@ -40,7 +40,7 @@ import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
  */
 public class StormOrderHDFSUtils {
 	private static final Logger log = LoggerFactory
-			.getLogger(StormOrderSpoutPartitionCreator.class);
+			.getLogger(StormOrderSpoutPartitionFetcher.class);
 	private static final Configuration conf = new Configuration();
 	static {
 		conf.addResource("core-site2.xml");
