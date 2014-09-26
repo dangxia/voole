@@ -30,7 +30,6 @@ import com.voole.hobbit2.cache.OemInfoCacheImpl;
 import com.voole.hobbit2.cache.ResourceInfoCache;
 import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
 import com.voole.hobbit2.cache.db.CacheDao;
-import com.voole.hobbit2.cache.db.CacheDaoUtil;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.OemInfo;
 import com.voole.hobbit2.cache.entity.ResourceInfo;
@@ -108,7 +107,7 @@ public class SessionStateImpl implements SessionState {
 						sessionPuts.add(put);
 					}
 				} catch (Exception e) {
-					log.warn("session put generate failed");
+					log.warn("session put generate failed", e);
 					continue;
 				}
 			}
@@ -197,7 +196,8 @@ public class SessionStateImpl implements SessionState {
 		@Override
 		public State makeState(@SuppressWarnings("rawtypes") Map conf,
 				IMetricsContext metrics, int partitionIndex, int numPartitions) {
-			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext("cache-dao.xml");
+			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
+					"cache-dao.xml");
 			return new SessionStateImpl(cxt.getBean(CacheDao.class));
 		}
 
