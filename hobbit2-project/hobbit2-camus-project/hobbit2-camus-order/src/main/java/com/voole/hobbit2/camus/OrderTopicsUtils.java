@@ -12,6 +12,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
+import com.google.common.collect.ImmutableMap;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV3;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
@@ -86,7 +87,7 @@ public class OrderTopicsUtils {
 		topicBiSchema = ImmutableBiMap.copyOf(topicToSchema);
 		topicBiClazz = ImmutableBiMap.copyOf(topicToClazz);
 		topicBiSrvClazz = ImmutableBiMap.copyOf(topicToSrvClazz);
-		topicDryClazz = ImmutableBiMap.copyOf(topicToDryClazz);
+		topicDryClazz = ImmutableMap.copyOf(topicToDryClazz);
 	}
 
 	private static void add(BiMap<String, Schema> topicToSchema,
