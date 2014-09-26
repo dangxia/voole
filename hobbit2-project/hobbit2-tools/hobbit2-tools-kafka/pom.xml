@@ -13,7 +13,7 @@
 		<!-- kafka deps -->
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka_2.8.0</artifactId>
+			<artifactId>kafka_2.10</artifactId>
 		</dependency>
 		<!-- kafka deps -->
 		<dependency>
