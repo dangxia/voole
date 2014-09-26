@@ -130,6 +130,7 @@ public class PutGenerator {
 		} else if (o instanceof String) {
 			return Bytes.toBytes((String) o);
 		}
-		throw new RuntimeException("don't support getBytes Type");
+		throw new RuntimeException("don't support getBytes Type:"
+				+ o.getClass().getName());
 	}
 }
