@@ -89,7 +89,7 @@ public class StormOrderMetaConfigs {
 
 	public static int getKafkafetchSize() {
 		if (fetchSize == null) {
-			 fetchSize = 10240;
+			 fetchSize = 502400;
 			// fetchSize = hobbit2Configuration.getInt(
 			// KafkaMetaConfigs.KAFKA_BUFFER_SIZE_BYTES, 10240);
 		}

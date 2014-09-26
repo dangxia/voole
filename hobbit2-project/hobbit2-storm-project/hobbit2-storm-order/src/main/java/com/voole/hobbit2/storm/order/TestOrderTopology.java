@@ -26,7 +26,7 @@ public class TestOrderTopology {
 
 	public static Config getConfig() {
 		Config conf = new Config();
-		conf.setMaxSpoutPending(2);
+		conf.setMaxSpoutPending(4);
 		conf.setNumWorkers(8);
 		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 10 * 60);
 		conf.registerDecorator(StromOrderKryoDecorator.class);
