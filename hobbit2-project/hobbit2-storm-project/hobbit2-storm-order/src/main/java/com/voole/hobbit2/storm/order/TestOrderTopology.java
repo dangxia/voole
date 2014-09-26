@@ -45,15 +45,15 @@ public class TestOrderTopology {
 		return conf;
 	}
 
-	public static TridentTopology createTopology() {
-		TridentTopology topology = new TridentTopology();
-		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
-		Stream stream = topology.newStream("order-kafka-stream",
-				orderKafkaSpout).parallelismHint(24).shuffle();
-		stream.each(new Fields("data"), new TestFilter()).parallelismHint(12);
-
-		return topology;
-	}
+	// public static TridentTopology createTopology() {
+	// TridentTopology topology = new TridentTopology();
+	// OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
+	// Stream stream = topology.newStream("order-kafka-stream",
+	// orderKafkaSpout).parallelismHint(24).shuffle();
+	// stream.each(new Fields("data"), new TestFilter()).parallelismHint(12);
+	//
+	// return topology;
+	// }
 
 	public static class TestFilter extends BaseFilter {
 
@@ -65,22 +65,22 @@ public class TestOrderTopology {
 
 	}
 
-	// public static TridentTopology createTopology() {
-	// TridentTopology topology = new TridentTopology();
-	// TridentState queryState = topology.newStaticState(
-	// new ExtraInfoQueryStateFactory()).parallelismHint(2);
-	// OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
-	// Stream stream = topology
-	// .newStream("order-kafka-stream", orderKafkaSpout)
-	// .parallelismHint(24).shuffle();
-	// stream = ExtraInfoQueryStateFunction.query(stream, queryState);
-	// stream.shuffle()
-	// .partitionPersist(new SessionStateFactory(),
-	// new Fields("dry"), new SessionStateUpdate())
-	// .parallelismHint(10);
-	//
-	// return topology;
-	// }
+	 public static TridentTopology createTopology() {
+	 TridentTopology topology = new TridentTopology();
+	 TridentState queryState = topology.newStaticState(
+	 new ExtraInfoQueryStateFactory()).parallelismHint(2);
+	 OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
+	 Stream stream = topology
+	 .newStream("order-kafka-stream", orderKafkaSpout)
+	 .parallelismHint(24).shuffle();
+	 stream = ExtraInfoQueryStateFunction.query(stream, queryState);
+	 stream.shuffle()
+	 .partitionPersist(new SessionStateFactory(),
+	 new Fields("dry"), new SessionStateUpdate())
+	 .parallelismHint(10);
+	
+	 return topology;
+	 }
 
 	public static void main(String[] args) throws AlreadyAliveException,
 			InvalidTopologyException {

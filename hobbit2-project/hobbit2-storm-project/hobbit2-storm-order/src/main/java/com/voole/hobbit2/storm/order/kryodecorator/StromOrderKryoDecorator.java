@@ -29,22 +29,16 @@ import com.voole.hobbit2.camus.order.dry.PlayEndDryRecord;
 public class StromOrderKryoDecorator implements IKryoDecorator {
 	private static final Logger log = LoggerFactory
 			.getLogger(StromOrderKryoDecorator.class);
-	private final List<Class<? extends SpecificRecordBase>> list;
 
 	public StromOrderKryoDecorator() {
-		list = new ArrayList<Class<? extends SpecificRecordBase>>();
-		list.add(PlayBgnDryRecord.class);
-		list.add(PlayEndDryRecord.class);
-		list.add(PlayAliveDryRecord.class);
-//		for (String topic : StormOrderMetaConfigs.getWhiteTopics()) {
-//			list.add(OrderTopicsUtils.topicDryClazz.get(topic));
-//			list.add(OrderTopicsUtils.topicBiClazz.get(topic));
-//			list.add(OrderTopicsUtils.topicBiSrvClazz.get(topic));
-//		}
 	}
 
 	@Override
 	public void decorate(Kryo k) {
+		List<Class<? extends SpecificRecordBase>> list = new ArrayList<Class<? extends SpecificRecordBase>>();
+		list.add(PlayBgnDryRecord.class);
+		list.add(PlayEndDryRecord.class);
+		list.add(PlayAliveDryRecord.class);
 		for (Class<? extends SpecificRecordBase> clazz : list) {
 			log.info("avro KryoDecorator Registe: Class-->" + clazz.getName());
 			k.register(clazz,
