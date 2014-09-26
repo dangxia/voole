@@ -16,6 +16,7 @@ import kafka.message.MessageAndOffset;
 import org.apache.avro.file.FileReader;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.Path;
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +36,6 @@ import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 import com.voole.hobbit2.storm.order.partition.KafkaSpoutPartition;
 import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
-import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout.PartitionMeta;
 import com.voole.hobbit2.storm.order.util.TopicMetaManagerUtil;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
 
@@ -45,12 +45,12 @@ import com.voole.hobbit2.tools.kafka.KafkaUtils;
  */
 public class OpaqueTridentKafkaSpout
 		implements
-		IOpaquePartitionedTridentSpout<List<KafkaSpoutPartition>, KafkaSpoutPartition, PartitionMeta> {
+		IOpaquePartitionedTridentSpout<List<KafkaSpoutPartition>, KafkaSpoutPartition, JSONObject> {
 	private static final Logger log = LoggerFactory
 			.getLogger(OpaqueTridentKafkaSpout.class);
 
 	@Override
-	public Emitter<List<KafkaSpoutPartition>, KafkaSpoutPartition, PartitionMeta> getEmitter(
+	public Emitter<List<KafkaSpoutPartition>, KafkaSpoutPartition, JSONObject> getEmitter(
 			@SuppressWarnings("rawtypes") Map conf, TopologyContext context) {
 		return new OpaqueTridentKafkaSpoutEmitter(conf);
 	}
@@ -105,7 +105,7 @@ public class OpaqueTridentKafkaSpout
 
 	class OpaqueTridentKafkaSpoutEmitter
 			implements
-			IOpaquePartitionedTridentSpout.Emitter<List<KafkaSpoutPartition>, KafkaSpoutPartition, PartitionMeta> {
+			IOpaquePartitionedTridentSpout.Emitter<List<KafkaSpoutPartition>, KafkaSpoutPartition, JSONObject> {
 
 		private final DynamicPartitionConnections connections;
 		String _topologyName;
@@ -117,27 +117,28 @@ public class OpaqueTridentKafkaSpout
 		}
 
 		@Override
-		public PartitionMeta emitPartitionBatch(TransactionAttempt tx,
+		public JSONObject emitPartitionBatch(TransactionAttempt tx,
 				TridentCollector collector, KafkaSpoutPartition spoutPartition,
-				PartitionMeta lastPartitionMeta) {
+				JSONObject lastPartitionMeta) {
 			try {
 				if (lastPartitionMeta == null
-						|| !lastPartitionMeta.getTopologyName().equals(
-								_topologyName)) {
-					PartitionMeta meta = new PartitionMeta();
-					meta.setTopologyName(_topologyName);
-					// first emit
-					log.info("first emit for spout partition:" + spoutPartition);
-					// emit noend
-					if (spoutPartition.getBrokerAndTopicPartition()
-							.getPartition().getPartition() == 0) {
-						emitNoend(spoutPartition, meta, 0, collector);
-					}
+						|| !PartitionMeta.getTopologyName(lastPartitionMeta)
+								.equals(_topologyName)) {
+					JSONObject meta = new JSONObject();
+					PartitionMeta.setTopologyName(meta, _topologyName);
+					// // first emit
+					// log.info("first emit for spout partition:" +
+					// spoutPartition);
+					// // emit noend
+					// if (spoutPartition.getBrokerAndTopicPartition()
+					// .getPartition().getPartition() == 0) {
+					// emitNoend(spoutPartition, meta, 0, collector);
+					// }
 					Optional<Long> foundOffset = StormOrderHDFSUtils
 							.findOffset(spoutPartition
 									.getBrokerAndTopicPartition());
 					if (foundOffset.isPresent()) {
-						meta.setOffset(foundOffset.get());
+						PartitionMeta.setOffset(meta, foundOffset.get());
 						log.info("offset set to:" + foundOffset.get()
 								+ " for spout partition:" + spoutPartition);
 						return meta;
@@ -146,11 +147,12 @@ public class OpaqueTridentKafkaSpout
 								+ spoutPartition + " is empty!!");
 					}
 
-				} else if (lastPartitionMeta.hasNoend()) {
+				} else if (PartitionMeta.hasNoend(lastPartitionMeta)) {
 					return emitNoend(spoutPartition, lastPartitionMeta,
-							lastPartitionMeta.getNoendIndex(), collector);
+							PartitionMeta.getNoendIndex(lastPartitionMeta),
+							collector);
 				}
-				long offset = lastPartitionMeta.getOffset();
+				long offset = PartitionMeta.getOffset(lastPartitionMeta);
 
 				SimpleConsumer consumer = connections.register(spoutPartition
 						.getBrokerAndTopicPartition());
@@ -166,9 +168,11 @@ public class OpaqueTridentKafkaSpout
 					lastOffset = msg.offset();
 				}
 				if (lastOffset == 0l) {
-					return new PartitionMeta(_topologyName, offset);
+
+					return PartitionMeta.newJSONObject(_topologyName, offset);
 				} else {
-					return new PartitionMeta(_topologyName, lastOffset);
+					return PartitionMeta.newJSONObject(_topologyName,
+							lastOffset);
 				}
 			} catch (IOException e) {
 				Throwables.propagate(e);
@@ -176,8 +180,8 @@ public class OpaqueTridentKafkaSpout
 			return null;
 		}
 
-		protected PartitionMeta emitNoend(KafkaSpoutPartition partition,
-				PartitionMeta meta, int noendIndex, TridentCollector collector)
+		protected JSONObject emitNoend(KafkaSpoutPartition partition,
+				JSONObject meta, int noendIndex, TridentCollector collector)
 				throws IOException {
 			List<Path> paths = StormOrderHDFSUtils.getNoendFilePaths(partition
 					.getBrokerAndTopicPartition().getPartition().getTopic());
@@ -195,9 +199,9 @@ public class OpaqueTridentKafkaSpout
 				}
 				reader.close();
 				if (paths.size() > noendIndex + 1) {
-					meta.setNoend(noendIndex + 1);
+					PartitionMeta.setNoend(meta, noendIndex + 1);
 				} else {
-					meta.setNoend(-1);
+					PartitionMeta.setNoend(meta, -1);
 				}
 			}
 			return meta;
@@ -248,45 +252,47 @@ public class OpaqueTridentKafkaSpout
 
 	public static class PartitionMeta extends HashMap<String, Object> {
 
-		public PartitionMeta() {
+		public static JSONObject newJSONObject(String topologyName, long offset) {
+			JSONObject meta = new JSONObject();
+			setTopologyName(meta, topologyName);
+			setOffset(meta, offset);
+			return meta;
 		}
 
-		public PartitionMeta(String topologyName, long offset) {
-			setTopologyName(topologyName);
-			setOffset(offset);
-		}
-
-		public boolean hasNoend() {
-			Integer hasNoend = (Integer) this.get("hasNoend");
+		public static boolean hasNoend(JSONObject meta) {
+			Integer hasNoend = (Integer) meta.get("hasNoend");
 			return hasNoend != null && hasNoend != -1;
 		}
 
-		public int getNoendIndex() {
-			return (Integer) this.get("hasNoend");
+		public static int getNoendIndex(JSONObject meta) {
+			return (Integer) meta.get("hasNoend");
 		}
 
-		public void setNoend(int noendIndex) {
+		@SuppressWarnings("unchecked")
+		public static void setNoend(JSONObject meta, int noendIndex) {
 			if (noendIndex == -1) {
-				this.remove("hasNoend");
+				meta.remove("hasNoend");
 			} else {
-				this.put("hasNoend", noendIndex);
+				meta.put("hasNoend", noendIndex);
 			}
 		}
 
-		public void setTopologyName(String topologyName) {
-			this.put("topologyName", topologyName);
+		@SuppressWarnings("unchecked")
+		public static void setTopologyName(JSONObject meta, String topologyName) {
+			meta.put("topologyName", topologyName);
 		}
 
-		public String getTopologyName() {
-			return (String) this.get("topologyName");
+		public static String getTopologyName(JSONObject meta) {
+			return (String) meta.get("topologyName");
 		}
 
-		public void setOffset(long offset) {
-			this.put("offset", offset);
+		@SuppressWarnings("unchecked")
+		public static void setOffset(JSONObject meta, long offset) {
+			meta.put("offset", offset);
 		}
 
-		public Long getOffset() {
-			return (Long) this.get("offset");
+		public static Long getOffset(JSONObject meta) {
+			return (Long) meta.get("offset");
 		}
 	}
 
