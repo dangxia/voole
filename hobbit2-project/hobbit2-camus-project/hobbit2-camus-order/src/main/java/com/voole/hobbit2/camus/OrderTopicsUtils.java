@@ -3,6 +3,9 @@
  */
 package com.voole.hobbit2.camus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 
@@ -33,7 +36,7 @@ public class OrderTopicsUtils {
 	public static final BiMap<String, Schema> topicBiSchema;
 	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
 	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiSrvClazz;
-	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiDryClazz;
+	public static final Map<String, Class<? extends SpecificRecordBase>> topicDryClazz;
 
 	public static final String TOPIC_ORDER_BGN_V2 = "t_playbgn_v2";
 	public static final String TOPIC_ORDER_BGN_V3 = "t_playbgn_v3";
@@ -48,8 +51,8 @@ public class OrderTopicsUtils {
 				.create(6);
 		BiMap<String, Class<? extends SpecificRecordBase>> topicToSrvClazz = HashBiMap
 				.create(6);
-		BiMap<String, Class<? extends SpecificRecordBase>> topicToDryClazz = HashBiMap
-				.create(6);
+		Map<String, Class<? extends SpecificRecordBase>> topicToDryClazz = new HashMap<String, Class<? extends SpecificRecordBase>>(
+				6);
 
 		add(topicToSchema, topicToClazz, TOPIC_ORDER_BGN_V2,
 				OrderPlayBgnReqV2.class, OrderPlayBgnReqV2.getClassSchema());
@@ -72,7 +75,7 @@ public class OrderTopicsUtils {
 		topicToSrvClazz.put(TOPIC_ORDER_END_V3, OrderPlayEndReqSrvV3.class);
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V2, OrderPlayAliveReqSrvV2.class);
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V3, OrderPlayAliveReqSrvV3.class);
-		
+
 		topicToSrvClazz.put(TOPIC_ORDER_BGN_V2, PlayBgnDryRecord.class);
 		topicToSrvClazz.put(TOPIC_ORDER_BGN_V3, PlayBgnDryRecord.class);
 		topicToSrvClazz.put(TOPIC_ORDER_END_V2, PlayEndDryRecord.class);
@@ -83,7 +86,7 @@ public class OrderTopicsUtils {
 		topicBiSchema = ImmutableBiMap.copyOf(topicToSchema);
 		topicBiClazz = ImmutableBiMap.copyOf(topicToClazz);
 		topicBiSrvClazz = ImmutableBiMap.copyOf(topicToSrvClazz);
-		topicBiDryClazz = ImmutableBiMap.copyOf(topicToDryClazz);
+		topicDryClazz = ImmutableBiMap.copyOf(topicToDryClazz);
 	}
 
 	private static void add(BiMap<String, Schema> topicToSchema,
