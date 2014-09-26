@@ -101,25 +101,27 @@ public class SessionStateImpl implements SessionState {
 			return;
 		}
 		try {
-			List<Put> sessionPuts = new ArrayList<Put>();
+			HTableInterface sessionTable = hConnection
+					.getTable("storm_order_session");
+			sessionTable.setAutoFlush(true, true);
+			sessionTable.setWriteBufferSize(1024 * 10);
+			long total = 0l;
+			long start = System.currentTimeMillis();
 			for (SpecificRecordBase specificRecordBase : result) {
 				try {
 					Put put = PutGenerator.generateSession(specificRecordBase);
 					if (put != null) {
-						sessionPuts.add(put);
+						total++;
+						sessionTable.put(put);
 					}
 				} catch (Exception e) {
 					log.warn("session put generate failed", e);
 					continue;
 				}
 			}
-			log.warn("session size:" + sessionPuts.size());
-			if (sessionPuts.size() > 0) {
-				HTableInterface sessionTable = hConnection
-						.getTable("storm_order_session");
-				sessionTable.put(sessionPuts);
-				sessionTable.close();
-			}
+			sessionTable.close();
+			log.warn("session size:" + total + ",used time:"
+					+ ((System.currentTimeMillis() - start) / 1000));
 
 		} catch (Exception e) {
 			log.warn("insert hbase failed", e);
