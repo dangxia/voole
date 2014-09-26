@@ -229,10 +229,11 @@ public class OpaqueTridentKafkaSpout
 		protected void emit(TridentCollector collector,
 				SpecificRecordBase recordBase) {
 			try {
-				SpecificRecordBase dry = DryGenerator.dry(recordBase);
-				if (dry != null) {
-					collector.emit(new Values(dry));
-				}
+//				SpecificRecordBase dry = DryGenerator.dry(recordBase);
+//				if (dry != null) {
+//					collector.emit(new Values(dry));
+//				}
+				collector.emit(new Values(recordBase));
 			} catch (Exception e) {
 				log.warn("record dry failed", e);
 			}
