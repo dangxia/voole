@@ -264,7 +264,7 @@ public class OpaqueTridentKafkaSpout
 		}
 
 		public static int getNoendIndex(JSONObject meta) {
-			return (Integer) meta.get("hasNoend");
+			return ((Number) meta.get("hasNoend")).intValue();
 		}
 
 		@SuppressWarnings("unchecked")
