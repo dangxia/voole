@@ -53,8 +53,7 @@ public class SessionStateImpl implements SessionState {
 	private final ResourceInfoCache resourceInfoCache;
 	private HConnection hConnection;
 
-	public SessionStateImpl() {
-		CacheDao dao = CacheDaoUtil.getCacheDao();
+	public SessionStateImpl(CacheDao dao) {
 		areaInfoCache = new AreaInfoCacheImpl(dao);
 		oemInfoCache = new OemInfoCacheImpl(dao);
 		resourceInfoCache = new ResourceInfoCacheImpl(dao);
@@ -119,23 +118,23 @@ public class SessionStateImpl implements SessionState {
 				sessionTable.close();
 			}
 
-//			List<Put> hidPuts = new ArrayList<Put>();
-//			for (SpecificRecordBase specificRecordBase : result) {
-//				try {
-//					hidPuts.add(PutGenerator
-//							.generateSession(specificRecordBase));
-//				} catch (Exception e) {
-//					log.warn("hid put generate failed");
-//					continue;
-//				}
-//
-//			}
-//			if (hidPuts.size() > 0) {
-//				HTableInterface hidTable = hConnection
-//						.getTable("storm_order_hid");
-//				hidTable.put(hidPuts);
-//				hidTable.close();
-//			}
+			// List<Put> hidPuts = new ArrayList<Put>();
+			// for (SpecificRecordBase specificRecordBase : result) {
+			// try {
+			// hidPuts.add(PutGenerator
+			// .generateSession(specificRecordBase));
+			// } catch (Exception e) {
+			// log.warn("hid put generate failed");
+			// continue;
+			// }
+			//
+			// }
+			// if (hidPuts.size() > 0) {
+			// HTableInterface hidTable = hConnection
+			// .getTable("storm_order_hid");
+			// hidTable.put(hidPuts);
+			// hidTable.close();
+			// }
 		} catch (Exception e) {
 			log.warn("insert hbase failed", e);
 		}
@@ -197,7 +196,7 @@ public class SessionStateImpl implements SessionState {
 		@Override
 		public State makeState(@SuppressWarnings("rawtypes") Map conf,
 				IMetricsContext metrics, int partitionIndex, int numPartitions) {
-			return new SessionStateImpl();
+			return new SessionStateImpl(CacheDaoUtil.getCacheDao());
 		}
 
 	}
