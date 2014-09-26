@@ -5,9 +5,14 @@ package com.voole.hobbit2.storm.order;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import storm.trident.Stream;
 import storm.trident.TridentState;
 import storm.trident.TridentTopology;
+import storm.trident.operation.BaseFilter;
+import storm.trident.tuple.TridentTuple;
 import backtype.storm.Config;
 import backtype.storm.StormSubmitter;
 import backtype.storm.generated.AlreadyAliveException;
@@ -26,6 +31,8 @@ import com.voole.hobbit2.storm.order.state.SessionStateUpdate;
  * @date 2014年9月22日
  */
 public class TestOrderTopology {
+	private final static Logger log = LoggerFactory
+			.getLogger(TestOrderTopology.class);
 
 	public static Config getConfig() {
 		Config conf = new Config();
@@ -40,20 +47,41 @@ public class TestOrderTopology {
 
 	public static TridentTopology createTopology() {
 		TridentTopology topology = new TridentTopology();
-		TridentState queryState = topology.newStaticState(
-				new ExtraInfoQueryStateFactory()).parallelismHint(2);
 		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
 		Stream stream = topology
 				.newStream("order-kafka-stream", orderKafkaSpout)
 				.parallelismHint(24).shuffle();
-		stream = ExtraInfoQueryStateFunction.query(stream, queryState);
-		stream.shuffle()
-				.partitionPersist(new SessionStateFactory(),
-						new Fields("dry"), new SessionStateUpdate())
-				.parallelismHint(10);
+		stream.each(new Fields("data"), new TestFilter());
 
 		return topology;
 	}
+
+	public static class TestFilter extends BaseFilter {
+
+		@Override
+		public boolean isKeep(TridentTuple tuple) {
+			log.info(tuple.get(0).getClass().getName());
+			return false;
+		}
+
+	}
+
+	// public static TridentTopology createTopology() {
+	// TridentTopology topology = new TridentTopology();
+	// TridentState queryState = topology.newStaticState(
+	// new ExtraInfoQueryStateFactory()).parallelismHint(2);
+	// OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
+	// Stream stream = topology
+	// .newStream("order-kafka-stream", orderKafkaSpout)
+	// .parallelismHint(24).shuffle();
+	// stream = ExtraInfoQueryStateFunction.query(stream, queryState);
+	// stream.shuffle()
+	// .partitionPersist(new SessionStateFactory(),
+	// new Fields("dry"), new SessionStateUpdate())
+	// .parallelismHint(10);
+	//
+	// return topology;
+	// }
 
 	public static void main(String[] args) throws AlreadyAliveException,
 			InvalidTopologyException {
