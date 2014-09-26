@@ -33,7 +33,7 @@ public class StromOrderKryoDecorator implements IKryoDecorator {
 	public StromOrderKryoDecorator() {
 		list = new HashSet<Class<? extends SpecificRecordBase>>();
 		for (String topic : StormOrderMetaConfigs.getWhiteTopics()) {
-			list.add(OrderTopicsUtils.topicBiDryClazz.get(topic));
+			list.add(OrderTopicsUtils.topicDryClazz.get(topic));
 		}
 	}
 
