@@ -15,6 +15,7 @@ import org.apache.hadoop.hbase.client.HTableInterface;
 import org.apache.hadoop.hbase.client.Put;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import storm.trident.state.State;
 import storm.trident.state.StateFactory;
@@ -196,7 +197,8 @@ public class SessionStateImpl implements SessionState {
 		@Override
 		public State makeState(@SuppressWarnings("rawtypes") Map conf,
 				IMetricsContext metrics, int partitionIndex, int numPartitions) {
-			return new SessionStateImpl(CacheDaoUtil.getCacheDao());
+			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext("cache-dao.xml");
+			return new SessionStateImpl(cxt.getBean(CacheDao.class));
 		}
 
 	}
