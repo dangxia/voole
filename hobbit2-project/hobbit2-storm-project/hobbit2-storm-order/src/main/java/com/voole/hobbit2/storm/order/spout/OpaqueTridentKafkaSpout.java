@@ -123,8 +123,9 @@ public class OpaqueTridentKafkaSpout
 				JSONObject lastPartitionMeta) {
 			try {
 				if (lastPartitionMeta == null
-						|| !PartitionMetaUtil.getTopologyName(lastPartitionMeta)
-								.equals(_topologyName)) {
+						|| !PartitionMetaUtil
+								.getTopologyName(lastPartitionMeta).equals(
+										_topologyName)) {
 					JSONObject meta = new JSONObject();
 					PartitionMetaUtil.setTopologyName(meta, _topologyName);
 					// first emit
@@ -169,7 +170,8 @@ public class OpaqueTridentKafkaSpout
 				}
 				if (lastOffset == 0l) {
 
-					return PartitionMetaUtil.newJSONObject(_topologyName, offset);
+					return PartitionMetaUtil.newJSONObject(_topologyName,
+							offset);
 				} else {
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							lastOffset);
@@ -195,7 +197,7 @@ public class OpaqueTridentKafkaSpout
 				SpecificRecordBase recordBase = null;
 				while (reader.hasNext()) {
 					recordBase = reader.next();
-//					emit(collector, recordBase);
+					emit(collector, recordBase);
 				}
 				reader.close();
 				if (paths.size() > noendIndex + 1) {
@@ -229,11 +231,10 @@ public class OpaqueTridentKafkaSpout
 		protected void emit(TridentCollector collector,
 				SpecificRecordBase recordBase) {
 			try {
-//				SpecificRecordBase dry = DryGenerator.dry(recordBase);
-//				if (dry != null) {
-//					collector.emit(new Values(dry));
-//				}
-				collector.emit(new Values(recordBase));
+				SpecificRecordBase dry = DryGenerator.dry(recordBase);
+				if (dry != null) {
+					collector.emit(new Values(dry));
+				}
 			} catch (Exception e) {
 				log.warn("record dry failed", e);
 			}

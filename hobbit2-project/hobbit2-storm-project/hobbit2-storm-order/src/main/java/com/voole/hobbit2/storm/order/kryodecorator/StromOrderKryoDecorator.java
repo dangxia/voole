@@ -18,8 +18,9 @@ import com.esotericsoftware.kryo.Kryo;
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.KryoSerializer;
 import com.twitter.chill.avro.AvroSerializer;
-import com.voole.hobbit2.camus.OrderTopicsUtils;
-import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
+import com.voole.hobbit2.camus.order.dry.PlayAliveDryRecord;
+import com.voole.hobbit2.camus.order.dry.PlayBgnDryRecord;
+import com.voole.hobbit2.camus.order.dry.PlayEndDryRecord;
 
 /**
  * @author XuehuiHe
@@ -32,11 +33,14 @@ public class StromOrderKryoDecorator implements IKryoDecorator {
 
 	public StromOrderKryoDecorator() {
 		list = new ArrayList<Class<? extends SpecificRecordBase>>();
-		for (String topic : StormOrderMetaConfigs.getWhiteTopics()) {
+		list.add(PlayBgnDryRecord.class);
+		list.add(PlayEndDryRecord.class);
+		list.add(PlayAliveDryRecord.class);
+//		for (String topic : StormOrderMetaConfigs.getWhiteTopics()) {
 //			list.add(OrderTopicsUtils.topicDryClazz.get(topic));
-			list.add(OrderTopicsUtils.topicBiClazz.get(topic));
-			list.add(OrderTopicsUtils.topicBiSrvClazz.get(topic));
-		}
+//			list.add(OrderTopicsUtils.topicBiClazz.get(topic));
+//			list.add(OrderTopicsUtils.topicBiSrvClazz.get(topic));
+//		}
 	}
 
 	@Override
