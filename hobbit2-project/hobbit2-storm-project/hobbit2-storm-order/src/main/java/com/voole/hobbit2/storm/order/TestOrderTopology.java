@@ -6,6 +6,7 @@ package com.voole.hobbit2.storm.order;
 import java.util.UUID;
 
 import storm.trident.Stream;
+import storm.trident.TridentState;
 import storm.trident.TridentTopology;
 import backtype.storm.Config;
 import backtype.storm.StormSubmitter;
@@ -15,6 +16,8 @@ import backtype.storm.tuple.Fields;
 
 import com.voole.hobbit2.storm.order.kryodecorator.StromOrderKryoDecorator;
 import com.voole.hobbit2.storm.order.spout.OpaqueTridentKafkaSpout;
+import com.voole.hobbit2.storm.order.state.ExtraInfoQueryStateFunction;
+import com.voole.hobbit2.storm.order.state.ExtraInfoQueryStateImpl.ExtraInfoQueryStateFactory;
 import com.voole.hobbit2.storm.order.state.SessionStateImpl.SessionStateFactory;
 import com.voole.hobbit2.storm.order.state.SessionStateUpdate;
 
@@ -27,7 +30,7 @@ public class TestOrderTopology {
 	public static Config getConfig() {
 		Config conf = new Config();
 		conf.setMaxSpoutPending(4);
-		conf.setNumWorkers(8);
+		conf.setNumWorkers(12);
 		conf.put(Config.TOPOLOGY_MESSAGE_TIMEOUT_SECS, 10 * 60);
 		conf.registerDecorator(StromOrderKryoDecorator.class);
 		conf.put(Config.TOPOLOGY_NAME, "storm_order_" + UUID.randomUUID());
@@ -37,13 +40,17 @@ public class TestOrderTopology {
 
 	public static TridentTopology createTopology() {
 		TridentTopology topology = new TridentTopology();
+		TridentState queryState = topology.newStaticState(
+				new ExtraInfoQueryStateFactory()).parallelismHint(2);
 		OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
-		Stream stream = topology.newStream("order-kafka-stream",
-				orderKafkaSpout).parallelismHint(12);
+		Stream stream = topology
+				.newStream("order-kafka-stream", orderKafkaSpout)
+				.parallelismHint(24).shuffle();
+		stream = ExtraInfoQueryStateFunction.query(stream, queryState);
 		stream.shuffle()
 				.partitionPersist(new SessionStateFactory(),
 						new Fields("data"), new SessionStateUpdate())
-				.parallelismHint(2);
+				.parallelismHint(10);
 
 		return topology;
 	}

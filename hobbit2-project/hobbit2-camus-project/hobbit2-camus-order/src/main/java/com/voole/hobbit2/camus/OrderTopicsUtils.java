@@ -21,6 +21,9 @@ import com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV3;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
+import com.voole.hobbit2.camus.order.dry.PlayAliveDryRecord;
+import com.voole.hobbit2.camus.order.dry.PlayBgnDryRecord;
+import com.voole.hobbit2.camus.order.dry.PlayEndDryRecord;
 
 /**
  * @author XuehuiHe
@@ -30,6 +33,7 @@ public class OrderTopicsUtils {
 	public static final BiMap<String, Schema> topicBiSchema;
 	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
 	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiSrvClazz;
+	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiDryClazz;
 
 	public static final String TOPIC_ORDER_BGN_V2 = "t_playbgn_v2";
 	public static final String TOPIC_ORDER_BGN_V3 = "t_playbgn_v3";
@@ -40,8 +44,12 @@ public class OrderTopicsUtils {
 
 	static {
 		BiMap<String, Schema> topicToSchema = HashBiMap.create(6);
-		BiMap<String, Class<? extends SpecificRecordBase>> topicToClazz = HashBiMap.create(6);
-		BiMap<String, Class<? extends SpecificRecordBase>> topicToSrvClazz = HashBiMap.create(6);
+		BiMap<String, Class<? extends SpecificRecordBase>> topicToClazz = HashBiMap
+				.create(6);
+		BiMap<String, Class<? extends SpecificRecordBase>> topicToSrvClazz = HashBiMap
+				.create(6);
+		BiMap<String, Class<? extends SpecificRecordBase>> topicToDryClazz = HashBiMap
+				.create(6);
 
 		add(topicToSchema, topicToClazz, TOPIC_ORDER_BGN_V2,
 				OrderPlayBgnReqV2.class, OrderPlayBgnReqV2.getClassSchema());
@@ -64,14 +72,23 @@ public class OrderTopicsUtils {
 		topicToSrvClazz.put(TOPIC_ORDER_END_V3, OrderPlayEndReqSrvV3.class);
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V2, OrderPlayAliveReqSrvV2.class);
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V3, OrderPlayAliveReqSrvV3.class);
+		
+		topicToSrvClazz.put(TOPIC_ORDER_BGN_V2, PlayBgnDryRecord.class);
+		topicToSrvClazz.put(TOPIC_ORDER_BGN_V3, PlayBgnDryRecord.class);
+		topicToSrvClazz.put(TOPIC_ORDER_END_V2, PlayEndDryRecord.class);
+		topicToSrvClazz.put(TOPIC_ORDER_END_V3, PlayEndDryRecord.class);
+		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V2, PlayAliveDryRecord.class);
+		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V3, PlayAliveDryRecord.class);
 
 		topicBiSchema = ImmutableBiMap.copyOf(topicToSchema);
 		topicBiClazz = ImmutableBiMap.copyOf(topicToClazz);
 		topicBiSrvClazz = ImmutableBiMap.copyOf(topicToSrvClazz);
+		topicBiDryClazz = ImmutableBiMap.copyOf(topicToDryClazz);
 	}
 
 	private static void add(BiMap<String, Schema> topicToSchema,
-			BiMap<String, Class<? extends SpecificRecordBase>> topicToClazz, String topic, Class<? extends SpecificRecordBase> clazz,
+			BiMap<String, Class<? extends SpecificRecordBase>> topicToClazz,
+			String topic, Class<? extends SpecificRecordBase> clazz,
 			Schema schema) {
 		topicToSchema.put(topic, schema);
 		topicToClazz.put(topic, clazz);

@@ -36,6 +36,7 @@ import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 import com.voole.hobbit2.storm.order.partition.KafkaSpoutPartition;
 import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
+import com.voole.hobbit2.storm.order.util.DryGenerator;
 import com.voole.hobbit2.storm.order.util.TopicMetaManagerUtil;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
 
@@ -122,10 +123,10 @@ public class OpaqueTridentKafkaSpout
 				JSONObject lastPartitionMeta) {
 			try {
 				if (lastPartitionMeta == null
-						|| !PartitionMeta.getTopologyName(lastPartitionMeta)
+						|| !PartitionMetaUtil.getTopologyName(lastPartitionMeta)
 								.equals(_topologyName)) {
 					JSONObject meta = new JSONObject();
-					PartitionMeta.setTopologyName(meta, _topologyName);
+					PartitionMetaUtil.setTopologyName(meta, _topologyName);
 					// first emit
 					log.info("first emit for spout partition:" + spoutPartition);
 					// emit noend
@@ -137,7 +138,7 @@ public class OpaqueTridentKafkaSpout
 							.findOffset(spoutPartition
 									.getBrokerAndTopicPartition());
 					if (foundOffset.isPresent()) {
-						PartitionMeta.setOffset(meta, foundOffset.get());
+						PartitionMetaUtil.setOffset(meta, foundOffset.get());
 						log.info("offset set to:" + foundOffset.get()
 								+ " for spout partition:" + spoutPartition);
 						return meta;
@@ -146,12 +147,12 @@ public class OpaqueTridentKafkaSpout
 								+ spoutPartition + " is empty!!");
 					}
 
-				} else if (PartitionMeta.hasNoend(lastPartitionMeta)) {
+				} else if (PartitionMetaUtil.hasNoend(lastPartitionMeta)) {
 					return emitNoend(spoutPartition, lastPartitionMeta,
-							PartitionMeta.getNoendIndex(lastPartitionMeta),
+							PartitionMetaUtil.getNoendIndex(lastPartitionMeta),
 							collector);
 				}
-				long offset = PartitionMeta.getOffset(lastPartitionMeta);
+				long offset = PartitionMetaUtil.getOffset(lastPartitionMeta);
 
 				SimpleConsumer consumer = connections.register(spoutPartition
 						.getBrokerAndTopicPartition());
@@ -168,9 +169,9 @@ public class OpaqueTridentKafkaSpout
 				}
 				if (lastOffset == 0l) {
 
-					return PartitionMeta.newJSONObject(_topologyName, offset);
+					return PartitionMetaUtil.newJSONObject(_topologyName, offset);
 				} else {
-					return PartitionMeta.newJSONObject(_topologyName,
+					return PartitionMetaUtil.newJSONObject(_topologyName,
 							lastOffset);
 				}
 			} catch (IOException e) {
@@ -198,9 +199,9 @@ public class OpaqueTridentKafkaSpout
 				}
 				reader.close();
 				if (paths.size() > noendIndex + 1) {
-					PartitionMeta.setNoend(meta, noendIndex + 1);
+					PartitionMetaUtil.setNoend(meta, noendIndex + 1);
 				} else {
-					PartitionMeta.setNoend(meta, -1);
+					PartitionMetaUtil.setNoend(meta, -1);
 				}
 			}
 			return meta;
@@ -217,7 +218,7 @@ public class OpaqueTridentKafkaSpout
 						.get().findTopicMeta(topic).getTransformer()
 						.transform(bytes);
 				if (target.isPresent()) {
-					collector.emit(new Values(target.get()));
+					emit(collector, target.get());
 				}
 			} catch (TransformException e) {
 				log.warn("transform failed", e);
@@ -227,7 +228,14 @@ public class OpaqueTridentKafkaSpout
 
 		protected void emit(TridentCollector collector,
 				SpecificRecordBase recordBase) {
-			collector.emit(new Values(recordBase));
+			try {
+				SpecificRecordBase dry = DryGenerator.dry(recordBase);
+				if (dry != null) {
+					collector.emit(new Values(dry));
+				}
+			} catch (Exception e) {
+				log.warn("record dry failed", e);
+			}
 		}
 
 		@Override
@@ -249,7 +257,7 @@ public class OpaqueTridentKafkaSpout
 
 	}
 
-	public static class PartitionMeta extends HashMap<String, Object> {
+	public static class PartitionMetaUtil extends HashMap<String, Object> {
 
 		public static JSONObject newJSONObject(String topologyName, long offset) {
 			JSONObject meta = new JSONObject();

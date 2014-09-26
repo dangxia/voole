@@ -3,7 +3,6 @@
  */
 package com.voole.hobbit2.storm.order.state;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -20,24 +19,7 @@ import storm.trident.state.State;
 import storm.trident.state.StateFactory;
 import backtype.storm.task.IMetricsContext;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
-import com.voole.hobbit2.cache.AreaInfoCache;
-import com.voole.hobbit2.cache.AreaInfoCacheImpl;
-import com.voole.hobbit2.cache.OemInfoCache;
-import com.voole.hobbit2.cache.OemInfoCacheImpl;
-import com.voole.hobbit2.cache.ResourceInfoCache;
-import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
-import com.voole.hobbit2.cache.db.CacheDao;
-import com.voole.hobbit2.cache.db.CacheDaoUtil;
-import com.voole.hobbit2.cache.entity.AreaInfo;
-import com.voole.hobbit2.cache.entity.OemInfo;
-import com.voole.hobbit2.cache.entity.ResourceInfo;
-import com.voole.hobbit2.cache.exception.CacheQueryException;
-import com.voole.hobbit2.cache.exception.CacheRefreshException;
-import com.voole.hobbit2.camus.order.dry.PlayBgnDryRecord;
-import com.voole.hobbit2.common.enums.ProductType;
-import com.voole.hobbit2.storm.order.util.DryGenerator;
 import com.voole.hobbit2.storm.order.util.PutGenerator;
 
 /**
@@ -47,23 +29,16 @@ import com.voole.hobbit2.storm.order.util.PutGenerator;
 public class SessionStateImpl implements SessionState {
 	private static final Logger log = LoggerFactory
 			.getLogger(SessionState.class);
-
-	private final AreaInfoCache areaInfoCache;
-	private final OemInfoCache oemInfoCache;
-	private final ResourceInfoCache resourceInfoCache;
 	private HConnection hConnection;
+	private HTableInterface sessionTable;
 
 	public SessionStateImpl() {
-		CacheDao dao = CacheDaoUtil.getCacheDao();
-		areaInfoCache = new AreaInfoCacheImpl(dao);
-		oemInfoCache = new OemInfoCacheImpl(dao);
-		resourceInfoCache = new ResourceInfoCacheImpl(dao);
 		try {
-			areaInfoCache.refresh();
-			oemInfoCache.refresh();
-			resourceInfoCache.refresh();
 			hConnection = HConnectionManager
 					.createConnection(HBaseConfiguration.create());
+			sessionTable = hConnection.getTable("storm_order_session");
+			sessionTable.setAutoFlush(true, true);
+			sessionTable.setWriteBufferSize(1024 * 1024 * 1024);
 		} catch (Exception e) {
 			log.warn("init SessionStateImpl error:", e);
 			Throwables.propagate(e);
@@ -80,104 +55,43 @@ public class SessionStateImpl implements SessionState {
 
 	@Override
 	public void update(List<SpecificRecordBase> data) {
-		List<SpecificRecordBase> result = new ArrayList<SpecificRecordBase>();
-		for (SpecificRecordBase base : data) {
-			try {
-				SpecificRecordBase dry = (SpecificRecordBase) DryGenerator
-						.dry(base);
-				if (dry == null) {
-					continue;
-				}
-				if (dry instanceof PlayBgnDryRecord) {
-					dealBgn((PlayBgnDryRecord) dry);
-				}
-				result.add(dry);
-			} catch (Exception e) {
-				log.warn("record dry failed", e);
-			}
-
-		}
-		if (result.size() == 0) {
+		if (data.size() == 0) {
 			return;
 		}
 		try {
-			HTableInterface sessionTable = hConnection
-					.getTable("storm_order_session");
-			sessionTable.setAutoFlush(true, true);
-			sessionTable.setWriteBufferSize(1024 * 10);
 			long total = 0l;
 			long start = System.currentTimeMillis();
-			for (SpecificRecordBase specificRecordBase : result) {
+			long generateSessionTime = 0l;
+			for (SpecificRecordBase specificRecordBase : data) {
+				Put put = null;
 				try {
-					Put put = PutGenerator.generateSession(specificRecordBase);
+					generateSessionTime -= System.currentTimeMillis();
+					put = PutGenerator.generateSession(specificRecordBase);
+				} catch (Exception e) {
+					log.warn("session put generate failed", e);
+					continue;
+				} finally {
+					generateSessionTime += System.currentTimeMillis();
+				}
+
+				try {
 					if (put != null) {
 						total++;
 						sessionTable.put(put);
 					}
 				} catch (Exception e) {
-					log.warn("session put generate failed", e);
+					log.warn("session put insert hbase failed", e);
 					continue;
 				}
 			}
-			sessionTable.close();
+			sessionTable.flushCommits();
 			log.warn("session size:" + total + ",used time:"
-					+ ((System.currentTimeMillis() - start) / 1000));
+					+ ((System.currentTimeMillis() - start) / 1000)
+					+ ",generate put used time:" + (generateSessionTime / 1000));
 
 		} catch (Exception e) {
 			log.warn("insert hbase failed", e);
 		}
-	}
-
-	private void dealBgn(PlayBgnDryRecord record) {
-		try {
-			String spid = getSpid(record.getOEMID());
-			Optional<AreaInfo> areaInfo = getAreaInfo(
-					record.getHID() != null ? record.getHID().toString() : null,
-					record.getOEMID() != null ? record.getOEMID().toString()
-							: null, spid, record.getNatip());
-			Optional<ResourceInfo> resourceInfo = getResourceInfo(spid,
-					record.getFID() != null ? record.getFID().toString() : null);
-			record.setSpid(spid);
-			if (areaInfo.isPresent()) {
-				record.setAreaid(areaInfo.get().getAreaid());
-			}
-			if (resourceInfo.isPresent()) {
-				Integer bitrate = resourceInfo.get().getBitrate();
-				if (bitrate != null) {
-					record.setBitrate((long) bitrate);
-				} else {
-					record.setBitrate(null);
-				}
-			}
-		} catch (Exception e) {
-			Throwables.propagate(e);
-		}
-	}
-
-	protected String getSpid(Long oemid) throws CacheRefreshException,
-			CacheQueryException {
-		Optional<OemInfo> oemInfo = getOemInfo(oemid);
-		if (!oemInfo.isPresent()) {
-			return ProductType.VOOLE_SPID.toString();
-		} else {
-			return oemInfo.get().getSpid();
-		}
-	}
-
-	public Optional<AreaInfo> getAreaInfo(String hid, String oemid,
-			String spid, long ip) throws CacheQueryException,
-			CacheRefreshException {
-		return areaInfoCache.getAreaInfo(hid, oemid, spid, ip);
-	}
-
-	public Optional<OemInfo> getOemInfo(Long oemid)
-			throws CacheRefreshException, CacheQueryException {
-		return oemInfoCache.getOemInfo(oemid);
-	}
-
-	public Optional<ResourceInfo> getResourceInfo(String spid, String fid)
-			throws CacheRefreshException, CacheQueryException {
-		return resourceInfoCache.getResourceInfo(spid, fid);
 	}
 
 	public static class SessionStateFactory implements StateFactory {
