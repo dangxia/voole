@@ -42,19 +42,16 @@ public class TestBean implements OemInfoFetch, AreaInfosFetch,
 
 	public RangeMap<Long, AreaInfo> getVooleIpRanges() {
 		String sql = " SELECT si.areaid, si.type AS nettype, si.`minip`, si.`maxip` FROM sys_ipzone si WHERE si.`maxip`>si.`minip` ";
-		final RangeMap<Long, AreaInfo> result = TreeRangeMap.create();
 		realtimeJt.query(sql, new RowMapper<Void>() {
 
 			@Override
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
-				result.put(
-						Range.closed(rs.getLong("minip"), rs.getLong("maxip")),
-						new AreaInfo(rs.getInt("areaid"), rs.getInt("nettype")));
+				new AreaInfo(rs.getInt("areaid"), rs.getInt("nettype"));
 
 				return null;
 			}
 		});
-		return result;
+		return null;
 	}
 
 	@Override
