@@ -259,8 +259,8 @@ public class OpaqueTridentKafkaSpout
 		}
 
 		public static boolean hasNoend(JSONObject meta) {
-			Integer hasNoend = (Integer) meta.get("hasNoend");
-			return hasNoend != null && hasNoend != -1;
+			Number hasNoend = (Number) meta.get("hasNoend");
+			return hasNoend != null && hasNoend.intValue() != -1;
 		}
 
 		public static int getNoendIndex(JSONObject meta) {
