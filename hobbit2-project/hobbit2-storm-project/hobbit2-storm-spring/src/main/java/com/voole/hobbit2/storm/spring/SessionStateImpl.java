@@ -8,20 +8,10 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import storm.trident.state.State;
 import storm.trident.state.StateFactory;
 import backtype.storm.task.IMetricsContext;
-
-import com.google.common.base.Throwables;
-import com.voole.hobbit2.cache.AreaInfoCache;
-import com.voole.hobbit2.cache.AreaInfoCacheImpl;
-import com.voole.hobbit2.cache.OemInfoCache;
-import com.voole.hobbit2.cache.OemInfoCacheImpl;
-import com.voole.hobbit2.cache.ResourceInfoCache;
-import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
-import com.voole.hobbit2.cache.db.CacheDao;
 
 /**
  * @author XuehuiHe
@@ -30,22 +20,8 @@ import com.voole.hobbit2.cache.db.CacheDao;
 public class SessionStateImpl implements SessionState {
 	private static final Logger log = LoggerFactory
 			.getLogger(SessionState.class);
+	public SessionStateImpl() {
 
-	private final AreaInfoCache areaInfoCache;
-	private final OemInfoCache oemInfoCache;
-	private final ResourceInfoCache resourceInfoCache;
-
-	public SessionStateImpl(CacheDao dao) {
-		areaInfoCache = new AreaInfoCacheImpl(dao);
-		oemInfoCache = new OemInfoCacheImpl(dao);
-		resourceInfoCache = new ResourceInfoCacheImpl(dao);
-		try {
-			areaInfoCache.refresh();
-			oemInfoCache.refresh();
-			resourceInfoCache.refresh();
-		} catch (Exception e) {
-			Throwables.propagate(e);
-		}
 	}
 
 	@Override
@@ -67,9 +43,7 @@ public class SessionStateImpl implements SessionState {
 		@Override
 		public State makeState(@SuppressWarnings("rawtypes") Map conf,
 				IMetricsContext metrics, int partitionIndex, int numPartitions) {
-			ClassPathXmlApplicationContext cxt = new ClassPathXmlApplicationContext(
-					"cache-dao.xml");
-			return new SessionStateImpl(cxt.getBean(CacheDao.class));
+			return new SessionStateImpl();
 		}
 
 	}

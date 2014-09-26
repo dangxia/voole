@@ -48,9 +48,8 @@ public class TestSpringSpout implements IBatchSpout {
 						new Fields("word"), new SessionStateUpdate())
 				.parallelismHint(4);
 		StormSubmitter.submitTopology("kkkkkk", config, topology.build());
-		// LocalCluster cluster = new LocalCluster();
-
-		// cluster.submitTopology("kkkkkk", config, topology.build());
+//		LocalCluster cluster = new LocalCluster();
+//		cluster.submitTopology("kkkkkk", config, topology.build());
 
 	}
 
