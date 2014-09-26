@@ -3,8 +3,8 @@
  */
 package com.voole.hobbit2.storm.order.kryodecorator;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.slf4j.Logger;
@@ -28,12 +28,12 @@ import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 public class StromOrderKryoDecorator implements IKryoDecorator {
 	private static final Logger log = LoggerFactory
 			.getLogger(StromOrderKryoDecorator.class);
-	private final Set<Class<? extends SpecificRecordBase>> list;
+	private final List<Class<? extends SpecificRecordBase>> list;
 
 	public StromOrderKryoDecorator() {
-		list = new HashSet<Class<? extends SpecificRecordBase>>();
+		list = new ArrayList<Class<? extends SpecificRecordBase>>();
 		for (String topic : StormOrderMetaConfigs.getWhiteTopics()) {
-			list.add(OrderTopicsUtils.topicDryClazz.get(topic));
+//			list.add(OrderTopicsUtils.topicDryClazz.get(topic));
 			list.add(OrderTopicsUtils.topicBiClazz.get(topic));
 			list.add(OrderTopicsUtils.topicBiSrvClazz.get(topic));
 		}
