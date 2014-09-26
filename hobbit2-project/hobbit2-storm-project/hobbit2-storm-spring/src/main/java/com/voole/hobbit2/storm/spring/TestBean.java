@@ -32,6 +32,7 @@ public class TestBean implements OemInfoFetch, AreaInfosFetch,
 
 	private JdbcTemplate realtimeJt;
 
+
 	public JdbcTemplate getRealtimeJt() {
 		return realtimeJt;
 	}
@@ -42,18 +43,20 @@ public class TestBean implements OemInfoFetch, AreaInfosFetch,
 
 	public RangeMap<Long, AreaInfo> getVooleIpRanges() {
 		String sql = " SELECT si.areaid, si.type AS nettype, si.`minip`, si.`maxip` FROM sys_ipzone si WHERE si.`maxip`>si.`minip` ";
+		final RangeMap<Long, AreaInfo> result = TreeRangeMap.create();
 		realtimeJt.query(sql, new RowMapper<Void>() {
 
 			@Override
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
-				new AreaInfo(rs.getInt("areaid"), rs.getInt("nettype"));
+				result.put(
+						Range.closed(rs.getLong("minip"), rs.getLong("maxip")),
+						new AreaInfo(rs.getInt("areaid"), rs.getInt("nettype")));
 
 				return null;
 			}
 		});
-		return null;
+		return result;
 	}
-
 	@Override
 	public Map<String, String> getSpidToMovieSpidMap() {
 		// TODO Auto-generated method stub
@@ -77,6 +80,7 @@ public class TestBean implements OemInfoFetch, AreaInfosFetch,
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 	@Override
 	public List<OemInfo> getOemInfos() {

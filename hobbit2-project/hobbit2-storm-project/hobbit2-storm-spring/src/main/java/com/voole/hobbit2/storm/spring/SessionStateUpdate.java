@@ -16,6 +16,8 @@ import storm.trident.operation.TridentOperationContext;
 import storm.trident.state.StateUpdater;
 import storm.trident.tuple.TridentTuple;
 
+import com.voole.hobbit2.cache.db.CacheDao;
+
 /**
  * @author XuehuiHe
  * @date 2014年9月26日
@@ -29,8 +31,8 @@ public class SessionStateUpdate implements StateUpdater<SessionState> {
 	@Override
 	public void prepare(@SuppressWarnings("rawtypes") Map conf,
 			TridentOperationContext context) {
-		cxt = new ClassPathXmlApplicationContext("test-spring.xml");
-		TestBean dao = cxt.getBean(TestBean.class);
+		cxt = new ClassPathXmlApplicationContext("cache-dao.xml");
+		CacheDao dao = cxt.getBean(CacheDao.class);
 		log.info(dao.getRealtimeJt().toString());
 	}
 
