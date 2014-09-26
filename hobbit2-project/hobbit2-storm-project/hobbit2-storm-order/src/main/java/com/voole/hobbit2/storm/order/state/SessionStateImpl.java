@@ -65,6 +65,7 @@ public class SessionStateImpl implements SessionState {
 			hConnection = HConnectionManager
 					.createConnection(HBaseConfiguration.create());
 		} catch (Exception e) {
+			log.warn("init SessionStateImpl error:", e);
 			Throwables.propagate(e);
 		}
 	}
@@ -112,6 +113,7 @@ public class SessionStateImpl implements SessionState {
 					continue;
 				}
 			}
+			log.warn("session size:" + sessionPuts.size());
 			if (sessionPuts.size() > 0) {
 				HTableInterface sessionTable = hConnection
 						.getTable("storm_order_session");

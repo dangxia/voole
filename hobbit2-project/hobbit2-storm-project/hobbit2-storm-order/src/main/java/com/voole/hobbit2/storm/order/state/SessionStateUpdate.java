@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.avro.specific.SpecificRecordBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import storm.trident.operation.TridentCollector;
 import storm.trident.operation.TridentOperationContext;
@@ -19,6 +21,8 @@ import storm.trident.tuple.TridentTuple;
  * @date 2014年9月26日
  */
 public class SessionStateUpdate implements StateUpdater<SessionState> {
+	private static Logger log = LoggerFactory
+			.getLogger(SessionStateUpdate.class);
 
 	@Override
 	public void prepare(@SuppressWarnings("rawtypes") Map conf,
@@ -38,6 +42,7 @@ public class SessionStateUpdate implements StateUpdater<SessionState> {
 		for (TridentTuple tridentTuple : tuples) {
 			list.add((SpecificRecordBase) tridentTuple.get(0));
 		}
+		log.info("SessionStateUpdate send size:" + list.size());
 		state.update(list);
 
 	}
