@@ -76,12 +76,12 @@ public class OrderTopicsUtils {
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V2, OrderPlayAliveReqSrvV2.class);
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V3, OrderPlayAliveReqSrvV3.class);
 
-		topicToSrvClazz.put(TOPIC_ORDER_BGN_V2, PlayBgnDryRecord.class);
-		topicToSrvClazz.put(TOPIC_ORDER_BGN_V3, PlayBgnDryRecord.class);
-		topicToSrvClazz.put(TOPIC_ORDER_END_V2, PlayEndDryRecord.class);
-		topicToSrvClazz.put(TOPIC_ORDER_END_V3, PlayEndDryRecord.class);
-		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V2, PlayAliveDryRecord.class);
-		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V3, PlayAliveDryRecord.class);
+		topicToDryClazz.put(TOPIC_ORDER_BGN_V2, PlayBgnDryRecord.class);
+		topicToDryClazz.put(TOPIC_ORDER_BGN_V3, PlayBgnDryRecord.class);
+		topicToDryClazz.put(TOPIC_ORDER_END_V2, PlayEndDryRecord.class);
+		topicToDryClazz.put(TOPIC_ORDER_END_V3, PlayEndDryRecord.class);
+		topicToDryClazz.put(TOPIC_ORDER_ALIVE_V2, PlayAliveDryRecord.class);
+		topicToDryClazz.put(TOPIC_ORDER_ALIVE_V3, PlayAliveDryRecord.class);
 
 		topicBiSchema = ImmutableBiMap.copyOf(topicToSchema);
 		topicBiClazz = ImmutableBiMap.copyOf(topicToClazz);
