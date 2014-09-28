@@ -86,7 +86,7 @@ public class PutGenerator {
 		for (Field field : fileds) {
 			Object o = base.get(field.pos());
 			if (o != null) {
-				put.add(family, field.name().getBytes(), ts, getBytes(o));
+				put.add(family, field.name().getBytes(), ts * 1000, getBytes(o));
 			}
 		}
 	}
