@@ -25,22 +25,38 @@ public class TestHbase {
 		HTable table = new HTable(conf, "mytable");
 		long ts = System.currentTimeMillis();
 		Put put = new Put("row1".getBytes());
-		put.add("cf".getBytes(), "c1".getBytes(), ts, ("clast_" + ts).getBytes());
-//		put.add("cf".getBytes(), "c2".getBytes(), ts,
-//				("c2_" + (ts + 5000)).getBytes());
-//
-//		table.put(put);
-//		put = new Put("row1".getBytes());
-//		ts += 5000l;
-//		put.add("cf".getBytes(), "c1".getBytes(), ts, ("c1_" + ts).getBytes());
-//		put.add("cf".getBytes(), "c2".getBytes(), ts,
-//				("c2_" + (ts + 5000)).getBytes());
+		put.add("cf".getBytes(), "c1".getBytes(), ts,
+				("clast_" + ts).getBytes());
+		// put.add("cf".getBytes(), "c2".getBytes(), ts,
+		// ("c2_" + (ts + 5000)).getBytes());
+		//
+		// table.put(put);
+		// put = new Put("row1".getBytes());
+		// ts += 5000l;
+		// put.add("cf".getBytes(), "c1".getBytes(), ts, ("c1_" +
+		// ts).getBytes());
+		// put.add("cf".getBytes(), "c2".getBytes(), ts,
+		// ("c2_" + (ts + 5000)).getBytes());
 		table.put(put);
 		table.close();
 	}
-	
-	public static void main(String[] args) throws MasterNotRunningException, ZooKeeperConnectionException, IOException {
-		sdfsdf();
+
+	public static void main(String[] args) throws MasterNotRunningException,
+			ZooKeeperConnectionException, IOException {
+		Configuration conf = HBaseConfiguration.create();
+		HBaseAdmin admin = new HBaseAdmin(conf);
+		String tableName = "storm_online_user_snapshoot";
+		HTableDescriptor tableDescriptor = new HTableDescriptor(tableName);
+//		admin.disableTable(tableName);
+//		admin.deleteTable(tableName);
+		HColumnDescriptor cf = new HColumnDescriptor("cf");
+//		cf.setTimeToLive(3 * 60 * 60);
+		cf.setMaxVersions(1);
+		// cf.setInMemory(true);
+		cf.setKeepDeletedCells(false);
+		tableDescriptor.addFamily(cf);
+		admin.createTable(tableDescriptor);
+		admin.close();
 	}
 
 	public static void sdfsdf() throws MasterNotRunningException,
@@ -64,7 +80,7 @@ public class TestHbase {
 		HColumnDescriptor cf = new HColumnDescriptor("cf");
 		cf.setTimeToLive(3 * 60 * 60);
 		cf.setMaxVersions(1);
-//		cf.setInMemory(true);
+		// cf.setInMemory(true);
 		cf.setKeepDeletedCells(false);
 		tableDescriptor.addFamily(cf);
 		admin.createTable(tableDescriptor);
