@@ -1,4 +1,4 @@
-package org.apache.hadoop.mapreduce.lib.jobcontrol;
+package com.voole.hobbit2.camus.hive.order.mixed.jobcontrol;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,16 +9,15 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.hadoop.mapred.jobcontrol.Job;
-import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob.State;
 import org.apache.hadoop.util.StringUtils;
 
+import com.voole.hobbit2.camus.hive.order.mixed.jobcontrol.ControlledJob.State;
 import com.voole.hobbit2.camus.mr.CamusJobCreator;
 import com.voole.hobbit2.camus.mr.CamusMetaConfigs;
 import com.voole.hobbit2.hive.order.HiveOrderJobCreator;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
 
-public class MixedJobControl implements Runnable {
+public class JobControl implements Runnable {
 	private static final Log LOG = LogFactory.getLog(JobControl.class);
 
 	// The thread can be in one of the following state
@@ -41,7 +40,7 @@ public class MixedJobControl implements Runnable {
 	 * @param groupName
 	 *            a name identifying this group
 	 */
-	public MixedJobControl(String groupName) {
+	public JobControl(String groupName) {
 		this.nextJobID = -1;
 		this.groupName = groupName;
 		this.runnerState = ThreadState.READY;

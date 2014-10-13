@@ -10,23 +10,23 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
-import org.apache.hadoop.mapreduce.lib.jobcontrol.MixedJobControl;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import com.voole.hobbit2.camus.hive.order.mixed.jobcontrol.ControlledJob;
+import com.voole.hobbit2.camus.hive.order.mixed.jobcontrol.JobControl;
 import com.voole.hobbit2.camus.mr.CamusJobCreator;
 import com.voole.hobbit2.hive.order.HiveOrderJobCreator;
 
 public class MixedJobChain extends Configured implements Tool {
-	private final MixedJobControl jobControl;
+	private final JobControl jobControl;
 
 	public MixedJobChain() {
 		this("camus-hive-order-mixed");
 	}
 
 	public MixedJobChain(String jobname) {
-		jobControl = new MixedJobControl(jobname);
+		jobControl = new JobControl(jobname);
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class MixedJobChain extends Configured implements Tool {
 		System.exit(ToolRunner.run(new MixedJobChain(), args));
 	}
 
-	public MixedJobControl getJobControl() {
+	public JobControl getJobControl() {
 		return jobControl;
 	}
 
