@@ -43,7 +43,7 @@ public class MixedJobChain extends Configured implements Tool {
 					printJobsState();
 					return 1;
 				}
-				printJobsState();
+				checkRunningJobs();
 				TimeUnit.SECONDS.sleep(5);
 			}
 			printJobsState();
@@ -59,6 +59,16 @@ public class MixedJobChain extends Configured implements Tool {
 	}
 
 	private Set<String> waitingJobs = new HashSet<String>();
+
+	private void checkRunningJobs() {
+		List<ControlledJob> jobs = jobControl.getRunningJobList();
+		for (ControlledJob job : jobs) {
+			if (!waitingJobs.contains(job.getJobName())) {
+				waitForCompletion(job);
+			}
+		}
+
+	}
 
 	private void printJobsState() {
 		List<ControlledJob> jobs = jobControl.getReadyJobsList();
@@ -85,9 +95,7 @@ public class MixedJobChain extends Configured implements Tool {
 		jobs = jobControl.getSuccessfulJobList();
 		System.out.print("-------Successed jobs size:" + jobs.size() + ",");
 		for (ControlledJob job : jobs) {
-			if (!waitingJobs.contains(job.getJobName())) {
-				waitForCompletion(job);
-			}
+
 			System.out.print(job.getJobName() + "\t");
 		}
 		System.out.println("");
