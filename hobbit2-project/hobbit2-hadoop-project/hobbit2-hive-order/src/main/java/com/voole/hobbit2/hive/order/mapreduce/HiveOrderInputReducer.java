@@ -56,7 +56,7 @@ public class HiveOrderInputReducer extends
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
 	private long currCamusExecTime;
 
-	private LinkedList<SpecificRecordBase> cache;
+//	private LinkedList<SpecificRecordBase> cache;
 
 	private FileSystem fs;
 	private Schema errorSchema;
@@ -76,7 +76,7 @@ public class HiveOrderInputReducer extends
 		orderDetailDumgBeetleTransformer = new OrderDetailDumgBeetleTransformer();
 		orderDetailDumgBeetleTransformer.setup(context);
 
-		cache = new LinkedList<SpecificRecordBase>();
+//		cache = new LinkedList<SpecificRecordBase>();
 		fs = FileSystem.get(context.getConfiguration());
 		errorSchema = HiveOrderMetaConfigs.getOrderUnionSchema(context);
 	}
@@ -88,7 +88,7 @@ public class HiveOrderInputReducer extends
 		if (orderDetailDumgBeetleTransformer != null) {
 			orderDetailDumgBeetleTransformer.cleanup(context);
 		}
-		cache.clear();
+//		cache.clear();
 	}
 
 	protected SpecificRecordBase deepCopy(SpecificRecordBase record)
@@ -115,17 +115,18 @@ public class HiveOrderInputReducer extends
 			throws IOException, InterruptedException {
 		sessionInfo.clear();
 		sessionInfo.setSessionIdAndNatip(sessionIdAndNatip.toString());
-		cache.clear();
-		try {
-			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-				cache.add(deepCopy(avroValue.datum()));
-			}
-		} catch (Exception e) {
-			Throwables.propagate(e);
-		}
+//		cache.clear();
+//		try {
+//			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+//				cache.add(deepCopy(avroValue.datum()));
+//			}
+//		} catch (Exception e) {
+//			Throwables.propagate(e);
+//		}
 		try {
 
-			for (SpecificRecordBase record : cache) {
+			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+				SpecificRecordBase record = avroValue.datum();
 				if (record instanceof OrderPlayBgnReqV2) {
 					sessionInfo.setBgn((OrderPlayBgnReqV2) record);
 				} else if (record instanceof OrderPlayBgnReqV3) {
