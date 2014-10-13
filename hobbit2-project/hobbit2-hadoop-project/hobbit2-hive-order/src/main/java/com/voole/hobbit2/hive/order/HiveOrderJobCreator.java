@@ -22,7 +22,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -38,19 +37,19 @@ import com.voole.hobbit2.hive.order.mapreduce.HiveOrderInputReducer;
 import com.voole.hobbit2.hive.order.mapreduce.HiveOrderMultiOutputFormat;
 import com.voole.hobbit2.hive.order.mapreduce.HiveOrderRecordInputFormat;
 
-public class HiveOrderJob extends Configured implements Tool {
+public class HiveOrderJobCreator extends Configured {
+
 	private static org.apache.log4j.Logger log = Logger
-			.getLogger(HiveOrderJob.class);
+			.getLogger(HiveOrderJobCreator.class);
 	private static SimpleDateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd-HH-mm-ss");
 	private static String fileEnd;
 
-	@Override
-	public int run(String[] args) throws Exception {
+	public Job create(String[] args) throws ConfigurationException,
+			IOException, ParseException {
 		initConfigs(args);
 		Job job = createJob();
 		checkAndLoad(job);
-		FileSystem fs = FileSystem.get(job.getConfiguration());
 		Path execBasePath = HiveOrderMetaConfigs.getExecBasePath(job);
 		fileEnd = df.format(new Date());
 		Path newExecutionOutput = new Path(execBasePath, fileEnd);
@@ -69,26 +68,24 @@ public class HiveOrderJob extends Configured implements Tool {
 		job.setReducerClass(HiveOrderInputReducer.class);
 		job.setOutputFormatClass(HiveOrderMultiOutputFormat.class);
 		HiveOrderMetaConfigs.setExecStartTime(job);
-		try {
-			job.submit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
-		job.waitForCompletion(true);
-		log.info("Job finished");
+		return job;
+	}
+
+	public static void finishJob(Job job) throws IOException {
 		if (job.isSuccessful()) {
+			FileSystem fs = FileSystem.get(job.getConfiguration());
+			Path newExecutionOutput = FileOutputFormat.getOutputPath(job);
 			insertIntoHive(newExecutionOutput, job);
 			fs.rename(newExecutionOutput,
 					HiveOrderMetaConfigs.getExecHistoryPath(job));
-			log.info("Job finished");
+			log.info("HiveOrderJob finished");
 		} else {
-			log.info("Job failed");
+			log.info("HiveOrderJob failed");
 		}
-		return 0;
 	}
 
-	private void insertIntoHive(Path newExecutionOutput, Job job)
+	private static void insertIntoHive(Path newExecutionOutput, Job job)
 			throws IOException {
 		Map<String, HiveTable> fileNameToHiveTableMap = HiveOrderHDFSUtils
 				.readFileNameToHiveTableMap(newExecutionOutput, job);
@@ -124,7 +121,7 @@ public class HiveOrderJob extends Configured implements Tool {
 
 	private Job createJob() throws IOException {
 		Job job = Job.getInstance(getConf());
-		job.setJarByClass(HiveOrderJob.class);
+		job.setJarByClass(HiveOrderJobCreator.class);
 		job.setJobName(HiveOrderMetaConfigs.getJobName(job));
 		job.setNumReduceTasks(HiveOrderMetaConfigs.getJobReduces(job));
 		return job;
@@ -183,9 +180,6 @@ public class HiveOrderJob extends Configured implements Tool {
 		conf.setBoolean(MRJobConfig.MAP_SPECULATIVE, false);
 		conf.setBoolean(MRJobConfig.REDUCE_SPECULATIVE, false);
 		conf.setBoolean(MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
-		// conf.setInt("mapreduce.jobtracker.taskscheduler.maxrunningtasks.perjob",
-		// 40);
 		return true;
 	}
-
 }

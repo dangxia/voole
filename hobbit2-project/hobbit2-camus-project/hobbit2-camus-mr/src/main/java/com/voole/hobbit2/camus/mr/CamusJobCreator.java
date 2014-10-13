@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
- */
 package com.voole.hobbit2.camus.mr;
 
 import java.io.IOException;
@@ -18,27 +15,21 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.MRJobConfig;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.util.Tool;
-import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 import com.voole.hobbit2.camus.mr.mapreduce.CamusInputFormat;
 import com.voole.hobbit2.camus.mr.mapreduce.CamusMultiOutputFormat;
 import com.voole.hobbit2.common.Hobbit2Configuration;
 
-/**
- * @author XuehuiHe
- * @date 2014年9月2日
- */
-public class CamusJob extends Configured implements Tool {
+public class CamusJobCreator extends Configured {
+
 	private static org.apache.log4j.Logger log = Logger
-			.getLogger(CamusJob.class);
+			.getLogger(CamusJobCreator.class);
 	private static SimpleDateFormat df = new SimpleDateFormat(
 			"yyyy-MM-dd-HH-mm-ss");
 
-	@Override
-	public int run(String[] args) throws Exception {
+	public Job create(String[] args) throws ConfigurationException,
+			IOException, ParseException {
 		initConfigs(args);
 		Job job = createJob();
 		check(job);
@@ -52,37 +43,19 @@ public class CamusJob extends Configured implements Tool {
 
 		job.setNumReduceTasks(0);
 		CamusMetaConfigs.setExecStartTime(job);
-		//
-		try {
-			job.submit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		job.waitForCompletion(true);
-
-		FileSystem fs = FileSystem.get(job.getConfiguration());
-		fs.rename(newExecutionOutput, CamusMetaConfigs.getExecHistoryPath(job));
-
-		return 0;
-	}
-
-	private void check(Job job) throws IOException {
-		CamusHDFSUtils.checkCamsuPath(job.getConfiguration(),
-				CamusMetaConfigs.getDestPath(job),
-				CamusMetaConfigs.getExecBasePath(job),
-				CamusMetaConfigs.getExecHistoryPath(job));
-		CamusHDFSUtils.checkExecHistoryQuota(job.getConfiguration(),
-				CamusMetaConfigs.getExecBasePath(job),
-				CamusMetaConfigs.getExecHistoryPath(job),
-				CamusMetaConfigs.getExecHistoryMaxOfQuota(job));
-	}
-
-	private Job createJob() throws IOException {
-		Job job = Job.getInstance(getConf());
-		job.setJarByClass(CamusJob.class);
-		job.setJobName(CamusMetaConfigs.getJobName(job));
-		job.setNumReduceTasks(0);
 		return job;
+	}
+
+	public static void finishJob(Job job) throws IOException {
+		if (job.isSuccessful()) {
+			FileSystem fs = FileSystem.get(job.getConfiguration());
+			fs.rename(FileOutputFormat.getOutputPath(job),
+					CamusMetaConfigs.getExecHistoryPath(job));
+			log.info("CamusJob finished");
+		} else {
+			log.info("CamusJob failed");
+		}
+
 	}
 
 	private boolean initConfigs(String[] args) throws IOException,
@@ -105,11 +78,23 @@ public class CamusJob extends Configured implements Tool {
 		return true;
 	}
 
-	public static void main(String[] args) throws Exception {
-		// System.setProperty("HADOOP_USER_NAME", "root");
-		PropertyConfigurator.configure(CamusJob.class.getClassLoader().getResource("log4j.properties"));
-		CamusJob job = new CamusJob();
-		ToolRunner.run(job, args);
+	private void check(Job job) throws IOException {
+		CamusHDFSUtils.checkCamsuPath(job.getConfiguration(),
+				CamusMetaConfigs.getDestPath(job),
+				CamusMetaConfigs.getExecBasePath(job),
+				CamusMetaConfigs.getExecHistoryPath(job));
+		CamusHDFSUtils.checkExecHistoryQuota(job.getConfiguration(),
+				CamusMetaConfigs.getExecBasePath(job),
+				CamusMetaConfigs.getExecHistoryPath(job),
+				CamusMetaConfigs.getExecHistoryMaxOfQuota(job));
+	}
+
+	private Job createJob() throws IOException {
+		Job job = Job.getInstance(getConf());
+		job.setJarByClass(CamusJobCreator.class);
+		job.setJobName(CamusMetaConfigs.getJobName(job));
+		job.setNumReduceTasks(0);
+		return job;
 	}
 
 }
