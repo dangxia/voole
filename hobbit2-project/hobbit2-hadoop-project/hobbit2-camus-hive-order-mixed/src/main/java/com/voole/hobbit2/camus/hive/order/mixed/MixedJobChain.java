@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import org.I0Itec.zkclient.ZkClient;
+import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.configuration.CompositeConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.mapreduce.Job;
@@ -16,7 +19,10 @@ import org.apache.hadoop.util.ToolRunner;
 import com.voole.hobbit2.camus.hive.order.mixed.jobcontrol.ControlledJob;
 import com.voole.hobbit2.camus.hive.order.mixed.jobcontrol.JobControl;
 import com.voole.hobbit2.camus.mr.CamusJobCreator;
+import com.voole.hobbit2.common.Hobbit2Configuration;
+import com.voole.hobbit2.common.config.ZookeeperMetaConfigs;
 import com.voole.hobbit2.hive.order.HiveOrderJobCreator;
+import com.voole.hobbit2.tools.kafka.ZookeeperUtils;
 
 public class MixedJobChain extends Configured implements Tool {
 	private final JobControl jobControl;
@@ -164,7 +170,28 @@ public class MixedJobChain extends Configured implements Tool {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.exit(ToolRunner.run(new MixedJobChain(), args));
+		CompositeConfiguration conf = Hobbit2Configuration.getInstance();
+		ZkClient client = ZookeeperUtils.createZKClient(conf
+				.getString(ZookeeperMetaConfigs.ZOOKEEPER_ROOT_CONNECT), conf
+				.getInt(ZookeeperMetaConfigs.ZOOKEEPER_ROOT_SESSION_TIMEOUT_MS,
+						40000), conf.getInt(
+				ZookeeperMetaConfigs.ZOOKEEPER_ROOT_SESSION_TIMEOUT_MS, 40000));
+		if (tryLock(client)) {
+			 System.exit(ToolRunner.run(new MixedJobChain(), args));
+		} else {
+			System.out.println("job_camus_hive_order_mixed is running,exit!");
+		}
+		client.close();
+	}
+
+	public static boolean tryLock(ZkClient client) {
+		try {
+			client.createEphemeral("/job_camus_hive_order_mixed");
+		} catch (ZkNodeExistsException e) {
+			return false;
+		}
+		return true;
+
 	}
 
 	public JobControl getJobControl() {
