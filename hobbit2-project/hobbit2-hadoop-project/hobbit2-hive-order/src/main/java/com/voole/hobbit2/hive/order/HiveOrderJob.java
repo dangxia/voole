@@ -186,6 +186,7 @@ public class HiveOrderJob extends Configured implements Tool {
 		conf.setBoolean(MRJobConfig.MAP_SPECULATIVE, false);
 		conf.setBoolean(MRJobConfig.REDUCE_SPECULATIVE, false);
 		conf.setBoolean(MRJobConfig.MAPREDUCE_JOB_USER_CLASSPATH_FIRST, true);
+		conf.setInt("mapreduce.jobtracker.taskscheduler.maxrunningtasks.perjob", 40);
 		return true;
 	}
 
