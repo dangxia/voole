@@ -31,6 +31,7 @@ public class MixedJobChain extends Configured implements Tool {
 
 	@Override
 	public int run(String[] args) throws Exception {
+		fillJobControl(args);
 		new Thread(jobControl).start();
 		return waitJobsComplete();
 	}
