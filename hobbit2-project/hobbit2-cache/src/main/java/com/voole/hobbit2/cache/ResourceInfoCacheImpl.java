@@ -24,27 +24,22 @@ public class ResourceInfoCacheImpl extends AbstractHobbitCache implements
 	// spid=>movie_spid
 	private volatile Map<String, String> spidToMovieSpid;
 	// (movie_spid,fid)=>ResourceInfo
-	private volatile Map<Tuple<String, String>, ResourceInfo> resourceMap;
+	private volatile Map<String, ResourceInfo> resourceMap;
 
 	private volatile Map<String, String> spidToMovieSpidSwap;
-	private volatile Map<Tuple<String, String>, ResourceInfo> resourceMapSwap;
+	private volatile Map<String, ResourceInfo> resourceMapSwap;
 
-	private final Function<Tuple<String, String>, Optional<ResourceInfo>> getResourceInfoFunction;
+	private final Function<String, Optional<ResourceInfo>> getResourceInfoFunction;
 
 	public ResourceInfoCacheImpl(ResourceInfoFetch fetch) {
 		this.fetch = fetch;
-		this.getResourceInfoFunction = new Function<Tuple<String, String>, Optional<ResourceInfo>>() {
+		this.getResourceInfoFunction = new Function<String, Optional<ResourceInfo>>() {
 			@Override
-			public Optional<ResourceInfo> apply(Tuple<String, String> input) {
-				String spid = input.getA();
-				String fid = input.getB();
+			public Optional<ResourceInfo> apply(String fid) {
 				fid = fid.toUpperCase();
 				ResourceInfo info = null;
-				String movieSpid = spidToMovieSpid.get(spid);
-				if (movieSpid != null) {
-					info = resourceMap.get(new Tuple<String, String>(movieSpid,
-							fid));
-				}
+				//String movieSpid = spidToMovieSpid.get(spid);
+					info = resourceMap.get(fid);
 				if (info != null) {
 					return Optional.of(info);
 				}
@@ -59,20 +54,18 @@ public class ResourceInfoCacheImpl extends AbstractHobbitCache implements
 		if (spid == null || fid == null) {
 			return Optional.absent();
 		}
-		return query(this.getResourceInfoFunction, new Tuple<String, String>(
-				spid, fid));
+		return query(this.getResourceInfoFunction, fid);
 	}
 
 	@Override
 	protected void swop() {
-		spidToMovieSpid = spidToMovieSpidSwap;
+		//spidToMovieSpid = spidToMovieSpidSwap;
 		resourceMap = resourceMapSwap;
 	}
 
 	@Override
 	protected void fetch() {
-		spidToMovieSpidSwap = ImmutableMap.copyOf(getFetch()
-				.getSpidToMovieSpidMap());
+		//spidToMovieSpidSwap = ImmutableMap.copyOf(getFetch().getSpidToMovieSpidMap());
 		resourceMapSwap = ImmutableMap.copyOf(getFetch().getResourceMap());
 	}
 

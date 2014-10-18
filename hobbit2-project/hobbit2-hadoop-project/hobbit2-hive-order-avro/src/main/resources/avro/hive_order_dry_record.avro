@@ -52,7 +52,25 @@
 	}, {
 		"name" : "secid",
 		"type" : [ "string", "null" ]
-	} ]
+	}, {
+		"name" : "datasorce",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "metric_status",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "metric_techtype",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playurl",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "apk_version",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_po_id",
+		"type" : [ "int", "null" ]
+	}]
 }
 
 // MID、当前剧集

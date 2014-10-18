@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.voole.hobbit.cache.HobbitCache.AbstractHobbitCache;
 import com.voole.hobbit.cache.entity.ResourceInfo;
-import com.voole.hobbit.utils.Tuple;
 
 /**
  * @author XuehuiHe
@@ -24,10 +23,10 @@ public class ResourceInfoCacheImpl extends AbstractHobbitCache implements
 	// spid=>movie_spid
 	private Map<String, String> spidToMovieSpid;
 	// (movie_spid,fid)=>ResourceInfo
-	private Map<Tuple<String, String>, ResourceInfo> resourceMap;
+	private Map<String, ResourceInfo> resourceMap;
 
 	private Map<String, String> spidToMovieSpidSwap;
-	private Map<Tuple<String, String>, ResourceInfo> resourceMapSwap;
+	private Map<String, ResourceInfo> resourceMapSwap;
 
 	public ResourceInfoCacheImpl(ResourceInfoFetch fetch) {
 		super("resource-info-cache");
@@ -43,11 +42,7 @@ public class ResourceInfoCacheImpl extends AbstractHobbitCache implements
 		fid = fid.toUpperCase();
 		ResourceInfo info = null;
 		try {
-			String movieSpid = spidToMovieSpid.get(spid);
-			if (movieSpid != null) {
-				info = resourceMap
-						.get(new Tuple<String, String>(movieSpid, fid));
-			}
+			info = resourceMap.get(fid);
 		} catch (Exception e) {
 			getLogger().warn(getName() + " getBitrate error", e);
 		}
@@ -56,14 +51,14 @@ public class ResourceInfoCacheImpl extends AbstractHobbitCache implements
 
 	@Override
 	protected void _swop() {
-		spidToMovieSpid = spidToMovieSpidSwap;
+		// spidToMovieSpid = spidToMovieSpidSwap;
 		resourceMap = resourceMapSwap;
 	}
 
 	@Override
 	protected void _fetch() {
 		try {
-			spidToMovieSpidSwap = getFetch().getSpidToMovieSpidMap();
+			// spidToMovieSpidSwap = getFetch().getSpidToMovieSpidMap();
 			resourceMapSwap = getFetch().getResourceMap();
 		} catch (Exception e) {
 			getLogger().warn(getName() + " doRefresh error", e);

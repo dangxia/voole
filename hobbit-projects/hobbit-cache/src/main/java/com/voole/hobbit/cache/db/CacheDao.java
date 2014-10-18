@@ -45,13 +45,13 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 	private JdbcTemplate realtimeJt;
 
 	public List<IpRange> getVooleIpRanges() {
-		String sql = " SELECT si.areaid, si.type AS nettype, si.`minip`, si.`maxip` FROM sys_ipzone si WHERE si.`maxip`>si.`minip` ";
+		String sql = " SELECT si.dim_area_id, si.dim_nettype_id AS nettype, si.`minip`, si.`maxip` FROM dim_ipzone si WHERE si.`maxip`>si.`minip` ";
 		return realtimeJt.query(sql, new RowMapper<IpRange>() {
 
 			@Override
 			public IpRange mapRow(ResultSet rs, int rowNum) throws SQLException {
 				IpRange l = new IpRange();
-				l.setAreaid(rs.getInt("areaid"));
+				l.setAreaid(rs.getInt("dim_area_id"));
 				l.setMaxip(rs.getLong("maxip"));
 				l.setMinip(rs.getLong("minip"));
 				l.setNettype(rs.getInt("nettype"));
@@ -62,7 +62,7 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 	}
 
 	public List<BoxStoreAreaInfo> getLiveBoxStoreAreaInfos() {
-		String sql = "SELECT b.`areaid`, s.`nettype`, b.`oemid`, b.`mac` FROM box_store b JOIN sp s  ON (s.`spid` = b.`spid`)";
+		String sql = "SELECT b.`areaid`, s.`dim_nettype_id`, b.`oemid`, b.`mac` FROM dim_store b JOIN dim_isp s  ON (s.`id` = b.`spid`)";
 		return realtimeJt.query(sql, new RowMapper<BoxStoreAreaInfo>() {
 
 			@Override
@@ -72,7 +72,7 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 				areaInfo.setOemid(rs.getString("oemid"));
 				areaInfo.setMac(rs.getString("mac"));
 				areaInfo.setAreaid(rs.getInt("areaid"));
-				areaInfo.setNettype(rs.getInt("nettype"));
+				areaInfo.setNettype(rs.getInt("dim_nettype_id"));
 				return areaInfo;
 			}
 		});
@@ -80,18 +80,18 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 
 	public Map<String, List<IpRange>> getSpIpRanges() {
 		final Map<String, List<IpRange>> map = new HashMap<String, List<IpRange>>();
-		String sql = "SELECT  si.areaid, si.type AS nettype, si.`spid`, si.`minip`, si.`maxip` FROM sp_ipzone si WHERE si.`maxip`>si.`minip` ";
+		String sql = "SELECT  si.dim_area_id, si.dim_nettype_id AS nettype, si.dim_isp_id, si.`minip`, si.`maxip` FROM dim_sp_ipzone si WHERE si.`maxip`>si.`minip` ";
 		realtimeJt.query(sql, new RowMapper<IpRange>() {
 
 			@Override
 			public IpRange mapRow(ResultSet rs, int rowNum) throws SQLException {
 				IpRange l = new IpRange();
-				l.setAreaid(rs.getInt("areaid"));
+				l.setAreaid(rs.getInt("dim_area_id"));
 				l.setMaxip(rs.getLong("maxip"));
 				l.setMinip(rs.getLong("minip"));
 				l.setNettype(rs.getInt("nettype"));
 
-				String spid = rs.getString("spid");
+				String spid = rs.getString("dim_isp_id");
 				if (spid != null && spid.length() > 0) {
 					if (!map.containsKey(spid)) {
 						map.put(spid, new ArrayList<IpRange>());
@@ -129,7 +129,7 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 	 * @return
 	 */
 	public List<OemInfo> getOemInfos() {
-		String sql = "SELECT o.`oemid`,o.`repeat_portalid`,o.`live_portalid`,o.`spid`,o.`tid`,o.`policyid`,o.`shortname` FROM oem o ";
+		String sql = "SELECT o.`oemid`,o.name,o.`repeat_portalid`,o.`live_portalid`,o.`dim_isp_id`,o.`tid`,o.`policyid`,o.`name` FROM dim_oem o ";
 		return realtimeJt.query(sql, new RowMapper<OemInfo>() {
 
 			@Override
@@ -138,10 +138,10 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 				info.setOemid(rs.getLong("oemid"));
 				info.setRepeatPortalid(rs.getString("repeat_portalid"));
 				info.setLivePortalid(rs.getString("live_portalid"));
-				info.setSpid(rs.getString("spid"));
+				info.setSpid(rs.getString("dim_isp_id"));
 				info.setTid(rs.getLong("tid"));
 				info.setPolicyid(rs.getLong("policyid"));
-				info.setShortname(rs.getString("shortname"));
+				info.setShortname(rs.getString("name"));
 				return info;
 			}
 		});
@@ -246,9 +246,9 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		return map;
 	}
 
-	public Map<Tuple<String, String>, ResourceInfo> getResourceMap() {
-		final Map<Tuple<String, String>, ResourceInfo> map = new HashMap<Tuple<String, String>, ResourceInfo>();
-		String sql = "SELECT IFNULL(rs.`bitrate`, 0) bitrate, rs.`fid`, rs.`spid`, rs.`duration` FROM resource_src rs ";
+	public Map<String, ResourceInfo> getResourceMap() {
+		final Map<String, ResourceInfo> map = new HashMap<String, ResourceInfo>();
+		String sql = "SELECT IFNULL(rs.`bitrate`, 0) bitrate, rs.`fid`, rs.`mid`, rs.`duration`,rs.series FROM dim_media rs ";
 		realtimeJt.query(sql, new RowMapper<Void>() {
 			@Override
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -259,8 +259,9 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 				ResourceInfo info = new ResourceInfo();
 				info.setBitrate(rs.getInt("bitrate"));
 				info.setDuration(rs.getInt("duration"));
-				map.put(new Tuple<String, String>(rs.getString("spid"), fid),
-						info);
+				info.setMid(rs.getLong("mid"));
+				info.setSeries(rs.getInt("series"));
+				map.put(fid, info);
 
 				return null;
 			}

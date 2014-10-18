@@ -3,71 +3,97 @@
 	"name" : "HiveOrderDetailRecord",
 	"namespace" : "com.voole.dungbeetle.order.record.avro",
 	"fields" : [ {
-		"name" : "sessID",
+		"name" : "sessid",
 		"type" : "string"
 	},{
-		"name" : "spid",
-		"type" : [ "string", "null" ]
-	}, {
-		"name" : "UID",
-		"type" : [ "string", "null" ]
-	}, {
-		"name" : "HID",
-		"type" : [ "string", "null" ]
-	}, {
-		"name" : "OEMID",
+		"name" : "stamp",
 		"type" : [ "long", "null" ]
 	}, {
-		"name" : "natip",
+		"name" : "userip",
 		"type" : [ "long", "null" ]
 	}, {
-		"name" : "areaid",
+		"name" : "datasorce",
 		"type" : [ "int", "null" ]
 	}, {
-		"name" : "FID",
+		"name" : "playurl",
 		"type" : [ "string", "null" ]
 	}, {
-		"name" : "playBgnTime",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "playAliveTime",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "playEndTime",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "playDurationTime",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "avgspeed",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "isAdMod",
-		"type" : "boolean",
-		"default" : false
-	}, {
-		"name" : "isRepeatMod",
-		"type" : "boolean",
-		"default" : false
-	}, {
-		"name" : "pid",
+		"name" : "version",
 		"type" : [ "string", "null" ]
 	}, {
-		"name" : "epgid",
-		"type" : [ "long", "null" ]
-	}, {
-		"name" : "secid",
+		"name" : "dim_date_hour",
 		"type" : [ "string", "null" ]
 	}, {
-		"name" : "bitrate",
+		"name" : "dim_isp_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_user_uid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_user_hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_oem_id",
 		"type" : [ "long", "null" ]
 	}, {
-		"name" : "mid",
+		"name" : "dim_area_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_nettype_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_media_fid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_movie_mid",
 		"type" : [ "long", "null" ]
 	}, {
-		"name" : "currSeries",
+		"name" : "dim_media_series",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_product_pid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_po_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_epg_id",
 		"type" : [ "long", "null" ]
-	} ]
+	}, {
+		"name" : "dim_section_id",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "metric_playbgntime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "metric_playalivetime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "metric_playendtime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "metric_durationtime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "metric_avgspeed",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "metric_isad",
+		"type" : "int",
+		"default" : 0
+	}, {
+		"name" : "metric_isrepeatmod",
+		"type" : "int",
+		"default" : 0
+	}, {
+		"name" : "metric_status",
+		"type" : "int",
+		"default" : 0
+	}, {
+		"name" : "metric_techtype",
+		"type" : "int",
+		"default" : 0
+	}]
 }
 
 // MID、当前剧集

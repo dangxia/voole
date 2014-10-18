@@ -104,26 +104,46 @@ public class HiveOrderDryRecordGenerator {
 
 	private static void _fillBgn(HiveOrderDryRecord record,
 			OrderPlayBgnReqV2 bgn) {
-		_fillBgn(record, bgn.getUID(), bgn.getHID(), bgn.getOEMID(),
-				bgn.getNatip(), bgn.getFID(), bgn.getPlayTick(), bgn.getURL());
+		CharSequence url = bgn.getURL();
+		record.setUID(bgn.getUID());
+		record.setHID(bgn.getHID());
+		record.setOEMID(bgn.getOEMID());
+		record.setNatip(bgn.getNatip());
+		record.setFID(bgn.getFID());
+		record.setPlayBgnTime(bgn.getPlayTick());
+
+		record.setDatasorce(0);
+		record.setMetricStatus(0);
+		record.setPlayurl(url);
+		if (bgn.getCurVer() == null) {
+			record.setApkVersion("0");
+		} else {
+			record.setApkVersion(bgn.getCurVer().toString());
+		}
+		record.setMetricTechtype(0);
+		afterFill(record, url.toString());
 
 	}
 
 	private static void _fillBgn(HiveOrderDryRecord record,
 			OrderPlayBgnReqV3 bgn) {
-		_fillBgn(record, bgn.getUID(), bgn.getHID(), bgn.getOEMID(),
-				bgn.getNatip(), bgn.getFID(), bgn.getPlayTick(), bgn.getURL());
-	}
+		CharSequence url = bgn.getURL();
+		record.setUID(bgn.getUID());
+		record.setHID(bgn.getHID());
+		record.setOEMID(bgn.getOEMID());
+		record.setNatip(bgn.getNatip());
+		record.setFID(bgn.getFID());
+		record.setPlayBgnTime(bgn.getPlayTick());
 
-	private static void _fillBgn(HiveOrderDryRecord record, CharSequence uid,
-			CharSequence hid, Long oemid, Long natip, CharSequence fid,
-			Long playTick, CharSequence url) {
-		record.setUID(uid);
-		record.setHID(hid);
-		record.setOEMID(oemid);
-		record.setNatip(natip);
-		record.setFID(fid);
-		record.setPlayBgnTime(playTick);
+		record.setDatasorce(0);
+		record.setMetricStatus(0);
+		record.setPlayurl(url);
+		if (bgn.getCurVer() == null) {
+			record.setApkVersion("0");
+		} else {
+			record.setApkVersion(bgn.getCurVer().toString());
+		}
+		record.setMetricTechtype(0);
 		afterFill(record, url.toString());
 	}
 
@@ -180,5 +200,12 @@ public class HiveOrderDryRecordGenerator {
 		record.setIsAdMod(pars.containsKey("adInfo"));
 		// QTYPE
 		record.setIsRepeatMod("500".equals(pars.get("qtype")));
+
+		if (pars.containsKey("po")) {
+			try {
+				record.setDimPoId(Integer.parseInt(pars.get("po")));
+			} catch (Exception e) {
+			}
+		}
 	}
 }

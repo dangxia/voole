@@ -7,7 +7,7 @@ package com.voole.hobbit2.hive.order.avro;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDryRecord\",\"namespace\":\"com.voole.hobbit2.hive.order.avro\",\"fields\":[{\"name\":\"sessID\",\"type\":\"string\"},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"playBgnTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playAliveTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playEndTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playDurationTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"isAdMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"isRepeatMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"epgid\",\"type\":[\"long\",\"null\"]},{\"name\":\"secid\",\"type\":[\"string\",\"null\"]}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDryRecord\",\"namespace\":\"com.voole.hobbit2.hive.order.avro\",\"fields\":[{\"name\":\"sessID\",\"type\":\"string\"},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"playBgnTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playAliveTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playEndTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playDurationTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"isAdMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"isRepeatMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"epgid\",\"type\":[\"long\",\"null\"]},{\"name\":\"secid\",\"type\":[\"string\",\"null\"]},{\"name\":\"datasorce\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_status\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_techtype\",\"type\":[\"int\",\"null\"]},{\"name\":\"playurl\",\"type\":[\"string\",\"null\"]},{\"name\":\"apk_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_po_id\",\"type\":[\"int\",\"null\"]}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence sessID;
   @Deprecated public java.lang.CharSequence UID;
@@ -25,6 +25,12 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
   @Deprecated public java.lang.CharSequence pid;
   @Deprecated public java.lang.Long epgid;
   @Deprecated public java.lang.CharSequence secid;
+  @Deprecated public java.lang.Integer datasorce;
+  @Deprecated public java.lang.Integer metric_status;
+  @Deprecated public java.lang.Integer metric_techtype;
+  @Deprecated public java.lang.CharSequence playurl;
+  @Deprecated public java.lang.CharSequence apk_version;
+  @Deprecated public java.lang.Integer dim_po_id;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -36,7 +42,7 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
   /**
    * All-args constructor.
    */
-  public HiveOrderDryRecord(java.lang.CharSequence sessID, java.lang.CharSequence UID, java.lang.CharSequence HID, java.lang.Long OEMID, java.lang.Long natip, java.lang.CharSequence FID, java.lang.Long playBgnTime, java.lang.Long playAliveTime, java.lang.Long playEndTime, java.lang.Long playDurationTime, java.lang.Long avgspeed, java.lang.Boolean isAdMod, java.lang.Boolean isRepeatMod, java.lang.CharSequence pid, java.lang.Long epgid, java.lang.CharSequence secid) {
+  public HiveOrderDryRecord(java.lang.CharSequence sessID, java.lang.CharSequence UID, java.lang.CharSequence HID, java.lang.Long OEMID, java.lang.Long natip, java.lang.CharSequence FID, java.lang.Long playBgnTime, java.lang.Long playAliveTime, java.lang.Long playEndTime, java.lang.Long playDurationTime, java.lang.Long avgspeed, java.lang.Boolean isAdMod, java.lang.Boolean isRepeatMod, java.lang.CharSequence pid, java.lang.Long epgid, java.lang.CharSequence secid, java.lang.Integer datasorce, java.lang.Integer metric_status, java.lang.Integer metric_techtype, java.lang.CharSequence playurl, java.lang.CharSequence apk_version, java.lang.Integer dim_po_id) {
     this.sessID = sessID;
     this.UID = UID;
     this.HID = HID;
@@ -53,6 +59,12 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     this.pid = pid;
     this.epgid = epgid;
     this.secid = secid;
+    this.datasorce = datasorce;
+    this.metric_status = metric_status;
+    this.metric_techtype = metric_techtype;
+    this.playurl = playurl;
+    this.apk_version = apk_version;
+    this.dim_po_id = dim_po_id;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -75,6 +87,12 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     case 13: return pid;
     case 14: return epgid;
     case 15: return secid;
+    case 16: return datasorce;
+    case 17: return metric_status;
+    case 18: return metric_techtype;
+    case 19: return playurl;
+    case 20: return apk_version;
+    case 21: return dim_po_id;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -98,6 +116,12 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     case 13: pid = (java.lang.CharSequence)value$; break;
     case 14: epgid = (java.lang.Long)value$; break;
     case 15: secid = (java.lang.CharSequence)value$; break;
+    case 16: datasorce = (java.lang.Integer)value$; break;
+    case 17: metric_status = (java.lang.Integer)value$; break;
+    case 18: metric_techtype = (java.lang.Integer)value$; break;
+    case 19: playurl = (java.lang.CharSequence)value$; break;
+    case 20: apk_version = (java.lang.CharSequence)value$; break;
+    case 21: dim_po_id = (java.lang.Integer)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -342,6 +366,96 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     this.secid = value;
   }
 
+  /**
+   * Gets the value of the 'datasorce' field.
+   */
+  public java.lang.Integer getDatasorce() {
+    return datasorce;
+  }
+
+  /**
+   * Sets the value of the 'datasorce' field.
+   * @param value the value to set.
+   */
+  public void setDatasorce(java.lang.Integer value) {
+    this.datasorce = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_status' field.
+   */
+  public java.lang.Integer getMetricStatus() {
+    return metric_status;
+  }
+
+  /**
+   * Sets the value of the 'metric_status' field.
+   * @param value the value to set.
+   */
+  public void setMetricStatus(java.lang.Integer value) {
+    this.metric_status = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_techtype' field.
+   */
+  public java.lang.Integer getMetricTechtype() {
+    return metric_techtype;
+  }
+
+  /**
+   * Sets the value of the 'metric_techtype' field.
+   * @param value the value to set.
+   */
+  public void setMetricTechtype(java.lang.Integer value) {
+    this.metric_techtype = value;
+  }
+
+  /**
+   * Gets the value of the 'playurl' field.
+   */
+  public java.lang.CharSequence getPlayurl() {
+    return playurl;
+  }
+
+  /**
+   * Sets the value of the 'playurl' field.
+   * @param value the value to set.
+   */
+  public void setPlayurl(java.lang.CharSequence value) {
+    this.playurl = value;
+  }
+
+  /**
+   * Gets the value of the 'apk_version' field.
+   */
+  public java.lang.CharSequence getApkVersion() {
+    return apk_version;
+  }
+
+  /**
+   * Sets the value of the 'apk_version' field.
+   * @param value the value to set.
+   */
+  public void setApkVersion(java.lang.CharSequence value) {
+    this.apk_version = value;
+  }
+
+  /**
+   * Gets the value of the 'dim_po_id' field.
+   */
+  public java.lang.Integer getDimPoId() {
+    return dim_po_id;
+  }
+
+  /**
+   * Sets the value of the 'dim_po_id' field.
+   * @param value the value to set.
+   */
+  public void setDimPoId(java.lang.Integer value) {
+    this.dim_po_id = value;
+  }
+
   /** Creates a new HiveOrderDryRecord RecordBuilder */
   public static com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder newBuilder() {
     return new com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder();
@@ -379,6 +493,12 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     private java.lang.CharSequence pid;
     private java.lang.Long epgid;
     private java.lang.CharSequence secid;
+    private java.lang.Integer datasorce;
+    private java.lang.Integer metric_status;
+    private java.lang.Integer metric_techtype;
+    private java.lang.CharSequence playurl;
+    private java.lang.CharSequence apk_version;
+    private java.lang.Integer dim_po_id;
 
     /** Creates a new Builder */
     private Builder() {
@@ -452,6 +572,30 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
         this.secid = data().deepCopy(fields()[15].schema(), other.secid);
         fieldSetFlags()[15] = true;
       }
+      if (isValidValue(fields()[16], other.datasorce)) {
+        this.datasorce = data().deepCopy(fields()[16].schema(), other.datasorce);
+        fieldSetFlags()[16] = true;
+      }
+      if (isValidValue(fields()[17], other.metric_status)) {
+        this.metric_status = data().deepCopy(fields()[17].schema(), other.metric_status);
+        fieldSetFlags()[17] = true;
+      }
+      if (isValidValue(fields()[18], other.metric_techtype)) {
+        this.metric_techtype = data().deepCopy(fields()[18].schema(), other.metric_techtype);
+        fieldSetFlags()[18] = true;
+      }
+      if (isValidValue(fields()[19], other.playurl)) {
+        this.playurl = data().deepCopy(fields()[19].schema(), other.playurl);
+        fieldSetFlags()[19] = true;
+      }
+      if (isValidValue(fields()[20], other.apk_version)) {
+        this.apk_version = data().deepCopy(fields()[20].schema(), other.apk_version);
+        fieldSetFlags()[20] = true;
+      }
+      if (isValidValue(fields()[21], other.dim_po_id)) {
+        this.dim_po_id = data().deepCopy(fields()[21].schema(), other.dim_po_id);
+        fieldSetFlags()[21] = true;
+      }
     }
     
     /** Creates a Builder by copying an existing HiveOrderDryRecord instance */
@@ -520,6 +664,30 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
       if (isValidValue(fields()[15], other.secid)) {
         this.secid = data().deepCopy(fields()[15].schema(), other.secid);
         fieldSetFlags()[15] = true;
+      }
+      if (isValidValue(fields()[16], other.datasorce)) {
+        this.datasorce = data().deepCopy(fields()[16].schema(), other.datasorce);
+        fieldSetFlags()[16] = true;
+      }
+      if (isValidValue(fields()[17], other.metric_status)) {
+        this.metric_status = data().deepCopy(fields()[17].schema(), other.metric_status);
+        fieldSetFlags()[17] = true;
+      }
+      if (isValidValue(fields()[18], other.metric_techtype)) {
+        this.metric_techtype = data().deepCopy(fields()[18].schema(), other.metric_techtype);
+        fieldSetFlags()[18] = true;
+      }
+      if (isValidValue(fields()[19], other.playurl)) {
+        this.playurl = data().deepCopy(fields()[19].schema(), other.playurl);
+        fieldSetFlags()[19] = true;
+      }
+      if (isValidValue(fields()[20], other.apk_version)) {
+        this.apk_version = data().deepCopy(fields()[20].schema(), other.apk_version);
+        fieldSetFlags()[20] = true;
+      }
+      if (isValidValue(fields()[21], other.dim_po_id)) {
+        this.dim_po_id = data().deepCopy(fields()[21].schema(), other.dim_po_id);
+        fieldSetFlags()[21] = true;
       }
     }
 
@@ -921,6 +1089,156 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
       return this;
     }
 
+    /** Gets the value of the 'datasorce' field */
+    public java.lang.Integer getDatasorce() {
+      return datasorce;
+    }
+    
+    /** Sets the value of the 'datasorce' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setDatasorce(java.lang.Integer value) {
+      validate(fields()[16], value);
+      this.datasorce = value;
+      fieldSetFlags()[16] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'datasorce' field has been set */
+    public boolean hasDatasorce() {
+      return fieldSetFlags()[16];
+    }
+    
+    /** Clears the value of the 'datasorce' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearDatasorce() {
+      datasorce = null;
+      fieldSetFlags()[16] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_status' field */
+    public java.lang.Integer getMetricStatus() {
+      return metric_status;
+    }
+    
+    /** Sets the value of the 'metric_status' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setMetricStatus(java.lang.Integer value) {
+      validate(fields()[17], value);
+      this.metric_status = value;
+      fieldSetFlags()[17] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_status' field has been set */
+    public boolean hasMetricStatus() {
+      return fieldSetFlags()[17];
+    }
+    
+    /** Clears the value of the 'metric_status' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearMetricStatus() {
+      metric_status = null;
+      fieldSetFlags()[17] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_techtype' field */
+    public java.lang.Integer getMetricTechtype() {
+      return metric_techtype;
+    }
+    
+    /** Sets the value of the 'metric_techtype' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setMetricTechtype(java.lang.Integer value) {
+      validate(fields()[18], value);
+      this.metric_techtype = value;
+      fieldSetFlags()[18] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_techtype' field has been set */
+    public boolean hasMetricTechtype() {
+      return fieldSetFlags()[18];
+    }
+    
+    /** Clears the value of the 'metric_techtype' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearMetricTechtype() {
+      metric_techtype = null;
+      fieldSetFlags()[18] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'playurl' field */
+    public java.lang.CharSequence getPlayurl() {
+      return playurl;
+    }
+    
+    /** Sets the value of the 'playurl' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setPlayurl(java.lang.CharSequence value) {
+      validate(fields()[19], value);
+      this.playurl = value;
+      fieldSetFlags()[19] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'playurl' field has been set */
+    public boolean hasPlayurl() {
+      return fieldSetFlags()[19];
+    }
+    
+    /** Clears the value of the 'playurl' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearPlayurl() {
+      playurl = null;
+      fieldSetFlags()[19] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'apk_version' field */
+    public java.lang.CharSequence getApkVersion() {
+      return apk_version;
+    }
+    
+    /** Sets the value of the 'apk_version' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setApkVersion(java.lang.CharSequence value) {
+      validate(fields()[20], value);
+      this.apk_version = value;
+      fieldSetFlags()[20] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'apk_version' field has been set */
+    public boolean hasApkVersion() {
+      return fieldSetFlags()[20];
+    }
+    
+    /** Clears the value of the 'apk_version' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearApkVersion() {
+      apk_version = null;
+      fieldSetFlags()[20] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'dim_po_id' field */
+    public java.lang.Integer getDimPoId() {
+      return dim_po_id;
+    }
+    
+    /** Sets the value of the 'dim_po_id' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setDimPoId(java.lang.Integer value) {
+      validate(fields()[21], value);
+      this.dim_po_id = value;
+      fieldSetFlags()[21] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'dim_po_id' field has been set */
+    public boolean hasDimPoId() {
+      return fieldSetFlags()[21];
+    }
+    
+    /** Clears the value of the 'dim_po_id' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearDimPoId() {
+      dim_po_id = null;
+      fieldSetFlags()[21] = false;
+      return this;
+    }
+
     @Override
     public HiveOrderDryRecord build() {
       try {
@@ -941,6 +1259,12 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
         record.pid = fieldSetFlags()[13] ? this.pid : (java.lang.CharSequence) defaultValue(fields()[13]);
         record.epgid = fieldSetFlags()[14] ? this.epgid : (java.lang.Long) defaultValue(fields()[14]);
         record.secid = fieldSetFlags()[15] ? this.secid : (java.lang.CharSequence) defaultValue(fields()[15]);
+        record.datasorce = fieldSetFlags()[16] ? this.datasorce : (java.lang.Integer) defaultValue(fields()[16]);
+        record.metric_status = fieldSetFlags()[17] ? this.metric_status : (java.lang.Integer) defaultValue(fields()[17]);
+        record.metric_techtype = fieldSetFlags()[18] ? this.metric_techtype : (java.lang.Integer) defaultValue(fields()[18]);
+        record.playurl = fieldSetFlags()[19] ? this.playurl : (java.lang.CharSequence) defaultValue(fields()[19]);
+        record.apk_version = fieldSetFlags()[20] ? this.apk_version : (java.lang.CharSequence) defaultValue(fields()[20]);
+        record.dim_po_id = fieldSetFlags()[21] ? this.dim_po_id : (java.lang.Integer) defaultValue(fields()[21]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

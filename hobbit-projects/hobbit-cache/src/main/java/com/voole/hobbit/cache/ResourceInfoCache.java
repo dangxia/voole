@@ -6,7 +6,6 @@ package com.voole.hobbit.cache;
 import java.util.Map;
 
 import com.voole.hobbit.cache.entity.ResourceInfo;
-import com.voole.hobbit.utils.Tuple;
 
 /**
  * @author XuehuiHe
@@ -18,6 +17,6 @@ public interface ResourceInfoCache extends HobbitCache {
 	public static interface ResourceInfoFetch {
 		Map<String, String> getSpidToMovieSpidMap();
 
-		Map<Tuple<String, String>, ResourceInfo> getResourceMap();
+		Map<String, ResourceInfo> getResourceMap();
 	}
 }

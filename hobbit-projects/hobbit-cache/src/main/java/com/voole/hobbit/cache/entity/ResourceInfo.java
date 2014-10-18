@@ -15,6 +15,8 @@ public class ResourceInfo implements Serializable {
 	private static final long serialVersionUID = 6540647247488252639L;
 	private Integer bitrate;
 	private Integer duration;
+	private Integer series;
+	private Long mid;
 
 	public ResourceInfo() {
 	}
@@ -33,6 +35,22 @@ public class ResourceInfo implements Serializable {
 
 	public void setDuration(Integer duration) {
 		this.duration = duration;
+	}
+
+	public Integer getSeries() {
+		return series;
+	}
+
+	public void setSeries(Integer series) {
+		this.series = series;
+	}
+
+	public Long getMid() {
+		return mid;
+	}
+
+	public void setMid(Long mid) {
+		this.mid = mid;
 	}
 
 }

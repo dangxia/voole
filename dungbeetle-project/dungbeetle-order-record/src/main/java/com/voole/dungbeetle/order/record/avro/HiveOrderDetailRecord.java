@@ -7,29 +7,37 @@ package com.voole.dungbeetle.order.record.avro;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDetailRecord\",\"namespace\":\"com.voole.dungbeetle.order.record.avro\",\"fields\":[{\"name\":\"sessID\",\"type\":\"string\"},{\"name\":\"spid\",\"type\":[\"string\",\"null\"]},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"areaid\",\"type\":[\"int\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"playBgnTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playAliveTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playEndTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playDurationTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"isAdMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"isRepeatMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"epgid\",\"type\":[\"long\",\"null\"]},{\"name\":\"secid\",\"type\":[\"string\",\"null\"]},{\"name\":\"bitrate\",\"type\":[\"long\",\"null\"]},{\"name\":\"mid\",\"type\":[\"long\",\"null\"]},{\"name\":\"currSeries\",\"type\":[\"long\",\"null\"]}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDetailRecord\",\"namespace\":\"com.voole.dungbeetle.order.record.avro\",\"fields\":[{\"name\":\"sessid\",\"type\":\"string\"},{\"name\":\"stamp\",\"type\":[\"long\",\"null\"]},{\"name\":\"userip\",\"type\":[\"long\",\"null\"]},{\"name\":\"datasorce\",\"type\":[\"int\",\"null\"]},{\"name\":\"playurl\",\"type\":[\"string\",\"null\"]},{\"name\":\"version\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_date_hour\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_isp_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_user_uid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_user_hid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_oem_id\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_area_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_nettype_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_media_fid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_movie_mid\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_media_series\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_product_pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_po_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_epg_id\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_section_id\",\"type\":[\"string\",\"null\"]},{\"name\":\"metric_playbgntime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_playalivetime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_playendtime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_durationtime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_isad\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_isrepeatmod\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_status\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_techtype\",\"type\":\"int\",\"default\":0}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public java.lang.CharSequence sessID;
-  @Deprecated public java.lang.CharSequence spid;
-  @Deprecated public java.lang.CharSequence UID;
-  @Deprecated public java.lang.CharSequence HID;
-  @Deprecated public java.lang.Long OEMID;
-  @Deprecated public java.lang.Long natip;
-  @Deprecated public java.lang.Integer areaid;
-  @Deprecated public java.lang.CharSequence FID;
-  @Deprecated public java.lang.Long playBgnTime;
-  @Deprecated public java.lang.Long playAliveTime;
-  @Deprecated public java.lang.Long playEndTime;
-  @Deprecated public java.lang.Long playDurationTime;
-  @Deprecated public java.lang.Long avgspeed;
-  @Deprecated public boolean isAdMod;
-  @Deprecated public boolean isRepeatMod;
-  @Deprecated public java.lang.CharSequence pid;
-  @Deprecated public java.lang.Long epgid;
-  @Deprecated public java.lang.CharSequence secid;
-  @Deprecated public java.lang.Long bitrate;
-  @Deprecated public java.lang.Long mid;
-  @Deprecated public java.lang.Long currSeries;
+  @Deprecated public java.lang.CharSequence sessid;
+  @Deprecated public java.lang.Long stamp;
+  @Deprecated public java.lang.Long userip;
+  @Deprecated public java.lang.Integer datasorce;
+  @Deprecated public java.lang.CharSequence playurl;
+  @Deprecated public java.lang.CharSequence version;
+  @Deprecated public java.lang.CharSequence dim_date_hour;
+  @Deprecated public java.lang.Integer dim_isp_id;
+  @Deprecated public java.lang.CharSequence dim_user_uid;
+  @Deprecated public java.lang.CharSequence dim_user_hid;
+  @Deprecated public java.lang.Long dim_oem_id;
+  @Deprecated public java.lang.Integer dim_area_id;
+  @Deprecated public java.lang.Integer dim_nettype_id;
+  @Deprecated public java.lang.CharSequence dim_media_fid;
+  @Deprecated public java.lang.Long dim_movie_mid;
+  @Deprecated public java.lang.Integer dim_media_series;
+  @Deprecated public java.lang.CharSequence dim_product_pid;
+  @Deprecated public java.lang.Integer dim_po_id;
+  @Deprecated public java.lang.Long dim_epg_id;
+  @Deprecated public java.lang.CharSequence dim_section_id;
+  @Deprecated public java.lang.Long metric_playbgntime;
+  @Deprecated public java.lang.Long metric_playalivetime;
+  @Deprecated public java.lang.Long metric_playendtime;
+  @Deprecated public java.lang.Long metric_durationtime;
+  @Deprecated public java.lang.Long metric_avgspeed;
+  @Deprecated public int metric_isad;
+  @Deprecated public int metric_isrepeatmod;
+  @Deprecated public int metric_status;
+  @Deprecated public int metric_techtype;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -41,55 +49,71 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   /**
    * All-args constructor.
    */
-  public HiveOrderDetailRecord(java.lang.CharSequence sessID, java.lang.CharSequence spid, java.lang.CharSequence UID, java.lang.CharSequence HID, java.lang.Long OEMID, java.lang.Long natip, java.lang.Integer areaid, java.lang.CharSequence FID, java.lang.Long playBgnTime, java.lang.Long playAliveTime, java.lang.Long playEndTime, java.lang.Long playDurationTime, java.lang.Long avgspeed, java.lang.Boolean isAdMod, java.lang.Boolean isRepeatMod, java.lang.CharSequence pid, java.lang.Long epgid, java.lang.CharSequence secid, java.lang.Long bitrate, java.lang.Long mid, java.lang.Long currSeries) {
-    this.sessID = sessID;
-    this.spid = spid;
-    this.UID = UID;
-    this.HID = HID;
-    this.OEMID = OEMID;
-    this.natip = natip;
-    this.areaid = areaid;
-    this.FID = FID;
-    this.playBgnTime = playBgnTime;
-    this.playAliveTime = playAliveTime;
-    this.playEndTime = playEndTime;
-    this.playDurationTime = playDurationTime;
-    this.avgspeed = avgspeed;
-    this.isAdMod = isAdMod;
-    this.isRepeatMod = isRepeatMod;
-    this.pid = pid;
-    this.epgid = epgid;
-    this.secid = secid;
-    this.bitrate = bitrate;
-    this.mid = mid;
-    this.currSeries = currSeries;
+  public HiveOrderDetailRecord(java.lang.CharSequence sessid, java.lang.Long stamp, java.lang.Long userip, java.lang.Integer datasorce, java.lang.CharSequence playurl, java.lang.CharSequence version, java.lang.CharSequence dim_date_hour, java.lang.Integer dim_isp_id, java.lang.CharSequence dim_user_uid, java.lang.CharSequence dim_user_hid, java.lang.Long dim_oem_id, java.lang.Integer dim_area_id, java.lang.Integer dim_nettype_id, java.lang.CharSequence dim_media_fid, java.lang.Long dim_movie_mid, java.lang.Integer dim_media_series, java.lang.CharSequence dim_product_pid, java.lang.Integer dim_po_id, java.lang.Long dim_epg_id, java.lang.CharSequence dim_section_id, java.lang.Long metric_playbgntime, java.lang.Long metric_playalivetime, java.lang.Long metric_playendtime, java.lang.Long metric_durationtime, java.lang.Long metric_avgspeed, java.lang.Integer metric_isad, java.lang.Integer metric_isrepeatmod, java.lang.Integer metric_status, java.lang.Integer metric_techtype) {
+    this.sessid = sessid;
+    this.stamp = stamp;
+    this.userip = userip;
+    this.datasorce = datasorce;
+    this.playurl = playurl;
+    this.version = version;
+    this.dim_date_hour = dim_date_hour;
+    this.dim_isp_id = dim_isp_id;
+    this.dim_user_uid = dim_user_uid;
+    this.dim_user_hid = dim_user_hid;
+    this.dim_oem_id = dim_oem_id;
+    this.dim_area_id = dim_area_id;
+    this.dim_nettype_id = dim_nettype_id;
+    this.dim_media_fid = dim_media_fid;
+    this.dim_movie_mid = dim_movie_mid;
+    this.dim_media_series = dim_media_series;
+    this.dim_product_pid = dim_product_pid;
+    this.dim_po_id = dim_po_id;
+    this.dim_epg_id = dim_epg_id;
+    this.dim_section_id = dim_section_id;
+    this.metric_playbgntime = metric_playbgntime;
+    this.metric_playalivetime = metric_playalivetime;
+    this.metric_playendtime = metric_playendtime;
+    this.metric_durationtime = metric_durationtime;
+    this.metric_avgspeed = metric_avgspeed;
+    this.metric_isad = metric_isad;
+    this.metric_isrepeatmod = metric_isrepeatmod;
+    this.metric_status = metric_status;
+    this.metric_techtype = metric_techtype;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call. 
   public java.lang.Object get(int field$) {
     switch (field$) {
-    case 0: return sessID;
-    case 1: return spid;
-    case 2: return UID;
-    case 3: return HID;
-    case 4: return OEMID;
-    case 5: return natip;
-    case 6: return areaid;
-    case 7: return FID;
-    case 8: return playBgnTime;
-    case 9: return playAliveTime;
-    case 10: return playEndTime;
-    case 11: return playDurationTime;
-    case 12: return avgspeed;
-    case 13: return isAdMod;
-    case 14: return isRepeatMod;
-    case 15: return pid;
-    case 16: return epgid;
-    case 17: return secid;
-    case 18: return bitrate;
-    case 19: return mid;
-    case 20: return currSeries;
+    case 0: return sessid;
+    case 1: return stamp;
+    case 2: return userip;
+    case 3: return datasorce;
+    case 4: return playurl;
+    case 5: return version;
+    case 6: return dim_date_hour;
+    case 7: return dim_isp_id;
+    case 8: return dim_user_uid;
+    case 9: return dim_user_hid;
+    case 10: return dim_oem_id;
+    case 11: return dim_area_id;
+    case 12: return dim_nettype_id;
+    case 13: return dim_media_fid;
+    case 14: return dim_movie_mid;
+    case 15: return dim_media_series;
+    case 16: return dim_product_pid;
+    case 17: return dim_po_id;
+    case 18: return dim_epg_id;
+    case 19: return dim_section_id;
+    case 20: return metric_playbgntime;
+    case 21: return metric_playalivetime;
+    case 22: return metric_playendtime;
+    case 23: return metric_durationtime;
+    case 24: return metric_avgspeed;
+    case 25: return metric_isad;
+    case 26: return metric_isrepeatmod;
+    case 27: return metric_status;
+    case 28: return metric_techtype;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -97,344 +121,472 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   @SuppressWarnings(value="unchecked")
   public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: sessID = (java.lang.CharSequence)value$; break;
-    case 1: spid = (java.lang.CharSequence)value$; break;
-    case 2: UID = (java.lang.CharSequence)value$; break;
-    case 3: HID = (java.lang.CharSequence)value$; break;
-    case 4: OEMID = (java.lang.Long)value$; break;
-    case 5: natip = (java.lang.Long)value$; break;
-    case 6: areaid = (java.lang.Integer)value$; break;
-    case 7: FID = (java.lang.CharSequence)value$; break;
-    case 8: playBgnTime = (java.lang.Long)value$; break;
-    case 9: playAliveTime = (java.lang.Long)value$; break;
-    case 10: playEndTime = (java.lang.Long)value$; break;
-    case 11: playDurationTime = (java.lang.Long)value$; break;
-    case 12: avgspeed = (java.lang.Long)value$; break;
-    case 13: isAdMod = (java.lang.Boolean)value$; break;
-    case 14: isRepeatMod = (java.lang.Boolean)value$; break;
-    case 15: pid = (java.lang.CharSequence)value$; break;
-    case 16: epgid = (java.lang.Long)value$; break;
-    case 17: secid = (java.lang.CharSequence)value$; break;
-    case 18: bitrate = (java.lang.Long)value$; break;
-    case 19: mid = (java.lang.Long)value$; break;
-    case 20: currSeries = (java.lang.Long)value$; break;
+    case 0: sessid = (java.lang.CharSequence)value$; break;
+    case 1: stamp = (java.lang.Long)value$; break;
+    case 2: userip = (java.lang.Long)value$; break;
+    case 3: datasorce = (java.lang.Integer)value$; break;
+    case 4: playurl = (java.lang.CharSequence)value$; break;
+    case 5: version = (java.lang.CharSequence)value$; break;
+    case 6: dim_date_hour = (java.lang.CharSequence)value$; break;
+    case 7: dim_isp_id = (java.lang.Integer)value$; break;
+    case 8: dim_user_uid = (java.lang.CharSequence)value$; break;
+    case 9: dim_user_hid = (java.lang.CharSequence)value$; break;
+    case 10: dim_oem_id = (java.lang.Long)value$; break;
+    case 11: dim_area_id = (java.lang.Integer)value$; break;
+    case 12: dim_nettype_id = (java.lang.Integer)value$; break;
+    case 13: dim_media_fid = (java.lang.CharSequence)value$; break;
+    case 14: dim_movie_mid = (java.lang.Long)value$; break;
+    case 15: dim_media_series = (java.lang.Integer)value$; break;
+    case 16: dim_product_pid = (java.lang.CharSequence)value$; break;
+    case 17: dim_po_id = (java.lang.Integer)value$; break;
+    case 18: dim_epg_id = (java.lang.Long)value$; break;
+    case 19: dim_section_id = (java.lang.CharSequence)value$; break;
+    case 20: metric_playbgntime = (java.lang.Long)value$; break;
+    case 21: metric_playalivetime = (java.lang.Long)value$; break;
+    case 22: metric_playendtime = (java.lang.Long)value$; break;
+    case 23: metric_durationtime = (java.lang.Long)value$; break;
+    case 24: metric_avgspeed = (java.lang.Long)value$; break;
+    case 25: metric_isad = (java.lang.Integer)value$; break;
+    case 26: metric_isrepeatmod = (java.lang.Integer)value$; break;
+    case 27: metric_status = (java.lang.Integer)value$; break;
+    case 28: metric_techtype = (java.lang.Integer)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
 
   /**
-   * Gets the value of the 'sessID' field.
+   * Gets the value of the 'sessid' field.
    */
-  public java.lang.CharSequence getSessID() {
-    return sessID;
+  public java.lang.CharSequence getSessid() {
+    return sessid;
   }
 
   /**
-   * Sets the value of the 'sessID' field.
+   * Sets the value of the 'sessid' field.
    * @param value the value to set.
    */
-  public void setSessID(java.lang.CharSequence value) {
-    this.sessID = value;
+  public void setSessid(java.lang.CharSequence value) {
+    this.sessid = value;
   }
 
   /**
-   * Gets the value of the 'spid' field.
+   * Gets the value of the 'stamp' field.
    */
-  public java.lang.CharSequence getSpid() {
-    return spid;
+  public java.lang.Long getStamp() {
+    return stamp;
   }
 
   /**
-   * Sets the value of the 'spid' field.
+   * Sets the value of the 'stamp' field.
    * @param value the value to set.
    */
-  public void setSpid(java.lang.CharSequence value) {
-    this.spid = value;
+  public void setStamp(java.lang.Long value) {
+    this.stamp = value;
   }
 
   /**
-   * Gets the value of the 'UID' field.
+   * Gets the value of the 'userip' field.
    */
-  public java.lang.CharSequence getUID() {
-    return UID;
+  public java.lang.Long getUserip() {
+    return userip;
   }
 
   /**
-   * Sets the value of the 'UID' field.
+   * Sets the value of the 'userip' field.
    * @param value the value to set.
    */
-  public void setUID(java.lang.CharSequence value) {
-    this.UID = value;
+  public void setUserip(java.lang.Long value) {
+    this.userip = value;
   }
 
   /**
-   * Gets the value of the 'HID' field.
+   * Gets the value of the 'datasorce' field.
    */
-  public java.lang.CharSequence getHID() {
-    return HID;
+  public java.lang.Integer getDatasorce() {
+    return datasorce;
   }
 
   /**
-   * Sets the value of the 'HID' field.
+   * Sets the value of the 'datasorce' field.
    * @param value the value to set.
    */
-  public void setHID(java.lang.CharSequence value) {
-    this.HID = value;
+  public void setDatasorce(java.lang.Integer value) {
+    this.datasorce = value;
   }
 
   /**
-   * Gets the value of the 'OEMID' field.
+   * Gets the value of the 'playurl' field.
    */
-  public java.lang.Long getOEMID() {
-    return OEMID;
+  public java.lang.CharSequence getPlayurl() {
+    return playurl;
   }
 
   /**
-   * Sets the value of the 'OEMID' field.
+   * Sets the value of the 'playurl' field.
    * @param value the value to set.
    */
-  public void setOEMID(java.lang.Long value) {
-    this.OEMID = value;
+  public void setPlayurl(java.lang.CharSequence value) {
+    this.playurl = value;
   }
 
   /**
-   * Gets the value of the 'natip' field.
+   * Gets the value of the 'version' field.
    */
-  public java.lang.Long getNatip() {
-    return natip;
+  public java.lang.CharSequence getVersion() {
+    return version;
   }
 
   /**
-   * Sets the value of the 'natip' field.
+   * Sets the value of the 'version' field.
    * @param value the value to set.
    */
-  public void setNatip(java.lang.Long value) {
-    this.natip = value;
+  public void setVersion(java.lang.CharSequence value) {
+    this.version = value;
   }
 
   /**
-   * Gets the value of the 'areaid' field.
+   * Gets the value of the 'dim_date_hour' field.
    */
-  public java.lang.Integer getAreaid() {
-    return areaid;
+  public java.lang.CharSequence getDimDateHour() {
+    return dim_date_hour;
   }
 
   /**
-   * Sets the value of the 'areaid' field.
+   * Sets the value of the 'dim_date_hour' field.
    * @param value the value to set.
    */
-  public void setAreaid(java.lang.Integer value) {
-    this.areaid = value;
+  public void setDimDateHour(java.lang.CharSequence value) {
+    this.dim_date_hour = value;
   }
 
   /**
-   * Gets the value of the 'FID' field.
+   * Gets the value of the 'dim_isp_id' field.
    */
-  public java.lang.CharSequence getFID() {
-    return FID;
+  public java.lang.Integer getDimIspId() {
+    return dim_isp_id;
   }
 
   /**
-   * Sets the value of the 'FID' field.
+   * Sets the value of the 'dim_isp_id' field.
    * @param value the value to set.
    */
-  public void setFID(java.lang.CharSequence value) {
-    this.FID = value;
+  public void setDimIspId(java.lang.Integer value) {
+    this.dim_isp_id = value;
   }
 
   /**
-   * Gets the value of the 'playBgnTime' field.
+   * Gets the value of the 'dim_user_uid' field.
    */
-  public java.lang.Long getPlayBgnTime() {
-    return playBgnTime;
+  public java.lang.CharSequence getDimUserUid() {
+    return dim_user_uid;
   }
 
   /**
-   * Sets the value of the 'playBgnTime' field.
+   * Sets the value of the 'dim_user_uid' field.
    * @param value the value to set.
    */
-  public void setPlayBgnTime(java.lang.Long value) {
-    this.playBgnTime = value;
+  public void setDimUserUid(java.lang.CharSequence value) {
+    this.dim_user_uid = value;
   }
 
   /**
-   * Gets the value of the 'playAliveTime' field.
+   * Gets the value of the 'dim_user_hid' field.
    */
-  public java.lang.Long getPlayAliveTime() {
-    return playAliveTime;
+  public java.lang.CharSequence getDimUserHid() {
+    return dim_user_hid;
   }
 
   /**
-   * Sets the value of the 'playAliveTime' field.
+   * Sets the value of the 'dim_user_hid' field.
    * @param value the value to set.
    */
-  public void setPlayAliveTime(java.lang.Long value) {
-    this.playAliveTime = value;
+  public void setDimUserHid(java.lang.CharSequence value) {
+    this.dim_user_hid = value;
   }
 
   /**
-   * Gets the value of the 'playEndTime' field.
+   * Gets the value of the 'dim_oem_id' field.
    */
-  public java.lang.Long getPlayEndTime() {
-    return playEndTime;
+  public java.lang.Long getDimOemId() {
+    return dim_oem_id;
   }
 
   /**
-   * Sets the value of the 'playEndTime' field.
+   * Sets the value of the 'dim_oem_id' field.
    * @param value the value to set.
    */
-  public void setPlayEndTime(java.lang.Long value) {
-    this.playEndTime = value;
+  public void setDimOemId(java.lang.Long value) {
+    this.dim_oem_id = value;
   }
 
   /**
-   * Gets the value of the 'playDurationTime' field.
+   * Gets the value of the 'dim_area_id' field.
    */
-  public java.lang.Long getPlayDurationTime() {
-    return playDurationTime;
+  public java.lang.Integer getDimAreaId() {
+    return dim_area_id;
   }
 
   /**
-   * Sets the value of the 'playDurationTime' field.
+   * Sets the value of the 'dim_area_id' field.
    * @param value the value to set.
    */
-  public void setPlayDurationTime(java.lang.Long value) {
-    this.playDurationTime = value;
+  public void setDimAreaId(java.lang.Integer value) {
+    this.dim_area_id = value;
   }
 
   /**
-   * Gets the value of the 'avgspeed' field.
+   * Gets the value of the 'dim_nettype_id' field.
    */
-  public java.lang.Long getAvgspeed() {
-    return avgspeed;
+  public java.lang.Integer getDimNettypeId() {
+    return dim_nettype_id;
   }
 
   /**
-   * Sets the value of the 'avgspeed' field.
+   * Sets the value of the 'dim_nettype_id' field.
    * @param value the value to set.
    */
-  public void setAvgspeed(java.lang.Long value) {
-    this.avgspeed = value;
+  public void setDimNettypeId(java.lang.Integer value) {
+    this.dim_nettype_id = value;
   }
 
   /**
-   * Gets the value of the 'isAdMod' field.
+   * Gets the value of the 'dim_media_fid' field.
    */
-  public java.lang.Boolean getIsAdMod() {
-    return isAdMod;
+  public java.lang.CharSequence getDimMediaFid() {
+    return dim_media_fid;
   }
 
   /**
-   * Sets the value of the 'isAdMod' field.
+   * Sets the value of the 'dim_media_fid' field.
    * @param value the value to set.
    */
-  public void setIsAdMod(java.lang.Boolean value) {
-    this.isAdMod = value;
+  public void setDimMediaFid(java.lang.CharSequence value) {
+    this.dim_media_fid = value;
   }
 
   /**
-   * Gets the value of the 'isRepeatMod' field.
+   * Gets the value of the 'dim_movie_mid' field.
    */
-  public java.lang.Boolean getIsRepeatMod() {
-    return isRepeatMod;
+  public java.lang.Long getDimMovieMid() {
+    return dim_movie_mid;
   }
 
   /**
-   * Sets the value of the 'isRepeatMod' field.
+   * Sets the value of the 'dim_movie_mid' field.
    * @param value the value to set.
    */
-  public void setIsRepeatMod(java.lang.Boolean value) {
-    this.isRepeatMod = value;
+  public void setDimMovieMid(java.lang.Long value) {
+    this.dim_movie_mid = value;
   }
 
   /**
-   * Gets the value of the 'pid' field.
+   * Gets the value of the 'dim_media_series' field.
    */
-  public java.lang.CharSequence getPid() {
-    return pid;
+  public java.lang.Integer getDimMediaSeries() {
+    return dim_media_series;
   }
 
   /**
-   * Sets the value of the 'pid' field.
+   * Sets the value of the 'dim_media_series' field.
    * @param value the value to set.
    */
-  public void setPid(java.lang.CharSequence value) {
-    this.pid = value;
+  public void setDimMediaSeries(java.lang.Integer value) {
+    this.dim_media_series = value;
   }
 
   /**
-   * Gets the value of the 'epgid' field.
+   * Gets the value of the 'dim_product_pid' field.
    */
-  public java.lang.Long getEpgid() {
-    return epgid;
+  public java.lang.CharSequence getDimProductPid() {
+    return dim_product_pid;
   }
 
   /**
-   * Sets the value of the 'epgid' field.
+   * Sets the value of the 'dim_product_pid' field.
    * @param value the value to set.
    */
-  public void setEpgid(java.lang.Long value) {
-    this.epgid = value;
+  public void setDimProductPid(java.lang.CharSequence value) {
+    this.dim_product_pid = value;
   }
 
   /**
-   * Gets the value of the 'secid' field.
+   * Gets the value of the 'dim_po_id' field.
    */
-  public java.lang.CharSequence getSecid() {
-    return secid;
+  public java.lang.Integer getDimPoId() {
+    return dim_po_id;
   }
 
   /**
-   * Sets the value of the 'secid' field.
+   * Sets the value of the 'dim_po_id' field.
    * @param value the value to set.
    */
-  public void setSecid(java.lang.CharSequence value) {
-    this.secid = value;
+  public void setDimPoId(java.lang.Integer value) {
+    this.dim_po_id = value;
   }
 
   /**
-   * Gets the value of the 'bitrate' field.
+   * Gets the value of the 'dim_epg_id' field.
    */
-  public java.lang.Long getBitrate() {
-    return bitrate;
+  public java.lang.Long getDimEpgId() {
+    return dim_epg_id;
   }
 
   /**
-   * Sets the value of the 'bitrate' field.
+   * Sets the value of the 'dim_epg_id' field.
    * @param value the value to set.
    */
-  public void setBitrate(java.lang.Long value) {
-    this.bitrate = value;
+  public void setDimEpgId(java.lang.Long value) {
+    this.dim_epg_id = value;
   }
 
   /**
-   * Gets the value of the 'mid' field.
+   * Gets the value of the 'dim_section_id' field.
    */
-  public java.lang.Long getMid() {
-    return mid;
+  public java.lang.CharSequence getDimSectionId() {
+    return dim_section_id;
   }
 
   /**
-   * Sets the value of the 'mid' field.
+   * Sets the value of the 'dim_section_id' field.
    * @param value the value to set.
    */
-  public void setMid(java.lang.Long value) {
-    this.mid = value;
+  public void setDimSectionId(java.lang.CharSequence value) {
+    this.dim_section_id = value;
   }
 
   /**
-   * Gets the value of the 'currSeries' field.
+   * Gets the value of the 'metric_playbgntime' field.
    */
-  public java.lang.Long getCurrSeries() {
-    return currSeries;
+  public java.lang.Long getMetricPlaybgntime() {
+    return metric_playbgntime;
   }
 
   /**
-   * Sets the value of the 'currSeries' field.
+   * Sets the value of the 'metric_playbgntime' field.
    * @param value the value to set.
    */
-  public void setCurrSeries(java.lang.Long value) {
-    this.currSeries = value;
+  public void setMetricPlaybgntime(java.lang.Long value) {
+    this.metric_playbgntime = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_playalivetime' field.
+   */
+  public java.lang.Long getMetricPlayalivetime() {
+    return metric_playalivetime;
+  }
+
+  /**
+   * Sets the value of the 'metric_playalivetime' field.
+   * @param value the value to set.
+   */
+  public void setMetricPlayalivetime(java.lang.Long value) {
+    this.metric_playalivetime = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_playendtime' field.
+   */
+  public java.lang.Long getMetricPlayendtime() {
+    return metric_playendtime;
+  }
+
+  /**
+   * Sets the value of the 'metric_playendtime' field.
+   * @param value the value to set.
+   */
+  public void setMetricPlayendtime(java.lang.Long value) {
+    this.metric_playendtime = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_durationtime' field.
+   */
+  public java.lang.Long getMetricDurationtime() {
+    return metric_durationtime;
+  }
+
+  /**
+   * Sets the value of the 'metric_durationtime' field.
+   * @param value the value to set.
+   */
+  public void setMetricDurationtime(java.lang.Long value) {
+    this.metric_durationtime = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_avgspeed' field.
+   */
+  public java.lang.Long getMetricAvgspeed() {
+    return metric_avgspeed;
+  }
+
+  /**
+   * Sets the value of the 'metric_avgspeed' field.
+   * @param value the value to set.
+   */
+  public void setMetricAvgspeed(java.lang.Long value) {
+    this.metric_avgspeed = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_isad' field.
+   */
+  public java.lang.Integer getMetricIsad() {
+    return metric_isad;
+  }
+
+  /**
+   * Sets the value of the 'metric_isad' field.
+   * @param value the value to set.
+   */
+  public void setMetricIsad(java.lang.Integer value) {
+    this.metric_isad = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_isrepeatmod' field.
+   */
+  public java.lang.Integer getMetricIsrepeatmod() {
+    return metric_isrepeatmod;
+  }
+
+  /**
+   * Sets the value of the 'metric_isrepeatmod' field.
+   * @param value the value to set.
+   */
+  public void setMetricIsrepeatmod(java.lang.Integer value) {
+    this.metric_isrepeatmod = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_status' field.
+   */
+  public java.lang.Integer getMetricStatus() {
+    return metric_status;
+  }
+
+  /**
+   * Sets the value of the 'metric_status' field.
+   * @param value the value to set.
+   */
+  public void setMetricStatus(java.lang.Integer value) {
+    this.metric_status = value;
+  }
+
+  /**
+   * Gets the value of the 'metric_techtype' field.
+   */
+  public java.lang.Integer getMetricTechtype() {
+    return metric_techtype;
+  }
+
+  /**
+   * Sets the value of the 'metric_techtype' field.
+   * @param value the value to set.
+   */
+  public void setMetricTechtype(java.lang.Integer value) {
+    this.metric_techtype = value;
   }
 
   /** Creates a new HiveOrderDetailRecord RecordBuilder */
@@ -458,27 +610,35 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<HiveOrderDetailRecord>
     implements org.apache.avro.data.RecordBuilder<HiveOrderDetailRecord> {
 
-    private java.lang.CharSequence sessID;
-    private java.lang.CharSequence spid;
-    private java.lang.CharSequence UID;
-    private java.lang.CharSequence HID;
-    private java.lang.Long OEMID;
-    private java.lang.Long natip;
-    private java.lang.Integer areaid;
-    private java.lang.CharSequence FID;
-    private java.lang.Long playBgnTime;
-    private java.lang.Long playAliveTime;
-    private java.lang.Long playEndTime;
-    private java.lang.Long playDurationTime;
-    private java.lang.Long avgspeed;
-    private boolean isAdMod;
-    private boolean isRepeatMod;
-    private java.lang.CharSequence pid;
-    private java.lang.Long epgid;
-    private java.lang.CharSequence secid;
-    private java.lang.Long bitrate;
-    private java.lang.Long mid;
-    private java.lang.Long currSeries;
+    private java.lang.CharSequence sessid;
+    private java.lang.Long stamp;
+    private java.lang.Long userip;
+    private java.lang.Integer datasorce;
+    private java.lang.CharSequence playurl;
+    private java.lang.CharSequence version;
+    private java.lang.CharSequence dim_date_hour;
+    private java.lang.Integer dim_isp_id;
+    private java.lang.CharSequence dim_user_uid;
+    private java.lang.CharSequence dim_user_hid;
+    private java.lang.Long dim_oem_id;
+    private java.lang.Integer dim_area_id;
+    private java.lang.Integer dim_nettype_id;
+    private java.lang.CharSequence dim_media_fid;
+    private java.lang.Long dim_movie_mid;
+    private java.lang.Integer dim_media_series;
+    private java.lang.CharSequence dim_product_pid;
+    private java.lang.Integer dim_po_id;
+    private java.lang.Long dim_epg_id;
+    private java.lang.CharSequence dim_section_id;
+    private java.lang.Long metric_playbgntime;
+    private java.lang.Long metric_playalivetime;
+    private java.lang.Long metric_playendtime;
+    private java.lang.Long metric_durationtime;
+    private java.lang.Long metric_avgspeed;
+    private int metric_isad;
+    private int metric_isrepeatmod;
+    private int metric_status;
+    private int metric_techtype;
 
     /** Creates a new Builder */
     private Builder() {
@@ -488,701 +648,963 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     /** Creates a Builder by copying an existing Builder */
     private Builder(com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder other) {
       super(other);
-      if (isValidValue(fields()[0], other.sessID)) {
-        this.sessID = data().deepCopy(fields()[0].schema(), other.sessID);
+      if (isValidValue(fields()[0], other.sessid)) {
+        this.sessid = data().deepCopy(fields()[0].schema(), other.sessid);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.spid)) {
-        this.spid = data().deepCopy(fields()[1].schema(), other.spid);
+      if (isValidValue(fields()[1], other.stamp)) {
+        this.stamp = data().deepCopy(fields()[1].schema(), other.stamp);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.UID)) {
-        this.UID = data().deepCopy(fields()[2].schema(), other.UID);
+      if (isValidValue(fields()[2], other.userip)) {
+        this.userip = data().deepCopy(fields()[2].schema(), other.userip);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.HID)) {
-        this.HID = data().deepCopy(fields()[3].schema(), other.HID);
+      if (isValidValue(fields()[3], other.datasorce)) {
+        this.datasorce = data().deepCopy(fields()[3].schema(), other.datasorce);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.OEMID)) {
-        this.OEMID = data().deepCopy(fields()[4].schema(), other.OEMID);
+      if (isValidValue(fields()[4], other.playurl)) {
+        this.playurl = data().deepCopy(fields()[4].schema(), other.playurl);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.natip)) {
-        this.natip = data().deepCopy(fields()[5].schema(), other.natip);
+      if (isValidValue(fields()[5], other.version)) {
+        this.version = data().deepCopy(fields()[5].schema(), other.version);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.areaid)) {
-        this.areaid = data().deepCopy(fields()[6].schema(), other.areaid);
+      if (isValidValue(fields()[6], other.dim_date_hour)) {
+        this.dim_date_hour = data().deepCopy(fields()[6].schema(), other.dim_date_hour);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.FID)) {
-        this.FID = data().deepCopy(fields()[7].schema(), other.FID);
+      if (isValidValue(fields()[7], other.dim_isp_id)) {
+        this.dim_isp_id = data().deepCopy(fields()[7].schema(), other.dim_isp_id);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.playBgnTime)) {
-        this.playBgnTime = data().deepCopy(fields()[8].schema(), other.playBgnTime);
+      if (isValidValue(fields()[8], other.dim_user_uid)) {
+        this.dim_user_uid = data().deepCopy(fields()[8].schema(), other.dim_user_uid);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.playAliveTime)) {
-        this.playAliveTime = data().deepCopy(fields()[9].schema(), other.playAliveTime);
+      if (isValidValue(fields()[9], other.dim_user_hid)) {
+        this.dim_user_hid = data().deepCopy(fields()[9].schema(), other.dim_user_hid);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.playEndTime)) {
-        this.playEndTime = data().deepCopy(fields()[10].schema(), other.playEndTime);
+      if (isValidValue(fields()[10], other.dim_oem_id)) {
+        this.dim_oem_id = data().deepCopy(fields()[10].schema(), other.dim_oem_id);
         fieldSetFlags()[10] = true;
       }
-      if (isValidValue(fields()[11], other.playDurationTime)) {
-        this.playDurationTime = data().deepCopy(fields()[11].schema(), other.playDurationTime);
+      if (isValidValue(fields()[11], other.dim_area_id)) {
+        this.dim_area_id = data().deepCopy(fields()[11].schema(), other.dim_area_id);
         fieldSetFlags()[11] = true;
       }
-      if (isValidValue(fields()[12], other.avgspeed)) {
-        this.avgspeed = data().deepCopy(fields()[12].schema(), other.avgspeed);
+      if (isValidValue(fields()[12], other.dim_nettype_id)) {
+        this.dim_nettype_id = data().deepCopy(fields()[12].schema(), other.dim_nettype_id);
         fieldSetFlags()[12] = true;
       }
-      if (isValidValue(fields()[13], other.isAdMod)) {
-        this.isAdMod = data().deepCopy(fields()[13].schema(), other.isAdMod);
+      if (isValidValue(fields()[13], other.dim_media_fid)) {
+        this.dim_media_fid = data().deepCopy(fields()[13].schema(), other.dim_media_fid);
         fieldSetFlags()[13] = true;
       }
-      if (isValidValue(fields()[14], other.isRepeatMod)) {
-        this.isRepeatMod = data().deepCopy(fields()[14].schema(), other.isRepeatMod);
+      if (isValidValue(fields()[14], other.dim_movie_mid)) {
+        this.dim_movie_mid = data().deepCopy(fields()[14].schema(), other.dim_movie_mid);
         fieldSetFlags()[14] = true;
       }
-      if (isValidValue(fields()[15], other.pid)) {
-        this.pid = data().deepCopy(fields()[15].schema(), other.pid);
+      if (isValidValue(fields()[15], other.dim_media_series)) {
+        this.dim_media_series = data().deepCopy(fields()[15].schema(), other.dim_media_series);
         fieldSetFlags()[15] = true;
       }
-      if (isValidValue(fields()[16], other.epgid)) {
-        this.epgid = data().deepCopy(fields()[16].schema(), other.epgid);
+      if (isValidValue(fields()[16], other.dim_product_pid)) {
+        this.dim_product_pid = data().deepCopy(fields()[16].schema(), other.dim_product_pid);
         fieldSetFlags()[16] = true;
       }
-      if (isValidValue(fields()[17], other.secid)) {
-        this.secid = data().deepCopy(fields()[17].schema(), other.secid);
+      if (isValidValue(fields()[17], other.dim_po_id)) {
+        this.dim_po_id = data().deepCopy(fields()[17].schema(), other.dim_po_id);
         fieldSetFlags()[17] = true;
       }
-      if (isValidValue(fields()[18], other.bitrate)) {
-        this.bitrate = data().deepCopy(fields()[18].schema(), other.bitrate);
+      if (isValidValue(fields()[18], other.dim_epg_id)) {
+        this.dim_epg_id = data().deepCopy(fields()[18].schema(), other.dim_epg_id);
         fieldSetFlags()[18] = true;
       }
-      if (isValidValue(fields()[19], other.mid)) {
-        this.mid = data().deepCopy(fields()[19].schema(), other.mid);
+      if (isValidValue(fields()[19], other.dim_section_id)) {
+        this.dim_section_id = data().deepCopy(fields()[19].schema(), other.dim_section_id);
         fieldSetFlags()[19] = true;
       }
-      if (isValidValue(fields()[20], other.currSeries)) {
-        this.currSeries = data().deepCopy(fields()[20].schema(), other.currSeries);
+      if (isValidValue(fields()[20], other.metric_playbgntime)) {
+        this.metric_playbgntime = data().deepCopy(fields()[20].schema(), other.metric_playbgntime);
         fieldSetFlags()[20] = true;
+      }
+      if (isValidValue(fields()[21], other.metric_playalivetime)) {
+        this.metric_playalivetime = data().deepCopy(fields()[21].schema(), other.metric_playalivetime);
+        fieldSetFlags()[21] = true;
+      }
+      if (isValidValue(fields()[22], other.metric_playendtime)) {
+        this.metric_playendtime = data().deepCopy(fields()[22].schema(), other.metric_playendtime);
+        fieldSetFlags()[22] = true;
+      }
+      if (isValidValue(fields()[23], other.metric_durationtime)) {
+        this.metric_durationtime = data().deepCopy(fields()[23].schema(), other.metric_durationtime);
+        fieldSetFlags()[23] = true;
+      }
+      if (isValidValue(fields()[24], other.metric_avgspeed)) {
+        this.metric_avgspeed = data().deepCopy(fields()[24].schema(), other.metric_avgspeed);
+        fieldSetFlags()[24] = true;
+      }
+      if (isValidValue(fields()[25], other.metric_isad)) {
+        this.metric_isad = data().deepCopy(fields()[25].schema(), other.metric_isad);
+        fieldSetFlags()[25] = true;
+      }
+      if (isValidValue(fields()[26], other.metric_isrepeatmod)) {
+        this.metric_isrepeatmod = data().deepCopy(fields()[26].schema(), other.metric_isrepeatmod);
+        fieldSetFlags()[26] = true;
+      }
+      if (isValidValue(fields()[27], other.metric_status)) {
+        this.metric_status = data().deepCopy(fields()[27].schema(), other.metric_status);
+        fieldSetFlags()[27] = true;
+      }
+      if (isValidValue(fields()[28], other.metric_techtype)) {
+        this.metric_techtype = data().deepCopy(fields()[28].schema(), other.metric_techtype);
+        fieldSetFlags()[28] = true;
       }
     }
     
     /** Creates a Builder by copying an existing HiveOrderDetailRecord instance */
     private Builder(com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord other) {
             super(com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.SCHEMA$);
-      if (isValidValue(fields()[0], other.sessID)) {
-        this.sessID = data().deepCopy(fields()[0].schema(), other.sessID);
+      if (isValidValue(fields()[0], other.sessid)) {
+        this.sessid = data().deepCopy(fields()[0].schema(), other.sessid);
         fieldSetFlags()[0] = true;
       }
-      if (isValidValue(fields()[1], other.spid)) {
-        this.spid = data().deepCopy(fields()[1].schema(), other.spid);
+      if (isValidValue(fields()[1], other.stamp)) {
+        this.stamp = data().deepCopy(fields()[1].schema(), other.stamp);
         fieldSetFlags()[1] = true;
       }
-      if (isValidValue(fields()[2], other.UID)) {
-        this.UID = data().deepCopy(fields()[2].schema(), other.UID);
+      if (isValidValue(fields()[2], other.userip)) {
+        this.userip = data().deepCopy(fields()[2].schema(), other.userip);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.HID)) {
-        this.HID = data().deepCopy(fields()[3].schema(), other.HID);
+      if (isValidValue(fields()[3], other.datasorce)) {
+        this.datasorce = data().deepCopy(fields()[3].schema(), other.datasorce);
         fieldSetFlags()[3] = true;
       }
-      if (isValidValue(fields()[4], other.OEMID)) {
-        this.OEMID = data().deepCopy(fields()[4].schema(), other.OEMID);
+      if (isValidValue(fields()[4], other.playurl)) {
+        this.playurl = data().deepCopy(fields()[4].schema(), other.playurl);
         fieldSetFlags()[4] = true;
       }
-      if (isValidValue(fields()[5], other.natip)) {
-        this.natip = data().deepCopy(fields()[5].schema(), other.natip);
+      if (isValidValue(fields()[5], other.version)) {
+        this.version = data().deepCopy(fields()[5].schema(), other.version);
         fieldSetFlags()[5] = true;
       }
-      if (isValidValue(fields()[6], other.areaid)) {
-        this.areaid = data().deepCopy(fields()[6].schema(), other.areaid);
+      if (isValidValue(fields()[6], other.dim_date_hour)) {
+        this.dim_date_hour = data().deepCopy(fields()[6].schema(), other.dim_date_hour);
         fieldSetFlags()[6] = true;
       }
-      if (isValidValue(fields()[7], other.FID)) {
-        this.FID = data().deepCopy(fields()[7].schema(), other.FID);
+      if (isValidValue(fields()[7], other.dim_isp_id)) {
+        this.dim_isp_id = data().deepCopy(fields()[7].schema(), other.dim_isp_id);
         fieldSetFlags()[7] = true;
       }
-      if (isValidValue(fields()[8], other.playBgnTime)) {
-        this.playBgnTime = data().deepCopy(fields()[8].schema(), other.playBgnTime);
+      if (isValidValue(fields()[8], other.dim_user_uid)) {
+        this.dim_user_uid = data().deepCopy(fields()[8].schema(), other.dim_user_uid);
         fieldSetFlags()[8] = true;
       }
-      if (isValidValue(fields()[9], other.playAliveTime)) {
-        this.playAliveTime = data().deepCopy(fields()[9].schema(), other.playAliveTime);
+      if (isValidValue(fields()[9], other.dim_user_hid)) {
+        this.dim_user_hid = data().deepCopy(fields()[9].schema(), other.dim_user_hid);
         fieldSetFlags()[9] = true;
       }
-      if (isValidValue(fields()[10], other.playEndTime)) {
-        this.playEndTime = data().deepCopy(fields()[10].schema(), other.playEndTime);
+      if (isValidValue(fields()[10], other.dim_oem_id)) {
+        this.dim_oem_id = data().deepCopy(fields()[10].schema(), other.dim_oem_id);
         fieldSetFlags()[10] = true;
       }
-      if (isValidValue(fields()[11], other.playDurationTime)) {
-        this.playDurationTime = data().deepCopy(fields()[11].schema(), other.playDurationTime);
+      if (isValidValue(fields()[11], other.dim_area_id)) {
+        this.dim_area_id = data().deepCopy(fields()[11].schema(), other.dim_area_id);
         fieldSetFlags()[11] = true;
       }
-      if (isValidValue(fields()[12], other.avgspeed)) {
-        this.avgspeed = data().deepCopy(fields()[12].schema(), other.avgspeed);
+      if (isValidValue(fields()[12], other.dim_nettype_id)) {
+        this.dim_nettype_id = data().deepCopy(fields()[12].schema(), other.dim_nettype_id);
         fieldSetFlags()[12] = true;
       }
-      if (isValidValue(fields()[13], other.isAdMod)) {
-        this.isAdMod = data().deepCopy(fields()[13].schema(), other.isAdMod);
+      if (isValidValue(fields()[13], other.dim_media_fid)) {
+        this.dim_media_fid = data().deepCopy(fields()[13].schema(), other.dim_media_fid);
         fieldSetFlags()[13] = true;
       }
-      if (isValidValue(fields()[14], other.isRepeatMod)) {
-        this.isRepeatMod = data().deepCopy(fields()[14].schema(), other.isRepeatMod);
+      if (isValidValue(fields()[14], other.dim_movie_mid)) {
+        this.dim_movie_mid = data().deepCopy(fields()[14].schema(), other.dim_movie_mid);
         fieldSetFlags()[14] = true;
       }
-      if (isValidValue(fields()[15], other.pid)) {
-        this.pid = data().deepCopy(fields()[15].schema(), other.pid);
+      if (isValidValue(fields()[15], other.dim_media_series)) {
+        this.dim_media_series = data().deepCopy(fields()[15].schema(), other.dim_media_series);
         fieldSetFlags()[15] = true;
       }
-      if (isValidValue(fields()[16], other.epgid)) {
-        this.epgid = data().deepCopy(fields()[16].schema(), other.epgid);
+      if (isValidValue(fields()[16], other.dim_product_pid)) {
+        this.dim_product_pid = data().deepCopy(fields()[16].schema(), other.dim_product_pid);
         fieldSetFlags()[16] = true;
       }
-      if (isValidValue(fields()[17], other.secid)) {
-        this.secid = data().deepCopy(fields()[17].schema(), other.secid);
+      if (isValidValue(fields()[17], other.dim_po_id)) {
+        this.dim_po_id = data().deepCopy(fields()[17].schema(), other.dim_po_id);
         fieldSetFlags()[17] = true;
       }
-      if (isValidValue(fields()[18], other.bitrate)) {
-        this.bitrate = data().deepCopy(fields()[18].schema(), other.bitrate);
+      if (isValidValue(fields()[18], other.dim_epg_id)) {
+        this.dim_epg_id = data().deepCopy(fields()[18].schema(), other.dim_epg_id);
         fieldSetFlags()[18] = true;
       }
-      if (isValidValue(fields()[19], other.mid)) {
-        this.mid = data().deepCopy(fields()[19].schema(), other.mid);
+      if (isValidValue(fields()[19], other.dim_section_id)) {
+        this.dim_section_id = data().deepCopy(fields()[19].schema(), other.dim_section_id);
         fieldSetFlags()[19] = true;
       }
-      if (isValidValue(fields()[20], other.currSeries)) {
-        this.currSeries = data().deepCopy(fields()[20].schema(), other.currSeries);
+      if (isValidValue(fields()[20], other.metric_playbgntime)) {
+        this.metric_playbgntime = data().deepCopy(fields()[20].schema(), other.metric_playbgntime);
         fieldSetFlags()[20] = true;
+      }
+      if (isValidValue(fields()[21], other.metric_playalivetime)) {
+        this.metric_playalivetime = data().deepCopy(fields()[21].schema(), other.metric_playalivetime);
+        fieldSetFlags()[21] = true;
+      }
+      if (isValidValue(fields()[22], other.metric_playendtime)) {
+        this.metric_playendtime = data().deepCopy(fields()[22].schema(), other.metric_playendtime);
+        fieldSetFlags()[22] = true;
+      }
+      if (isValidValue(fields()[23], other.metric_durationtime)) {
+        this.metric_durationtime = data().deepCopy(fields()[23].schema(), other.metric_durationtime);
+        fieldSetFlags()[23] = true;
+      }
+      if (isValidValue(fields()[24], other.metric_avgspeed)) {
+        this.metric_avgspeed = data().deepCopy(fields()[24].schema(), other.metric_avgspeed);
+        fieldSetFlags()[24] = true;
+      }
+      if (isValidValue(fields()[25], other.metric_isad)) {
+        this.metric_isad = data().deepCopy(fields()[25].schema(), other.metric_isad);
+        fieldSetFlags()[25] = true;
+      }
+      if (isValidValue(fields()[26], other.metric_isrepeatmod)) {
+        this.metric_isrepeatmod = data().deepCopy(fields()[26].schema(), other.metric_isrepeatmod);
+        fieldSetFlags()[26] = true;
+      }
+      if (isValidValue(fields()[27], other.metric_status)) {
+        this.metric_status = data().deepCopy(fields()[27].schema(), other.metric_status);
+        fieldSetFlags()[27] = true;
+      }
+      if (isValidValue(fields()[28], other.metric_techtype)) {
+        this.metric_techtype = data().deepCopy(fields()[28].schema(), other.metric_techtype);
+        fieldSetFlags()[28] = true;
       }
     }
 
-    /** Gets the value of the 'sessID' field */
-    public java.lang.CharSequence getSessID() {
-      return sessID;
+    /** Gets the value of the 'sessid' field */
+    public java.lang.CharSequence getSessid() {
+      return sessid;
     }
     
-    /** Sets the value of the 'sessID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setSessID(java.lang.CharSequence value) {
+    /** Sets the value of the 'sessid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setSessid(java.lang.CharSequence value) {
       validate(fields()[0], value);
-      this.sessID = value;
+      this.sessid = value;
       fieldSetFlags()[0] = true;
       return this; 
     }
     
-    /** Checks whether the 'sessID' field has been set */
-    public boolean hasSessID() {
+    /** Checks whether the 'sessid' field has been set */
+    public boolean hasSessid() {
       return fieldSetFlags()[0];
     }
     
-    /** Clears the value of the 'sessID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearSessID() {
-      sessID = null;
+    /** Clears the value of the 'sessid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearSessid() {
+      sessid = null;
       fieldSetFlags()[0] = false;
       return this;
     }
 
-    /** Gets the value of the 'spid' field */
-    public java.lang.CharSequence getSpid() {
-      return spid;
+    /** Gets the value of the 'stamp' field */
+    public java.lang.Long getStamp() {
+      return stamp;
     }
     
-    /** Sets the value of the 'spid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setSpid(java.lang.CharSequence value) {
+    /** Sets the value of the 'stamp' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setStamp(java.lang.Long value) {
       validate(fields()[1], value);
-      this.spid = value;
+      this.stamp = value;
       fieldSetFlags()[1] = true;
       return this; 
     }
     
-    /** Checks whether the 'spid' field has been set */
-    public boolean hasSpid() {
+    /** Checks whether the 'stamp' field has been set */
+    public boolean hasStamp() {
       return fieldSetFlags()[1];
     }
     
-    /** Clears the value of the 'spid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearSpid() {
-      spid = null;
+    /** Clears the value of the 'stamp' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearStamp() {
+      stamp = null;
       fieldSetFlags()[1] = false;
       return this;
     }
 
-    /** Gets the value of the 'UID' field */
-    public java.lang.CharSequence getUID() {
-      return UID;
+    /** Gets the value of the 'userip' field */
+    public java.lang.Long getUserip() {
+      return userip;
     }
     
-    /** Sets the value of the 'UID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setUID(java.lang.CharSequence value) {
+    /** Sets the value of the 'userip' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setUserip(java.lang.Long value) {
       validate(fields()[2], value);
-      this.UID = value;
+      this.userip = value;
       fieldSetFlags()[2] = true;
       return this; 
     }
     
-    /** Checks whether the 'UID' field has been set */
-    public boolean hasUID() {
+    /** Checks whether the 'userip' field has been set */
+    public boolean hasUserip() {
       return fieldSetFlags()[2];
     }
     
-    /** Clears the value of the 'UID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearUID() {
-      UID = null;
+    /** Clears the value of the 'userip' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearUserip() {
+      userip = null;
       fieldSetFlags()[2] = false;
       return this;
     }
 
-    /** Gets the value of the 'HID' field */
-    public java.lang.CharSequence getHID() {
-      return HID;
+    /** Gets the value of the 'datasorce' field */
+    public java.lang.Integer getDatasorce() {
+      return datasorce;
     }
     
-    /** Sets the value of the 'HID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setHID(java.lang.CharSequence value) {
+    /** Sets the value of the 'datasorce' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDatasorce(java.lang.Integer value) {
       validate(fields()[3], value);
-      this.HID = value;
+      this.datasorce = value;
       fieldSetFlags()[3] = true;
       return this; 
     }
     
-    /** Checks whether the 'HID' field has been set */
-    public boolean hasHID() {
+    /** Checks whether the 'datasorce' field has been set */
+    public boolean hasDatasorce() {
       return fieldSetFlags()[3];
     }
     
-    /** Clears the value of the 'HID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearHID() {
-      HID = null;
+    /** Clears the value of the 'datasorce' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDatasorce() {
+      datasorce = null;
       fieldSetFlags()[3] = false;
       return this;
     }
 
-    /** Gets the value of the 'OEMID' field */
-    public java.lang.Long getOEMID() {
-      return OEMID;
+    /** Gets the value of the 'playurl' field */
+    public java.lang.CharSequence getPlayurl() {
+      return playurl;
     }
     
-    /** Sets the value of the 'OEMID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setOEMID(java.lang.Long value) {
+    /** Sets the value of the 'playurl' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setPlayurl(java.lang.CharSequence value) {
       validate(fields()[4], value);
-      this.OEMID = value;
+      this.playurl = value;
       fieldSetFlags()[4] = true;
       return this; 
     }
     
-    /** Checks whether the 'OEMID' field has been set */
-    public boolean hasOEMID() {
+    /** Checks whether the 'playurl' field has been set */
+    public boolean hasPlayurl() {
       return fieldSetFlags()[4];
     }
     
-    /** Clears the value of the 'OEMID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearOEMID() {
-      OEMID = null;
+    /** Clears the value of the 'playurl' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearPlayurl() {
+      playurl = null;
       fieldSetFlags()[4] = false;
       return this;
     }
 
-    /** Gets the value of the 'natip' field */
-    public java.lang.Long getNatip() {
-      return natip;
+    /** Gets the value of the 'version' field */
+    public java.lang.CharSequence getVersion() {
+      return version;
     }
     
-    /** Sets the value of the 'natip' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setNatip(java.lang.Long value) {
+    /** Sets the value of the 'version' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setVersion(java.lang.CharSequence value) {
       validate(fields()[5], value);
-      this.natip = value;
+      this.version = value;
       fieldSetFlags()[5] = true;
       return this; 
     }
     
-    /** Checks whether the 'natip' field has been set */
-    public boolean hasNatip() {
+    /** Checks whether the 'version' field has been set */
+    public boolean hasVersion() {
       return fieldSetFlags()[5];
     }
     
-    /** Clears the value of the 'natip' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearNatip() {
-      natip = null;
+    /** Clears the value of the 'version' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearVersion() {
+      version = null;
       fieldSetFlags()[5] = false;
       return this;
     }
 
-    /** Gets the value of the 'areaid' field */
-    public java.lang.Integer getAreaid() {
-      return areaid;
+    /** Gets the value of the 'dim_date_hour' field */
+    public java.lang.CharSequence getDimDateHour() {
+      return dim_date_hour;
     }
     
-    /** Sets the value of the 'areaid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setAreaid(java.lang.Integer value) {
+    /** Sets the value of the 'dim_date_hour' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimDateHour(java.lang.CharSequence value) {
       validate(fields()[6], value);
-      this.areaid = value;
+      this.dim_date_hour = value;
       fieldSetFlags()[6] = true;
       return this; 
     }
     
-    /** Checks whether the 'areaid' field has been set */
-    public boolean hasAreaid() {
+    /** Checks whether the 'dim_date_hour' field has been set */
+    public boolean hasDimDateHour() {
       return fieldSetFlags()[6];
     }
     
-    /** Clears the value of the 'areaid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearAreaid() {
-      areaid = null;
+    /** Clears the value of the 'dim_date_hour' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimDateHour() {
+      dim_date_hour = null;
       fieldSetFlags()[6] = false;
       return this;
     }
 
-    /** Gets the value of the 'FID' field */
-    public java.lang.CharSequence getFID() {
-      return FID;
+    /** Gets the value of the 'dim_isp_id' field */
+    public java.lang.Integer getDimIspId() {
+      return dim_isp_id;
     }
     
-    /** Sets the value of the 'FID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setFID(java.lang.CharSequence value) {
+    /** Sets the value of the 'dim_isp_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimIspId(java.lang.Integer value) {
       validate(fields()[7], value);
-      this.FID = value;
+      this.dim_isp_id = value;
       fieldSetFlags()[7] = true;
       return this; 
     }
     
-    /** Checks whether the 'FID' field has been set */
-    public boolean hasFID() {
+    /** Checks whether the 'dim_isp_id' field has been set */
+    public boolean hasDimIspId() {
       return fieldSetFlags()[7];
     }
     
-    /** Clears the value of the 'FID' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearFID() {
-      FID = null;
+    /** Clears the value of the 'dim_isp_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimIspId() {
+      dim_isp_id = null;
       fieldSetFlags()[7] = false;
       return this;
     }
 
-    /** Gets the value of the 'playBgnTime' field */
-    public java.lang.Long getPlayBgnTime() {
-      return playBgnTime;
+    /** Gets the value of the 'dim_user_uid' field */
+    public java.lang.CharSequence getDimUserUid() {
+      return dim_user_uid;
     }
     
-    /** Sets the value of the 'playBgnTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setPlayBgnTime(java.lang.Long value) {
+    /** Sets the value of the 'dim_user_uid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimUserUid(java.lang.CharSequence value) {
       validate(fields()[8], value);
-      this.playBgnTime = value;
+      this.dim_user_uid = value;
       fieldSetFlags()[8] = true;
       return this; 
     }
     
-    /** Checks whether the 'playBgnTime' field has been set */
-    public boolean hasPlayBgnTime() {
+    /** Checks whether the 'dim_user_uid' field has been set */
+    public boolean hasDimUserUid() {
       return fieldSetFlags()[8];
     }
     
-    /** Clears the value of the 'playBgnTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearPlayBgnTime() {
-      playBgnTime = null;
+    /** Clears the value of the 'dim_user_uid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimUserUid() {
+      dim_user_uid = null;
       fieldSetFlags()[8] = false;
       return this;
     }
 
-    /** Gets the value of the 'playAliveTime' field */
-    public java.lang.Long getPlayAliveTime() {
-      return playAliveTime;
+    /** Gets the value of the 'dim_user_hid' field */
+    public java.lang.CharSequence getDimUserHid() {
+      return dim_user_hid;
     }
     
-    /** Sets the value of the 'playAliveTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setPlayAliveTime(java.lang.Long value) {
+    /** Sets the value of the 'dim_user_hid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimUserHid(java.lang.CharSequence value) {
       validate(fields()[9], value);
-      this.playAliveTime = value;
+      this.dim_user_hid = value;
       fieldSetFlags()[9] = true;
       return this; 
     }
     
-    /** Checks whether the 'playAliveTime' field has been set */
-    public boolean hasPlayAliveTime() {
+    /** Checks whether the 'dim_user_hid' field has been set */
+    public boolean hasDimUserHid() {
       return fieldSetFlags()[9];
     }
     
-    /** Clears the value of the 'playAliveTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearPlayAliveTime() {
-      playAliveTime = null;
+    /** Clears the value of the 'dim_user_hid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimUserHid() {
+      dim_user_hid = null;
       fieldSetFlags()[9] = false;
       return this;
     }
 
-    /** Gets the value of the 'playEndTime' field */
-    public java.lang.Long getPlayEndTime() {
-      return playEndTime;
+    /** Gets the value of the 'dim_oem_id' field */
+    public java.lang.Long getDimOemId() {
+      return dim_oem_id;
     }
     
-    /** Sets the value of the 'playEndTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setPlayEndTime(java.lang.Long value) {
+    /** Sets the value of the 'dim_oem_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimOemId(java.lang.Long value) {
       validate(fields()[10], value);
-      this.playEndTime = value;
+      this.dim_oem_id = value;
       fieldSetFlags()[10] = true;
       return this; 
     }
     
-    /** Checks whether the 'playEndTime' field has been set */
-    public boolean hasPlayEndTime() {
+    /** Checks whether the 'dim_oem_id' field has been set */
+    public boolean hasDimOemId() {
       return fieldSetFlags()[10];
     }
     
-    /** Clears the value of the 'playEndTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearPlayEndTime() {
-      playEndTime = null;
+    /** Clears the value of the 'dim_oem_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimOemId() {
+      dim_oem_id = null;
       fieldSetFlags()[10] = false;
       return this;
     }
 
-    /** Gets the value of the 'playDurationTime' field */
-    public java.lang.Long getPlayDurationTime() {
-      return playDurationTime;
+    /** Gets the value of the 'dim_area_id' field */
+    public java.lang.Integer getDimAreaId() {
+      return dim_area_id;
     }
     
-    /** Sets the value of the 'playDurationTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setPlayDurationTime(java.lang.Long value) {
+    /** Sets the value of the 'dim_area_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimAreaId(java.lang.Integer value) {
       validate(fields()[11], value);
-      this.playDurationTime = value;
+      this.dim_area_id = value;
       fieldSetFlags()[11] = true;
       return this; 
     }
     
-    /** Checks whether the 'playDurationTime' field has been set */
-    public boolean hasPlayDurationTime() {
+    /** Checks whether the 'dim_area_id' field has been set */
+    public boolean hasDimAreaId() {
       return fieldSetFlags()[11];
     }
     
-    /** Clears the value of the 'playDurationTime' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearPlayDurationTime() {
-      playDurationTime = null;
+    /** Clears the value of the 'dim_area_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimAreaId() {
+      dim_area_id = null;
       fieldSetFlags()[11] = false;
       return this;
     }
 
-    /** Gets the value of the 'avgspeed' field */
-    public java.lang.Long getAvgspeed() {
-      return avgspeed;
+    /** Gets the value of the 'dim_nettype_id' field */
+    public java.lang.Integer getDimNettypeId() {
+      return dim_nettype_id;
     }
     
-    /** Sets the value of the 'avgspeed' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setAvgspeed(java.lang.Long value) {
+    /** Sets the value of the 'dim_nettype_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimNettypeId(java.lang.Integer value) {
       validate(fields()[12], value);
-      this.avgspeed = value;
+      this.dim_nettype_id = value;
       fieldSetFlags()[12] = true;
       return this; 
     }
     
-    /** Checks whether the 'avgspeed' field has been set */
-    public boolean hasAvgspeed() {
+    /** Checks whether the 'dim_nettype_id' field has been set */
+    public boolean hasDimNettypeId() {
       return fieldSetFlags()[12];
     }
     
-    /** Clears the value of the 'avgspeed' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearAvgspeed() {
-      avgspeed = null;
+    /** Clears the value of the 'dim_nettype_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimNettypeId() {
+      dim_nettype_id = null;
       fieldSetFlags()[12] = false;
       return this;
     }
 
-    /** Gets the value of the 'isAdMod' field */
-    public java.lang.Boolean getIsAdMod() {
-      return isAdMod;
+    /** Gets the value of the 'dim_media_fid' field */
+    public java.lang.CharSequence getDimMediaFid() {
+      return dim_media_fid;
     }
     
-    /** Sets the value of the 'isAdMod' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setIsAdMod(boolean value) {
+    /** Sets the value of the 'dim_media_fid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMediaFid(java.lang.CharSequence value) {
       validate(fields()[13], value);
-      this.isAdMod = value;
+      this.dim_media_fid = value;
       fieldSetFlags()[13] = true;
       return this; 
     }
     
-    /** Checks whether the 'isAdMod' field has been set */
-    public boolean hasIsAdMod() {
+    /** Checks whether the 'dim_media_fid' field has been set */
+    public boolean hasDimMediaFid() {
       return fieldSetFlags()[13];
     }
     
-    /** Clears the value of the 'isAdMod' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearIsAdMod() {
+    /** Clears the value of the 'dim_media_fid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMediaFid() {
+      dim_media_fid = null;
       fieldSetFlags()[13] = false;
       return this;
     }
 
-    /** Gets the value of the 'isRepeatMod' field */
-    public java.lang.Boolean getIsRepeatMod() {
-      return isRepeatMod;
+    /** Gets the value of the 'dim_movie_mid' field */
+    public java.lang.Long getDimMovieMid() {
+      return dim_movie_mid;
     }
     
-    /** Sets the value of the 'isRepeatMod' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setIsRepeatMod(boolean value) {
+    /** Sets the value of the 'dim_movie_mid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMovieMid(java.lang.Long value) {
       validate(fields()[14], value);
-      this.isRepeatMod = value;
+      this.dim_movie_mid = value;
       fieldSetFlags()[14] = true;
       return this; 
     }
     
-    /** Checks whether the 'isRepeatMod' field has been set */
-    public boolean hasIsRepeatMod() {
+    /** Checks whether the 'dim_movie_mid' field has been set */
+    public boolean hasDimMovieMid() {
       return fieldSetFlags()[14];
     }
     
-    /** Clears the value of the 'isRepeatMod' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearIsRepeatMod() {
+    /** Clears the value of the 'dim_movie_mid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMovieMid() {
+      dim_movie_mid = null;
       fieldSetFlags()[14] = false;
       return this;
     }
 
-    /** Gets the value of the 'pid' field */
-    public java.lang.CharSequence getPid() {
-      return pid;
+    /** Gets the value of the 'dim_media_series' field */
+    public java.lang.Integer getDimMediaSeries() {
+      return dim_media_series;
     }
     
-    /** Sets the value of the 'pid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setPid(java.lang.CharSequence value) {
+    /** Sets the value of the 'dim_media_series' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMediaSeries(java.lang.Integer value) {
       validate(fields()[15], value);
-      this.pid = value;
+      this.dim_media_series = value;
       fieldSetFlags()[15] = true;
       return this; 
     }
     
-    /** Checks whether the 'pid' field has been set */
-    public boolean hasPid() {
+    /** Checks whether the 'dim_media_series' field has been set */
+    public boolean hasDimMediaSeries() {
       return fieldSetFlags()[15];
     }
     
-    /** Clears the value of the 'pid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearPid() {
-      pid = null;
+    /** Clears the value of the 'dim_media_series' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMediaSeries() {
+      dim_media_series = null;
       fieldSetFlags()[15] = false;
       return this;
     }
 
-    /** Gets the value of the 'epgid' field */
-    public java.lang.Long getEpgid() {
-      return epgid;
+    /** Gets the value of the 'dim_product_pid' field */
+    public java.lang.CharSequence getDimProductPid() {
+      return dim_product_pid;
     }
     
-    /** Sets the value of the 'epgid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setEpgid(java.lang.Long value) {
+    /** Sets the value of the 'dim_product_pid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimProductPid(java.lang.CharSequence value) {
       validate(fields()[16], value);
-      this.epgid = value;
+      this.dim_product_pid = value;
       fieldSetFlags()[16] = true;
       return this; 
     }
     
-    /** Checks whether the 'epgid' field has been set */
-    public boolean hasEpgid() {
+    /** Checks whether the 'dim_product_pid' field has been set */
+    public boolean hasDimProductPid() {
       return fieldSetFlags()[16];
     }
     
-    /** Clears the value of the 'epgid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearEpgid() {
-      epgid = null;
+    /** Clears the value of the 'dim_product_pid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimProductPid() {
+      dim_product_pid = null;
       fieldSetFlags()[16] = false;
       return this;
     }
 
-    /** Gets the value of the 'secid' field */
-    public java.lang.CharSequence getSecid() {
-      return secid;
+    /** Gets the value of the 'dim_po_id' field */
+    public java.lang.Integer getDimPoId() {
+      return dim_po_id;
     }
     
-    /** Sets the value of the 'secid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setSecid(java.lang.CharSequence value) {
+    /** Sets the value of the 'dim_po_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimPoId(java.lang.Integer value) {
       validate(fields()[17], value);
-      this.secid = value;
+      this.dim_po_id = value;
       fieldSetFlags()[17] = true;
       return this; 
     }
     
-    /** Checks whether the 'secid' field has been set */
-    public boolean hasSecid() {
+    /** Checks whether the 'dim_po_id' field has been set */
+    public boolean hasDimPoId() {
       return fieldSetFlags()[17];
     }
     
-    /** Clears the value of the 'secid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearSecid() {
-      secid = null;
+    /** Clears the value of the 'dim_po_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimPoId() {
+      dim_po_id = null;
       fieldSetFlags()[17] = false;
       return this;
     }
 
-    /** Gets the value of the 'bitrate' field */
-    public java.lang.Long getBitrate() {
-      return bitrate;
+    /** Gets the value of the 'dim_epg_id' field */
+    public java.lang.Long getDimEpgId() {
+      return dim_epg_id;
     }
     
-    /** Sets the value of the 'bitrate' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setBitrate(java.lang.Long value) {
+    /** Sets the value of the 'dim_epg_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimEpgId(java.lang.Long value) {
       validate(fields()[18], value);
-      this.bitrate = value;
+      this.dim_epg_id = value;
       fieldSetFlags()[18] = true;
       return this; 
     }
     
-    /** Checks whether the 'bitrate' field has been set */
-    public boolean hasBitrate() {
+    /** Checks whether the 'dim_epg_id' field has been set */
+    public boolean hasDimEpgId() {
       return fieldSetFlags()[18];
     }
     
-    /** Clears the value of the 'bitrate' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearBitrate() {
-      bitrate = null;
+    /** Clears the value of the 'dim_epg_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimEpgId() {
+      dim_epg_id = null;
       fieldSetFlags()[18] = false;
       return this;
     }
 
-    /** Gets the value of the 'mid' field */
-    public java.lang.Long getMid() {
-      return mid;
+    /** Gets the value of the 'dim_section_id' field */
+    public java.lang.CharSequence getDimSectionId() {
+      return dim_section_id;
     }
     
-    /** Sets the value of the 'mid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMid(java.lang.Long value) {
+    /** Sets the value of the 'dim_section_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimSectionId(java.lang.CharSequence value) {
       validate(fields()[19], value);
-      this.mid = value;
+      this.dim_section_id = value;
       fieldSetFlags()[19] = true;
       return this; 
     }
     
-    /** Checks whether the 'mid' field has been set */
-    public boolean hasMid() {
+    /** Checks whether the 'dim_section_id' field has been set */
+    public boolean hasDimSectionId() {
       return fieldSetFlags()[19];
     }
     
-    /** Clears the value of the 'mid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMid() {
-      mid = null;
+    /** Clears the value of the 'dim_section_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimSectionId() {
+      dim_section_id = null;
       fieldSetFlags()[19] = false;
       return this;
     }
 
-    /** Gets the value of the 'currSeries' field */
-    public java.lang.Long getCurrSeries() {
-      return currSeries;
+    /** Gets the value of the 'metric_playbgntime' field */
+    public java.lang.Long getMetricPlaybgntime() {
+      return metric_playbgntime;
     }
     
-    /** Sets the value of the 'currSeries' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setCurrSeries(java.lang.Long value) {
+    /** Sets the value of the 'metric_playbgntime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricPlaybgntime(java.lang.Long value) {
       validate(fields()[20], value);
-      this.currSeries = value;
+      this.metric_playbgntime = value;
       fieldSetFlags()[20] = true;
       return this; 
     }
     
-    /** Checks whether the 'currSeries' field has been set */
-    public boolean hasCurrSeries() {
+    /** Checks whether the 'metric_playbgntime' field has been set */
+    public boolean hasMetricPlaybgntime() {
       return fieldSetFlags()[20];
     }
     
-    /** Clears the value of the 'currSeries' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearCurrSeries() {
-      currSeries = null;
+    /** Clears the value of the 'metric_playbgntime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricPlaybgntime() {
+      metric_playbgntime = null;
       fieldSetFlags()[20] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_playalivetime' field */
+    public java.lang.Long getMetricPlayalivetime() {
+      return metric_playalivetime;
+    }
+    
+    /** Sets the value of the 'metric_playalivetime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricPlayalivetime(java.lang.Long value) {
+      validate(fields()[21], value);
+      this.metric_playalivetime = value;
+      fieldSetFlags()[21] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_playalivetime' field has been set */
+    public boolean hasMetricPlayalivetime() {
+      return fieldSetFlags()[21];
+    }
+    
+    /** Clears the value of the 'metric_playalivetime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricPlayalivetime() {
+      metric_playalivetime = null;
+      fieldSetFlags()[21] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_playendtime' field */
+    public java.lang.Long getMetricPlayendtime() {
+      return metric_playendtime;
+    }
+    
+    /** Sets the value of the 'metric_playendtime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricPlayendtime(java.lang.Long value) {
+      validate(fields()[22], value);
+      this.metric_playendtime = value;
+      fieldSetFlags()[22] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_playendtime' field has been set */
+    public boolean hasMetricPlayendtime() {
+      return fieldSetFlags()[22];
+    }
+    
+    /** Clears the value of the 'metric_playendtime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricPlayendtime() {
+      metric_playendtime = null;
+      fieldSetFlags()[22] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_durationtime' field */
+    public java.lang.Long getMetricDurationtime() {
+      return metric_durationtime;
+    }
+    
+    /** Sets the value of the 'metric_durationtime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricDurationtime(java.lang.Long value) {
+      validate(fields()[23], value);
+      this.metric_durationtime = value;
+      fieldSetFlags()[23] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_durationtime' field has been set */
+    public boolean hasMetricDurationtime() {
+      return fieldSetFlags()[23];
+    }
+    
+    /** Clears the value of the 'metric_durationtime' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricDurationtime() {
+      metric_durationtime = null;
+      fieldSetFlags()[23] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_avgspeed' field */
+    public java.lang.Long getMetricAvgspeed() {
+      return metric_avgspeed;
+    }
+    
+    /** Sets the value of the 'metric_avgspeed' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricAvgspeed(java.lang.Long value) {
+      validate(fields()[24], value);
+      this.metric_avgspeed = value;
+      fieldSetFlags()[24] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_avgspeed' field has been set */
+    public boolean hasMetricAvgspeed() {
+      return fieldSetFlags()[24];
+    }
+    
+    /** Clears the value of the 'metric_avgspeed' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricAvgspeed() {
+      metric_avgspeed = null;
+      fieldSetFlags()[24] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_isad' field */
+    public java.lang.Integer getMetricIsad() {
+      return metric_isad;
+    }
+    
+    /** Sets the value of the 'metric_isad' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricIsad(int value) {
+      validate(fields()[25], value);
+      this.metric_isad = value;
+      fieldSetFlags()[25] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_isad' field has been set */
+    public boolean hasMetricIsad() {
+      return fieldSetFlags()[25];
+    }
+    
+    /** Clears the value of the 'metric_isad' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricIsad() {
+      fieldSetFlags()[25] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_isrepeatmod' field */
+    public java.lang.Integer getMetricIsrepeatmod() {
+      return metric_isrepeatmod;
+    }
+    
+    /** Sets the value of the 'metric_isrepeatmod' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricIsrepeatmod(int value) {
+      validate(fields()[26], value);
+      this.metric_isrepeatmod = value;
+      fieldSetFlags()[26] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_isrepeatmod' field has been set */
+    public boolean hasMetricIsrepeatmod() {
+      return fieldSetFlags()[26];
+    }
+    
+    /** Clears the value of the 'metric_isrepeatmod' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricIsrepeatmod() {
+      fieldSetFlags()[26] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_status' field */
+    public java.lang.Integer getMetricStatus() {
+      return metric_status;
+    }
+    
+    /** Sets the value of the 'metric_status' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricStatus(int value) {
+      validate(fields()[27], value);
+      this.metric_status = value;
+      fieldSetFlags()[27] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_status' field has been set */
+    public boolean hasMetricStatus() {
+      return fieldSetFlags()[27];
+    }
+    
+    /** Clears the value of the 'metric_status' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricStatus() {
+      fieldSetFlags()[27] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'metric_techtype' field */
+    public java.lang.Integer getMetricTechtype() {
+      return metric_techtype;
+    }
+    
+    /** Sets the value of the 'metric_techtype' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricTechtype(int value) {
+      validate(fields()[28], value);
+      this.metric_techtype = value;
+      fieldSetFlags()[28] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'metric_techtype' field has been set */
+    public boolean hasMetricTechtype() {
+      return fieldSetFlags()[28];
+    }
+    
+    /** Clears the value of the 'metric_techtype' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricTechtype() {
+      fieldSetFlags()[28] = false;
       return this;
     }
 
@@ -1190,27 +1612,35 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     public HiveOrderDetailRecord build() {
       try {
         HiveOrderDetailRecord record = new HiveOrderDetailRecord();
-        record.sessID = fieldSetFlags()[0] ? this.sessID : (java.lang.CharSequence) defaultValue(fields()[0]);
-        record.spid = fieldSetFlags()[1] ? this.spid : (java.lang.CharSequence) defaultValue(fields()[1]);
-        record.UID = fieldSetFlags()[2] ? this.UID : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.HID = fieldSetFlags()[3] ? this.HID : (java.lang.CharSequence) defaultValue(fields()[3]);
-        record.OEMID = fieldSetFlags()[4] ? this.OEMID : (java.lang.Long) defaultValue(fields()[4]);
-        record.natip = fieldSetFlags()[5] ? this.natip : (java.lang.Long) defaultValue(fields()[5]);
-        record.areaid = fieldSetFlags()[6] ? this.areaid : (java.lang.Integer) defaultValue(fields()[6]);
-        record.FID = fieldSetFlags()[7] ? this.FID : (java.lang.CharSequence) defaultValue(fields()[7]);
-        record.playBgnTime = fieldSetFlags()[8] ? this.playBgnTime : (java.lang.Long) defaultValue(fields()[8]);
-        record.playAliveTime = fieldSetFlags()[9] ? this.playAliveTime : (java.lang.Long) defaultValue(fields()[9]);
-        record.playEndTime = fieldSetFlags()[10] ? this.playEndTime : (java.lang.Long) defaultValue(fields()[10]);
-        record.playDurationTime = fieldSetFlags()[11] ? this.playDurationTime : (java.lang.Long) defaultValue(fields()[11]);
-        record.avgspeed = fieldSetFlags()[12] ? this.avgspeed : (java.lang.Long) defaultValue(fields()[12]);
-        record.isAdMod = fieldSetFlags()[13] ? this.isAdMod : (java.lang.Boolean) defaultValue(fields()[13]);
-        record.isRepeatMod = fieldSetFlags()[14] ? this.isRepeatMod : (java.lang.Boolean) defaultValue(fields()[14]);
-        record.pid = fieldSetFlags()[15] ? this.pid : (java.lang.CharSequence) defaultValue(fields()[15]);
-        record.epgid = fieldSetFlags()[16] ? this.epgid : (java.lang.Long) defaultValue(fields()[16]);
-        record.secid = fieldSetFlags()[17] ? this.secid : (java.lang.CharSequence) defaultValue(fields()[17]);
-        record.bitrate = fieldSetFlags()[18] ? this.bitrate : (java.lang.Long) defaultValue(fields()[18]);
-        record.mid = fieldSetFlags()[19] ? this.mid : (java.lang.Long) defaultValue(fields()[19]);
-        record.currSeries = fieldSetFlags()[20] ? this.currSeries : (java.lang.Long) defaultValue(fields()[20]);
+        record.sessid = fieldSetFlags()[0] ? this.sessid : (java.lang.CharSequence) defaultValue(fields()[0]);
+        record.stamp = fieldSetFlags()[1] ? this.stamp : (java.lang.Long) defaultValue(fields()[1]);
+        record.userip = fieldSetFlags()[2] ? this.userip : (java.lang.Long) defaultValue(fields()[2]);
+        record.datasorce = fieldSetFlags()[3] ? this.datasorce : (java.lang.Integer) defaultValue(fields()[3]);
+        record.playurl = fieldSetFlags()[4] ? this.playurl : (java.lang.CharSequence) defaultValue(fields()[4]);
+        record.version = fieldSetFlags()[5] ? this.version : (java.lang.CharSequence) defaultValue(fields()[5]);
+        record.dim_date_hour = fieldSetFlags()[6] ? this.dim_date_hour : (java.lang.CharSequence) defaultValue(fields()[6]);
+        record.dim_isp_id = fieldSetFlags()[7] ? this.dim_isp_id : (java.lang.Integer) defaultValue(fields()[7]);
+        record.dim_user_uid = fieldSetFlags()[8] ? this.dim_user_uid : (java.lang.CharSequence) defaultValue(fields()[8]);
+        record.dim_user_hid = fieldSetFlags()[9] ? this.dim_user_hid : (java.lang.CharSequence) defaultValue(fields()[9]);
+        record.dim_oem_id = fieldSetFlags()[10] ? this.dim_oem_id : (java.lang.Long) defaultValue(fields()[10]);
+        record.dim_area_id = fieldSetFlags()[11] ? this.dim_area_id : (java.lang.Integer) defaultValue(fields()[11]);
+        record.dim_nettype_id = fieldSetFlags()[12] ? this.dim_nettype_id : (java.lang.Integer) defaultValue(fields()[12]);
+        record.dim_media_fid = fieldSetFlags()[13] ? this.dim_media_fid : (java.lang.CharSequence) defaultValue(fields()[13]);
+        record.dim_movie_mid = fieldSetFlags()[14] ? this.dim_movie_mid : (java.lang.Long) defaultValue(fields()[14]);
+        record.dim_media_series = fieldSetFlags()[15] ? this.dim_media_series : (java.lang.Integer) defaultValue(fields()[15]);
+        record.dim_product_pid = fieldSetFlags()[16] ? this.dim_product_pid : (java.lang.CharSequence) defaultValue(fields()[16]);
+        record.dim_po_id = fieldSetFlags()[17] ? this.dim_po_id : (java.lang.Integer) defaultValue(fields()[17]);
+        record.dim_epg_id = fieldSetFlags()[18] ? this.dim_epg_id : (java.lang.Long) defaultValue(fields()[18]);
+        record.dim_section_id = fieldSetFlags()[19] ? this.dim_section_id : (java.lang.CharSequence) defaultValue(fields()[19]);
+        record.metric_playbgntime = fieldSetFlags()[20] ? this.metric_playbgntime : (java.lang.Long) defaultValue(fields()[20]);
+        record.metric_playalivetime = fieldSetFlags()[21] ? this.metric_playalivetime : (java.lang.Long) defaultValue(fields()[21]);
+        record.metric_playendtime = fieldSetFlags()[22] ? this.metric_playendtime : (java.lang.Long) defaultValue(fields()[22]);
+        record.metric_durationtime = fieldSetFlags()[23] ? this.metric_durationtime : (java.lang.Long) defaultValue(fields()[23]);
+        record.metric_avgspeed = fieldSetFlags()[24] ? this.metric_avgspeed : (java.lang.Long) defaultValue(fields()[24]);
+        record.metric_isad = fieldSetFlags()[25] ? this.metric_isad : (java.lang.Integer) defaultValue(fields()[25]);
+        record.metric_isrepeatmod = fieldSetFlags()[26] ? this.metric_isrepeatmod : (java.lang.Integer) defaultValue(fields()[26]);
+        record.metric_status = fieldSetFlags()[27] ? this.metric_status : (java.lang.Integer) defaultValue(fields()[27]);
+        record.metric_techtype = fieldSetFlags()[28] ? this.metric_techtype : (java.lang.Integer) defaultValue(fields()[28]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

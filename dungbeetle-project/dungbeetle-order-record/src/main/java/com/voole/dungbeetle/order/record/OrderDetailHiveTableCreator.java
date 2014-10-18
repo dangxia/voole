@@ -12,7 +12,7 @@ import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
 public class OrderDetailHiveTableCreator {
 	public static HiveTable create(String partitionValue) {
 		HiveTable table = new HiveTable();
-		table.setName("order_detail_record");
+		table.setName("fact_vod");
 		table.setSchema(HiveOrderDetailRecord.getClassSchema());
 		HiveTablePartition partition = new HiveTablePartition();
 		partition.setName("day");
@@ -25,7 +25,7 @@ public class OrderDetailHiveTableCreator {
 	public static void main(String[] args) {
 
 		HiveTableSchema tableSchema = new HiveTableSchema(
-				"order_detail_record",
+				"fact_vod",
 				Lists.newArrayList(new HiveTablePartitionSchema("day",
 						Type.STRING_TYPE)),
 				HiveOrderDetailRecord.getClassSchema());

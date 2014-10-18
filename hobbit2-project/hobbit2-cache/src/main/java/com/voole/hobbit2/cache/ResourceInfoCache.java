@@ -22,6 +22,6 @@ public interface ResourceInfoCache extends HobbitCache {
 	public static interface ResourceInfoFetch {
 		Map<String, String> getSpidToMovieSpidMap();
 
-		Map<Tuple<String, String>, ResourceInfo> getResourceMap();
+		Map<String, ResourceInfo> getResourceMap();
 	}
 }
