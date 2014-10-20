@@ -47,9 +47,15 @@ public class CamusMetaConfigs {
 
 	public static final String EXEC_START_TIME = "camus.exec.start.time";
 
+	public static final String CAMUS_IS_DEBUG = "camus.is.debug";
+
 	public static void setExecStartTime(JobContext job) {
 		job.getConfiguration().setLong(EXEC_START_TIME,
 				System.currentTimeMillis());
+	}
+
+	public static boolean camusIsDebug(JobContext job) {
+		return job.getConfiguration().getBoolean(CAMUS_IS_DEBUG, false);
 	}
 
 	public static long getExecStartTime(JobContext job) {

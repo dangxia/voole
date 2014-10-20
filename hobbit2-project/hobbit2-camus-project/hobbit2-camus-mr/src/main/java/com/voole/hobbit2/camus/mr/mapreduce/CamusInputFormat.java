@@ -37,8 +37,7 @@ import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
  * @author XuehuiHe
  * @date 2014年9月2日
  */
-public class CamusInputFormat extends
-		InputFormat<CamusKey, SpecificRecordBase> {
+public class CamusInputFormat extends InputFormat<CamusKey, SpecificRecordBase> {
 	private static final Logger log = org.slf4j.LoggerFactory
 			.getLogger(CamusInputFormat.class);
 
@@ -76,23 +75,42 @@ public class CamusInputFormat extends
 				new Path(FileOutputFormat.getOutputPath(context),
 						CamusMetaConfigs.REQUESTS_FILE), prevOffsets);
 
-		for (Entry<TopicPartition, Long> entry : prevOffsets.entrySet()) {
-			TopicPartition partition = entry.getKey();
-			long offset = entry.getValue();
-			if (partitionToStateMap.containsKey(partition)) {
-				PartitionState state = partitionToStateMap.get(partition);
-				log.info(partition + "\toffset start from:" + offset);
+		if (CamusMetaConfigs.camusIsDebug(context)) {
+			log.info("camus mr is debug");
+			for (Entry<TopicPartition, PartitionState> entry : partitionToStateMap
+					.entrySet()) {
+				TopicPartition partition = entry.getKey();
+				PartitionState state = entry.getValue();
+				long offset = 0l;
+				if (state.getLatestOffset() > 50000
+						&& state.getLatestOffset() - 50000 > state
+								.getEarliestOffset()) {
+					offset = state.getLatestOffset() - 50000;
+				} else {
+					offset = state.getEarliestOffset();
+				}
 				state.setOffset(offset);
-				if (state.getEarliestOffset() > state.getOffset()
-						|| state.getOffset() > state.getLatestOffset()) {
-					if (state.getEarliestOffset() > offset) {
-						log.error("The earliest offset was found to be more than the current offset");
-						log.error("Moving to the earliest offset available");
-					} else {
-						log.error("The current offset was found to be more than the latest offset");
-						log.error("Moving to the earliest offset available");
+				log.info(partition + "\toffset start from:" + offset);
+			}
+		} else {
+			for (Entry<TopicPartition, Long> entry : prevOffsets.entrySet()) {
+				TopicPartition partition = entry.getKey();
+				long offset = entry.getValue();
+				if (partitionToStateMap.containsKey(partition)) {
+					PartitionState state = partitionToStateMap.get(partition);
+					log.info(partition + "\toffset start from:" + offset);
+					state.setOffset(offset);
+					if (state.getEarliestOffset() > state.getOffset()
+							|| state.getOffset() > state.getLatestOffset()) {
+						if (state.getEarliestOffset() > offset) {
+							log.error("The earliest offset was found to be more than the current offset");
+							log.error("Moving to the earliest offset available");
+						} else {
+							log.error("The current offset was found to be more than the latest offset");
+							log.error("Moving to the earliest offset available");
+						}
+						state.setOffset(state.getEarliestOffset());
 					}
-					state.setOffset(state.getEarliestOffset());
 				}
 			}
 		}
