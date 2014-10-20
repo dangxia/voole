@@ -7,7 +7,7 @@ package com.voole.dungbeetle.order.record.avro;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDetailRecord\",\"namespace\":\"com.voole.dungbeetle.order.record.avro\",\"fields\":[{\"name\":\"sessid\",\"type\":\"string\"},{\"name\":\"stamp\",\"type\":[\"long\",\"null\"]},{\"name\":\"userip\",\"type\":[\"long\",\"null\"]},{\"name\":\"datasorce\",\"type\":[\"int\",\"null\"]},{\"name\":\"playurl\",\"type\":[\"string\",\"null\"]},{\"name\":\"version\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_date_hour\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_isp_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_user_uid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_user_hid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_oem_id\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_area_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_nettype_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_media_fid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_movie_mid\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_media_series\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_product_pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_po_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_epg_id\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_section_id\",\"type\":[\"string\",\"null\"]},{\"name\":\"metric_playbgntime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_playalivetime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_playendtime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_durationtime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_isad\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_isrepeatmod\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_status\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_techtype\",\"type\":\"int\",\"default\":0}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDetailRecord\",\"namespace\":\"com.voole.dungbeetle.order.record.avro\",\"fields\":[{\"name\":\"sessid\",\"type\":\"string\"},{\"name\":\"stamp\",\"type\":[\"long\",\"null\"]},{\"name\":\"userip\",\"type\":[\"long\",\"null\"]},{\"name\":\"datasorce\",\"type\":[\"int\",\"null\"]},{\"name\":\"playurl\",\"type\":[\"string\",\"null\"]},{\"name\":\"version\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_date_hour\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_isp_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_user_uid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_user_hid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_oem_id\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_area_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_area_parentid\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_nettype_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_media_fid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_media_series\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_media_mimeid\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_movie_mid\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_cp_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_movie_category\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_product_pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_po_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"dim_epg_id\",\"type\":[\"long\",\"null\"]},{\"name\":\"dim_section_id\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_section_parentid\",\"type\":[\"string\",\"null\"]},{\"name\":\"metric_playbgntime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_playalivetime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_playendtime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_durationtime\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"metric_isad\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_isrepeatmod\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_status\",\"type\":\"int\",\"default\":0},{\"name\":\"metric_techtype\",\"type\":\"int\",\"default\":0}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence sessid;
   @Deprecated public java.lang.Long stamp;
@@ -21,14 +21,19 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   @Deprecated public java.lang.CharSequence dim_user_hid;
   @Deprecated public java.lang.Long dim_oem_id;
   @Deprecated public java.lang.Integer dim_area_id;
+  @Deprecated public java.lang.Integer dim_area_parentid;
   @Deprecated public java.lang.Integer dim_nettype_id;
   @Deprecated public java.lang.CharSequence dim_media_fid;
-  @Deprecated public java.lang.Long dim_movie_mid;
   @Deprecated public java.lang.Integer dim_media_series;
+  @Deprecated public java.lang.Integer dim_media_mimeid;
+  @Deprecated public java.lang.Long dim_movie_mid;
+  @Deprecated public java.lang.Integer dim_cp_id;
+  @Deprecated public java.lang.CharSequence dim_movie_category;
   @Deprecated public java.lang.CharSequence dim_product_pid;
   @Deprecated public java.lang.Integer dim_po_id;
   @Deprecated public java.lang.Long dim_epg_id;
   @Deprecated public java.lang.CharSequence dim_section_id;
+  @Deprecated public java.lang.CharSequence dim_section_parentid;
   @Deprecated public java.lang.Long metric_playbgntime;
   @Deprecated public java.lang.Long metric_playalivetime;
   @Deprecated public java.lang.Long metric_playendtime;
@@ -49,7 +54,7 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   /**
    * All-args constructor.
    */
-  public HiveOrderDetailRecord(java.lang.CharSequence sessid, java.lang.Long stamp, java.lang.Long userip, java.lang.Integer datasorce, java.lang.CharSequence playurl, java.lang.CharSequence version, java.lang.CharSequence dim_date_hour, java.lang.Integer dim_isp_id, java.lang.CharSequence dim_user_uid, java.lang.CharSequence dim_user_hid, java.lang.Long dim_oem_id, java.lang.Integer dim_area_id, java.lang.Integer dim_nettype_id, java.lang.CharSequence dim_media_fid, java.lang.Long dim_movie_mid, java.lang.Integer dim_media_series, java.lang.CharSequence dim_product_pid, java.lang.Integer dim_po_id, java.lang.Long dim_epg_id, java.lang.CharSequence dim_section_id, java.lang.Long metric_playbgntime, java.lang.Long metric_playalivetime, java.lang.Long metric_playendtime, java.lang.Long metric_durationtime, java.lang.Long metric_avgspeed, java.lang.Integer metric_isad, java.lang.Integer metric_isrepeatmod, java.lang.Integer metric_status, java.lang.Integer metric_techtype) {
+  public HiveOrderDetailRecord(java.lang.CharSequence sessid, java.lang.Long stamp, java.lang.Long userip, java.lang.Integer datasorce, java.lang.CharSequence playurl, java.lang.CharSequence version, java.lang.CharSequence dim_date_hour, java.lang.Integer dim_isp_id, java.lang.CharSequence dim_user_uid, java.lang.CharSequence dim_user_hid, java.lang.Long dim_oem_id, java.lang.Integer dim_area_id, java.lang.Integer dim_area_parentid, java.lang.Integer dim_nettype_id, java.lang.CharSequence dim_media_fid, java.lang.Integer dim_media_series, java.lang.Integer dim_media_mimeid, java.lang.Long dim_movie_mid, java.lang.Integer dim_cp_id, java.lang.CharSequence dim_movie_category, java.lang.CharSequence dim_product_pid, java.lang.Integer dim_po_id, java.lang.Long dim_epg_id, java.lang.CharSequence dim_section_id, java.lang.CharSequence dim_section_parentid, java.lang.Long metric_playbgntime, java.lang.Long metric_playalivetime, java.lang.Long metric_playendtime, java.lang.Long metric_durationtime, java.lang.Long metric_avgspeed, java.lang.Integer metric_isad, java.lang.Integer metric_isrepeatmod, java.lang.Integer metric_status, java.lang.Integer metric_techtype) {
     this.sessid = sessid;
     this.stamp = stamp;
     this.userip = userip;
@@ -62,14 +67,19 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     this.dim_user_hid = dim_user_hid;
     this.dim_oem_id = dim_oem_id;
     this.dim_area_id = dim_area_id;
+    this.dim_area_parentid = dim_area_parentid;
     this.dim_nettype_id = dim_nettype_id;
     this.dim_media_fid = dim_media_fid;
-    this.dim_movie_mid = dim_movie_mid;
     this.dim_media_series = dim_media_series;
+    this.dim_media_mimeid = dim_media_mimeid;
+    this.dim_movie_mid = dim_movie_mid;
+    this.dim_cp_id = dim_cp_id;
+    this.dim_movie_category = dim_movie_category;
     this.dim_product_pid = dim_product_pid;
     this.dim_po_id = dim_po_id;
     this.dim_epg_id = dim_epg_id;
     this.dim_section_id = dim_section_id;
+    this.dim_section_parentid = dim_section_parentid;
     this.metric_playbgntime = metric_playbgntime;
     this.metric_playalivetime = metric_playalivetime;
     this.metric_playendtime = metric_playendtime;
@@ -97,23 +107,28 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     case 9: return dim_user_hid;
     case 10: return dim_oem_id;
     case 11: return dim_area_id;
-    case 12: return dim_nettype_id;
-    case 13: return dim_media_fid;
-    case 14: return dim_movie_mid;
+    case 12: return dim_area_parentid;
+    case 13: return dim_nettype_id;
+    case 14: return dim_media_fid;
     case 15: return dim_media_series;
-    case 16: return dim_product_pid;
-    case 17: return dim_po_id;
-    case 18: return dim_epg_id;
-    case 19: return dim_section_id;
-    case 20: return metric_playbgntime;
-    case 21: return metric_playalivetime;
-    case 22: return metric_playendtime;
-    case 23: return metric_durationtime;
-    case 24: return metric_avgspeed;
-    case 25: return metric_isad;
-    case 26: return metric_isrepeatmod;
-    case 27: return metric_status;
-    case 28: return metric_techtype;
+    case 16: return dim_media_mimeid;
+    case 17: return dim_movie_mid;
+    case 18: return dim_cp_id;
+    case 19: return dim_movie_category;
+    case 20: return dim_product_pid;
+    case 21: return dim_po_id;
+    case 22: return dim_epg_id;
+    case 23: return dim_section_id;
+    case 24: return dim_section_parentid;
+    case 25: return metric_playbgntime;
+    case 26: return metric_playalivetime;
+    case 27: return metric_playendtime;
+    case 28: return metric_durationtime;
+    case 29: return metric_avgspeed;
+    case 30: return metric_isad;
+    case 31: return metric_isrepeatmod;
+    case 32: return metric_status;
+    case 33: return metric_techtype;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -133,23 +148,28 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     case 9: dim_user_hid = (java.lang.CharSequence)value$; break;
     case 10: dim_oem_id = (java.lang.Long)value$; break;
     case 11: dim_area_id = (java.lang.Integer)value$; break;
-    case 12: dim_nettype_id = (java.lang.Integer)value$; break;
-    case 13: dim_media_fid = (java.lang.CharSequence)value$; break;
-    case 14: dim_movie_mid = (java.lang.Long)value$; break;
+    case 12: dim_area_parentid = (java.lang.Integer)value$; break;
+    case 13: dim_nettype_id = (java.lang.Integer)value$; break;
+    case 14: dim_media_fid = (java.lang.CharSequence)value$; break;
     case 15: dim_media_series = (java.lang.Integer)value$; break;
-    case 16: dim_product_pid = (java.lang.CharSequence)value$; break;
-    case 17: dim_po_id = (java.lang.Integer)value$; break;
-    case 18: dim_epg_id = (java.lang.Long)value$; break;
-    case 19: dim_section_id = (java.lang.CharSequence)value$; break;
-    case 20: metric_playbgntime = (java.lang.Long)value$; break;
-    case 21: metric_playalivetime = (java.lang.Long)value$; break;
-    case 22: metric_playendtime = (java.lang.Long)value$; break;
-    case 23: metric_durationtime = (java.lang.Long)value$; break;
-    case 24: metric_avgspeed = (java.lang.Long)value$; break;
-    case 25: metric_isad = (java.lang.Integer)value$; break;
-    case 26: metric_isrepeatmod = (java.lang.Integer)value$; break;
-    case 27: metric_status = (java.lang.Integer)value$; break;
-    case 28: metric_techtype = (java.lang.Integer)value$; break;
+    case 16: dim_media_mimeid = (java.lang.Integer)value$; break;
+    case 17: dim_movie_mid = (java.lang.Long)value$; break;
+    case 18: dim_cp_id = (java.lang.Integer)value$; break;
+    case 19: dim_movie_category = (java.lang.CharSequence)value$; break;
+    case 20: dim_product_pid = (java.lang.CharSequence)value$; break;
+    case 21: dim_po_id = (java.lang.Integer)value$; break;
+    case 22: dim_epg_id = (java.lang.Long)value$; break;
+    case 23: dim_section_id = (java.lang.CharSequence)value$; break;
+    case 24: dim_section_parentid = (java.lang.CharSequence)value$; break;
+    case 25: metric_playbgntime = (java.lang.Long)value$; break;
+    case 26: metric_playalivetime = (java.lang.Long)value$; break;
+    case 27: metric_playendtime = (java.lang.Long)value$; break;
+    case 28: metric_durationtime = (java.lang.Long)value$; break;
+    case 29: metric_avgspeed = (java.lang.Long)value$; break;
+    case 30: metric_isad = (java.lang.Integer)value$; break;
+    case 31: metric_isrepeatmod = (java.lang.Integer)value$; break;
+    case 32: metric_status = (java.lang.Integer)value$; break;
+    case 33: metric_techtype = (java.lang.Integer)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -335,6 +355,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   }
 
   /**
+   * Gets the value of the 'dim_area_parentid' field.
+   */
+  public java.lang.Integer getDimAreaParentid() {
+    return dim_area_parentid;
+  }
+
+  /**
+   * Sets the value of the 'dim_area_parentid' field.
+   * @param value the value to set.
+   */
+  public void setDimAreaParentid(java.lang.Integer value) {
+    this.dim_area_parentid = value;
+  }
+
+  /**
    * Gets the value of the 'dim_nettype_id' field.
    */
   public java.lang.Integer getDimNettypeId() {
@@ -365,6 +400,36 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   }
 
   /**
+   * Gets the value of the 'dim_media_series' field.
+   */
+  public java.lang.Integer getDimMediaSeries() {
+    return dim_media_series;
+  }
+
+  /**
+   * Sets the value of the 'dim_media_series' field.
+   * @param value the value to set.
+   */
+  public void setDimMediaSeries(java.lang.Integer value) {
+    this.dim_media_series = value;
+  }
+
+  /**
+   * Gets the value of the 'dim_media_mimeid' field.
+   */
+  public java.lang.Integer getDimMediaMimeid() {
+    return dim_media_mimeid;
+  }
+
+  /**
+   * Sets the value of the 'dim_media_mimeid' field.
+   * @param value the value to set.
+   */
+  public void setDimMediaMimeid(java.lang.Integer value) {
+    this.dim_media_mimeid = value;
+  }
+
+  /**
    * Gets the value of the 'dim_movie_mid' field.
    */
   public java.lang.Long getDimMovieMid() {
@@ -380,18 +445,33 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
   }
 
   /**
-   * Gets the value of the 'dim_media_series' field.
+   * Gets the value of the 'dim_cp_id' field.
    */
-  public java.lang.Integer getDimMediaSeries() {
-    return dim_media_series;
+  public java.lang.Integer getDimCpId() {
+    return dim_cp_id;
   }
 
   /**
-   * Sets the value of the 'dim_media_series' field.
+   * Sets the value of the 'dim_cp_id' field.
    * @param value the value to set.
    */
-  public void setDimMediaSeries(java.lang.Integer value) {
-    this.dim_media_series = value;
+  public void setDimCpId(java.lang.Integer value) {
+    this.dim_cp_id = value;
+  }
+
+  /**
+   * Gets the value of the 'dim_movie_category' field.
+   */
+  public java.lang.CharSequence getDimMovieCategory() {
+    return dim_movie_category;
+  }
+
+  /**
+   * Sets the value of the 'dim_movie_category' field.
+   * @param value the value to set.
+   */
+  public void setDimMovieCategory(java.lang.CharSequence value) {
+    this.dim_movie_category = value;
   }
 
   /**
@@ -452,6 +532,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
    */
   public void setDimSectionId(java.lang.CharSequence value) {
     this.dim_section_id = value;
+  }
+
+  /**
+   * Gets the value of the 'dim_section_parentid' field.
+   */
+  public java.lang.CharSequence getDimSectionParentid() {
+    return dim_section_parentid;
+  }
+
+  /**
+   * Sets the value of the 'dim_section_parentid' field.
+   * @param value the value to set.
+   */
+  public void setDimSectionParentid(java.lang.CharSequence value) {
+    this.dim_section_parentid = value;
   }
 
   /**
@@ -622,14 +717,19 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     private java.lang.CharSequence dim_user_hid;
     private java.lang.Long dim_oem_id;
     private java.lang.Integer dim_area_id;
+    private java.lang.Integer dim_area_parentid;
     private java.lang.Integer dim_nettype_id;
     private java.lang.CharSequence dim_media_fid;
-    private java.lang.Long dim_movie_mid;
     private java.lang.Integer dim_media_series;
+    private java.lang.Integer dim_media_mimeid;
+    private java.lang.Long dim_movie_mid;
+    private java.lang.Integer dim_cp_id;
+    private java.lang.CharSequence dim_movie_category;
     private java.lang.CharSequence dim_product_pid;
     private java.lang.Integer dim_po_id;
     private java.lang.Long dim_epg_id;
     private java.lang.CharSequence dim_section_id;
+    private java.lang.CharSequence dim_section_parentid;
     private java.lang.Long metric_playbgntime;
     private java.lang.Long metric_playalivetime;
     private java.lang.Long metric_playendtime;
@@ -696,73 +796,93 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
         this.dim_area_id = data().deepCopy(fields()[11].schema(), other.dim_area_id);
         fieldSetFlags()[11] = true;
       }
-      if (isValidValue(fields()[12], other.dim_nettype_id)) {
-        this.dim_nettype_id = data().deepCopy(fields()[12].schema(), other.dim_nettype_id);
+      if (isValidValue(fields()[12], other.dim_area_parentid)) {
+        this.dim_area_parentid = data().deepCopy(fields()[12].schema(), other.dim_area_parentid);
         fieldSetFlags()[12] = true;
       }
-      if (isValidValue(fields()[13], other.dim_media_fid)) {
-        this.dim_media_fid = data().deepCopy(fields()[13].schema(), other.dim_media_fid);
+      if (isValidValue(fields()[13], other.dim_nettype_id)) {
+        this.dim_nettype_id = data().deepCopy(fields()[13].schema(), other.dim_nettype_id);
         fieldSetFlags()[13] = true;
       }
-      if (isValidValue(fields()[14], other.dim_movie_mid)) {
-        this.dim_movie_mid = data().deepCopy(fields()[14].schema(), other.dim_movie_mid);
+      if (isValidValue(fields()[14], other.dim_media_fid)) {
+        this.dim_media_fid = data().deepCopy(fields()[14].schema(), other.dim_media_fid);
         fieldSetFlags()[14] = true;
       }
       if (isValidValue(fields()[15], other.dim_media_series)) {
         this.dim_media_series = data().deepCopy(fields()[15].schema(), other.dim_media_series);
         fieldSetFlags()[15] = true;
       }
-      if (isValidValue(fields()[16], other.dim_product_pid)) {
-        this.dim_product_pid = data().deepCopy(fields()[16].schema(), other.dim_product_pid);
+      if (isValidValue(fields()[16], other.dim_media_mimeid)) {
+        this.dim_media_mimeid = data().deepCopy(fields()[16].schema(), other.dim_media_mimeid);
         fieldSetFlags()[16] = true;
       }
-      if (isValidValue(fields()[17], other.dim_po_id)) {
-        this.dim_po_id = data().deepCopy(fields()[17].schema(), other.dim_po_id);
+      if (isValidValue(fields()[17], other.dim_movie_mid)) {
+        this.dim_movie_mid = data().deepCopy(fields()[17].schema(), other.dim_movie_mid);
         fieldSetFlags()[17] = true;
       }
-      if (isValidValue(fields()[18], other.dim_epg_id)) {
-        this.dim_epg_id = data().deepCopy(fields()[18].schema(), other.dim_epg_id);
+      if (isValidValue(fields()[18], other.dim_cp_id)) {
+        this.dim_cp_id = data().deepCopy(fields()[18].schema(), other.dim_cp_id);
         fieldSetFlags()[18] = true;
       }
-      if (isValidValue(fields()[19], other.dim_section_id)) {
-        this.dim_section_id = data().deepCopy(fields()[19].schema(), other.dim_section_id);
+      if (isValidValue(fields()[19], other.dim_movie_category)) {
+        this.dim_movie_category = data().deepCopy(fields()[19].schema(), other.dim_movie_category);
         fieldSetFlags()[19] = true;
       }
-      if (isValidValue(fields()[20], other.metric_playbgntime)) {
-        this.metric_playbgntime = data().deepCopy(fields()[20].schema(), other.metric_playbgntime);
+      if (isValidValue(fields()[20], other.dim_product_pid)) {
+        this.dim_product_pid = data().deepCopy(fields()[20].schema(), other.dim_product_pid);
         fieldSetFlags()[20] = true;
       }
-      if (isValidValue(fields()[21], other.metric_playalivetime)) {
-        this.metric_playalivetime = data().deepCopy(fields()[21].schema(), other.metric_playalivetime);
+      if (isValidValue(fields()[21], other.dim_po_id)) {
+        this.dim_po_id = data().deepCopy(fields()[21].schema(), other.dim_po_id);
         fieldSetFlags()[21] = true;
       }
-      if (isValidValue(fields()[22], other.metric_playendtime)) {
-        this.metric_playendtime = data().deepCopy(fields()[22].schema(), other.metric_playendtime);
+      if (isValidValue(fields()[22], other.dim_epg_id)) {
+        this.dim_epg_id = data().deepCopy(fields()[22].schema(), other.dim_epg_id);
         fieldSetFlags()[22] = true;
       }
-      if (isValidValue(fields()[23], other.metric_durationtime)) {
-        this.metric_durationtime = data().deepCopy(fields()[23].schema(), other.metric_durationtime);
+      if (isValidValue(fields()[23], other.dim_section_id)) {
+        this.dim_section_id = data().deepCopy(fields()[23].schema(), other.dim_section_id);
         fieldSetFlags()[23] = true;
       }
-      if (isValidValue(fields()[24], other.metric_avgspeed)) {
-        this.metric_avgspeed = data().deepCopy(fields()[24].schema(), other.metric_avgspeed);
+      if (isValidValue(fields()[24], other.dim_section_parentid)) {
+        this.dim_section_parentid = data().deepCopy(fields()[24].schema(), other.dim_section_parentid);
         fieldSetFlags()[24] = true;
       }
-      if (isValidValue(fields()[25], other.metric_isad)) {
-        this.metric_isad = data().deepCopy(fields()[25].schema(), other.metric_isad);
+      if (isValidValue(fields()[25], other.metric_playbgntime)) {
+        this.metric_playbgntime = data().deepCopy(fields()[25].schema(), other.metric_playbgntime);
         fieldSetFlags()[25] = true;
       }
-      if (isValidValue(fields()[26], other.metric_isrepeatmod)) {
-        this.metric_isrepeatmod = data().deepCopy(fields()[26].schema(), other.metric_isrepeatmod);
+      if (isValidValue(fields()[26], other.metric_playalivetime)) {
+        this.metric_playalivetime = data().deepCopy(fields()[26].schema(), other.metric_playalivetime);
         fieldSetFlags()[26] = true;
       }
-      if (isValidValue(fields()[27], other.metric_status)) {
-        this.metric_status = data().deepCopy(fields()[27].schema(), other.metric_status);
+      if (isValidValue(fields()[27], other.metric_playendtime)) {
+        this.metric_playendtime = data().deepCopy(fields()[27].schema(), other.metric_playendtime);
         fieldSetFlags()[27] = true;
       }
-      if (isValidValue(fields()[28], other.metric_techtype)) {
-        this.metric_techtype = data().deepCopy(fields()[28].schema(), other.metric_techtype);
+      if (isValidValue(fields()[28], other.metric_durationtime)) {
+        this.metric_durationtime = data().deepCopy(fields()[28].schema(), other.metric_durationtime);
         fieldSetFlags()[28] = true;
+      }
+      if (isValidValue(fields()[29], other.metric_avgspeed)) {
+        this.metric_avgspeed = data().deepCopy(fields()[29].schema(), other.metric_avgspeed);
+        fieldSetFlags()[29] = true;
+      }
+      if (isValidValue(fields()[30], other.metric_isad)) {
+        this.metric_isad = data().deepCopy(fields()[30].schema(), other.metric_isad);
+        fieldSetFlags()[30] = true;
+      }
+      if (isValidValue(fields()[31], other.metric_isrepeatmod)) {
+        this.metric_isrepeatmod = data().deepCopy(fields()[31].schema(), other.metric_isrepeatmod);
+        fieldSetFlags()[31] = true;
+      }
+      if (isValidValue(fields()[32], other.metric_status)) {
+        this.metric_status = data().deepCopy(fields()[32].schema(), other.metric_status);
+        fieldSetFlags()[32] = true;
+      }
+      if (isValidValue(fields()[33], other.metric_techtype)) {
+        this.metric_techtype = data().deepCopy(fields()[33].schema(), other.metric_techtype);
+        fieldSetFlags()[33] = true;
       }
     }
     
@@ -817,73 +937,93 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
         this.dim_area_id = data().deepCopy(fields()[11].schema(), other.dim_area_id);
         fieldSetFlags()[11] = true;
       }
-      if (isValidValue(fields()[12], other.dim_nettype_id)) {
-        this.dim_nettype_id = data().deepCopy(fields()[12].schema(), other.dim_nettype_id);
+      if (isValidValue(fields()[12], other.dim_area_parentid)) {
+        this.dim_area_parentid = data().deepCopy(fields()[12].schema(), other.dim_area_parentid);
         fieldSetFlags()[12] = true;
       }
-      if (isValidValue(fields()[13], other.dim_media_fid)) {
-        this.dim_media_fid = data().deepCopy(fields()[13].schema(), other.dim_media_fid);
+      if (isValidValue(fields()[13], other.dim_nettype_id)) {
+        this.dim_nettype_id = data().deepCopy(fields()[13].schema(), other.dim_nettype_id);
         fieldSetFlags()[13] = true;
       }
-      if (isValidValue(fields()[14], other.dim_movie_mid)) {
-        this.dim_movie_mid = data().deepCopy(fields()[14].schema(), other.dim_movie_mid);
+      if (isValidValue(fields()[14], other.dim_media_fid)) {
+        this.dim_media_fid = data().deepCopy(fields()[14].schema(), other.dim_media_fid);
         fieldSetFlags()[14] = true;
       }
       if (isValidValue(fields()[15], other.dim_media_series)) {
         this.dim_media_series = data().deepCopy(fields()[15].schema(), other.dim_media_series);
         fieldSetFlags()[15] = true;
       }
-      if (isValidValue(fields()[16], other.dim_product_pid)) {
-        this.dim_product_pid = data().deepCopy(fields()[16].schema(), other.dim_product_pid);
+      if (isValidValue(fields()[16], other.dim_media_mimeid)) {
+        this.dim_media_mimeid = data().deepCopy(fields()[16].schema(), other.dim_media_mimeid);
         fieldSetFlags()[16] = true;
       }
-      if (isValidValue(fields()[17], other.dim_po_id)) {
-        this.dim_po_id = data().deepCopy(fields()[17].schema(), other.dim_po_id);
+      if (isValidValue(fields()[17], other.dim_movie_mid)) {
+        this.dim_movie_mid = data().deepCopy(fields()[17].schema(), other.dim_movie_mid);
         fieldSetFlags()[17] = true;
       }
-      if (isValidValue(fields()[18], other.dim_epg_id)) {
-        this.dim_epg_id = data().deepCopy(fields()[18].schema(), other.dim_epg_id);
+      if (isValidValue(fields()[18], other.dim_cp_id)) {
+        this.dim_cp_id = data().deepCopy(fields()[18].schema(), other.dim_cp_id);
         fieldSetFlags()[18] = true;
       }
-      if (isValidValue(fields()[19], other.dim_section_id)) {
-        this.dim_section_id = data().deepCopy(fields()[19].schema(), other.dim_section_id);
+      if (isValidValue(fields()[19], other.dim_movie_category)) {
+        this.dim_movie_category = data().deepCopy(fields()[19].schema(), other.dim_movie_category);
         fieldSetFlags()[19] = true;
       }
-      if (isValidValue(fields()[20], other.metric_playbgntime)) {
-        this.metric_playbgntime = data().deepCopy(fields()[20].schema(), other.metric_playbgntime);
+      if (isValidValue(fields()[20], other.dim_product_pid)) {
+        this.dim_product_pid = data().deepCopy(fields()[20].schema(), other.dim_product_pid);
         fieldSetFlags()[20] = true;
       }
-      if (isValidValue(fields()[21], other.metric_playalivetime)) {
-        this.metric_playalivetime = data().deepCopy(fields()[21].schema(), other.metric_playalivetime);
+      if (isValidValue(fields()[21], other.dim_po_id)) {
+        this.dim_po_id = data().deepCopy(fields()[21].schema(), other.dim_po_id);
         fieldSetFlags()[21] = true;
       }
-      if (isValidValue(fields()[22], other.metric_playendtime)) {
-        this.metric_playendtime = data().deepCopy(fields()[22].schema(), other.metric_playendtime);
+      if (isValidValue(fields()[22], other.dim_epg_id)) {
+        this.dim_epg_id = data().deepCopy(fields()[22].schema(), other.dim_epg_id);
         fieldSetFlags()[22] = true;
       }
-      if (isValidValue(fields()[23], other.metric_durationtime)) {
-        this.metric_durationtime = data().deepCopy(fields()[23].schema(), other.metric_durationtime);
+      if (isValidValue(fields()[23], other.dim_section_id)) {
+        this.dim_section_id = data().deepCopy(fields()[23].schema(), other.dim_section_id);
         fieldSetFlags()[23] = true;
       }
-      if (isValidValue(fields()[24], other.metric_avgspeed)) {
-        this.metric_avgspeed = data().deepCopy(fields()[24].schema(), other.metric_avgspeed);
+      if (isValidValue(fields()[24], other.dim_section_parentid)) {
+        this.dim_section_parentid = data().deepCopy(fields()[24].schema(), other.dim_section_parentid);
         fieldSetFlags()[24] = true;
       }
-      if (isValidValue(fields()[25], other.metric_isad)) {
-        this.metric_isad = data().deepCopy(fields()[25].schema(), other.metric_isad);
+      if (isValidValue(fields()[25], other.metric_playbgntime)) {
+        this.metric_playbgntime = data().deepCopy(fields()[25].schema(), other.metric_playbgntime);
         fieldSetFlags()[25] = true;
       }
-      if (isValidValue(fields()[26], other.metric_isrepeatmod)) {
-        this.metric_isrepeatmod = data().deepCopy(fields()[26].schema(), other.metric_isrepeatmod);
+      if (isValidValue(fields()[26], other.metric_playalivetime)) {
+        this.metric_playalivetime = data().deepCopy(fields()[26].schema(), other.metric_playalivetime);
         fieldSetFlags()[26] = true;
       }
-      if (isValidValue(fields()[27], other.metric_status)) {
-        this.metric_status = data().deepCopy(fields()[27].schema(), other.metric_status);
+      if (isValidValue(fields()[27], other.metric_playendtime)) {
+        this.metric_playendtime = data().deepCopy(fields()[27].schema(), other.metric_playendtime);
         fieldSetFlags()[27] = true;
       }
-      if (isValidValue(fields()[28], other.metric_techtype)) {
-        this.metric_techtype = data().deepCopy(fields()[28].schema(), other.metric_techtype);
+      if (isValidValue(fields()[28], other.metric_durationtime)) {
+        this.metric_durationtime = data().deepCopy(fields()[28].schema(), other.metric_durationtime);
         fieldSetFlags()[28] = true;
+      }
+      if (isValidValue(fields()[29], other.metric_avgspeed)) {
+        this.metric_avgspeed = data().deepCopy(fields()[29].schema(), other.metric_avgspeed);
+        fieldSetFlags()[29] = true;
+      }
+      if (isValidValue(fields()[30], other.metric_isad)) {
+        this.metric_isad = data().deepCopy(fields()[30].schema(), other.metric_isad);
+        fieldSetFlags()[30] = true;
+      }
+      if (isValidValue(fields()[31], other.metric_isrepeatmod)) {
+        this.metric_isrepeatmod = data().deepCopy(fields()[31].schema(), other.metric_isrepeatmod);
+        fieldSetFlags()[31] = true;
+      }
+      if (isValidValue(fields()[32], other.metric_status)) {
+        this.metric_status = data().deepCopy(fields()[32].schema(), other.metric_status);
+        fieldSetFlags()[32] = true;
+      }
+      if (isValidValue(fields()[33], other.metric_techtype)) {
+        this.metric_techtype = data().deepCopy(fields()[33].schema(), other.metric_techtype);
+        fieldSetFlags()[33] = true;
       }
     }
 
@@ -1187,6 +1327,31 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
       return this;
     }
 
+    /** Gets the value of the 'dim_area_parentid' field */
+    public java.lang.Integer getDimAreaParentid() {
+      return dim_area_parentid;
+    }
+    
+    /** Sets the value of the 'dim_area_parentid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimAreaParentid(java.lang.Integer value) {
+      validate(fields()[12], value);
+      this.dim_area_parentid = value;
+      fieldSetFlags()[12] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'dim_area_parentid' field has been set */
+    public boolean hasDimAreaParentid() {
+      return fieldSetFlags()[12];
+    }
+    
+    /** Clears the value of the 'dim_area_parentid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimAreaParentid() {
+      dim_area_parentid = null;
+      fieldSetFlags()[12] = false;
+      return this;
+    }
+
     /** Gets the value of the 'dim_nettype_id' field */
     public java.lang.Integer getDimNettypeId() {
       return dim_nettype_id;
@@ -1194,21 +1359,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'dim_nettype_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimNettypeId(java.lang.Integer value) {
-      validate(fields()[12], value);
+      validate(fields()[13], value);
       this.dim_nettype_id = value;
-      fieldSetFlags()[12] = true;
+      fieldSetFlags()[13] = true;
       return this; 
     }
     
     /** Checks whether the 'dim_nettype_id' field has been set */
     public boolean hasDimNettypeId() {
-      return fieldSetFlags()[12];
+      return fieldSetFlags()[13];
     }
     
     /** Clears the value of the 'dim_nettype_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimNettypeId() {
       dim_nettype_id = null;
-      fieldSetFlags()[12] = false;
+      fieldSetFlags()[13] = false;
       return this;
     }
 
@@ -1219,45 +1384,20 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'dim_media_fid' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMediaFid(java.lang.CharSequence value) {
-      validate(fields()[13], value);
+      validate(fields()[14], value);
       this.dim_media_fid = value;
-      fieldSetFlags()[13] = true;
+      fieldSetFlags()[14] = true;
       return this; 
     }
     
     /** Checks whether the 'dim_media_fid' field has been set */
     public boolean hasDimMediaFid() {
-      return fieldSetFlags()[13];
+      return fieldSetFlags()[14];
     }
     
     /** Clears the value of the 'dim_media_fid' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMediaFid() {
       dim_media_fid = null;
-      fieldSetFlags()[13] = false;
-      return this;
-    }
-
-    /** Gets the value of the 'dim_movie_mid' field */
-    public java.lang.Long getDimMovieMid() {
-      return dim_movie_mid;
-    }
-    
-    /** Sets the value of the 'dim_movie_mid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMovieMid(java.lang.Long value) {
-      validate(fields()[14], value);
-      this.dim_movie_mid = value;
-      fieldSetFlags()[14] = true;
-      return this; 
-    }
-    
-    /** Checks whether the 'dim_movie_mid' field has been set */
-    public boolean hasDimMovieMid() {
-      return fieldSetFlags()[14];
-    }
-    
-    /** Clears the value of the 'dim_movie_mid' field */
-    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMovieMid() {
-      dim_movie_mid = null;
       fieldSetFlags()[14] = false;
       return this;
     }
@@ -1287,6 +1427,106 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
       return this;
     }
 
+    /** Gets the value of the 'dim_media_mimeid' field */
+    public java.lang.Integer getDimMediaMimeid() {
+      return dim_media_mimeid;
+    }
+    
+    /** Sets the value of the 'dim_media_mimeid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMediaMimeid(java.lang.Integer value) {
+      validate(fields()[16], value);
+      this.dim_media_mimeid = value;
+      fieldSetFlags()[16] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'dim_media_mimeid' field has been set */
+    public boolean hasDimMediaMimeid() {
+      return fieldSetFlags()[16];
+    }
+    
+    /** Clears the value of the 'dim_media_mimeid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMediaMimeid() {
+      dim_media_mimeid = null;
+      fieldSetFlags()[16] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'dim_movie_mid' field */
+    public java.lang.Long getDimMovieMid() {
+      return dim_movie_mid;
+    }
+    
+    /** Sets the value of the 'dim_movie_mid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMovieMid(java.lang.Long value) {
+      validate(fields()[17], value);
+      this.dim_movie_mid = value;
+      fieldSetFlags()[17] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'dim_movie_mid' field has been set */
+    public boolean hasDimMovieMid() {
+      return fieldSetFlags()[17];
+    }
+    
+    /** Clears the value of the 'dim_movie_mid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMovieMid() {
+      dim_movie_mid = null;
+      fieldSetFlags()[17] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'dim_cp_id' field */
+    public java.lang.Integer getDimCpId() {
+      return dim_cp_id;
+    }
+    
+    /** Sets the value of the 'dim_cp_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimCpId(java.lang.Integer value) {
+      validate(fields()[18], value);
+      this.dim_cp_id = value;
+      fieldSetFlags()[18] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'dim_cp_id' field has been set */
+    public boolean hasDimCpId() {
+      return fieldSetFlags()[18];
+    }
+    
+    /** Clears the value of the 'dim_cp_id' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimCpId() {
+      dim_cp_id = null;
+      fieldSetFlags()[18] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'dim_movie_category' field */
+    public java.lang.CharSequence getDimMovieCategory() {
+      return dim_movie_category;
+    }
+    
+    /** Sets the value of the 'dim_movie_category' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimMovieCategory(java.lang.CharSequence value) {
+      validate(fields()[19], value);
+      this.dim_movie_category = value;
+      fieldSetFlags()[19] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'dim_movie_category' field has been set */
+    public boolean hasDimMovieCategory() {
+      return fieldSetFlags()[19];
+    }
+    
+    /** Clears the value of the 'dim_movie_category' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimMovieCategory() {
+      dim_movie_category = null;
+      fieldSetFlags()[19] = false;
+      return this;
+    }
+
     /** Gets the value of the 'dim_product_pid' field */
     public java.lang.CharSequence getDimProductPid() {
       return dim_product_pid;
@@ -1294,21 +1534,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'dim_product_pid' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimProductPid(java.lang.CharSequence value) {
-      validate(fields()[16], value);
+      validate(fields()[20], value);
       this.dim_product_pid = value;
-      fieldSetFlags()[16] = true;
+      fieldSetFlags()[20] = true;
       return this; 
     }
     
     /** Checks whether the 'dim_product_pid' field has been set */
     public boolean hasDimProductPid() {
-      return fieldSetFlags()[16];
+      return fieldSetFlags()[20];
     }
     
     /** Clears the value of the 'dim_product_pid' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimProductPid() {
       dim_product_pid = null;
-      fieldSetFlags()[16] = false;
+      fieldSetFlags()[20] = false;
       return this;
     }
 
@@ -1319,21 +1559,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'dim_po_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimPoId(java.lang.Integer value) {
-      validate(fields()[17], value);
+      validate(fields()[21], value);
       this.dim_po_id = value;
-      fieldSetFlags()[17] = true;
+      fieldSetFlags()[21] = true;
       return this; 
     }
     
     /** Checks whether the 'dim_po_id' field has been set */
     public boolean hasDimPoId() {
-      return fieldSetFlags()[17];
+      return fieldSetFlags()[21];
     }
     
     /** Clears the value of the 'dim_po_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimPoId() {
       dim_po_id = null;
-      fieldSetFlags()[17] = false;
+      fieldSetFlags()[21] = false;
       return this;
     }
 
@@ -1344,21 +1584,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'dim_epg_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimEpgId(java.lang.Long value) {
-      validate(fields()[18], value);
+      validate(fields()[22], value);
       this.dim_epg_id = value;
-      fieldSetFlags()[18] = true;
+      fieldSetFlags()[22] = true;
       return this; 
     }
     
     /** Checks whether the 'dim_epg_id' field has been set */
     public boolean hasDimEpgId() {
-      return fieldSetFlags()[18];
+      return fieldSetFlags()[22];
     }
     
     /** Clears the value of the 'dim_epg_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimEpgId() {
       dim_epg_id = null;
-      fieldSetFlags()[18] = false;
+      fieldSetFlags()[22] = false;
       return this;
     }
 
@@ -1369,21 +1609,46 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'dim_section_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimSectionId(java.lang.CharSequence value) {
-      validate(fields()[19], value);
+      validate(fields()[23], value);
       this.dim_section_id = value;
-      fieldSetFlags()[19] = true;
+      fieldSetFlags()[23] = true;
       return this; 
     }
     
     /** Checks whether the 'dim_section_id' field has been set */
     public boolean hasDimSectionId() {
-      return fieldSetFlags()[19];
+      return fieldSetFlags()[23];
     }
     
     /** Clears the value of the 'dim_section_id' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimSectionId() {
       dim_section_id = null;
-      fieldSetFlags()[19] = false;
+      fieldSetFlags()[23] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'dim_section_parentid' field */
+    public java.lang.CharSequence getDimSectionParentid() {
+      return dim_section_parentid;
+    }
+    
+    /** Sets the value of the 'dim_section_parentid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setDimSectionParentid(java.lang.CharSequence value) {
+      validate(fields()[24], value);
+      this.dim_section_parentid = value;
+      fieldSetFlags()[24] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'dim_section_parentid' field has been set */
+    public boolean hasDimSectionParentid() {
+      return fieldSetFlags()[24];
+    }
+    
+    /** Clears the value of the 'dim_section_parentid' field */
+    public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearDimSectionParentid() {
+      dim_section_parentid = null;
+      fieldSetFlags()[24] = false;
       return this;
     }
 
@@ -1394,21 +1659,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_playbgntime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricPlaybgntime(java.lang.Long value) {
-      validate(fields()[20], value);
+      validate(fields()[25], value);
       this.metric_playbgntime = value;
-      fieldSetFlags()[20] = true;
+      fieldSetFlags()[25] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_playbgntime' field has been set */
     public boolean hasMetricPlaybgntime() {
-      return fieldSetFlags()[20];
+      return fieldSetFlags()[25];
     }
     
     /** Clears the value of the 'metric_playbgntime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricPlaybgntime() {
       metric_playbgntime = null;
-      fieldSetFlags()[20] = false;
+      fieldSetFlags()[25] = false;
       return this;
     }
 
@@ -1419,21 +1684,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_playalivetime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricPlayalivetime(java.lang.Long value) {
-      validate(fields()[21], value);
+      validate(fields()[26], value);
       this.metric_playalivetime = value;
-      fieldSetFlags()[21] = true;
+      fieldSetFlags()[26] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_playalivetime' field has been set */
     public boolean hasMetricPlayalivetime() {
-      return fieldSetFlags()[21];
+      return fieldSetFlags()[26];
     }
     
     /** Clears the value of the 'metric_playalivetime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricPlayalivetime() {
       metric_playalivetime = null;
-      fieldSetFlags()[21] = false;
+      fieldSetFlags()[26] = false;
       return this;
     }
 
@@ -1444,21 +1709,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_playendtime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricPlayendtime(java.lang.Long value) {
-      validate(fields()[22], value);
+      validate(fields()[27], value);
       this.metric_playendtime = value;
-      fieldSetFlags()[22] = true;
+      fieldSetFlags()[27] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_playendtime' field has been set */
     public boolean hasMetricPlayendtime() {
-      return fieldSetFlags()[22];
+      return fieldSetFlags()[27];
     }
     
     /** Clears the value of the 'metric_playendtime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricPlayendtime() {
       metric_playendtime = null;
-      fieldSetFlags()[22] = false;
+      fieldSetFlags()[27] = false;
       return this;
     }
 
@@ -1469,21 +1734,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_durationtime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricDurationtime(java.lang.Long value) {
-      validate(fields()[23], value);
+      validate(fields()[28], value);
       this.metric_durationtime = value;
-      fieldSetFlags()[23] = true;
+      fieldSetFlags()[28] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_durationtime' field has been set */
     public boolean hasMetricDurationtime() {
-      return fieldSetFlags()[23];
+      return fieldSetFlags()[28];
     }
     
     /** Clears the value of the 'metric_durationtime' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricDurationtime() {
       metric_durationtime = null;
-      fieldSetFlags()[23] = false;
+      fieldSetFlags()[28] = false;
       return this;
     }
 
@@ -1494,21 +1759,21 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_avgspeed' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricAvgspeed(java.lang.Long value) {
-      validate(fields()[24], value);
+      validate(fields()[29], value);
       this.metric_avgspeed = value;
-      fieldSetFlags()[24] = true;
+      fieldSetFlags()[29] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_avgspeed' field has been set */
     public boolean hasMetricAvgspeed() {
-      return fieldSetFlags()[24];
+      return fieldSetFlags()[29];
     }
     
     /** Clears the value of the 'metric_avgspeed' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricAvgspeed() {
       metric_avgspeed = null;
-      fieldSetFlags()[24] = false;
+      fieldSetFlags()[29] = false;
       return this;
     }
 
@@ -1519,20 +1784,20 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_isad' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricIsad(int value) {
-      validate(fields()[25], value);
+      validate(fields()[30], value);
       this.metric_isad = value;
-      fieldSetFlags()[25] = true;
+      fieldSetFlags()[30] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_isad' field has been set */
     public boolean hasMetricIsad() {
-      return fieldSetFlags()[25];
+      return fieldSetFlags()[30];
     }
     
     /** Clears the value of the 'metric_isad' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricIsad() {
-      fieldSetFlags()[25] = false;
+      fieldSetFlags()[30] = false;
       return this;
     }
 
@@ -1543,20 +1808,20 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_isrepeatmod' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricIsrepeatmod(int value) {
-      validate(fields()[26], value);
+      validate(fields()[31], value);
       this.metric_isrepeatmod = value;
-      fieldSetFlags()[26] = true;
+      fieldSetFlags()[31] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_isrepeatmod' field has been set */
     public boolean hasMetricIsrepeatmod() {
-      return fieldSetFlags()[26];
+      return fieldSetFlags()[31];
     }
     
     /** Clears the value of the 'metric_isrepeatmod' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricIsrepeatmod() {
-      fieldSetFlags()[26] = false;
+      fieldSetFlags()[31] = false;
       return this;
     }
 
@@ -1567,20 +1832,20 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_status' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricStatus(int value) {
-      validate(fields()[27], value);
+      validate(fields()[32], value);
       this.metric_status = value;
-      fieldSetFlags()[27] = true;
+      fieldSetFlags()[32] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_status' field has been set */
     public boolean hasMetricStatus() {
-      return fieldSetFlags()[27];
+      return fieldSetFlags()[32];
     }
     
     /** Clears the value of the 'metric_status' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricStatus() {
-      fieldSetFlags()[27] = false;
+      fieldSetFlags()[32] = false;
       return this;
     }
 
@@ -1591,20 +1856,20 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
     
     /** Sets the value of the 'metric_techtype' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder setMetricTechtype(int value) {
-      validate(fields()[28], value);
+      validate(fields()[33], value);
       this.metric_techtype = value;
-      fieldSetFlags()[28] = true;
+      fieldSetFlags()[33] = true;
       return this; 
     }
     
     /** Checks whether the 'metric_techtype' field has been set */
     public boolean hasMetricTechtype() {
-      return fieldSetFlags()[28];
+      return fieldSetFlags()[33];
     }
     
     /** Clears the value of the 'metric_techtype' field */
     public com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord.Builder clearMetricTechtype() {
-      fieldSetFlags()[28] = false;
+      fieldSetFlags()[33] = false;
       return this;
     }
 
@@ -1624,23 +1889,28 @@ public class HiveOrderDetailRecord extends org.apache.avro.specific.SpecificReco
         record.dim_user_hid = fieldSetFlags()[9] ? this.dim_user_hid : (java.lang.CharSequence) defaultValue(fields()[9]);
         record.dim_oem_id = fieldSetFlags()[10] ? this.dim_oem_id : (java.lang.Long) defaultValue(fields()[10]);
         record.dim_area_id = fieldSetFlags()[11] ? this.dim_area_id : (java.lang.Integer) defaultValue(fields()[11]);
-        record.dim_nettype_id = fieldSetFlags()[12] ? this.dim_nettype_id : (java.lang.Integer) defaultValue(fields()[12]);
-        record.dim_media_fid = fieldSetFlags()[13] ? this.dim_media_fid : (java.lang.CharSequence) defaultValue(fields()[13]);
-        record.dim_movie_mid = fieldSetFlags()[14] ? this.dim_movie_mid : (java.lang.Long) defaultValue(fields()[14]);
+        record.dim_area_parentid = fieldSetFlags()[12] ? this.dim_area_parentid : (java.lang.Integer) defaultValue(fields()[12]);
+        record.dim_nettype_id = fieldSetFlags()[13] ? this.dim_nettype_id : (java.lang.Integer) defaultValue(fields()[13]);
+        record.dim_media_fid = fieldSetFlags()[14] ? this.dim_media_fid : (java.lang.CharSequence) defaultValue(fields()[14]);
         record.dim_media_series = fieldSetFlags()[15] ? this.dim_media_series : (java.lang.Integer) defaultValue(fields()[15]);
-        record.dim_product_pid = fieldSetFlags()[16] ? this.dim_product_pid : (java.lang.CharSequence) defaultValue(fields()[16]);
-        record.dim_po_id = fieldSetFlags()[17] ? this.dim_po_id : (java.lang.Integer) defaultValue(fields()[17]);
-        record.dim_epg_id = fieldSetFlags()[18] ? this.dim_epg_id : (java.lang.Long) defaultValue(fields()[18]);
-        record.dim_section_id = fieldSetFlags()[19] ? this.dim_section_id : (java.lang.CharSequence) defaultValue(fields()[19]);
-        record.metric_playbgntime = fieldSetFlags()[20] ? this.metric_playbgntime : (java.lang.Long) defaultValue(fields()[20]);
-        record.metric_playalivetime = fieldSetFlags()[21] ? this.metric_playalivetime : (java.lang.Long) defaultValue(fields()[21]);
-        record.metric_playendtime = fieldSetFlags()[22] ? this.metric_playendtime : (java.lang.Long) defaultValue(fields()[22]);
-        record.metric_durationtime = fieldSetFlags()[23] ? this.metric_durationtime : (java.lang.Long) defaultValue(fields()[23]);
-        record.metric_avgspeed = fieldSetFlags()[24] ? this.metric_avgspeed : (java.lang.Long) defaultValue(fields()[24]);
-        record.metric_isad = fieldSetFlags()[25] ? this.metric_isad : (java.lang.Integer) defaultValue(fields()[25]);
-        record.metric_isrepeatmod = fieldSetFlags()[26] ? this.metric_isrepeatmod : (java.lang.Integer) defaultValue(fields()[26]);
-        record.metric_status = fieldSetFlags()[27] ? this.metric_status : (java.lang.Integer) defaultValue(fields()[27]);
-        record.metric_techtype = fieldSetFlags()[28] ? this.metric_techtype : (java.lang.Integer) defaultValue(fields()[28]);
+        record.dim_media_mimeid = fieldSetFlags()[16] ? this.dim_media_mimeid : (java.lang.Integer) defaultValue(fields()[16]);
+        record.dim_movie_mid = fieldSetFlags()[17] ? this.dim_movie_mid : (java.lang.Long) defaultValue(fields()[17]);
+        record.dim_cp_id = fieldSetFlags()[18] ? this.dim_cp_id : (java.lang.Integer) defaultValue(fields()[18]);
+        record.dim_movie_category = fieldSetFlags()[19] ? this.dim_movie_category : (java.lang.CharSequence) defaultValue(fields()[19]);
+        record.dim_product_pid = fieldSetFlags()[20] ? this.dim_product_pid : (java.lang.CharSequence) defaultValue(fields()[20]);
+        record.dim_po_id = fieldSetFlags()[21] ? this.dim_po_id : (java.lang.Integer) defaultValue(fields()[21]);
+        record.dim_epg_id = fieldSetFlags()[22] ? this.dim_epg_id : (java.lang.Long) defaultValue(fields()[22]);
+        record.dim_section_id = fieldSetFlags()[23] ? this.dim_section_id : (java.lang.CharSequence) defaultValue(fields()[23]);
+        record.dim_section_parentid = fieldSetFlags()[24] ? this.dim_section_parentid : (java.lang.CharSequence) defaultValue(fields()[24]);
+        record.metric_playbgntime = fieldSetFlags()[25] ? this.metric_playbgntime : (java.lang.Long) defaultValue(fields()[25]);
+        record.metric_playalivetime = fieldSetFlags()[26] ? this.metric_playalivetime : (java.lang.Long) defaultValue(fields()[26]);
+        record.metric_playendtime = fieldSetFlags()[27] ? this.metric_playendtime : (java.lang.Long) defaultValue(fields()[27]);
+        record.metric_durationtime = fieldSetFlags()[28] ? this.metric_durationtime : (java.lang.Long) defaultValue(fields()[28]);
+        record.metric_avgspeed = fieldSetFlags()[29] ? this.metric_avgspeed : (java.lang.Long) defaultValue(fields()[29]);
+        record.metric_isad = fieldSetFlags()[30] ? this.metric_isad : (java.lang.Integer) defaultValue(fields()[30]);
+        record.metric_isrepeatmod = fieldSetFlags()[31] ? this.metric_isrepeatmod : (java.lang.Integer) defaultValue(fields()[31]);
+        record.metric_status = fieldSetFlags()[32] ? this.metric_status : (java.lang.Integer) defaultValue(fields()[32]);
+        record.metric_techtype = fieldSetFlags()[33] ? this.metric_techtype : (java.lang.Integer) defaultValue(fields()[33]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

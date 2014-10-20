@@ -20,13 +20,18 @@ import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
 import com.voole.hobbit2.cache.AreaInfoCache.AreaInfosFetch;
+import com.voole.hobbit2.cache.MovieInfoCache.MovieInfoFetch;
 import com.voole.hobbit2.cache.OemInfoCache.OemInfoFetch;
+import com.voole.hobbit2.cache.ParentAreaInfoCache.ParentAreaInfoFetch;
+import com.voole.hobbit2.cache.ParentSectionInfoCache.ParentSectionInfoFetch;
 import com.voole.hobbit2.cache.ResourceInfoCache.ResourceInfoFetch;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.BoxStoreAreaInfo;
 import com.voole.hobbit2.cache.entity.DeviceInfo;
 import com.voole.hobbit2.cache.entity.EpgInfo;
+import com.voole.hobbit2.cache.entity.MovieInfo;
 import com.voole.hobbit2.cache.entity.OemInfo;
+import com.voole.hobbit2.cache.entity.ParentAreaInfo;
 import com.voole.hobbit2.cache.entity.ParentSectionInfo;
 import com.voole.hobbit2.cache.entity.ProductInfo;
 import com.voole.hobbit2.cache.entity.ResourceInfo;
@@ -43,7 +48,8 @@ import com.voole.hobbit2.common.Tuple;
  * @date 2013年10月30日
  */
 public class CacheDao implements OemInfoFetch, AreaInfosFetch,
-		ResourceInfoFetch {
+		ResourceInfoFetch, MovieInfoFetch, ParentAreaInfoFetch,
+		ParentSectionInfoFetch {
 
 	private JdbcTemplate realtimeJt;
 
@@ -56,7 +62,8 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
 				result.put(
 						Range.closed(rs.getLong("minip"), rs.getLong("maxip")),
-						new AreaInfo(rs.getInt("dim_area_id"), rs.getInt("nettype")));
+						new AreaInfo(rs.getInt("dim_area_id"), rs
+								.getInt("nettype")));
 
 				return null;
 			}
@@ -108,6 +115,22 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 			}
 		});
 
+		return map;
+	}
+
+	public Map<Integer, ParentAreaInfo> getParentAreaMap() {
+		final Map<Integer, ParentAreaInfo> map = new HashMap<Integer, ParentAreaInfo>();
+		String sql = "SELECT id,parentid FROM dim_area where parentid <>'' ";
+		realtimeJt.query(sql, new RowMapper<Void>() {
+			@Override
+			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Integer id = rs.getInt("id");
+				ParentAreaInfo info = new ParentAreaInfo();
+				info.setParentid(rs.getInt("parentid"));
+				map.put(id, info);
+				return null;
+			}
+		});
 		return map;
 	}
 
@@ -254,7 +277,7 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 
 	public Map<String, ResourceInfo> getResourceMap() {
 		final Map<String, ResourceInfo> map = new HashMap<String, ResourceInfo>();
-		String sql = "SELECT IFNULL(rs.`bitrate`, 0) bitrate, rs.`fid`, rs.`mid`, rs.`duration`,rs.series FROM dim_media rs ";
+		String sql = "SELECT IFNULL(rs.`bitrate`, 0) bitrate, rs.`fid`, rs.`mid`, rs.`duration`,rs.series,rs.mimeid FROM dim_media rs ";
 		realtimeJt.query(sql, new RowMapper<Void>() {
 			@Override
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -267,8 +290,26 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 				info.setDuration(rs.getInt("duration"));
 				info.setMid(rs.getLong("mid"));
 				info.setSeries(rs.getInt("series"));
+				info.setMimeid(rs.getInt("mimeid"));
 				map.put(fid, info);
 
+				return null;
+			}
+		});
+		return map;
+	}
+
+	public Map<Long, MovieInfo> getMovieMap() {
+		final Map<Long, MovieInfo> map = new HashMap<Long, MovieInfo>();
+		String sql = "SELECT rs.`mid`, rs.`dim_cp_id`, rs.`category` FROM dim_movie rs ";
+		realtimeJt.query(sql, new RowMapper<Void>() {
+			@Override
+			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Long mid = rs.getLong("mid");
+				MovieInfo info = new MovieInfo();
+				info.setCategory(rs.getString("category"));
+				info.setDim_cp_id(rs.getInt("dim_cp_id"));
+				map.put(mid, info);
 				return null;
 			}
 		});
@@ -313,17 +354,15 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		return map;
 	}
 
-	public Map<Tuple<String, String>, ParentSectionInfo> getParentSectionMap() {
-		final Map<Tuple<String, String>, ParentSectionInfo> map = new HashMap<Tuple<String, String>, ParentSectionInfo>();
-		String sql = "SELECT t.code,t.ispid,(select code from meta_section ms where ms.id=t.parent_id and ms.ispid=t.ispid limit 0,1) parentcode FROM meta_section t where t.layer>1 group by t.ispid,t.code ";
+	public Map<String, ParentSectionInfo> getParentSectionMap() {
+		final Map<String, ParentSectionInfo> map = new HashMap<String, ParentSectionInfo>();
+		String sql = "SELECT t.code,(select code from dim_section ms where ms.id=t.parentid limit 0,1) parentcode FROM dim_section t where parentid>0 ";
 		realtimeJt.query(sql, new RowMapper<Void>() {
 			@Override
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
 				ParentSectionInfo info = new ParentSectionInfo();
 				info.setCode(rs.getString("parentcode"));
-				map.put(new Tuple<String, String>(rs.getString("ispid"), rs
-						.getString("code")), info);
-
+				map.put(rs.getString("code"), info);
 				return null;
 			}
 		});

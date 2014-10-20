@@ -39,17 +39,29 @@
 		"name" : "dim_area_id",
 		"type" : [ "int", "null" ]
 	}, {
+		"name" : "dim_area_parentid",
+		"type" : [ "int", "null" ]
+	}, {
 		"name" : "dim_nettype_id",
 		"type" : [ "int", "null" ]
 	}, {
 		"name" : "dim_media_fid",
 		"type" : [ "string", "null" ]
 	}, {
+		"name" : "dim_media_series",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_media_mimeid",
+		"type" : [ "int", "null" ]
+	}, {
 		"name" : "dim_movie_mid",
 		"type" : [ "long", "null" ]
 	}, {
-		"name" : "dim_media_series",
+		"name" : "dim_cp_id",
 		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_movie_category",
+		"type" : [ "string", "null" ]
 	}, {
 		"name" : "dim_product_pid",
 		"type" : [ "string", "null" ]
@@ -61,6 +73,9 @@
 		"type" : [ "long", "null" ]
 	}, {
 		"name" : "dim_section_id",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_section_parentid",
 		"type" : [ "string", "null" ]
 	}, {
 		"name" : "metric_playbgntime",

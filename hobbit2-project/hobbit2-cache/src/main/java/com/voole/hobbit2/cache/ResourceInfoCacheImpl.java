@@ -12,7 +12,6 @@ import com.voole.hobbit2.cache.HobbitCache.AbstractHobbitCache;
 import com.voole.hobbit2.cache.entity.ResourceInfo;
 import com.voole.hobbit2.cache.exception.CacheQueryException;
 import com.voole.hobbit2.cache.exception.CacheRefreshException;
-import com.voole.hobbit2.common.Tuple;
 
 /**
  * @author XuehuiHe

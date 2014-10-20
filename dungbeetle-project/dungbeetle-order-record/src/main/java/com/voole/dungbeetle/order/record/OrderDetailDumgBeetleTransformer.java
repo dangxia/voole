@@ -22,14 +22,23 @@ import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
 import com.voole.hobbit2.cache.AreaInfoCache;
 import com.voole.hobbit2.cache.AreaInfoCacheImpl;
+import com.voole.hobbit2.cache.MovieInfoCache;
+import com.voole.hobbit2.cache.MovieInfoCacheImpl;
 import com.voole.hobbit2.cache.OemInfoCache;
 import com.voole.hobbit2.cache.OemInfoCacheImpl;
+import com.voole.hobbit2.cache.ParentAreaInfoCache;
+import com.voole.hobbit2.cache.ParentAreaInfoCacheImpl;
+import com.voole.hobbit2.cache.ParentSectionInfoCache;
+import com.voole.hobbit2.cache.ParentSectionInfoCacheImpl;
 import com.voole.hobbit2.cache.ResourceInfoCache;
 import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
 import com.voole.hobbit2.cache.db.CacheDao;
 import com.voole.hobbit2.cache.db.CacheDaoUtil;
 import com.voole.hobbit2.cache.entity.AreaInfo;
+import com.voole.hobbit2.cache.entity.MovieInfo;
 import com.voole.hobbit2.cache.entity.OemInfo;
+import com.voole.hobbit2.cache.entity.ParentAreaInfo;
+import com.voole.hobbit2.cache.entity.ParentSectionInfo;
 import com.voole.hobbit2.cache.entity.ResourceInfo;
 import com.voole.hobbit2.cache.exception.CacheQueryException;
 import com.voole.hobbit2.cache.exception.CacheRefreshException;
@@ -45,6 +54,9 @@ public class OrderDetailDumgBeetleTransformer implements
 	private AreaInfoCache areaInfoCache;
 	private OemInfoCache oemInfoCache;
 	private ResourceInfoCache resourceInfoCache;
+	private MovieInfoCache movieInfoCache;
+	private ParentAreaInfoCache parentAreaInfoCache;
+	private ParentSectionInfoCache parentSectionInfoCache;
 	private final Map<String, HiveTable> partitionCache;
 
 	private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -61,10 +73,16 @@ public class OrderDetailDumgBeetleTransformer implements
 		areaInfoCache = new AreaInfoCacheImpl(dao);
 		oemInfoCache = new OemInfoCacheImpl(dao);
 		resourceInfoCache = new ResourceInfoCacheImpl(dao);
+		movieInfoCache = new MovieInfoCacheImpl(dao);
+		parentAreaInfoCache = new ParentAreaInfoCacheImpl(dao);
+		parentSectionInfoCache = new ParentSectionInfoCacheImpl(dao);
 		try {
 			areaInfoCache.refresh();
 			oemInfoCache.refresh();
 			resourceInfoCache.refresh();
+			movieInfoCache.refresh();
+			parentAreaInfoCache.refresh();
+			parentSectionInfoCache.refresh();
 		} catch (Exception e) {
 			Throwables.propagate(e);
 		}
@@ -84,14 +102,12 @@ public class OrderDetailDumgBeetleTransformer implements
 		fillDetail(record, dry);
 		try {
 			String spid = getSpid(record.getDimOemId());
+			// area
 			Optional<AreaInfo> areaInfo = getAreaInfo(
 					record.getDimUserHid() != null ? record.getDimUserHid()
 							.toString() : null,
 					record.getDimOemId() != null ? record.getDimOemId()
 							.toString() : null, spid, record.getUserip());
-			Optional<ResourceInfo> resourceInfo = getResourceInfo(spid,
-					record.getDimMediaFid() != null ? record.getDimMediaFid()
-							.toString() : null);
 			record.setDimIspId(Integer.parseInt(spid));
 			if (areaInfo.isPresent()) {
 				record.setDimAreaId(areaInfo.get().getAreaid());
@@ -100,17 +116,48 @@ public class OrderDetailDumgBeetleTransformer implements
 				record.setDimAreaId(0);
 				record.setDimNettypeId(0);
 			}
+			// resource
+			Optional<ResourceInfo> resourceInfo = getResourceInfo(spid,
+					record.getDimMediaFid() != null ? record.getDimMediaFid()
+							.toString() : null);
 			if (resourceInfo.isPresent()) {
 				Long mid = resourceInfo.get().getMid();
 				int series = resourceInfo.get().getSeries();
+				int mimeid = resourceInfo.get().getMimeid();
 				if (mid != null) {
 					record.setDimMovieMid(mid);
 					record.setDimMediaSeries(series);
+					record.setDimMediaMimeid(mimeid);
 				} else {
 					record.setDimMovieMid((long) 0);
 					record.setDimMediaSeries(0);
+					record.setDimMediaMimeid(0);
 				}
 			}
+			// movie
+			Optional<MovieInfo> movieInfo = getMovieInfo(record
+					.getDimMovieMid());
+			if (movieInfo.isPresent()) {
+				record.setDimCpId(movieInfo.get().getDim_cp_id());
+				record.setDimMovieCategory(movieInfo.get().getCategory());
+			} else {
+				record.setDimCpId(100010);
+			}
+			// 省份
+			Optional<ParentAreaInfo> parentAreaInfo = getParentAreaInfo(record
+					.getDimAreaId());
+			if (parentAreaInfo.isPresent()) {
+				record.setDimAreaParentid(parentAreaInfo.get().getParentid());
+			} else {
+				record.setDimAreaParentid(0);
+			}
+			// 栏目
+			Optional<ParentSectionInfo> parentSectionInfo = getParentSectionInfo(record
+					.getDimSectionId() + "");
+			if (parentSectionInfo.isPresent()) {
+				record.setDimSectionParentid(parentSectionInfo.get().getCode());
+			}
+			// 时段
 			record.setDimDateHour(getDayHour(record.getMetricPlaybgntime()));
 		} catch (Exception e) {
 			throw new DumgBeetleTransformException(e);
@@ -196,6 +243,21 @@ public class OrderDetailDumgBeetleTransformer implements
 	public Optional<ResourceInfo> getResourceInfo(String spid, String fid)
 			throws CacheRefreshException, CacheQueryException {
 		return resourceInfoCache.getResourceInfo(spid, fid);
+	}
+
+	public Optional<MovieInfo> getMovieInfo(Long mid)
+			throws CacheRefreshException, CacheQueryException {
+		return movieInfoCache.getMovieInfo(mid);
+	}
+
+	public Optional<ParentAreaInfo> getParentAreaInfo(Integer areaid)
+			throws CacheRefreshException, CacheQueryException {
+		return parentAreaInfoCache.getParentAreaInfo(areaid);
+	}
+
+	public Optional<ParentSectionInfo> getParentSectionInfo(String sectionid)
+			throws CacheRefreshException, CacheQueryException {
+		return parentSectionInfoCache.getParentSectionInfo(sectionid);
 	}
 
 	public static void main(String[] args) throws IOException,

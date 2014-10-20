@@ -16,7 +16,16 @@ public class ResourceInfo implements Serializable {
 	private Integer bitrate;
 	private Integer duration;
 	private Integer series;
+	private Integer mimeid;
 	private Long mid;
+
+	public Integer getMimeid() {
+		return mimeid;
+	}
+
+	public void setMimeid(Integer mimeid) {
+		this.mimeid = mimeid;
+	}
 
 	public Integer getSeries() {
 		return series;

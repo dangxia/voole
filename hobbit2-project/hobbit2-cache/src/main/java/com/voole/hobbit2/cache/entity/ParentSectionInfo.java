@@ -14,7 +14,7 @@ import java.io.Serializable;
 public class ParentSectionInfo implements Serializable {
 
 	private static final long serialVersionUID = -4992314548930938898L;
-	
+
 	private String code;
 
 	public ParentSectionInfo() {
@@ -23,10 +23,8 @@ public class ParentSectionInfo implements Serializable {
 	public String getCode() {
 		return code;
 	}
-
 	public void setCode(String code) {
 		this.code = code;
 	}
-
 
 }
