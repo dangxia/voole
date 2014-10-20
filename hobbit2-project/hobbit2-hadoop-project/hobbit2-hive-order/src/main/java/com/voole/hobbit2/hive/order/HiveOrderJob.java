@@ -116,6 +116,7 @@ public class HiveOrderJob extends Configured implements Tool {
 				sql += " PARTITION (" + Joiner.on(',').join(paritionStrs)
 						+ ") ";
 			}
+			log.info("sql:" + sql);
 			hiveClient.update(sql);
 			log.info("load file:" + resultFilePath);
 		}
