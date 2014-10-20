@@ -149,7 +149,7 @@ public class OrderDetailDumgBeetleTransformer implements
 			if (parentAreaInfo.isPresent()) {
 				record.setDimAreaParentid(parentAreaInfo.get().getParentid());
 			} else {
-				record.setDimAreaParentid(0);
+				record.setDimAreaParentid(record.getDimAreaId());
 			}
 			// 栏目
 			Optional<ParentSectionInfo> parentSectionInfo = getParentSectionInfo(record
