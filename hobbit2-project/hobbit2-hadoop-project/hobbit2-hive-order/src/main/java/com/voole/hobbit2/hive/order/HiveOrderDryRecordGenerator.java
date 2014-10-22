@@ -41,6 +41,8 @@ public class HiveOrderDryRecordGenerator {
 		} else if (orderSessionInfo._lastAlive != null) {
 			record.setPlayDurationTime(orderSessionInfo._lastAliveTime
 					- orderSessionInfo._bgnTime);
+		} else {
+			record.setPlayDurationTime(0l);
 		}
 		return record;
 
