@@ -96,7 +96,7 @@
 	</bean>
 	
 	<context:component-scan base-package="com.voole.dungbeetle.ad" />
-    <aop:aspectj-autoproxy proxy-target-class="true"/> 
+    <aop:aspectj-autoproxy/> 
 
 	
 	
