@@ -90,7 +90,7 @@ public class AdPlayLogTransformerImpl implements
 
 	@Override
 	public void setup(TaskAttemptContext context) throws IOException,
-			InterruptedException, DumgBeetleTransformException {
+			InterruptedException {
 		try {
 			// 初始化spring容器
 			ctx = StartUp.getSpringContext();
@@ -529,8 +529,9 @@ public class AdPlayLogTransformerImpl implements
 			PlayUrlAdEntity playUrlAdEntity, int i) {
 		// 直播回看暂时不处理，潘玉涛说比较简单，不用现在的逻辑
 	}
-	
-	public static void main(String[] args) throws IOException, InterruptedException, DumgBeetleTransformException {
+
+	public static void main(String[] args) throws IOException,
+			InterruptedException, DumgBeetleTransformException {
 		AdPlayLogTransformerImpl t = new AdPlayLogTransformerImpl();
 		t.setup(null);
 		t.cleanup(null);

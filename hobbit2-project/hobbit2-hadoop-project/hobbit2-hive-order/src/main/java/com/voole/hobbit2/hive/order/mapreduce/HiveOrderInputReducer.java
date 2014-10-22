@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,9 +27,12 @@ import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 
 import com.google.common.base.Throwables;
+import com.voole.dungbeetle.ad.record.avro.InterfacePlayLogDry;
+import com.voole.dungbeetle.ad.transform.AdPlayLogTransformerImpl;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.OrderDetailDumgBeetleTransformer;
+import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV3;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
@@ -54,9 +56,10 @@ public class HiveOrderInputReducer extends
 	// LoggerFactory.getLogger(HiveOrderInputReducer.class);
 	private OrderSessionInfo sessionInfo;
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
+	private AdPlayLogTransformerImpl adPlayLogTransformerImpl;
 	private long currCamusExecTime;
 
-//	private LinkedList<SpecificRecordBase> cache;
+	// private LinkedList<SpecificRecordBase> cache;
 
 	private FileSystem fs;
 	private Schema errorSchema;
@@ -76,7 +79,10 @@ public class HiveOrderInputReducer extends
 		orderDetailDumgBeetleTransformer = new OrderDetailDumgBeetleTransformer();
 		orderDetailDumgBeetleTransformer.setup(context);
 
-//		cache = new LinkedList<SpecificRecordBase>();
+		adPlayLogTransformerImpl = new AdPlayLogTransformerImpl();
+		adPlayLogTransformerImpl.setup(context);
+
+		// cache = new LinkedList<SpecificRecordBase>();
 		fs = FileSystem.get(context.getConfiguration());
 		errorSchema = HiveOrderMetaConfigs.getOrderUnionSchema(context);
 	}
@@ -88,7 +94,11 @@ public class HiveOrderInputReducer extends
 		if (orderDetailDumgBeetleTransformer != null) {
 			orderDetailDumgBeetleTransformer.cleanup(context);
 		}
-//		cache.clear();
+
+		if (adPlayLogTransformerImpl != null) {
+			adPlayLogTransformerImpl.cleanup(context);
+		}
+		// cache.clear();
 	}
 
 	protected SpecificRecordBase deepCopy(SpecificRecordBase record)
@@ -115,14 +125,14 @@ public class HiveOrderInputReducer extends
 			throws IOException, InterruptedException {
 		sessionInfo.clear();
 		sessionInfo.setSessionIdAndNatip(sessionIdAndNatip.toString());
-//		cache.clear();
-//		try {
-//			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
-//				cache.add(deepCopy(avroValue.datum()));
-//			}
-//		} catch (Exception e) {
-//			Throwables.propagate(e);
-//		}
+		// cache.clear();
+		// try {
+		// for (AvroValue<SpecificRecordBase> avroValue : iterable) {
+		// cache.add(deepCopy(avroValue.datum()));
+		// }
+		// } catch (Exception e) {
+		// Throwables.propagate(e);
+		// }
 		try {
 
 			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
@@ -158,6 +168,12 @@ public class HiveOrderInputReducer extends
 				for (Entry<HiveTable, List<SpecificRecordBase>> entry : result
 						.entrySet()) {
 					context.write(entry.getKey(), entry.getValue());
+					if (orderRecord.getIsAdMod()
+							&& entry.getValue() instanceof HiveOrderDetailRecord) {
+						HiveOrderDetailRecord detailRecord = (HiveOrderDetailRecord) (entry
+								.getValue());
+						processAdRecord(detailRecord, context);
+					}
 				}
 			}
 		} catch (OrderSessionInfoException e) {
@@ -170,6 +186,46 @@ public class HiveOrderInputReducer extends
 		} catch (DumgBeetleTransformException e) {
 			Throwables.propagate(e);
 		}
+
+	}
+
+	private void processAdRecord(HiveOrderDetailRecord detailRecord,
+			Context context) throws IOException, InterruptedException {
+		try {
+			Map<HiveTable, List<SpecificRecordBase>> result = adPlayLogTransformerImpl
+					.transform(createAdDry(detailRecord));
+			if (result != null && result.size() > 0) {
+				for (Entry<HiveTable, List<SpecificRecordBase>> entry : result
+						.entrySet()) {
+					context.write(entry.getKey(), entry.getValue());
+				}
+			}
+		} catch (DumgBeetleTransformException e) {
+			Throwables.propagate(e);
+		}
+	}
+
+	private InterfacePlayLogDry createAdDry(HiveOrderDetailRecord detail) {
+		InterfacePlayLogDry adDry = new InterfacePlayLogDry();
+		adDry.setArea(detail.getDimAreaId() == null ? null : detail
+				.getDimAreaId().toString());
+		adDry.setEpgid(detail.getDimEpgId() == null ? null : detail
+				.getDimEpgId().toString());
+		adDry.setHid(detail.getDimUserHid());
+		adDry.setIp(detail.getUserip());
+		adDry.setOemid(detail.getDimOemId() == null ? null : detail
+				.getDimOemId().toString());
+		adDry.setPlayurl(detail.getPlayurl());
+		adDry.setSectionid(detail.getDimSectionId());
+		adDry.setSessionid(detail.getSessid());
+		adDry.setSpeed(detail.getMetricAvgspeed() == null ? null : detail
+				.getMetricAvgspeed().toString());
+		adDry.setSpid(detail.getDimIspId() == null ? null : detail
+				.getDimIspId().toString());
+		adDry.setStarttime(detail.getMetricPlaybgntime());
+		adDry.setEndtime(detail.getMetricPlayendtime());
+		adDry.setLastalivetime(detail.getMetricPlayalivetime());
+		return adDry;
 
 	}
 

@@ -73,5 +73,10 @@
 			<artifactId>dungbeetle-order-record</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.voole.dungbeetle</groupId>
+			<artifactId>dungbeetle-ad</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
