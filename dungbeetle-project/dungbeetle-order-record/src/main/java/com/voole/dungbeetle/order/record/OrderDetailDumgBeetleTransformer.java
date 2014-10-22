@@ -101,6 +101,11 @@ public class OrderDetailDumgBeetleTransformer implements
 		HiveOrderDetailRecord record = new HiveOrderDetailRecord();
 		fillDetail(record, dry);
 		try {
+			// 过滤异常时长
+			if (record.getMetricDurationtime() > 10800) {
+				record.setMetricDurationtime((long) 10800);
+			}
+
 			String spid = getSpid(record.getDimOemId());
 			// area
 			Optional<AreaInfo> areaInfo = getAreaInfo(
