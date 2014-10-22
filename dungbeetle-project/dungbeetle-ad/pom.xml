@@ -29,12 +29,6 @@
 		</dependency>
 		
 		<dependency>
-		    <groupId>org.apache.activemq</groupId>
-		    <artifactId>activemq-pool</artifactId>
-		    <version>5.7.0</version>
-		</dependency>
-		
-		<dependency>
 		    <groupId>com.alibaba</groupId>
 		    <artifactId>druid</artifactId>
 		    <version>0.2.26</version>
