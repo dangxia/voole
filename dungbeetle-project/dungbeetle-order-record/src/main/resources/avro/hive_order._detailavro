@@ -66,6 +66,9 @@
 		"name" : "dim_product_pid",
 		"type" : [ "string", "null" ]
 	}, {
+		"name" : "dim_product_ptype",
+		"type" : [ "int", "null" ]
+	}, {
 		"name" : "dim_po_id",
 		"type" : [ "int", "null" ]
 	}, {

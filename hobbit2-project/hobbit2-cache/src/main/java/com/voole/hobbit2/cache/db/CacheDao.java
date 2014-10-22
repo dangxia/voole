@@ -24,6 +24,7 @@ import com.voole.hobbit2.cache.MovieInfoCache.MovieInfoFetch;
 import com.voole.hobbit2.cache.OemInfoCache.OemInfoFetch;
 import com.voole.hobbit2.cache.ParentAreaInfoCache.ParentAreaInfoFetch;
 import com.voole.hobbit2.cache.ParentSectionInfoCache.ParentSectionInfoFetch;
+import com.voole.hobbit2.cache.ProductInfoCache.ProductInfoFetch;
 import com.voole.hobbit2.cache.ResourceInfoCache.ResourceInfoFetch;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.BoxStoreAreaInfo;
@@ -49,7 +50,7 @@ import com.voole.hobbit2.common.Tuple;
  */
 public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		ResourceInfoFetch, MovieInfoFetch, ParentAreaInfoFetch,
-		ParentSectionInfoFetch {
+		ParentSectionInfoFetch,ProductInfoFetch {
 
 	private JdbcTemplate realtimeJt;
 
@@ -316,7 +317,7 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		return map;
 	}
 
-	public Map<Tuple<String, String>, ProductInfo> getProductMap() {
+	public Map<Tuple<String, String>, ProductInfo> getProductInfos_old() {
 		final Map<Tuple<String, String>, ProductInfo> map = new HashMap<Tuple<String, String>, ProductInfo>();
 		String sql = "SELECT spid,product_id,ifnull(ptype,0) ptype,ifnull(fee,0) fee FROM isp_product ";
 		realtimeJt.query(sql, new RowMapper<Void>() {
@@ -335,9 +336,9 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		return map;
 	}
 
-	public Map<Tuple<String, String>, ProductInfo> getPolicyidProductMap() {
+	public Map<Tuple<String, String>, ProductInfo> getProductInfos() {
 		final Map<Tuple<String, String>, ProductInfo> map = new HashMap<Tuple<String, String>, ProductInfo>();
-		String sql = "select t.policyid,t.productid,ifnull(p.ptype,0) ptype,ifnull(t.fee,0) fee from  meta_product_link t  inner join isp_product p on( t.productid = p.product_id and t.spid = p.spid ) ";
+		String sql = "select t.id,t.pid,ifnull(p.ptype,0) ptype,ifnull(t.fee,0) fee from  dim_po_product t  inner join dim_product p on( t.pid = p.pid) ";
 		realtimeJt.query(sql, new RowMapper<Void>() {
 			@Override
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -345,8 +346,8 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 				info.setPtype(rs.getInt("ptype"));
 				info.setFee(rs.getInt("fee"));
 				info._process();
-				map.put(new Tuple<String, String>(rs.getString("policyid"), rs
-						.getString("productid")), info);
+				map.put(new Tuple<String, String>(rs.getString("id"), rs
+						.getString("pid")), info);
 
 				return null;
 			}

@@ -30,6 +30,8 @@ import com.voole.hobbit2.cache.ParentAreaInfoCache;
 import com.voole.hobbit2.cache.ParentAreaInfoCacheImpl;
 import com.voole.hobbit2.cache.ParentSectionInfoCache;
 import com.voole.hobbit2.cache.ParentSectionInfoCacheImpl;
+import com.voole.hobbit2.cache.ProductInfoCache;
+import com.voole.hobbit2.cache.ProductInfoCacheImpl;
 import com.voole.hobbit2.cache.ResourceInfoCache;
 import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
 import com.voole.hobbit2.cache.db.CacheDao;
@@ -39,6 +41,7 @@ import com.voole.hobbit2.cache.entity.MovieInfo;
 import com.voole.hobbit2.cache.entity.OemInfo;
 import com.voole.hobbit2.cache.entity.ParentAreaInfo;
 import com.voole.hobbit2.cache.entity.ParentSectionInfo;
+import com.voole.hobbit2.cache.entity.ProductInfo;
 import com.voole.hobbit2.cache.entity.ResourceInfo;
 import com.voole.hobbit2.cache.exception.CacheQueryException;
 import com.voole.hobbit2.cache.exception.CacheRefreshException;
@@ -57,6 +60,7 @@ public class OrderDetailDumgBeetleTransformer implements
 	private MovieInfoCache movieInfoCache;
 	private ParentAreaInfoCache parentAreaInfoCache;
 	private ParentSectionInfoCache parentSectionInfoCache;
+	private ProductInfoCache productInfoCache;
 	private final Map<String, HiveTable> partitionCache;
 
 	private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -75,6 +79,7 @@ public class OrderDetailDumgBeetleTransformer implements
 		resourceInfoCache = new ResourceInfoCacheImpl(dao);
 		movieInfoCache = new MovieInfoCacheImpl(dao);
 		parentAreaInfoCache = new ParentAreaInfoCacheImpl(dao);
+		productInfoCache = new ProductInfoCacheImpl(dao);
 		parentSectionInfoCache = new ParentSectionInfoCacheImpl(dao);
 		try {
 			areaInfoCache.refresh();
@@ -83,6 +88,7 @@ public class OrderDetailDumgBeetleTransformer implements
 			movieInfoCache.refresh();
 			parentAreaInfoCache.refresh();
 			parentSectionInfoCache.refresh();
+			productInfoCache.refresh();
 		} catch (Exception e) {
 			Throwables.propagate(e);
 		}
@@ -161,7 +167,18 @@ public class OrderDetailDumgBeetleTransformer implements
 					.getDimSectionId() + "");
 			if (parentSectionInfo.isPresent()) {
 				record.setDimSectionParentid(parentSectionInfo.get().getCode());
+			} else {
+				record.setDimSectionParentid(record.getDimSectionId() + "");
 			}
+			// 产品类型
+			Optional<ProductInfo> productInfo = getProductInfo(
+					record.getDimPoId() + "", record.getDimProductPid() + "");
+			if (productInfo.isPresent()) {
+				record.setDimProductPtype(productInfo.get().getPptype());
+			} else {
+				record.setDimProductPtype(0);
+			}
+
 			// 时段
 			record.setDimDateHour(getDayHour(record.getMetricPlaybgntime()));
 		} catch (Exception e) {
@@ -263,6 +280,12 @@ public class OrderDetailDumgBeetleTransformer implements
 	public Optional<ParentSectionInfo> getParentSectionInfo(String sectionid)
 			throws CacheRefreshException, CacheQueryException {
 		return parentSectionInfoCache.getParentSectionInfo(sectionid);
+	}
+
+	public Optional<ProductInfo> getProductInfo(String dim_po_id,
+			String dim_product_pid) throws CacheRefreshException,
+			CacheQueryException {
+		return productInfoCache.getProductInfo(dim_po_id, dim_product_pid);
 	}
 
 	public static void main(String[] args) throws IOException,
