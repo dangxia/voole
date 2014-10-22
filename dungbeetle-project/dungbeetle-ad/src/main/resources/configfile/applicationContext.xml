@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:cache="http://www.springframework.org/schema/cache"
+	xmlns:task="http://www.springframework.org/schema/task"    
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/task 
+	http://www.springframework.org/schema/task/spring-task-3.2.xsd
+    http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+    http://www.springframework.org/schema/aop 
+    http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+    http://www.springframework.org/schema/tx
+    http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+    http://www.springframework.org/schema/jee
+    http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd
+    http://www.springframework.org/schema/util 
+    http://www.springframework.org/schema/util/spring-util-3.2.xsd
+    http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.2.xsd">
+
+   <!-- 引入activemq -->
+   <import resource="classpath:/configfile/applicationContext-ActiveMQ.xml" /> 
+
+   <bean class="com.voole.dungbeetle.ad.util.GlobalProperties">
+       <property name="locations">
+			<list>
+				<value>classpath:/configfile/db.properties</value>
+				<value>classpath:/configfile/applicationConfig.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置广告数据源 -->
+	<bean id="adDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" scope="prototype">
+	    <property name="driverClassName" value="${driverClassName}"/>
+	    <property name="url" value="${url}"/>
+	    <property name="username" value="${userName}"/>
+	    <property name="password" value="${password}"/>
+	    <!--initialSize: 初始化连接-->  
+		<property name="initialSize" value="10"/>  
+		<!--maxIdle: 最大空闲连接-->  
+		<property name="maxIdle" value="10"/>  
+		<!--minIdle: 最小空闲连接-->  
+		<property name="minIdle" value="10"/>  
+		<!--maxActive: 最大连接数量-->  
+		<property name="maxActive" value="20"/>  
+		<!--maxWait: 当没有可用连接时，连接池等待连接释放的最大时间,单位：ms-->  
+		<property name="maxWait" value="60000"/>
+    </bean>
+    
+    <!-- 配置平台数据源 -->
+    <bean id="platDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+	    <property name="driverClassName" value="${driverClassName}"/>
+	    <property name="url" value="${platUrl}"/>
+	    <property name="username" value="${platUserName}"/>
+	    <property name="password" value="${platPassword}"/>
+	    <!--initialSize: 初始化连接-->  
+		<property name="initialSize" value="5"/>  
+		<!--minIdle: 最小空闲连接-->  
+		<property name="minIdle" value="5"/>  
+		<!--maxActive: 最大连接数量-->  
+		<property name="maxActive" value="10"/>
+		<!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat" />  
+    </bean>
+    <!-- 配置统计当前库数据源 -->
+    <bean id="rtDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+	    <property name="driverClassName" value="${driverClassName}"/>
+	    <property name="url" value="${rturl}"/>
+	    <property name="username" value="${rtusername}"/>
+	    <property name="password" value="${rtpassword}"/>
+	    <!--initialSize: 初始化连接-->  
+		<property name="initialSize" value="5"/>  
+		<!--minIdle: 最小空闲连接-->  
+		<property name="minIdle" value="5"/>  
+		<!--maxActive: 最大连接数量-->  
+		<property name="maxActive" value="20"/>
+		<!-- 配置监控统计拦截的filters -->
+        <property name="filters" value="stat" />  
+    </bean>
+    
+	<!--动态数据源-->
+	<bean id="dynamicDataSource" class="com.voole.dungbeetle.ad.util.DynamicDataSource">  
+		<property name="targetDataSources">  
+			<map>
+				<entry key="ad" value-ref="adDataSource"/>
+				<entry key="platform" value-ref="platDataSource"/>
+				<entry key="rtstat" value-ref="rtDataSource"/>
+			</map>  
+		</property>  
+		<property name="defaultTargetDataSource" ref="rtDataSource" />  
+	</bean>  
+    
+    <!-- 配置SQLSessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	   <property name="configLocation" value="/configfile/sqlMapConfig.xml"/>
+	   <property name="mapperLocations"  
+              value="classpath:com/voole/dungbeetle/ad/model/sqlxml/*.xml" /> 
+	   <property name="dataSource" ref="dynamicDataSource" />
+	</bean>
+	
+	<context:component-scan base-package="com.voole.dungbeetle.ad" />
+    <aop:aspectj-autoproxy proxy-target-class="true"/> 
+
+	
+	
+     
+    <!--  加载applicationConfig.properties文件，获取属性文件的内容
+	<bean id="propertyConfigurer" class="com.voole.dungbeetle.ad.util.GlobalProperties">
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="locations">
+			<list>
+				<value>classpath:/configfile/applicationConfig.properties</value>
+			</list>
+		</property>
+	</bean>-->
+</beans>

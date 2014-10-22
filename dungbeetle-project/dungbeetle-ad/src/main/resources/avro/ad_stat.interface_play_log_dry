@@ -1,0 +1,47 @@
+{
+	"type" : "record",
+	"name" : "InterfacePlayLogDry",
+	"namespace" : "com.voole.dungbeetle.ad.record.avro",
+	"fields" : [ {
+		"name" : "sessionid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "starttime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "lastalivetime",
+		"type" : [ "long", "null" ]
+	},{
+		"name" : "endtime",
+		"type" : [ "long", "null" ]
+	},{
+		"name" : "epgid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "spid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "oemid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "speed",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "playurl",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "ip",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "area",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "sectionid",
+		"type" : [ "string", "null" ]
+	}]
+}
+
+//统计平台传递给我们的数据 interface_play_log_dry 传输字段进行了修改 以前老平台无用的数据不传到广告平台

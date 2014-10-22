@@ -1,0 +1,158 @@
+{
+	"type" : "record",
+	"name" : "PlayLog",
+	"namespace" : "com.voole.dungbeetle.ad.record.avro",
+	"fields" : [ {
+		"name" : "stamp",
+		"type" : "long"
+	},{
+		"name" : "logid",
+		"type" : "string"
+	},{
+		"name" : "sessionid",
+		"type" : "string"
+	}, {
+		"name" : "amid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "adverno",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "agentno",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "spid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "oemid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "provinceid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "cityid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "channelid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "programid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "sid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "adlength",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "ip",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "coderate",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "resolution",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "starttime",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "endtime",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "playtime",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "speed",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "fullplay",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "fid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "adposid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime00",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime01",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime02",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime03",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime04",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime05",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime06",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime07",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime08",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime09",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime10",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime11",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime12",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime13",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime14",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime15",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime16",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime17",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime18",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime19",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime20",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime21",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime22",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime23",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "playcnttime",
+		"type" : [ "int", "null" ]
+	}]
+}
+
+//最终入库表 play_log

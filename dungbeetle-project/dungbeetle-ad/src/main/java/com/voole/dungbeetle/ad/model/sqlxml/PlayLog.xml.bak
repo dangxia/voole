@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="playLog">
+	<cache
+		eviction="FIFO"
+		flushInterval="60000"
+		size="10240"
+		readOnly="true"/> 
+
+	<select id="findAllAdinfo" resultType="map">
+		SELECT 	pn.seqno,io.fid,ad.amid,ad.amid,ad.adname,ad.runtime,io.resolution,io.duration,io.coderate,rs.sid,
+        	 	ad.adverno,(SELECT advername FROM voole_ad.advertisers vs WHERE vs.adverno = ad.adverno) advername, 
+         		ad.agentno,(SELECT agentname FROM voole_ad.ad_agents gs WHERE gs.agentno=ad.agentno) agentname
+ 		FROM voole_ad.ad_plan pn,voole_ad.ad_pack_link lk,voole_ad.ad_resourceinfo rs,voole_ad.ad_vedio_info io ,voole_ad.ad_movieinfo ad
+		WHERE pn.ad_packno=lk.packno AND lk.amid=rs.amid AND rs.fid=io.fid AND  rs.amid=ad.amid 
+	</select>
+	
+	<!-- 根据planid查询位置信息 -->
+	<select id="findAllAdPos" resultType="map">
+		SELECT pl.seqno,lc.mediaPosition adposid,dic.keyname adposname FROM voole_ad.ad_plan pl,voole_ad.ad_location lc,voole_ad.plat_dictionary dic
+  		WHERE pl.ad_location_code=lc.code AND lc.mediaPosition=dic.keyvalue
+	</select>
+	
+	<!-- 根据市区编码查询省市信息 -->
+	<select id="findAllAreaInfos" resultType="hashmap">
+		SELECT ar.code,pr.Code provinceid,pr.Name provincename,ar.Code cityid,ar.Name cityname 
+		 FROM voole_ad.ip_area ar, voole_ad.ip_province pr WHERE ar.ProvinceID=pr.ProvinceID
+	</select>
+	
+	<!--根据省查询省会城市  -->
+	<select id="findCapitalByProvincecode" parameterType="string" resultType="hashmap">
+		SELECT ar.Code cityid, ar.Name cityname FROM voole_ad.ip_province_capital cap, voole_ad.ip_province pr,voole_ad.ip_area ar 
+			WHERE cap.ProvinceID=pr.ProvinceID AND pr.ProvinceID=ar.ProvinceID 
+  				  AND cap.Areacode= ar.Code AND pr.Code= #{provinceid}
+	</select>
+	
+	<!-- 栏目名称查频道、栏目信息 -->
+	<select id="findAllChannelProgramInfoAccessAd" resultType="map">
+		SELECT ch.adChannelCode,ch.adChannelName,ad.adCategoryCode,ad.adCategoryName FROM voole_ad.ad_category ad,voole_ad.ad_channel ch 
+			WHERE ad.adChannelCode = ch.adChannelCode 
+	</select>
+	
+	<!-- 只查询最常用的一些频道 -->
+	<select id="findAllChannelInfos" resultType="map">
+		SELECT ch.mtype,ch.adChannelCode,ch.adChannelName FROM voole_ad.ad_channel ch 
+			WHERE  ch.adstatus=1
+	</select>
+</mapper> 

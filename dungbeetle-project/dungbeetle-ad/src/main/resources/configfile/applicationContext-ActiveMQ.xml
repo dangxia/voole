@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:amq="http://activemq.apache.org/schema/core"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://activemq.apache.org/schema/core
+	http://activemq.apache.org/schema/core/activemq-core.xsd
+	http://camel.apache.org/schema/spring
+	http://camel.apache.org/schema/spring/camel-spring.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+    default-autowire="byName">
+ 	<!-- 普通连接配置开始 -->
+    <bean id="jmsFactory" class="org.apache.activemq.ActiveMQConnectionFactory">  
+        <property name="brokerURL" value="${jms.brokerURL}" />
+        <property name="userName" value="${jms.username}" />
+		<property name="password" value="${jms.password}" />
+		<!-- 是否异步发送消息 -->
+		<property name="useAsyncSend" value="true" />
+		<property name="alwaysSessionAsync" value="false" /> 
+    </bean>  
+    <!-- 设置发送连接池,提高性能 --> 
+    <bean id="JmsSenderFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+    	<property name="connectionFactory" ref="jmsFactory" /> 
+    	<property name="maxConnections" value="100"></property>
+    </bean>
+    
+    
+    <!-- 尼尔森数据同送mq开始 -->
+    	<bean id="jmsNielsenFactory" class="org.apache.activemq.ActiveMQConnectionFactory">  
+        <property name="brokerURL" value="${jms.nielsen.brokerURL}" />
+        <property name="userName" value="${jms.nielsen.username}" />
+		<property name="password" value="${jms.nielsen.password}" />
+		<!-- 是否异步发送消息 -->
+		<property name="useAsyncSend" value="true" />
+		<property name="alwaysSessionAsync" value="false" /> 
+    </bean>  
+    <!-- 设置发送连接池,提高性能 --> 
+    <bean id="JmsNielsenSenderFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+    	<property name="connectionFactory" ref="jmsNielsenFactory" /> 
+    	<property name="maxConnections" value="100"></property>
+    </bean>
+    <!-- 尼尔森数据同送mq结束 -->
+    
+    
+   <!-- 设置接收连接池,提高性能   -->
+   <bean id="jmsReveiverFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="connectionFactory" ref="jmsFactory" /> 
+    	<property name="maxConnections" value="5"></property> 
+   </bean> 
+   <!-- 普通连接配置结束 -->
+   
+   <!-- 超多连接配置开始 -->
+   <bean id="jmsMostFactory" class="org.apache.activemq.ActiveMQConnectionFactory">  
+        <property name="brokerURL" value="${jms.brokerURL}" />
+        <property name="userName" value="${jms.username}" />
+		<property name="password" value="${jms.password}" />
+		<!-- 是否异步发送消息 -->
+		<property name="useAsyncSend" value="true" />
+		<property name="alwaysSessionAsync" value="false" /> 
+    </bean>  
+   <!-- 设置接收超多连接池,提高性能   -->
+   <bean id="jmsMostReveiverFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="connectionFactory" ref="jmsMostFactory" /> 
+    	<property name="maxConnections" value="200"></property> 
+   </bean>  
+   <!-- 超多连接配置结束 -->
+   
+    <!--消息转换器-->
+    <bean id="messageConverter" class="org.springframework.jms.support.converter.SimpleMessageConverter" />  
+    
+    
+    
+    <!--============================================播放日志的mq配置开始============================================== -->
+    
+    
+     <!-- 设置接收连接池,提高性能   -->
+   <bean id="jmsReveiverFactoryPlaylog" class="org.apache.activemq.pool.PooledConnectionFactory">
+        <property name="connectionFactory" ref="jmsMostFactory" /> 
+    	<property name="maxConnections" value="200"></property> 
+   </bean>  
+   
+	<!-- 发送消息的目的地（一个队列）   -->
+    <bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">  
+       <!--  设置消息队列的名字   -->
+        <constructor-arg index="0" value="${jms.playlog_statisticsName}" />
+    </bean>
+       
+     <!-- ===================================投放频次控制  配置=================================== -->
+     
+     <!-- 发送消息的目的地（一个队列） -->  
+    <bean id="destination_frequency" class="org.apache.activemq.command.ActiveMQQueue">  
+        <!-- 设置消息队列的名字 -->  
+        <constructor-arg index="0" value="${jms.ad_plan_frequencyQueueName}" />
+    </bean>
+     <!-- Spring JMS Template -->
+    <bean id="jmsTemplate_frequency" class="org.springframework.jms.core.JmsTemplate">  
+        <property name="connectionFactory" ref="JmsSenderFactory" />  
+        <property name="defaultDestination" ref="destination_frequency" />
+        <!-- 区别它采用的模式:false是p2p;true是订阅   -->
+        <property name="pubSubDomain" value="false" />
+        <property name="messageConverter" ref="messageConverter"/>
+    </bean>
+    <!-- 消息生产 -->
+    <bean id="frequencyProducer" class="com.voole.dungbeetle.ad.jms.AdFrequencyProducer">
+        <property name="jmsTemplate" ref="jmsTemplate_frequency"></property>  
+    </bean>
+    
+    <!-- ==============================推送尼尔森播放数据========================================= -->
+     <!-- 发送消息的目的地（一个队列） -->  
+    <bean id="destination_nielsen" class="org.apache.activemq.command.ActiveMQQueue">  
+        <!-- 设置消息队列的名字 -->  
+        <constructor-arg index="0" value="${jms.ad_playlog_nielsenQueueName}" />
+    </bean>
+     <!-- Spring JMS Template -->
+    <bean id="jmsTemplate_nielsen" class="org.springframework.jms.core.JmsTemplate">  
+        <property name="connectionFactory" ref="JmsNielsenSenderFactory" />  
+        <property name="defaultDestination" ref="destination_nielsen" />
+        <!-- 区别它采用的模式:false是p2p;true是订阅   -->
+        <property name="pubSubDomain" value="false" />
+        <property name="messageConverter" ref="messageConverter"/>
+    </bean>
+    <!-- 消费生成者 -->
+    <bean id="nielsenProducer" class="com.voole.dungbeetle.ad.jms.AdPlayLogNielsenProducer">
+    	<property name="jmsTemplate" ref="jmsTemplate_nielsen"></property>
+    </bean>
+    
+    
+</beans>

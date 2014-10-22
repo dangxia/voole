@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <!-- 查询播控平台 -->
+  <mapper namespace="platForm"> 
+	<cache
+		eviction="FIFO"
+		flushInterval="120000"
+		size="10240"
+		readOnly="true"/> 
+	
+	<!-- 播控平台的栏目和频道是存储在一个表中的 -->
+	<select id="findAllPrograms" resultType="map">
+		SELECT 
+			t1.code progaramcode,t14.title channelname, 
+			t1.title programname
+			FROM 
+			voole_cms.cms_category_info t1 
+			JOIN voole_cms.cms_category_info t14 ON t1.lft >= t14.lft 
+			AND t14.rgt >= t1.rgt 
+			AND t14.parent_id = 0
+	</select>
+	
+	<select id="findAllMovieTypes" resultType="map">
+		 SELECT mid,mtype FROM voole_global.res_movieinfo rs limit 10
+	</select>
+	
+</mapper> 

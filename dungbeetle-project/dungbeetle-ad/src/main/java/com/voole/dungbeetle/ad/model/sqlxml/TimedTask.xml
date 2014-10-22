@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+   <!-- 查询播控平台 -->
+  <mapper namespace="timedTask"> 
+	<select id="excuteTruncProc"  statementType="CALLABLE">
+		 <![CDATA[  
+          CALL voole_ad_statistics_his.truncate_rt_og_playlog() 
+        ]]>  
+	</select>
+	
+	<select id="excuteCheckProc"  statementType="CALLABLE">
+		 <![CDATA[  
+          CALL voole_ad_statistics_his.check_truncate_issuccess() 
+        ]]>  
+	</select>
+</mapper> 
