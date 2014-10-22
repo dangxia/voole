@@ -6,7 +6,7 @@
 		<groupId>com.voole.dungbeetle</groupId>
 		<artifactId>dungbeetle-project</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../../</relativePath>
+		<relativePath>../</relativePath>
 	</parent>
 	<artifactId>dungbeetle-ad</artifactId>
 
