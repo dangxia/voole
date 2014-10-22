@@ -321,5 +321,6 @@
 	<modules>
 		<module>dungbeetle-api</module>
 		<module>dungbeetle-order-record</module>
+		<module>dungbeetle-ad</module>
 	</modules>
 </project>
