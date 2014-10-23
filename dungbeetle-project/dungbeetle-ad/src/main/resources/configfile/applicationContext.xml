@@ -91,7 +91,7 @@
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 	   <property name="configLocation" value="/configfile/sqlMapConfig.xml"/>
 	   <property name="mapperLocations"  
-              value="classpath:com/voole/dungbeetle/ad/model/sqlxml/*.xml" /> 
+              value="classpath:/com/voole/dungbeetle/ad/model/sqlxml/*.xml" /> 
 	   <property name="dataSource" ref="dynamicDataSource" />
 	</bean>
 	
