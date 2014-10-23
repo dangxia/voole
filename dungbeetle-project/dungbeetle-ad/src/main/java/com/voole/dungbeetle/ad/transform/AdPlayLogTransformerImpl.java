@@ -273,41 +273,57 @@ public class AdPlayLogTransformerImpl implements
 	protected void processChannel(InterfacePlayLogDry dry, PlayLog record,
 			PlayUrlAdInfos playUrlAdInfos) {
 		String sectionid = fromCharsToString(dry.getSectionid());
-		// 根据栏目code查询播控栏目名称
-		String channelname_programname = allChannelProgramByPlatformMap
-				.get(sectionid);
-
-		Map<String, Object> channelInfoMap = allChannelProgramByAdMap
-				.get(channelname_programname);
-		if (channelInfoMap != null && channelInfoMap.size() > 0) {
-			Object channelid = channelInfoMap.get("adChannelCode");
-			record.setChannelid(channelid != null ? Integer.valueOf(channelid
-					.toString()) : GlobalProperties
+		if(sectionid == null){
+			record.setChannelid(GlobalProperties
 					.getInteger("other.channelid"));
-			Object pragramid = channelInfoMap.get("adCategoryCode");
-			record.setProgramid(pragramid != null ? Integer.valueOf(pragramid
-					.toString()) : GlobalProperties
+			record.setProgramid(GlobalProperties
 					.getInteger("other.channelid"));
-		} else {
-			// playurl中解析出mid(影片节目id) 去播控平台查询获取影片节目类型
-			Map<String, Object> mtypeMap = allMovieTypesMap.get(playUrlAdInfos
-					.getMid());
-			String mtype = (String) mtypeMap.get("mtype");
-			if (StringUtils.isNotBlank(mtype)) {
-				Map<String, Object> channemap = allChannelInfoMap.get(mtype);
-				if (channemap != null && channemap.size() > 0) {
-					String channelid = (String) channemap.get("adChannelCode");
-					record.setChannelid(channelid != null ? Integer
-							.valueOf(channelid.toString()) : GlobalProperties
+		}else{
+			// 根据栏目code查询播控栏目名称
+			String channelname_programname = allChannelProgramByPlatformMap
+					.get(sectionid);
+			if(channelname_programname == null){
+				record.setChannelid(GlobalProperties
+						.getInteger("other.channelid"));
+				record.setProgramid(GlobalProperties
+						.getInteger("other.channelid"));
+			}else{
+				Map<String, Object> channelInfoMap = allChannelProgramByAdMap
+						.get(channelname_programname);
+				if (channelInfoMap != null && channelInfoMap.size() > 0) {
+					Object channelid = channelInfoMap.get("adChannelCode");
+					record.setChannelid(channelid != null ? Integer.valueOf(channelid
+							.toString()) : GlobalProperties
 							.getInteger("other.channelid"));
-					record.setProgramid(GlobalProperties
+					Object pragramid = channelInfoMap.get("adCategoryCode");
+					record.setProgramid(pragramid != null ? Integer.valueOf(pragramid
+							.toString()) : GlobalProperties
 							.getInteger("other.channelid"));
+				} else {
+					// playurl中解析出mid(影片节目id) 去播控平台查询获取影片节目类型
+					Map<String, Object> mtypeMap = allMovieTypesMap.get(playUrlAdInfos
+							.getMid());
+					if(mtypeMap != null){
+						
+						int mtype = (Integer) mtypeMap.get("mtype");
+						
+						Map<String, Object> channemap = allChannelInfoMap.get(mtype);
+						if (channemap != null && channemap.size() > 0) {
+							String channelid = (String) channemap.get("adChannelCode");
+							record.setChannelid(channelid != null ? Integer
+									.valueOf(channelid.toString()) : GlobalProperties
+									.getInteger("other.channelid"));
+							record.setProgramid(GlobalProperties
+									.getInteger("other.channelid"));
+						}
+						
+					}
+				}
+				if (record.getChannelid() == null) {
+					record.setChannelid(GlobalProperties.getInteger("other.channelid"));
+					record.setProgramid(GlobalProperties.getInteger("other.channelid"));
 				}
 			}
-		}
-		if (record.getChannelid() == null) {
-			record.setChannelid(GlobalProperties.getInteger("other.channelid"));
-			record.setProgramid(GlobalProperties.getInteger("other.channelid"));
 		}
 	}
 
@@ -534,7 +550,22 @@ public class AdPlayLogTransformerImpl implements
 			InterruptedException, DumgBeetleTransformException {
 		AdPlayLogTransformerImpl t = new AdPlayLogTransformerImpl();
 		t.setup(null);
-		t.cleanup(null);
+		InterfacePlayLogDry dry = new InterfacePlayLogDry();
+		dry.setArea("111");
+		dry.setStarttime(1414046514670l);
+		dry.setEndtime(1414046557581l);
+		dry.setLastalivetime(null);
+		dry.setEpgid("100115");
+		dry.setHid("BC83A749F362");
+		dry.setIp(11111l);
+		dry.setOemid("181");
+		dry.setPlayurl("http://cdn.voole.com:3580/uid$4683838/stamp$1413808266/keyid$67141632/auth$668054b0f4099d1f68363172485ddfbf/db1b73fe3e001cfff7cdd3824df47de4.m3u8?ext=btime:0,etime:0;oid:699,eid:100897,code:B2CSTBOX_tv_war|1381376018|1396403037,pid:101002,po:100033;admt:4,lg:139edb2036750436:pln:317:pln:318:mid:70362258,3c0b56a20b2ad949fe90aac03d7a1e85:0:35:3838020&bke=&type=get_m3u8&host=cdn.voole.com:3580&port=3528&is3d=0&proto=5");
+		dry.setSectionid("smcmovie");
+		dry.setSessionid("12215696862920569348");
+		dry.setSpeed("490140");
+		dry.setSpid("10002001");
+		t.transform(dry);
+		//t.cleanup(null);
 	}
 
 }
