@@ -168,12 +168,16 @@ public class HiveOrderInputReducer extends
 				for (Entry<HiveTable, List<SpecificRecordBase>> entry : result
 						.entrySet()) {
 					context.write(entry.getKey(), entry.getValue());
-					if (orderRecord.getIsAdMod()
-							&& entry.getValue() instanceof HiveOrderDetailRecord) {
+					if (orderRecord.getIsAdMod()) {
 						context.getCounter("ad", "num").increment(1l);
-						HiveOrderDetailRecord detailRecord = (HiveOrderDetailRecord) (entry
-								.getValue());
-						processAdRecord(detailRecord, context);
+						List<SpecificRecordBase> details = entry.getValue();
+						for (SpecificRecordBase detailRecord : details) {
+							if (detailRecord instanceof HiveOrderDetailRecord) {
+								processAdRecord(
+										(HiveOrderDetailRecord) detailRecord,
+										context);
+							}
+						}
 					}
 				}
 			}
