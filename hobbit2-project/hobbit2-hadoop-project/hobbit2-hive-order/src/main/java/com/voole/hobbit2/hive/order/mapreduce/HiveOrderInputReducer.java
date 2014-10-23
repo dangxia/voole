@@ -170,6 +170,7 @@ public class HiveOrderInputReducer extends
 					context.write(entry.getKey(), entry.getValue());
 					if (orderRecord.getIsAdMod()
 							&& entry.getValue() instanceof HiveOrderDetailRecord) {
+						context.getCounter("ad", "num").increment(1l);
 						HiveOrderDetailRecord detailRecord = (HiveOrderDetailRecord) (entry
 								.getValue());
 						processAdRecord(detailRecord, context);
@@ -195,6 +196,7 @@ public class HiveOrderInputReducer extends
 			Map<HiveTable, List<SpecificRecordBase>> result = adPlayLogTransformerImpl
 					.transform(createAdDry(detailRecord));
 			if (result != null && result.size() > 0) {
+				context.getCounter("ad", "result_num").increment(result.size());
 				for (Entry<HiveTable, List<SpecificRecordBase>> entry : result
 						.entrySet()) {
 					context.write(entry.getKey(), entry.getValue());
