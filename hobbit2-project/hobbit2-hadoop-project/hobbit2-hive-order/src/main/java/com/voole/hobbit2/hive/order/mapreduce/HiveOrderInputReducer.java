@@ -64,6 +64,8 @@ public class HiveOrderInputReducer extends
 	private FileSystem fs;
 	private Schema errorSchema;
 
+	private boolean isRunadPlayLogTransformer;
+
 	private final Map<Class<?>, Method> clazzToCreateBuilderMethod;
 
 	public HiveOrderInputReducer() {
@@ -79,8 +81,12 @@ public class HiveOrderInputReducer extends
 		orderDetailDumgBeetleTransformer = new OrderDetailDumgBeetleTransformer();
 		orderDetailDumgBeetleTransformer.setup(context);
 
-		adPlayLogTransformerImpl = new AdPlayLogTransformerImpl();
-		adPlayLogTransformerImpl.setup(context);
+		isRunadPlayLogTransformer = HiveOrderMetaConfigs
+				.isRunadPlayLogTransformer(context);
+		if (isRunadPlayLogTransformer) {
+			adPlayLogTransformerImpl = new AdPlayLogTransformerImpl();
+			adPlayLogTransformerImpl.setup(context);
+		}
 
 		// cache = new LinkedList<SpecificRecordBase>();
 		fs = FileSystem.get(context.getConfiguration());
@@ -168,7 +174,7 @@ public class HiveOrderInputReducer extends
 				for (Entry<HiveTable, List<SpecificRecordBase>> entry : result
 						.entrySet()) {
 					context.write(entry.getKey(), entry.getValue());
-					if (orderRecord.getIsAdMod()) {
+					if (isRunadPlayLogTransformer && orderRecord.getIsAdMod()) {
 						context.getCounter("ad", "num").increment(1l);
 						List<SpecificRecordBase> details = entry.getValue();
 						for (SpecificRecordBase detailRecord : details) {

@@ -35,6 +35,9 @@ public class HiveOrderMetaConfigs {
 
 	public static final String EXEC_START_TIME = "hive.order.exec.start.time";
 
+	public static final String AD_NIELSEN_IS_SEND = "ad.nielsen.is.send";
+	public static final String AD_TRANSFORMER_IS_TO_RUN = "ad.transformer.is.to.run";
+
 	public static Schema getOrderUnionSchema(JobContext job) {
 		String[] topics = HiveOrderMetaConfigs.getWhiteTopics(job);
 		List<Schema> schemas = new ArrayList<Schema>();
@@ -110,4 +113,8 @@ public class HiveOrderMetaConfigs {
 		return job.getConfiguration().getFloat(EXEC_HISTORY_MAX_OF_QUOTA, .5f);
 	}
 
+	public static boolean isRunadPlayLogTransformer(JobContext job) {
+		return job.getConfiguration().getBoolean(AD_TRANSFORMER_IS_TO_RUN,
+				false);
+	}
 }
