@@ -175,7 +175,7 @@ public class HiveOrderInputReducer extends
 							if (detailRecord instanceof HiveOrderDetailRecord) {
 								processAdRecord(
 										(HiveOrderDetailRecord) detailRecord,
-										context);
+										orderRecord, context);
 							}
 						}
 					}
@@ -195,10 +195,11 @@ public class HiveOrderInputReducer extends
 	}
 
 	private void processAdRecord(HiveOrderDetailRecord detailRecord,
-			Context context) throws IOException, InterruptedException {
+			HiveOrderDryRecord orderRecord, Context context)
+			throws IOException, InterruptedException {
 		try {
 			Map<HiveTable, List<SpecificRecordBase>> result = adPlayLogTransformerImpl
-					.transform(createAdDry(detailRecord));
+					.transform(createAdDry(detailRecord, orderRecord));
 			if (result != null && result.size() > 0) {
 				context.getCounter("ad", "result_num").increment(result.size());
 				for (Entry<HiveTable, List<SpecificRecordBase>> entry : result
@@ -211,7 +212,8 @@ public class HiveOrderInputReducer extends
 		}
 	}
 
-	private InterfacePlayLogDry createAdDry(HiveOrderDetailRecord detail) {
+	private InterfacePlayLogDry createAdDry(HiveOrderDetailRecord detail,
+			HiveOrderDryRecord orderRecord) {
 		InterfacePlayLogDry adDry = new InterfacePlayLogDry();
 		adDry.setArea(detail.getDimAreaId() == null ? null : detail
 				.getDimAreaId().toString());
@@ -221,7 +223,7 @@ public class HiveOrderInputReducer extends
 		adDry.setIp(detail.getUserip());
 		adDry.setOemid(detail.getDimOemId() == null ? null : detail
 				.getDimOemId().toString());
-		adDry.setPlayurl(detail.getPlayurl());
+		adDry.setPlayurl(orderRecord.getPlayurl());
 		adDry.setSectionid(detail.getDimSectionId());
 		adDry.setSessionid(detail.getSessid());
 		adDry.setSpeed(detail.getMetricAvgspeed() == null ? null : detail
