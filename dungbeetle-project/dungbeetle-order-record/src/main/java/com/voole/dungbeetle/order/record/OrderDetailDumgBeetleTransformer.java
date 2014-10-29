@@ -220,7 +220,7 @@ public class OrderDetailDumgBeetleTransformer implements
 		record.setStamp(System.currentTimeMillis());
 		record.setUserip(dry.getNatip());
 		record.setDatasorce(dry.getDatasorce());
-		record.setPlayurl(dry.getPlayurl());
+		record.setPlayurl(null);
 		record.setVersion(dry.getApkVersion());
 		record.setDimUserUid(dry.getUID());
 		record.setDimUserHid(dry.getHID());

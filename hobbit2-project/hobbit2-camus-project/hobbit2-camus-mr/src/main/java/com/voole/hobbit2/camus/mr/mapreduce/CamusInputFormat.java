@@ -82,10 +82,10 @@ public class CamusInputFormat extends InputFormat<CamusKey, SpecificRecordBase> 
 				TopicPartition partition = entry.getKey();
 				PartitionState state = entry.getValue();
 				long offset = 0l;
-				if (state.getLatestOffset() > 10000
-						&& state.getLatestOffset() - 10000 > state
+				if (state.getLatestOffset() > 100000
+						&& state.getLatestOffset() - 100000 > state
 								.getEarliestOffset()) {
-					offset = state.getLatestOffset() - 10000;
+					offset = state.getLatestOffset() - 100000;
 				} else {
 					offset = state.getEarliestOffset();
 				}
