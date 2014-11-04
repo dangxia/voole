@@ -18,6 +18,9 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.NullWritable;
+import org.apache.hadoop.io.SequenceFile;
+import org.apache.hadoop.io.SequenceFile.Writer;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
@@ -54,13 +57,19 @@ public class HiveOrderMultiOutputFormat extends
 		private final TaskAttemptContext attemptContext;
 		private final AvroKey<SpecificRecordBase> record;
 
+		private final Map<String, Writer> transformerNameToWriter;
+
 		public HiveOrderMultiRecordWriter(TaskAttemptContext job) {
 			this.attemptContext = job;
 			dataWriters = new HashMap<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
 			noendDataWriters = new HashMap<Class<?>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
 			this.record = new AvroKey<SpecificRecordBase>();
 			fileNameToHiveTableMap = new HashMap<String, HiveTable>();
+
+			transformerNameToWriter = new HashMap<String, Writer>();
 		}
+
+		private final Text transformExceptionText = new Text();
 
 		@SuppressWarnings("unchecked")
 		@Override
@@ -83,6 +92,29 @@ public class HiveOrderMultiOutputFormat extends
 					this.record.datum(specificRecordBase);
 					writer.write(this.record, NullWritable.get());
 				}
+			} else if (key instanceof String
+					&& HiveOrderInputReducer.ORDER_DETAIL_TRANSFORM_EXCEPTION
+							.equals(key)) {
+				// process order detail transform exception
+				if (value != null && value instanceof String
+						&& ((String) value).length() > 0) {
+					transformExceptionText.set((String) value);
+					createTransformeExceptionWriter(
+							HiveOrderInputReducer.ORDER_DETAIL_TRANSFORM_EXCEPTION)
+							.append(NullWritable.get(), transformExceptionText);
+				}
+
+			} else if (key instanceof String
+					&& HiveOrderInputReducer.AD_TRANSFORM_EXCEPTION.equals(key)) {
+				// process ad transform exception
+				if (value != null && value instanceof String
+						&& ((String) value).length() > 0) {
+					transformExceptionText.set((String) value);
+					createTransformeExceptionWriter(
+							HiveOrderInputReducer.AD_TRANSFORM_EXCEPTION)
+							.append(NullWritable.get(), transformExceptionText);
+				}
+
 			} else {// noend
 				SpecificRecordBase data = (SpecificRecordBase) value;
 				RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> writer = null;
@@ -133,6 +165,23 @@ public class HiveOrderMultiOutputFormat extends
 					fs.create(path), getSyncInterval(context));
 		}
 
+		private Writer createTransformeExceptionWriter(String transformerName)
+				throws IOException {
+			if (transformerNameToWriter.containsKey(transformerName)) {
+				return transformerNameToWriter.get(transformerName);
+			}
+			Path workPath = getOutputCommitter(attemptContext).getWorkPath();
+			String fileName = getUniqueFile(attemptContext, transformerName,
+					".transform_exception");
+			Path path = new Path(workPath, fileName);
+			Writer writer = SequenceFile.createWriter(
+					attemptContext.getConfiguration(), Writer.file(path),
+					Writer.keyClass(NullWritable.class),
+					Writer.valueClass(Text.class));
+			transformerNameToWriter.put(transformerName, writer);
+			return writer;
+		}
+
 		@Override
 		public void close(TaskAttemptContext context) throws IOException,
 				InterruptedException {
@@ -144,6 +193,11 @@ public class HiveOrderMultiOutputFormat extends
 			for (Entry<Class<?>, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>> entry : noendDataWriters
 					.entrySet()) {
 				entry.getValue().close(context);
+			}
+
+			for (Entry<String, Writer> entry : transformerNameToWriter
+					.entrySet()) {
+				entry.getValue().close();
 			}
 			if (fileNameToHiveTableMap.size() > 0) {
 				Path workPath = getOutputCommitter(context).getWorkPath();

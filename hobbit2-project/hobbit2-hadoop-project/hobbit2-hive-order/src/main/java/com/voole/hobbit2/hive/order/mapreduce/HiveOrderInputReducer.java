@@ -26,7 +26,6 @@ import org.apache.hadoop.mapreduce.RecordWriter;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter;
 
-import com.google.common.base.Throwables;
 import com.voole.dungbeetle.ad.record.avro.InterfacePlayLogDry;
 import com.voole.dungbeetle.ad.transform.AdPlayLogTransformerImpl;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
@@ -58,6 +57,9 @@ public class HiveOrderInputReducer extends
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
 	private AdPlayLogTransformerImpl adPlayLogTransformerImpl;
 	private long currCamusExecTime;
+
+	public static final String ORDER_DETAIL_TRANSFORM_EXCEPTION = "order_detail_transform_exception";
+	public static final String AD_TRANSFORM_EXCEPTION = "ad_transform_exception";
 
 	// private LinkedList<SpecificRecordBase> cache;
 
@@ -195,7 +197,9 @@ public class HiveOrderInputReducer extends
 				writeError(e, context);
 			}
 		} catch (DumgBeetleTransformException e) {
-			Throwables.propagate(e);
+			// write order detail TransformException
+			context.write(ORDER_DETAIL_TRANSFORM_EXCEPTION, e.getMessage());
+			// Throwables.propagate(e);
 		}
 
 	}
@@ -214,7 +218,9 @@ public class HiveOrderInputReducer extends
 				}
 			}
 		} catch (DumgBeetleTransformException e) {
-			Throwables.propagate(e);
+			// write ad TransformException
+			context.write(AD_TRANSFORM_EXCEPTION, e.getMessage());
+			// Throwables.propagate(e);
 		}
 	}
 
