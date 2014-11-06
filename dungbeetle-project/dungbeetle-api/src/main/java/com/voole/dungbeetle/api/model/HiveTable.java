@@ -72,6 +72,7 @@ public class HiveTable implements Writable {
 	public void readFields(DataInput in) throws IOException {
 		this.name = WritableUtils.readString(in);
 		int size = WritableUtils.readVInt(in);
+		partitions.clear();
 		for (int i = 0; i < size; i++) {
 			HiveTablePartition partition = new HiveTablePartition();
 			partition.readFields(in);

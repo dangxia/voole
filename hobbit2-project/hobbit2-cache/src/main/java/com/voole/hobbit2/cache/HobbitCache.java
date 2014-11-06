@@ -3,6 +3,9 @@
  */
 package com.voole.hobbit2.cache;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -29,18 +32,23 @@ public interface HobbitCache {
 
 		private volatile boolean isRefreshFailed;
 
+		private final AtomicBoolean isFetching;
+		private volatile CountDownLatch fetchLatch;
+
 		public AbstractHobbitCache() {
 			isRefreshFailed = false;
 			// lock
 			readWriteLock = new ReentrantReadWriteLock();
 			read = readWriteLock.readLock();
 			write = readWriteLock.writeLock();
+
+			isFetching = new AtomicBoolean(false);
 		}
 
 		protected void checkRefreshBeforeQuery() throws CacheRefreshException {
 			if (isRefreshFailed()) {
-				throw new CacheRefreshException(
-						"want to query but refresh has failed!");
+				throw new CacheRefreshException(getClass()
+						+ "want to query but refresh has failed!");
 			}
 		}
 
@@ -57,14 +65,45 @@ public interface HobbitCache {
 			}
 		}
 
+		protected synchronized boolean isShouldFetchCurrThread() {
+			if (!isFetching.compareAndSet(false, true)) {
+				return false;
+			} else {
+				fetchLatch = new CountDownLatch(1);
+				return true;
+			}
+		}
+
+		protected void releaseFetchLock() {
+			if (fetchLatch != null) {
+				fetchLatch.countDown();
+				fetchLatch = null;
+			}
+			isFetching.set(false);
+		}
+
 		@Override
 		public void refresh() throws CacheRefreshException {
+			boolean isShouldFetchCurrThread = isShouldFetchCurrThread();
+
+			if (!isShouldFetchCurrThread) {
+				getLogger().info(
+						getClass() + " other thread fetching ,waiting ...");
+				try {
+					fetchLatch.await();
+				} catch (InterruptedException e1) {
+					return;
+				}
+				getLogger().info(getClass() + " other thread fetch finished");
+				return;
+			}
 			getLogger().info(getClass() + " refresh starting");
 			long temp = System.currentTimeMillis();
 			try {
 				fetch();
 			} catch (Exception e) {
 				isRefreshFailed = true;
+				releaseFetchLock();
 				throw new CacheRefreshException(getClass() + " refresh error",
 						e);
 			}
@@ -76,6 +115,7 @@ public interface HobbitCache {
 				throw new CacheRefreshException(getClass() + " swop error", e);
 			} finally {
 				write.unlock();
+				releaseFetchLock();
 			}
 			isRefreshFailed = false;
 			long used = (System.currentTimeMillis() - temp) / 1000;
@@ -111,6 +151,77 @@ public interface HobbitCache {
 			return logger;
 		}
 
+	}
+
+	public static class TestAbstractHobbitCache extends AbstractHobbitCache {
+
+		@Override
+		protected void swop() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		protected void fetch() {
+			try {
+				TimeUnit.SECONDS.sleep(5);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		public static void main(String[] args) throws InterruptedException,
+				CacheRefreshException {
+			final TestAbstractHobbitCache cache = new TestAbstractHobbitCache();
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						cache.refresh();
+					} catch (CacheRefreshException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}.start();
+			TimeUnit.SECONDS.sleep(1);
+			cache.refresh();
+			System.out.println("-----end");
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						TimeUnit.SECONDS.sleep(1);
+						cache.refresh();
+					} catch (CacheRefreshException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}.start();
+			new Thread() {
+				@Override
+				public void run() {
+					try {
+						TimeUnit.SECONDS.sleep(1);
+						cache.refresh();
+					} catch (CacheRefreshException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}.start();
+			// TimeUnit.SECONDS.sleep(1);
+			cache.refresh();
+			System.out.println("-----end");
+		}
 	}
 
 }

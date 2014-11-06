@@ -41,7 +41,7 @@ import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 public class StormOrderHDFSUtils {
 	private static final Logger log = LoggerFactory
 			.getLogger(StormOrderSpoutPartitionFetcher.class);
-	private static final Configuration conf = new Configuration();
+	public static final Configuration conf = new Configuration();
 	static {
 		conf.addResource("core-site2.xml");
 	}

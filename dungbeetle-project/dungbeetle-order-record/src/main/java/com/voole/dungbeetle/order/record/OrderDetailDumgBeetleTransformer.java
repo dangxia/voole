@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
@@ -21,20 +22,12 @@ import com.voole.dungbeetle.api.IDumgBeetleTransformer;
 import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
 import com.voole.hobbit2.cache.AreaInfoCache;
-import com.voole.hobbit2.cache.AreaInfoCacheImpl;
 import com.voole.hobbit2.cache.MovieInfoCache;
-import com.voole.hobbit2.cache.MovieInfoCacheImpl;
 import com.voole.hobbit2.cache.OemInfoCache;
-import com.voole.hobbit2.cache.OemInfoCacheImpl;
 import com.voole.hobbit2.cache.ParentAreaInfoCache;
-import com.voole.hobbit2.cache.ParentAreaInfoCacheImpl;
 import com.voole.hobbit2.cache.ParentSectionInfoCache;
-import com.voole.hobbit2.cache.ParentSectionInfoCacheImpl;
 import com.voole.hobbit2.cache.ProductInfoCache;
-import com.voole.hobbit2.cache.ProductInfoCacheImpl;
 import com.voole.hobbit2.cache.ResourceInfoCache;
-import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
-import com.voole.hobbit2.cache.db.CacheDao;
 import com.voole.hobbit2.cache.db.CacheDaoUtil;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.MovieInfo;
@@ -66,21 +59,32 @@ public class OrderDetailDumgBeetleTransformer implements
 	private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat df2 = new SimpleDateFormat("HH");
 
+	public static final String IS_AUTO_REFRESH_CACHE = "order.detail.transformer.is.auto.refresh.cache";
+
 	public OrderDetailDumgBeetleTransformer() {
 		partitionCache = new HashMap<String, HiveTable>();
+	}
+
+	protected boolean getIsAutoRefreshCache(TaskAttemptContext context) {
+		if (context == null || context.getConfiguration() == null) {
+			return false;
+		}
+		return context.getConfiguration().getBoolean(IS_AUTO_REFRESH_CACHE,
+				false);
 	}
 
 	@Override
 	public void setup(TaskAttemptContext context) throws IOException,
 			InterruptedException {
-		CacheDao dao = CacheDaoUtil.getCacheDao();
-		areaInfoCache = new AreaInfoCacheImpl(dao);
-		oemInfoCache = new OemInfoCacheImpl(dao);
-		resourceInfoCache = new ResourceInfoCacheImpl(dao);
-		movieInfoCache = new MovieInfoCacheImpl(dao);
-		parentAreaInfoCache = new ParentAreaInfoCacheImpl(dao);
-		productInfoCache = new ProductInfoCacheImpl(dao);
-		parentSectionInfoCache = new ParentSectionInfoCacheImpl(dao);
+		ClassPathXmlApplicationContext cxt = ApplicationContextUtil
+				.getCxt(getIsAutoRefreshCache(context));
+		areaInfoCache = cxt.getBean(AreaInfoCache.class);
+		oemInfoCache = cxt.getBean(OemInfoCache.class);
+		resourceInfoCache = cxt.getBean(ResourceInfoCache.class);
+		movieInfoCache = cxt.getBean(MovieInfoCache.class);
+		parentAreaInfoCache = cxt.getBean(ParentAreaInfoCache.class);
+		productInfoCache = cxt.getBean(ProductInfoCache.class);
+		parentSectionInfoCache = cxt.getBean(ParentSectionInfoCache.class);
 		try {
 			areaInfoCache.refresh();
 			oemInfoCache.refresh();

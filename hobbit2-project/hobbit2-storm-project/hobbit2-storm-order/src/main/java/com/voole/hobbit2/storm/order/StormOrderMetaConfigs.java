@@ -47,6 +47,8 @@ public class StormOrderMetaConfigs {
 	public static final String HIVE_ORDER_EXEC_HISTORY_PATH = "hive.order.exec.history.path";
 
 	public static final String STORM_ORDER_WHITELIST_TOPICS = "storm.order.whitelist.topics";
+	public static final String STORM_ORDER_PARTITIONS_META_CACHE_TIMEOUT = "storm.order.partitions.meta.cache.timeout";
+	public static final String STORM_ORDER_NOEND_PARALLEL = "storm.order.noend.parallel";
 
 	public static Path getHiveOrderExecHistoryPath() {
 		return new Path(
@@ -93,6 +95,15 @@ public class StormOrderMetaConfigs {
 					KafkaMetaConfigs.KAFKA_BUFFER_SIZE_BYTES, 10240);
 		}
 		return fetchSize;
+	}
+
+	public static int getPartitionsMetaCacheTimeout() {
+		return hobbit2Configuration.getInt(
+				STORM_ORDER_PARTITIONS_META_CACHE_TIMEOUT, 120000);
+	}
+
+	public static int getNoendParallel() {
+		return hobbit2Configuration.getInt(STORM_ORDER_NOEND_PARALLEL, 4000);
 	}
 
 }

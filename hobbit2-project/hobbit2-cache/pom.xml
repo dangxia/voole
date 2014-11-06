@@ -8,7 +8,19 @@
 		<relativePath>../</relativePath>
 	</parent>
 	<artifactId>hobbit2-cache</artifactId>
+	<properties>
+		<slf4j.version>1.7.2</slf4j.version>
+		<log4j.version>1.2.16</log4j.version>
+		<junit.version>4.8.1</junit.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${slf4j.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>com.voole.hobbit2</groupId>
 			<artifactId>hobbit2-common</artifactId>

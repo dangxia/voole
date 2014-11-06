@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
+import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.collect.RangeMap;
 import com.google.common.collect.TreeRangeMap;
@@ -50,7 +51,7 @@ import com.voole.hobbit2.common.Tuple;
  */
 public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		ResourceInfoFetch, MovieInfoFetch, ParentAreaInfoFetch,
-		ParentSectionInfoFetch,ProductInfoFetch {
+		ParentSectionInfoFetch, ProductInfoFetch {
 
 	private JdbcTemplate realtimeJt;
 
@@ -62,7 +63,8 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 			@Override
 			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
 				result.put(
-						Range.closed(rs.getLong("minip"), rs.getLong("maxip")),
+						Range.closed(rs.getLong("minip"), rs.getLong("maxip"))
+								.canonical(DiscreteDomain.longs()),
 						new AreaInfo(rs.getInt("dim_area_id"), rs
 								.getInt("nettype")));
 
@@ -108,7 +110,8 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 					}
 					rangeMap.put(
 							Range.closed(rs.getLong("minip"),
-									rs.getLong("maxip")),
+									rs.getLong("maxip")).canonical(
+									DiscreteDomain.longs()),
 							new AreaInfo(rs.getInt("dim_area_id"), rs
 									.getInt("nettype")));
 				}

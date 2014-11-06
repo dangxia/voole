@@ -28,8 +28,10 @@ public class StormOrderSpoutPartitionFetcher {
 
 	private volatile long lastFetchTime = 0;
 	private volatile List<KafkaSpoutPartition> cache;
+	private final int timeout;
 
 	public StormOrderSpoutPartitionFetcher() {
+		timeout = StormOrderMetaConfigs.getPartitionsMetaCacheTimeout();
 	}
 
 	public List<KafkaSpoutPartition> fetch() throws FileNotFoundException,
@@ -54,7 +56,7 @@ public class StormOrderSpoutPartitionFetcher {
 
 	private boolean isShouldReturnCache() {
 		if (lastFetchTime == 0
-				|| System.currentTimeMillis() - lastFetchTime > 60 * 1000
+				|| System.currentTimeMillis() - lastFetchTime > timeout
 				|| cache == null || cache.size() == 0) {
 			return false;
 		}
