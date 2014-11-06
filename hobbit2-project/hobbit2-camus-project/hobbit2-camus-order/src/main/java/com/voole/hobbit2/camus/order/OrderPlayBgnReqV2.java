@@ -7,7 +7,7 @@ package com.voole.hobbit2.camus.order;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlayBgnReqV2\",\"namespace\":\"com.voole.hobbit2.camus.order\",\"fields\":[{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"curVer\",\"type\":[\"long\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"localIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessID\",\"type\":[\"string\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"URL\",\"type\":[\"string\",\"null\"]},{\"name\":\"playTick\",\"type\":[\"long\",\"null\"]},{\"name\":\"srvNum\",\"type\":[\"int\",\"null\"]},{\"name\":\"_srvs\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"OrderPlayBgnReqSrvV2\",\"fields\":[{\"name\":\"srvIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"srvPort\",\"type\":[\"int\",\"null\"]},{\"name\":\"srvType\",\"type\":[\"int\",\"null\"]}]}}]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlayBgnReqV2\",\"namespace\":\"com.voole.hobbit2.camus.order\",\"fields\":[{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"curVer\",\"type\":[\"long\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"localIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessID\",\"type\":[\"string\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"URL\",\"type\":[\"string\",\"null\"]},{\"name\":\"playTick\",\"type\":[\"long\",\"null\"]},{\"name\":\"srvNum\",\"type\":[\"int\",\"null\"]},{\"name\":\"_srvs\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"OrderPlayBgnReqSrvV2\",\"fields\":[{\"name\":\"srvIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"srvPort\",\"type\":[\"int\",\"null\"]},{\"name\":\"srvType\",\"type\":[\"int\",\"null\"]}]}}]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessStatus\",\"type\":[\"int\",\"null\"]},{\"name\":\"perfIp\",\"type\":[\"string\",\"null\"]}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.Long OEMID;
   @Deprecated public java.lang.Long curVer;
@@ -21,6 +21,8 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
   @Deprecated public java.lang.Integer srvNum;
   @Deprecated public java.util.List<com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV2> _srvs;
   @Deprecated public java.lang.Long natip;
+  @Deprecated public java.lang.Integer sessStatus;
+  @Deprecated public java.lang.CharSequence perfIp;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -32,7 +34,7 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
   /**
    * All-args constructor.
    */
-  public OrderPlayBgnReqV2(java.lang.Long OEMID, java.lang.Long curVer, java.lang.CharSequence HID, java.lang.CharSequence UID, java.lang.Long localIP, java.lang.CharSequence sessID, java.lang.CharSequence FID, java.lang.CharSequence URL, java.lang.Long playTick, java.lang.Integer srvNum, java.util.List<com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV2> _srvs, java.lang.Long natip) {
+  public OrderPlayBgnReqV2(java.lang.Long OEMID, java.lang.Long curVer, java.lang.CharSequence HID, java.lang.CharSequence UID, java.lang.Long localIP, java.lang.CharSequence sessID, java.lang.CharSequence FID, java.lang.CharSequence URL, java.lang.Long playTick, java.lang.Integer srvNum, java.util.List<com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV2> _srvs, java.lang.Long natip, java.lang.Integer sessStatus, java.lang.CharSequence perfIp) {
     this.OEMID = OEMID;
     this.curVer = curVer;
     this.HID = HID;
@@ -45,6 +47,8 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
     this.srvNum = srvNum;
     this._srvs = _srvs;
     this.natip = natip;
+    this.sessStatus = sessStatus;
+    this.perfIp = perfIp;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -63,6 +67,8 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
     case 9: return srvNum;
     case 10: return _srvs;
     case 11: return natip;
+    case 12: return sessStatus;
+    case 13: return perfIp;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -82,6 +88,8 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
     case 9: srvNum = (java.lang.Integer)value$; break;
     case 10: _srvs = (java.util.List<com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV2>)value$; break;
     case 11: natip = (java.lang.Long)value$; break;
+    case 12: sessStatus = (java.lang.Integer)value$; break;
+    case 13: perfIp = (java.lang.CharSequence)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -266,6 +274,36 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
     this.natip = value;
   }
 
+  /**
+   * Gets the value of the 'sessStatus' field.
+   */
+  public java.lang.Integer getSessStatus() {
+    return sessStatus;
+  }
+
+  /**
+   * Sets the value of the 'sessStatus' field.
+   * @param value the value to set.
+   */
+  public void setSessStatus(java.lang.Integer value) {
+    this.sessStatus = value;
+  }
+
+  /**
+   * Gets the value of the 'perfIp' field.
+   */
+  public java.lang.CharSequence getPerfIp() {
+    return perfIp;
+  }
+
+  /**
+   * Sets the value of the 'perfIp' field.
+   * @param value the value to set.
+   */
+  public void setPerfIp(java.lang.CharSequence value) {
+    this.perfIp = value;
+  }
+
   /** Creates a new OrderPlayBgnReqV2 RecordBuilder */
   public static com.voole.hobbit2.camus.order.OrderPlayBgnReqV2.Builder newBuilder() {
     return new com.voole.hobbit2.camus.order.OrderPlayBgnReqV2.Builder();
@@ -299,6 +337,8 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
     private java.lang.Integer srvNum;
     private java.util.List<com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV2> _srvs;
     private java.lang.Long natip;
+    private java.lang.Integer sessStatus;
+    private java.lang.CharSequence perfIp;
 
     /** Creates a new Builder */
     private Builder() {
@@ -356,6 +396,14 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
         this.natip = data().deepCopy(fields()[11].schema(), other.natip);
         fieldSetFlags()[11] = true;
       }
+      if (isValidValue(fields()[12], other.sessStatus)) {
+        this.sessStatus = data().deepCopy(fields()[12].schema(), other.sessStatus);
+        fieldSetFlags()[12] = true;
+      }
+      if (isValidValue(fields()[13], other.perfIp)) {
+        this.perfIp = data().deepCopy(fields()[13].schema(), other.perfIp);
+        fieldSetFlags()[13] = true;
+      }
     }
     
     /** Creates a Builder by copying an existing OrderPlayBgnReqV2 instance */
@@ -408,6 +456,14 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
       if (isValidValue(fields()[11], other.natip)) {
         this.natip = data().deepCopy(fields()[11].schema(), other.natip);
         fieldSetFlags()[11] = true;
+      }
+      if (isValidValue(fields()[12], other.sessStatus)) {
+        this.sessStatus = data().deepCopy(fields()[12].schema(), other.sessStatus);
+        fieldSetFlags()[12] = true;
+      }
+      if (isValidValue(fields()[13], other.perfIp)) {
+        this.perfIp = data().deepCopy(fields()[13].schema(), other.perfIp);
+        fieldSetFlags()[13] = true;
       }
     }
 
@@ -711,6 +767,56 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
       return this;
     }
 
+    /** Gets the value of the 'sessStatus' field */
+    public java.lang.Integer getSessStatus() {
+      return sessStatus;
+    }
+    
+    /** Sets the value of the 'sessStatus' field */
+    public com.voole.hobbit2.camus.order.OrderPlayBgnReqV2.Builder setSessStatus(java.lang.Integer value) {
+      validate(fields()[12], value);
+      this.sessStatus = value;
+      fieldSetFlags()[12] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'sessStatus' field has been set */
+    public boolean hasSessStatus() {
+      return fieldSetFlags()[12];
+    }
+    
+    /** Clears the value of the 'sessStatus' field */
+    public com.voole.hobbit2.camus.order.OrderPlayBgnReqV2.Builder clearSessStatus() {
+      sessStatus = null;
+      fieldSetFlags()[12] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'perfIp' field */
+    public java.lang.CharSequence getPerfIp() {
+      return perfIp;
+    }
+    
+    /** Sets the value of the 'perfIp' field */
+    public com.voole.hobbit2.camus.order.OrderPlayBgnReqV2.Builder setPerfIp(java.lang.CharSequence value) {
+      validate(fields()[13], value);
+      this.perfIp = value;
+      fieldSetFlags()[13] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'perfIp' field has been set */
+    public boolean hasPerfIp() {
+      return fieldSetFlags()[13];
+    }
+    
+    /** Clears the value of the 'perfIp' field */
+    public com.voole.hobbit2.camus.order.OrderPlayBgnReqV2.Builder clearPerfIp() {
+      perfIp = null;
+      fieldSetFlags()[13] = false;
+      return this;
+    }
+
     @Override
     public OrderPlayBgnReqV2 build() {
       try {
@@ -727,6 +833,8 @@ public class OrderPlayBgnReqV2 extends org.apache.avro.specific.SpecificRecordBa
         record.srvNum = fieldSetFlags()[9] ? this.srvNum : (java.lang.Integer) defaultValue(fields()[9]);
         record._srvs = fieldSetFlags()[10] ? this._srvs : (java.util.List<com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV2>) defaultValue(fields()[10]);
         record.natip = fieldSetFlags()[11] ? this.natip : (java.lang.Long) defaultValue(fields()[11]);
+        record.sessStatus = fieldSetFlags()[12] ? this.sessStatus : (java.lang.Integer) defaultValue(fields()[12]);
+        record.perfIp = fieldSetFlags()[13] ? this.perfIp : (java.lang.CharSequence) defaultValue(fields()[13]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

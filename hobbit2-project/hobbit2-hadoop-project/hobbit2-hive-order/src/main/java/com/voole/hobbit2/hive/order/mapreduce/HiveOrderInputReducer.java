@@ -38,12 +38,12 @@ import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
-import com.voole.hobbit2.hive.order.HiveOrderDryRecordGenerator;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
-import com.voole.hobbit2.hive.order.OrderSessionInfo;
 import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
-import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException;
-import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException.OrderSessionInfoExceptionType;
+import com.voole.hobbit2.order.common.HiveOrderDryRecordGenerator;
+import com.voole.hobbit2.order.common.OrderSessionInfo;
+import com.voole.hobbit2.order.common.exception.OrderSessionInfoException;
+import com.voole.hobbit2.order.common.exception.OrderSessionInfoException.OrderSessionInfoExceptionType;
 
 /**
  * @author XuehuiHe

@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit2.hive.order;
+package com.voole.hobbit2.order.common;
 
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV3;
@@ -9,8 +9,9 @@ import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
-import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException;
-import com.voole.hobbit2.hive.order.exception.OrderSessionInfoException.OrderSessionInfoExceptionType;
+import com.voole.hobbit2.order.common.exception.OrderSessionInfoException;
+import com.voole.hobbit2.order.common.exception.OrderSessionInfoException.OrderSessionInfoExceptionType;
+
 
 /**
  * 该点播session处理的前提为sessionID唯一，sessionID不唯一结果可能有一定出入

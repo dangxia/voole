@@ -66,5 +66,8 @@
 	} , {
 		"name" : "natip",
 		"type" : [ "long", "null" ]
-	} ]
+	} , {
+		"name" : "perfIp",
+		"type" : [ "string", "null" ]
+	}  ]
 }

@@ -63,5 +63,11 @@
 	}, {
 		"name" : "natip",
 		"type" : [ "long", "null" ]
-	} ]
+	} , {
+		"name" : "sessStatus",
+		"type" : [ "int", "null" ]
+	} , {
+		"name" : "perfIp",
+		"type" : [ "string", "null" ]
+	}  ]
 }

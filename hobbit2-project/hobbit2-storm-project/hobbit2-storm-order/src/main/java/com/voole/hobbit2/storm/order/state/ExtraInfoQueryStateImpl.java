@@ -3,6 +3,7 @@ package com.voole.hobbit2.storm.order.state;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.avro.specific.SpecificRecordBase;
 import org.slf4j.Logger;
@@ -13,68 +14,40 @@ import storm.trident.state.StateFactory;
 import storm.trident.tuple.TridentTuple;
 import backtype.storm.task.IMetricsContext;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
-import com.voole.hobbit2.cache.AreaInfoCache;
-import com.voole.hobbit2.cache.AreaInfoCacheImpl;
-import com.voole.hobbit2.cache.OemInfoCache;
-import com.voole.hobbit2.cache.OemInfoCacheImpl;
-import com.voole.hobbit2.cache.ResourceInfoCache;
-import com.voole.hobbit2.cache.ResourceInfoCacheImpl;
-import com.voole.hobbit2.cache.db.CacheDao;
-import com.voole.hobbit2.cache.db.CacheDaoUtil;
-import com.voole.hobbit2.cache.entity.AreaInfo;
-import com.voole.hobbit2.cache.entity.OemInfo;
-import com.voole.hobbit2.cache.entity.ResourceInfo;
-import com.voole.hobbit2.cache.exception.CacheQueryException;
-import com.voole.hobbit2.cache.exception.CacheRefreshException;
-import com.voole.hobbit2.camus.order.dry.PlayBgnDryRecord;
-import com.voole.hobbit2.common.enums.ProductType;
+import com.voole.dungbeetle.api.DummyTaskAttemptContext;
+import com.voole.dungbeetle.api.model.HiveTable;
+import com.voole.dungbeetle.order.record.OrderDetailDumgBeetleTransformer;
+import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
+import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
+import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
+import com.voole.hobbit2.order.common.HiveOrderDryRecordGenerator;
+import com.voole.hobbit2.order.common.OrderSessionInfo;
+import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 
 public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
+
 	private static final Logger log = LoggerFactory
 			.getLogger(ExtraInfoQueryState.class);
+	private final OrderDetailDumgBeetleTransformer transformer;
 
-	private final AreaInfoCache areaInfoCache;
-	private final OemInfoCache oemInfoCache;
-	private final ResourceInfoCache resourceInfoCache;
-
-	public ExtraInfoQueryStateImpl(AreaInfoCache areaInfoCache,
-			OemInfoCache oemInfoCache, ResourceInfoCache resourceInfoCache) {
-		this.areaInfoCache = areaInfoCache;
-		this.oemInfoCache = oemInfoCache;
-		this.resourceInfoCache = resourceInfoCache;
-	}
-
-	@Override
-	public void beginCommit(Long arg0) {
-
-	}
-
-	@Override
-	public void commit(Long arg0) {
-
-	}
-
-	public static class ExtraInfoQueryStateFactory implements StateFactory {
-		@Override
-		public State makeState(@SuppressWarnings("rawtypes") Map conf,
-				IMetricsContext metrics, int partitionIndex, int numPartitions) {
-			CacheDao dao = CacheDaoUtil.getCacheDao();
-			AreaInfoCache areaInfoCache = new AreaInfoCacheImpl(dao);
-			OemInfoCache oemInfoCache = new OemInfoCacheImpl(dao);
-			ResourceInfoCache resourceInfoCache = new ResourceInfoCacheImpl(dao);
-			try {
-				areaInfoCache.refresh();
-				oemInfoCache.refresh();
-				resourceInfoCache.refresh();
-			} catch (Exception e) {
-				log.warn("init ExtraInfoQueryStateImpl error:", e);
-				Throwables.propagate(e);
-			}
-			return new ExtraInfoQueryStateImpl(areaInfoCache, oemInfoCache,
-					resourceInfoCache);
+	public ExtraInfoQueryStateImpl() {
+		transformer = new OrderDetailDumgBeetleTransformer();
+		DummyTaskAttemptContext context = new DummyTaskAttemptContext(
+				StormOrderHDFSUtils.conf);
+		try {
+			transformer.setup(context);
+		} catch (Exception e) {
+			log.warn(getClass() + " init failed", e);
 		}
+	}
+
+	@Override
+	public void beginCommit(Long txid) {
+
+	}
+
+	@Override
+	public void commit(Long txid) {
 
 	}
 
@@ -82,73 +55,68 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 	public List<SpecificRecordBase> query(List<TridentTuple> tuples) {
 		long start = System.currentTimeMillis();
 		List<SpecificRecordBase> result = new ArrayList<SpecificRecordBase>();
+		OrderSessionInfo sessionInfo = new OrderSessionInfo();
 		for (TridentTuple tuple : tuples) {
 			SpecificRecordBase base = (SpecificRecordBase) tuple.get(0);
 			try {
-				if (base instanceof PlayBgnDryRecord) {
-					dealBgn((PlayBgnDryRecord) base);
+				if (base instanceof OrderPlayBgnReqV2
+						|| base instanceof OrderPlayBgnReqV3) {
+					sessionInfo.clear();
+					if (base instanceof OrderPlayBgnReqV2) {
+						sessionInfo.setBgn((OrderPlayBgnReqV2) base);
+					} else {
+						sessionInfo.setBgn((OrderPlayBgnReqV3) base);
+					}
+					HiveOrderDryRecord dryRecord = HiveOrderDryRecordGenerator
+							.generate(sessionInfo);
+					if (dryRecord == null) {
+						log.warn("dryRecord is null ,base record:"
+								+ base.toString());
+						result.add(null);
+					} else {
+						Map<HiveTable, List<SpecificRecordBase>> tableDetails = transformer
+								.transform(dryRecord);
+						if (tableDetails == null || tableDetails.size() == 0) {
+							log.warn("transformer result is null || size == 0,dry record:"
+									+ dryRecord.toString());
+							result.add(null);
+						} else {
+							boolean isSet = false;
+							for (Entry<HiveTable, List<SpecificRecordBase>> entry : tableDetails
+									.entrySet()) {
+								HiveTable table = entry.getKey();
+								if ("fact_vod".equals(table.getName())
+										&& entry.getValue() != null
+										&& entry.getValue().size() > 0) {
+									result.add(entry.getValue().get(0));
+									isSet = true;
+								}
+							}
+							if (!isSet) {
+								result.add(null);
+							}
+						}
+					}
+
+				} else {
+					result.add(base);
 				}
 			} catch (Exception e) {
-				log.warn("record add extra info failed", e);
+				result.add(null);
+				log.warn("record transform failed", e);
 			}
-			result.add(base);
-
 		}
 		log.info("query size:" + tuples.size() + ",used time:"
 				+ ((System.currentTimeMillis() - start) / 1000));
 		return result;
 	}
 
-	private void dealBgn(PlayBgnDryRecord record) {
-		try {
-			String spid = getSpid(record.getOEMID());
-			Optional<AreaInfo> areaInfo = getAreaInfo(
-					record.getHID() != null ? record.getHID().toString() : null,
-					record.getOEMID() != null ? record.getOEMID().toString()
-							: null, spid, record.getNatip());
-			Optional<ResourceInfo> resourceInfo = getResourceInfo(spid,
-					record.getFID() != null ? record.getFID().toString() : null);
-			record.setSpid(spid);
-			if (areaInfo.isPresent()) {
-				record.setAreaid(areaInfo.get().getAreaid());
-			}
-			if (resourceInfo.isPresent()) {
-				Integer bitrate = resourceInfo.get().getBitrate();
-				if (bitrate != null) {
-					record.setBitrate((long) bitrate);
-				} else {
-					record.setBitrate(null);
-				}
-			}
-		} catch (Exception e) {
-			Throwables.propagate(e);
+	public static class ExtraInfoQueryStateFactory implements StateFactory {
+		@Override
+		public State makeState(@SuppressWarnings("rawtypes") Map conf,
+				IMetricsContext metrics, int partitionIndex, int numPartitions) {
+			return new ExtraInfoQueryStateImpl();
 		}
-	}
 
-	protected String getSpid(Long oemid) throws CacheRefreshException,
-			CacheQueryException {
-		Optional<OemInfo> oemInfo = getOemInfo(oemid);
-		if (!oemInfo.isPresent()) {
-			return ProductType.VOOLE_SPID.toString();
-		} else {
-			return oemInfo.get().getSpid();
-		}
 	}
-
-	public Optional<AreaInfo> getAreaInfo(String hid, String oemid,
-			String spid, long ip) throws CacheQueryException,
-			CacheRefreshException {
-		return areaInfoCache.getAreaInfo(hid, oemid, spid, ip);
-	}
-
-	public Optional<OemInfo> getOemInfo(Long oemid)
-			throws CacheRefreshException, CacheQueryException {
-		return oemInfoCache.getOemInfo(oemid);
-	}
-
-	public Optional<ResourceInfo> getResourceInfo(String spid, String fid)
-			throws CacheRefreshException, CacheQueryException {
-		return resourceInfoCache.getResourceInfo(spid, fid);
-	}
-
 }

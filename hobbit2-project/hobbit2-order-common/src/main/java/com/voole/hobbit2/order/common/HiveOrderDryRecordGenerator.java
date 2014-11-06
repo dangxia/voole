@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit2.hive.order;
+package com.voole.hobbit2.order.common;
 
 import java.util.Map;
 
@@ -115,7 +115,7 @@ public class HiveOrderDryRecordGenerator {
 		record.setPlayBgnTime(bgn.getPlayTick());
 
 		record.setDatasorce(0);
-		record.setMetricStatus(0);
+		record.setMetricStatus(bgn.getSessStatus());
 		record.setPlayurl(url);
 		if (bgn.getCurVer() == null) {
 			record.setApkVersion("0");
@@ -138,7 +138,7 @@ public class HiveOrderDryRecordGenerator {
 		record.setPlayBgnTime(bgn.getPlayTick());
 
 		record.setDatasorce(0);
-		record.setMetricStatus(0);
+		record.setMetricStatus(bgn.getSessStatus());
 		record.setPlayurl(url);
 		if (bgn.getCurVer() == null) {
 			record.setApkVersion("0");

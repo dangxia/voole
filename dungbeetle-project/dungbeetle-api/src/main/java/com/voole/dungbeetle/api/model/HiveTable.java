@@ -11,6 +11,7 @@ import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 
 public class HiveTable implements Writable {
 	private String name;
@@ -47,6 +48,24 @@ public class HiveTable implements Writable {
 
 	public void setSchema(Schema schema) {
 		this.schema = schema;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(name, partitions);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj != null && this.getClass() == obj.getClass()) {
+			HiveTable that = (HiveTable) obj;
+			return Objects.equal(this.name, that.name)
+					&& Objects.equal(this.partitions, that.partitions);
+		}
+		return false;
 	}
 
 	public String getFileName() {

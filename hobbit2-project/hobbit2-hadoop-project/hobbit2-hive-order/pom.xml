@@ -78,5 +78,10 @@
 			<artifactId>dungbeetle-ad</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>com.voole.hobbit2</groupId>
+			<artifactId>hobbit2-order-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>

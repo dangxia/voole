@@ -22,6 +22,7 @@ import com.voole.monitor2.playurl.PlayurlAnalyzer;
  * @author XuehuiHe
  * @date 2014年9月26日
  */
+@Deprecated
 public class DryGenerator {
 
 	public static SpecificRecordBase dry(SpecificRecordBase base) {

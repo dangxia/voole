@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 BEIJING UNION VOOLE TECHNOLOGY CO., LTD
  */
-package com.voole.hobbit2.hive.order.exception;
+package com.voole.hobbit2.order.common.exception;
 
 /**
  * @author XuehuiHe

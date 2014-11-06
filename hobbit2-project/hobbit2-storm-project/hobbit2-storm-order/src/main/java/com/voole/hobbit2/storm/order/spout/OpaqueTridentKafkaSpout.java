@@ -35,7 +35,7 @@ import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 import com.voole.hobbit2.storm.order.StormOrderMetaConfigs;
 import com.voole.hobbit2.storm.order.partition.KafkaSpoutPartition;
 import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
-import com.voole.hobbit2.storm.order.util.DryGenerator;
+import com.voole.hobbit2.storm.order.util.KafkaRecordDehydration;
 import com.voole.hobbit2.storm.order.util.TopicMetaManagerUtil;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
 
@@ -264,9 +264,9 @@ public class OpaqueTridentKafkaSpout
 		protected void emit(TridentCollector collector,
 				SpecificRecordBase recordBase) {
 			try {
-				SpecificRecordBase dry = DryGenerator.dry(recordBase);
-				if (dry != null) {
-					collector.emit(new Values(dry));
+				KafkaRecordDehydration.dry(recordBase);
+				if (recordBase != null) {
+					collector.emit(new Values(recordBase));
 				}
 			} catch (Exception e) {
 				log.warn("record dry failed", e);

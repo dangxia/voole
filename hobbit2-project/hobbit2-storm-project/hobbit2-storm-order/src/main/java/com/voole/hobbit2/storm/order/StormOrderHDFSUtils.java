@@ -44,6 +44,7 @@ public class StormOrderHDFSUtils {
 	public static final Configuration conf = new Configuration();
 	static {
 		conf.addResource("core-site2.xml");
+		conf.setBoolean("order.detail.transformer.is.auto.refresh.cache", true);
 	}
 
 	public static void main(String[] args) throws IOException {
