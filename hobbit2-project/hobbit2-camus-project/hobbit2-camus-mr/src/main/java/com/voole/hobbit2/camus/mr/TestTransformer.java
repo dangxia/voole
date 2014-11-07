@@ -13,10 +13,12 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.SequenceFile;
 import org.apache.hadoop.io.Text;
 
+import com.google.common.base.Throwables;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 import com.voole.hobbit2.camus.api.transform.AvroCtypeKafkaTransformer;
 import com.voole.hobbit2.camus.api.transform.TransformException;
 import com.voole.hobbit2.camus.mr.common.CamusKey;
+import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
 
 /**
  * @author XuehuiHe
@@ -51,12 +53,16 @@ public class TestTransformer {
 		test("/camus/exec/history/2014-11-07-15-01-06/errors-m-00019.error",
 				writer);
 		writer.close();
-		// String msg =
-		// "3249065509265744850	1411021973	629213	1411030260	0	29206	0	0	1929807	0	10	4100331066	1	8228	14554	16421	29	526154	550135	13543	10	4100331066	1	8204	14585	32842	59	488530	616334	13350	7	4117108282	1	7731	15594	3217	28	478263	111022	12864	11	4117108282	1	7403	15966	16421	42	470156	388129	22865	8	4133885498	1	6924	17164	32842	73	432409	419363	16761	9	4133885498	1	6887	17402	32842	72	369068	467089	16048	6	934937821	1	2640	44542	0	0	179704	187398	44274	21	884606173	1	2589	47759	0	0	171098	159917	51952	25	934937821	1	2697	44097	0	0	170813	183933	44042	22	884606173	1	2333	54437	0	0	105187	106559	80932	24	0";
-		// AvroCtypeKafkaTransformer transformer = new
-		// AvroCtypeKafkaTransformer(
-		// OrderPlayAliveReqV3.getClassSchema());
-		// transformer.transform(msg.getBytes());
+//		String msg = "817	107	A089E46B3CA400000000000000000000	6033561	1932787978	9847941467737988775	D0488748838E73A0CD282D9A173AC6BD	http://cdn.voole.com:3580/uid$6033561/stamp$1415341636/keyid$67141632/auth$7983afc99d4d6e8f8d8322fd66172fde/d0488748838e73a0cd282d9a173ac6bd.m3u8?ext=btime:0,etime:0;oid:817,eid:100895,code:cate__ypOTVsytjwlb_1393847192,pid:101001,po:999999;admt:4,lg:13a44db15542d25d:pln:353:pln:151:pln:149:pln:147:mid:13314641,48f35a041d9494b576adadc9f5f3658d:0:23:3785004&bke=cdnbke.voole.com&type=get_m3u8&host=cdn.voole.com:3580&port=3528&is3d=0&proto=5	1415341645	1	286926717	3528	4	33554432	0	0	1920065090	4294966292	3754108797";
+//		AvroCtypeKafkaTransformer transformer = new AvroCtypeKafkaTransformer(
+//				OrderPlayBgnReqV2.getClassSchema());
+//		try {
+//			transformer.transform(msg.getBytes());
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			System.out.println(Throwables.getRootCause(e).getClass().getName());
+//		}
+//		
 	}
 
 	public static void test(String file, FileWriter writer) throws IOException,
@@ -68,16 +74,19 @@ public class TestTransformer {
 		Text msg = new Text();
 
 		while (reader.next(key, msg)) {
-			System.out.println(key.getTopic());
-			System.out.println(msg);
+//			System.out.println(key.getTopic());
+//			System.out.println(msg);
 			try {
 				AvroCtypeKafkaTransformer transformer = getTransform(key
 						.getTopic());
-				System.out.println(transformer.transform(msg.getBytes()));
+				System.out.println(transformer.transform(msg.toString().getBytes()));
 			} catch (Exception e) {
+//				System.out.println(e.getMessage());
 				if (e.getMessage().indexOf("repeatTimes") != -1) {
-					writer.append("topic:" + key.getTopic() + "\n");
-					writer.append("msg:" + msg + "\n");
+					System.out.println(e.getMessage());
+//					System.out.println(e.getMessage());
+//					writer.append("topic:" + key.getTopic() + "\n");
+//					writer.append("msg:" + msg + "\n");
 				}
 			}
 

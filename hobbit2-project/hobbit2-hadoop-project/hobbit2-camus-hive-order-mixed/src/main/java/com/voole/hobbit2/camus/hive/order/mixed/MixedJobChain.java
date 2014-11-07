@@ -177,11 +177,20 @@ public class MixedJobChain extends Configured implements Tool {
 						40000), conf.getInt(
 				ZookeeperMetaConfigs.ZOOKEEPER_ROOT_SESSION_TIMEOUT_MS, 40000));
 		if (tryLock(client)) {
-			 System.exit(ToolRunner.run(new MixedJobChain(), args));
+			ToolRunner.run(new MixedJobChain(), args);
+			removeLock(client);
 		} else {
 			System.out.println("job_camus_hive_order_mixed is running,exit!");
 		}
 		client.close();
+	}
+
+	public static void removeLock(ZkClient client) {
+		try {
+			client.delete("/job_camus_hive_order_mixed");
+		} catch (ZkNodeExistsException e) {
+		}
+
 	}
 
 	public static boolean tryLock(ZkClient client) {
