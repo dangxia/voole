@@ -59,6 +59,7 @@
 		"type" : [ "long", "null" ]
 	} , {
 		"name" : "perfIp",
-		"type" : [ "string", "null" ]
+		"type" : [ "long", "null" ],
+		"default" : 0
 	}  ]
 }

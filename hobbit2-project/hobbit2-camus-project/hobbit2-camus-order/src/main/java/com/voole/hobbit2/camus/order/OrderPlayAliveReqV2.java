@@ -7,7 +7,7 @@ package com.voole.hobbit2.camus.order;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlayAliveReqV2\",\"namespace\":\"com.voole.hobbit2.camus.order\",\"fields\":[{\"name\":\"sessID\",\"type\":[\"string\",\"null\"]},{\"name\":\"aliveTick\",\"type\":[\"long\",\"null\"]},{\"name\":\"readNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"unsuccRead\",\"type\":[\"long\",\"null\"]},{\"name\":\"readPos\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessAvgSpeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"linkNum\",\"type\":[\"int\",\"null\"]},{\"name\":\"_srvs\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"OrderPlayAliveReqSrvV2\",\"fields\":[{\"name\":\"srvIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"connTimes\",\"type\":[\"long\",\"null\"]},{\"name\":\"transNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgRTT\",\"type\":[\"long\",\"null\"]},{\"name\":\"accBytes\",\"type\":[\"long\",\"null\"]},{\"name\":\"accTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgSpeed\",\"type\":[\"long\",\"null\"]}]}}]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"perfIp\",\"type\":[\"string\",\"null\"]}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"OrderPlayAliveReqV2\",\"namespace\":\"com.voole.hobbit2.camus.order\",\"fields\":[{\"name\":\"sessID\",\"type\":[\"string\",\"null\"]},{\"name\":\"aliveTick\",\"type\":[\"long\",\"null\"]},{\"name\":\"readNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"unsuccRead\",\"type\":[\"long\",\"null\"]},{\"name\":\"readPos\",\"type\":[\"long\",\"null\"]},{\"name\":\"sessAvgSpeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"linkNum\",\"type\":[\"int\",\"null\"]},{\"name\":\"_srvs\",\"type\":[\"null\",{\"type\":\"array\",\"items\":{\"type\":\"record\",\"name\":\"OrderPlayAliveReqSrvV2\",\"fields\":[{\"name\":\"srvIP\",\"type\":[\"long\",\"null\"]},{\"name\":\"connTimes\",\"type\":[\"long\",\"null\"]},{\"name\":\"transNum\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgRTT\",\"type\":[\"long\",\"null\"]},{\"name\":\"accBytes\",\"type\":[\"long\",\"null\"]},{\"name\":\"accTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgSpeed\",\"type\":[\"long\",\"null\"]}]}}]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"perfIp\",\"type\":[\"long\",\"null\"],\"default\":0}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence sessID;
   @Deprecated public java.lang.Long aliveTick;
@@ -18,7 +18,7 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
   @Deprecated public java.lang.Integer linkNum;
   @Deprecated public java.util.List<com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2> _srvs;
   @Deprecated public java.lang.Long natip;
-  @Deprecated public java.lang.CharSequence perfIp;
+  @Deprecated public java.lang.Long perfIp;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -30,7 +30,7 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
   /**
    * All-args constructor.
    */
-  public OrderPlayAliveReqV2(java.lang.CharSequence sessID, java.lang.Long aliveTick, java.lang.Long readNum, java.lang.Long unsuccRead, java.lang.Long readPos, java.lang.Long sessAvgSpeed, java.lang.Integer linkNum, java.util.List<com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2> _srvs, java.lang.Long natip, java.lang.CharSequence perfIp) {
+  public OrderPlayAliveReqV2(java.lang.CharSequence sessID, java.lang.Long aliveTick, java.lang.Long readNum, java.lang.Long unsuccRead, java.lang.Long readPos, java.lang.Long sessAvgSpeed, java.lang.Integer linkNum, java.util.List<com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2> _srvs, java.lang.Long natip, java.lang.Long perfIp) {
     this.sessID = sessID;
     this.aliveTick = aliveTick;
     this.readNum = readNum;
@@ -73,7 +73,7 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
     case 6: linkNum = (java.lang.Integer)value$; break;
     case 7: _srvs = (java.util.List<com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2>)value$; break;
     case 8: natip = (java.lang.Long)value$; break;
-    case 9: perfIp = (java.lang.CharSequence)value$; break;
+    case 9: perfIp = (java.lang.Long)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -216,7 +216,7 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
   /**
    * Gets the value of the 'perfIp' field.
    */
-  public java.lang.CharSequence getPerfIp() {
+  public java.lang.Long getPerfIp() {
     return perfIp;
   }
 
@@ -224,7 +224,7 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
    * Sets the value of the 'perfIp' field.
    * @param value the value to set.
    */
-  public void setPerfIp(java.lang.CharSequence value) {
+  public void setPerfIp(java.lang.Long value) {
     this.perfIp = value;
   }
 
@@ -258,7 +258,7 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
     private java.lang.Integer linkNum;
     private java.util.List<com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2> _srvs;
     private java.lang.Long natip;
-    private java.lang.CharSequence perfIp;
+    private java.lang.Long perfIp;
 
     /** Creates a new Builder */
     private Builder() {
@@ -581,12 +581,12 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
     }
 
     /** Gets the value of the 'perfIp' field */
-    public java.lang.CharSequence getPerfIp() {
+    public java.lang.Long getPerfIp() {
       return perfIp;
     }
     
     /** Sets the value of the 'perfIp' field */
-    public com.voole.hobbit2.camus.order.OrderPlayAliveReqV2.Builder setPerfIp(java.lang.CharSequence value) {
+    public com.voole.hobbit2.camus.order.OrderPlayAliveReqV2.Builder setPerfIp(java.lang.Long value) {
       validate(fields()[9], value);
       this.perfIp = value;
       fieldSetFlags()[9] = true;
@@ -618,7 +618,7 @@ public class OrderPlayAliveReqV2 extends org.apache.avro.specific.SpecificRecord
         record.linkNum = fieldSetFlags()[6] ? this.linkNum : (java.lang.Integer) defaultValue(fields()[6]);
         record._srvs = fieldSetFlags()[7] ? this._srvs : (java.util.List<com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2>) defaultValue(fields()[7]);
         record.natip = fieldSetFlags()[8] ? this.natip : (java.lang.Long) defaultValue(fields()[8]);
-        record.perfIp = fieldSetFlags()[9] ? this.perfIp : (java.lang.CharSequence) defaultValue(fields()[9]);
+        record.perfIp = fieldSetFlags()[9] ? this.perfIp : (java.lang.Long) defaultValue(fields()[9]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

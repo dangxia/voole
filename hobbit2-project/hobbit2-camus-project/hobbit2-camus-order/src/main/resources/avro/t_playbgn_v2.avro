@@ -56,9 +56,11 @@
 		"type" : [ "long", "null" ]
 	} , {
 		"name" : "sessStatus",
-		"type" : [ "int", "null" ]
-	}  , {
+		"type" : [ "int", "null" ],
+		"default" : 0
+	} , {
 		"name" : "perfIp",
-		"type" : [ "string", "null" ]
-	} ]
+		"type" : [ "long", "null" ],
+		"default" : 0
+	}  ]
 }
