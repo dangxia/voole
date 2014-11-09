@@ -70,6 +70,18 @@
 	}, {
 		"name" : "dim_po_id",
 		"type" : [ "int", "null" ]
+	}, {
+		"name" : "metric_partnerinfo",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "extinfo",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "vssip",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "perfip",
+		"type" : [ "long", "null" ]
 	}]
 }
 

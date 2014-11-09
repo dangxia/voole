@@ -111,6 +111,18 @@
 		"name" : "metric_techtype",
 		"type" : "int",
 		"default" : 0
+	}, {
+		"name" : "metric_partnerinfo",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "extinfo",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "vssip",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "perfip",
+		"type" : [ "long", "null" ]
 	}]
 }
 

@@ -123,6 +123,12 @@ public class HiveOrderDryRecordGenerator {
 			record.setApkVersion(bgn.getCurVer().toString());
 		}
 		record.setMetricTechtype(0);
+		
+		record.setPerfip(bgn.getPerfIp());
+		record.setMetricPartnerinfo(null);
+		record.setVssip(null);
+		record.setExtinfo(null);
+		
 		afterFill(record, url.toString());
 
 	}
@@ -146,6 +152,12 @@ public class HiveOrderDryRecordGenerator {
 			record.setApkVersion(bgn.getCurVer().toString());
 		}
 		record.setMetricTechtype(0);
+		
+		record.setPerfip(bgn.getPerfIp());
+		record.setMetricPartnerinfo(null);
+		record.setVssip(null);
+		record.setExtinfo(null);
+		
 		afterFill(record, url.toString());
 	}
 

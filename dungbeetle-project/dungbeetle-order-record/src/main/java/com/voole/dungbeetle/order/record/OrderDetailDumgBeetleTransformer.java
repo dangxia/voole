@@ -185,6 +185,11 @@ public class OrderDetailDumgBeetleTransformer implements
 
 			// 时段
 			record.setDimDateHour(getDayHour(record.getMetricPlaybgntime()));
+			
+			record.setMetricPartnerinfo(record.getMetricPartnerinfo());
+			record.setVssip(record.getVssip());
+			record.setPerfip(record.getPerfip());
+			record.setExtinfo(record.getExtinfo());
 		} catch (Exception e) {
 			throw new DumgBeetleTransformException(e);
 		}
