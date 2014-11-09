@@ -18,9 +18,19 @@ import com.esotericsoftware.kryo.Kryo;
 import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.KryoSerializer;
 import com.twitter.chill.avro.AvroSerializer;
-import com.voole.hobbit2.camus.order.dry.PlayAliveDryRecord;
-import com.voole.hobbit2.camus.order.dry.PlayBgnDryRecord;
-import com.voole.hobbit2.camus.order.dry.PlayEndDryRecord;
+import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
+import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2;
+import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV3;
+import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
+import com.voole.hobbit2.camus.order.OrderPlayAliveReqV3;
+import com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV2;
+import com.voole.hobbit2.camus.order.OrderPlayBgnReqSrvV3;
+import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
+import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
+import com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2;
+import com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV3;
+import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
+import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
 
 /**
  * @author XuehuiHe
@@ -36,9 +46,23 @@ public class StromOrderKryoDecorator implements IKryoDecorator {
 	@Override
 	public void decorate(Kryo k) {
 		List<Class<? extends SpecificRecordBase>> list = new ArrayList<Class<? extends SpecificRecordBase>>();
-		list.add(PlayBgnDryRecord.class);
-		list.add(PlayEndDryRecord.class);
-		list.add(PlayAliveDryRecord.class);
+		list.add(HiveOrderDetailRecord.class);
+
+		list.add(OrderPlayBgnReqV2.class);
+		list.add(OrderPlayBgnReqV3.class);
+		list.add(OrderPlayBgnReqSrvV2.class);
+		list.add(OrderPlayBgnReqSrvV3.class);
+		
+		list.add(OrderPlayAliveReqV2.class);
+		list.add(OrderPlayAliveReqV3.class);
+		list.add(OrderPlayAliveReqSrvV2.class);
+		list.add(OrderPlayAliveReqSrvV3.class);
+		
+		list.add(OrderPlayEndReqV2.class);
+		list.add(OrderPlayEndReqV3.class);
+		list.add(OrderPlayEndReqSrvV2.class);
+		list.add(OrderPlayEndReqSrvV3.class);
+
 		for (Class<? extends SpecificRecordBase> clazz : list) {
 			log.info("avro KryoDecorator Registe: Class-->" + clazz.getName());
 			k.register(clazz,

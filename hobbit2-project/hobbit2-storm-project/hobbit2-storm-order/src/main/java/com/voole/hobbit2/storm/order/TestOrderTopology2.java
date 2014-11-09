@@ -32,7 +32,7 @@ public class TestOrderTopology2 {
 	public static Config getConfig() {
 		Config conf = new Config();
 		conf.setMaxSpoutPending(1);
-		conf.setNumWorkers(1);
+		conf.setNumWorkers(4);
 		conf.setMaxTaskParallelism(1);
 		conf.registerDecorator(StromOrderKryoDecorator.class);
 		conf.put(Config.TOPOLOGY_NAME, "storm_order_" + UUID.randomUUID());
