@@ -68,7 +68,7 @@ public class TestOrderTopology {
 	 public static TridentTopology createTopology() {
 	 TridentTopology topology = new TridentTopology();
 	 TridentState queryState = topology.newStaticState(
-	 new ExtraInfoQueryStateFactory()).parallelismHint(2);
+	 new ExtraInfoQueryStateFactory()).parallelismHint(1);
 	 OpaqueTridentKafkaSpout orderKafkaSpout = new OpaqueTridentKafkaSpout();
 	 Stream stream = topology
 	 .newStream("order-kafka-stream", orderKafkaSpout)
@@ -77,7 +77,7 @@ public class TestOrderTopology {
 	 stream.shuffle()
 	 .partitionPersist(new SessionStateFactory(),
 	 new Fields("dry"), new SessionStateUpdate())
-	 .parallelismHint(8);
+	 .parallelismHint(4);
 	
 	 return topology;
 	 }
