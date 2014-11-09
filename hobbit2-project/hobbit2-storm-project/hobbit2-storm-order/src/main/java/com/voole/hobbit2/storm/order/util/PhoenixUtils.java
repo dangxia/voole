@@ -72,15 +72,25 @@ public class PhoenixUtils {
 
 		for (int i = 1; i <= columns.size(); i++) {
 			Class<?> type = columnTypes.get(i - 1);
-			if (type == String.class) {
-				System.out.println("ps." + javaClassToPsSetMethod.get(type)
-						+ "(" + i + ", String.valueOf(record."
-						+ instanceGetMethodName(columns.get(i - 1)) + "()));");
-			} else {
-				System.out.println("ps." + javaClassToPsSetMethod.get(type)
-						+ "(" + i + ", record."
-						+ instanceGetMethodName(columns.get(i - 1)) + "());");
-			}
+			String name = columns.get(i - 1);
+			psColumn(i, type, name);
+		}
+	}
+
+	public static void psColumn(int i, Class<?> type, String name) {
+		if (type == String.class) {
+			System.out.println("ps." + javaClassToPsSetMethod.get(type) + "("
+					+ i + ", String.valueOf(record."
+					+ instanceGetMethodName(name) + "()));");
+		} else {
+			String getMethodName = instanceGetMethodName(name);
+			System.out.println("if(record." + getMethodName + "()==null){");
+			System.out.println("ps.setNull(" + i + ", "
+					+ javaClassToSqlType.get(type) + ");");
+			System.out.println("}else{");
+			System.out.println("ps." + javaClassToPsSetMethod.get(type) + "("
+					+ i + ", record." + getMethodName + "());");
+			System.out.println("}");
 		}
 	}
 
@@ -159,6 +169,20 @@ public class PhoenixUtils {
 		javaClassToPsSetMethod.put(String.class, "setString");
 
 		javaClassToPsSetMethod = ImmutableMap.copyOf(javaClassToPsSetMethod);
+	}
+
+	public static Map<Class<?>, String> javaClassToSqlType = new HashMap<Class<?>, String>();
+
+	static {
+		javaClassToSqlType.put(Integer.class, "Types.INTEGER");
+		javaClassToSqlType.put(Long.class, "Types.BIGINT");
+
+		javaClassToSqlType.put(Double.class, "Types.DOUBLE");
+		javaClassToSqlType.put(Float.class, "Types.FLOAT");
+
+		javaClassToSqlType.put(Boolean.class, "Types.BOOLEAN");
+
+		javaClassToSqlType = ImmutableMap.copyOf(javaClassToSqlType);
 	}
 
 	public static Type getFieldType(Schema schema) {

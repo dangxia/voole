@@ -14,22 +14,34 @@ public class TestPhoenix {
 	public static void main(String[] args) throws SQLException {
 		Connection con = DriverManager
 				.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
-		PreparedStatement preparedStatement = con
-				.prepareStatement("upsert into test2 values (?,?)");
-		
-		preparedStatement.setInt(1, 2);
-		preparedStatement.setString(2, null);
-//		preparedStatement.setBoolean(parameterIndex, x);
-//		preparedStatement.setLong(parameterIndex, x);
-//		preparedStatement.setDouble(parameterIndex, x);
-//		preparedStatement.setFloat(parameterIndex, x);
-		
-		preparedStatement.addBatch();
-		
-		preparedStatement.executeBatch();
+
+		Statement stmt = null;
+		ResultSet rset = null;
+
+		stmt = con.createStatement();
+
+		stmt.executeUpdate("create table test3 (mykey integer not null primary key, mycolumn varchar,n bigint)");
 		
 		con.commit();
 		
+
+		PreparedStatement preparedStatement = con
+				.prepareStatement("upsert into test3 values (?,?,?)");
+
+		preparedStatement.setInt(1, 2);
+		preparedStatement.setString(2, null);
+		preparedStatement.setNull(3, java.sql.Types.BIGINT);
+		// preparedStatement.setBoolean(parameterIndex, x);
+		// preparedStatement.setLong(parameterIndex, x);
+		// preparedStatement.setDouble(parameterIndex, x);
+		// preparedStatement.setFloat(parameterIndex, x);
+
+		preparedStatement.addBatch();
+
+		preparedStatement.executeBatch();
+
+		con.commit();
+
 		con.close();
 	}
 
