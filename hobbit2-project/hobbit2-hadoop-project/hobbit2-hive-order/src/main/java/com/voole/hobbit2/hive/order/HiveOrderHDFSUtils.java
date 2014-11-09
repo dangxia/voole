@@ -92,8 +92,11 @@ public class HiveOrderHDFSUtils {
 						+ " is not order topic!");
 			}
 			Path topicPath = new Path(destPath, topic);
-			Preconditions.checkArgument(fs.exists(topicPath), "topic:" + topic
-					+ " destPath does not exist");
+			if (!fs.exists(topicPath)) {
+				fs.mkdirs(topicPath);
+			}
+//			Preconditions.checkArgument(fs.exists(topicPath), "topic:" + topic
+//					+ " destPath does not exist");
 			FileInputFormat.addInputPath(job, topicPath);
 		}
 	}
