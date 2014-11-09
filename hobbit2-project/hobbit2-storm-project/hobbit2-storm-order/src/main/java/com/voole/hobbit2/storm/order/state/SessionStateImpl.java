@@ -332,13 +332,13 @@ public class SessionStateImpl implements SessionState {
 			}
 
 			if (bgnSize > 0) {
-				bgnPs.execute();
+				bgnPs.executeBatch();
 			}
 			if (aliveSize > 0) {
-				alivePs.execute();
+				alivePs.executeBatch();
 			}
 			if (endSize > 0) {
-				endPs.execute();
+				endPs.executeBatch();
 			}
 
 			connection.commit();
