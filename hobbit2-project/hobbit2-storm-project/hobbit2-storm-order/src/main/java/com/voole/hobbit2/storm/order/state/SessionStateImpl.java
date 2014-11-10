@@ -33,7 +33,7 @@ import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
 public class SessionStateImpl implements SessionState {
 	private static final Logger log = LoggerFactory
 			.getLogger(SessionState.class);
-	private static final String UPDATE_INSERT_SQL_BGN = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,sessid,stamp,userip,datasorce,playurl,version,dim_date_hour,dim_isp_id,dim_user_uid,dim_user_hid,dim_oem_id,dim_area_id,dim_area_parentid,dim_nettype_id,dim_media_fid,dim_media_series,dim_media_mimeid,dim_movie_mid,dim_cp_id,dim_movie_category,dim_product_pid,dim_product_ptype,dim_po_id,dim_epg_id,dim_section_id,dim_section_parentid,metric_playbgntime,metric_playalivetime,metric_playendtime,metric_durationtime,metric_avgspeed,metric_isad,metric_isrepeatmod,metric_status,metric_techtype,metric_partnerinfo,extinfo,vssip,perfip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+	private static final String UPDATE_INSERT_SQL_BGN = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,sessid,stamp,userip,datasorce,playurl,version,dim_date_hour,dim_isp_id,dim_user_uid,dim_user_hid,dim_oem_id,dim_area_id,dim_area_parentid,dim_nettype_id,dim_media_fid,dim_media_series,dim_media_mimeid,dim_movie_mid,dim_cp_id,dim_movie_category,dim_product_pid,dim_product_ptype,dim_po_id,dim_epg_id,dim_section_id,dim_section_parentid,metric_playbgntime,metric_playalivetime,metric_playendtime,metric_durationtime,metric_avgspeed,metric_isad,metric_isrepeatmod,metric_status,metric_techtype,metric_partnerinfo,extinfo,vssip,perfip,bitrate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 	private static final String UPDATE_INSERT_SQL_ALIVE = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
 	private static final String UPDATE_INSERT_SQL_END = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
 	private Connection connection;
@@ -89,7 +89,7 @@ public class SessionStateImpl implements SessionState {
 					idSb.append('-');
 					idSb.append(record.getUserip());
 					bgnPs.setString(1, String.valueOf(idSb.toString()));
-					
+
 					bgnPs.setString(2, String.valueOf(record.getSessid()));
 					if (record.getStamp() == null) {
 						bgnPs.setNull(3, Types.BIGINT);
@@ -237,6 +237,11 @@ public class SessionStateImpl implements SessionState {
 						bgnPs.setNull(40, Types.BIGINT);
 					} else {
 						bgnPs.setLong(40, record.getPerfip());
+					}
+					if (record.getBitrate() == null) {
+						bgnPs.setNull(41, Types.INTEGER);
+					} else {
+						bgnPs.setInt(41, record.getBitrate());
 					}
 
 					bgnPs.addBatch();
