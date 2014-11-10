@@ -123,7 +123,7 @@ public class PhoenixUtils {
 		}
 		String columnSql = Joiner.on(',').join(columnSqls);
 		String createSql = "CREATE TABLE " + tableName + " ( " + columnSql
-				+ ")";
+				+ ") SALT_BUCKETS=14 ";
 		return createSql;
 	}
 
