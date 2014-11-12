@@ -82,6 +82,12 @@
 	}, {
 		"name" : "perfip",
 		"type" : [ "long", "null" ]
+	}, {
+		"name" : "mid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "sid",
+		"type" : [ "long", "null" ]
 	}]
 }
 

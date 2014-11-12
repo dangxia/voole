@@ -12,6 +12,8 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
+import com.voole.hobbit2.camus.bsepg.BsEpgPlayInfo;
+
 /**
  * @author XuehuiHe
  * @date 2014年7月29日
@@ -32,11 +34,18 @@ public class HiveOrderInputMapper
 	@Override
 	protected void map(AvroKey<SpecificRecordBase> key, NullWritable value,
 			Context context) throws IOException, InterruptedException {
-		StringBuffer sb = new StringBuffer();
 		SpecificRecordBase recordBase = key.datum();
-		sb.append((String) recordBase.get("sessID"));
-		sb.append((Long) recordBase.get("natip"));
-		sessionId.set(sb.toString());
+		StringBuffer sb = new StringBuffer();
+		if (recordBase instanceof BsEpgPlayInfo) {
+			sb.append("bsepg-");
+			sb.append(((BsEpgPlayInfo) recordBase).getSessID());
+			sessionId.set(sb.toString());
+		} else {
+			sb.append((String) recordBase.get("sessID"));
+			sb.append("-");
+			sb.append((Long) recordBase.get("natip"));
+			sessionId.set(sb.toString());
+		}
 		record.datum(recordBase);
 		context.write(sessionId, record);
 	}

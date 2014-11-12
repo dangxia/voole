@@ -21,6 +21,9 @@ public class OrderStampFinder implements IStampFinder {
 
 	@Override
 	public <Value> Long findStamp(Value value) throws IllegalArgumentException {
+		if (value == null) {
+			return null;
+		}
 		Long stamp = null;
 		if (value instanceof OrderPlayBgnReqV2
 				|| value instanceof OrderPlayBgnReqV3) {

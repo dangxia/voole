@@ -35,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Function;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Iterators;
@@ -303,11 +304,13 @@ public class KafkaUtils {
 		List<TopicMetadata> topicMetadatas = getKafkaMetadata(zkClient);
 		List<BrokerAndTopicPartition> partitions = new ArrayList<BrokerAndTopicPartition>();
 		Set<String> queryTopics = new HashSet<String>(Arrays.asList(topics));
+		Set<String> exactTopics = new HashSet<String>();
 		for (TopicMetadata topicMetadata : topicMetadatas) {
 			String topic = topicMetadata.topic();
 			if (!queryTopics.contains(topic)) {
 				continue;
 			}
+			exactTopics.add(topic);
 			List<PartitionMetadata> partitionMetadatas = topicMetadata
 					.partitionsMetadata();
 			for (PartitionMetadata partitionMetadata : partitionMetadatas) {
@@ -328,6 +331,15 @@ public class KafkaUtils {
 						broker, topic, partitionMetadata.partitionId());
 				partitions.add(partition);
 			}
+		}
+		List<String> notFoundTopics = new ArrayList<String>();
+		for (String topic : queryTopics) {
+			if (!exactTopics.contains(topic)) {
+				notFoundTopics.add(topic);
+			}
+		}
+		if (notFoundTopics.size() > 0) {
+			log.warn("not found topics:" + Joiner.on(',').join(notFoundTopics));
 		}
 
 		return partitions;

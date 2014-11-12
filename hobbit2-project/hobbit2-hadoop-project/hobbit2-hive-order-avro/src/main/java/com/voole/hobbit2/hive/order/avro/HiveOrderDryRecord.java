@@ -7,7 +7,7 @@ package com.voole.hobbit2.hive.order.avro;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDryRecord\",\"namespace\":\"com.voole.hobbit2.hive.order.avro\",\"fields\":[{\"name\":\"sessID\",\"type\":\"string\"},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"playBgnTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playAliveTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playEndTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playDurationTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"isAdMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"isRepeatMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"epgid\",\"type\":[\"long\",\"null\"]},{\"name\":\"secid\",\"type\":[\"string\",\"null\"]},{\"name\":\"datasorce\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_status\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_techtype\",\"type\":[\"int\",\"null\"]},{\"name\":\"playurl\",\"type\":[\"string\",\"null\"]},{\"name\":\"apk_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_po_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_partnerinfo\",\"type\":[\"string\",\"null\"]},{\"name\":\"extinfo\",\"type\":[\"string\",\"null\"]},{\"name\":\"vssip\",\"type\":[\"long\",\"null\"]},{\"name\":\"perfip\",\"type\":[\"long\",\"null\"]}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"HiveOrderDryRecord\",\"namespace\":\"com.voole.hobbit2.hive.order.avro\",\"fields\":[{\"name\":\"sessID\",\"type\":\"string\"},{\"name\":\"UID\",\"type\":[\"string\",\"null\"]},{\"name\":\"HID\",\"type\":[\"string\",\"null\"]},{\"name\":\"OEMID\",\"type\":[\"long\",\"null\"]},{\"name\":\"natip\",\"type\":[\"long\",\"null\"]},{\"name\":\"FID\",\"type\":[\"string\",\"null\"]},{\"name\":\"playBgnTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playAliveTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playEndTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"playDurationTime\",\"type\":[\"long\",\"null\"]},{\"name\":\"avgspeed\",\"type\":[\"long\",\"null\"]},{\"name\":\"isAdMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"isRepeatMod\",\"type\":\"boolean\",\"default\":false},{\"name\":\"pid\",\"type\":[\"string\",\"null\"]},{\"name\":\"epgid\",\"type\":[\"long\",\"null\"]},{\"name\":\"secid\",\"type\":[\"string\",\"null\"]},{\"name\":\"datasorce\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_status\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_techtype\",\"type\":[\"int\",\"null\"]},{\"name\":\"playurl\",\"type\":[\"string\",\"null\"]},{\"name\":\"apk_version\",\"type\":[\"string\",\"null\"]},{\"name\":\"dim_po_id\",\"type\":[\"int\",\"null\"]},{\"name\":\"metric_partnerinfo\",\"type\":[\"string\",\"null\"]},{\"name\":\"extinfo\",\"type\":[\"string\",\"null\"]},{\"name\":\"vssip\",\"type\":[\"long\",\"null\"]},{\"name\":\"perfip\",\"type\":[\"long\",\"null\"]},{\"name\":\"mid\",\"type\":[\"long\",\"null\"]},{\"name\":\"sid\",\"type\":[\"long\",\"null\"]}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
   @Deprecated public java.lang.CharSequence sessID;
   @Deprecated public java.lang.CharSequence UID;
@@ -35,6 +35,8 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
   @Deprecated public java.lang.CharSequence extinfo;
   @Deprecated public java.lang.Long vssip;
   @Deprecated public java.lang.Long perfip;
+  @Deprecated public java.lang.Long mid;
+  @Deprecated public java.lang.Long sid;
 
   /**
    * Default constructor.  Note that this does not initialize fields
@@ -46,7 +48,7 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
   /**
    * All-args constructor.
    */
-  public HiveOrderDryRecord(java.lang.CharSequence sessID, java.lang.CharSequence UID, java.lang.CharSequence HID, java.lang.Long OEMID, java.lang.Long natip, java.lang.CharSequence FID, java.lang.Long playBgnTime, java.lang.Long playAliveTime, java.lang.Long playEndTime, java.lang.Long playDurationTime, java.lang.Long avgspeed, java.lang.Boolean isAdMod, java.lang.Boolean isRepeatMod, java.lang.CharSequence pid, java.lang.Long epgid, java.lang.CharSequence secid, java.lang.Integer datasorce, java.lang.Integer metric_status, java.lang.Integer metric_techtype, java.lang.CharSequence playurl, java.lang.CharSequence apk_version, java.lang.Integer dim_po_id, java.lang.CharSequence metric_partnerinfo, java.lang.CharSequence extinfo, java.lang.Long vssip, java.lang.Long perfip) {
+  public HiveOrderDryRecord(java.lang.CharSequence sessID, java.lang.CharSequence UID, java.lang.CharSequence HID, java.lang.Long OEMID, java.lang.Long natip, java.lang.CharSequence FID, java.lang.Long playBgnTime, java.lang.Long playAliveTime, java.lang.Long playEndTime, java.lang.Long playDurationTime, java.lang.Long avgspeed, java.lang.Boolean isAdMod, java.lang.Boolean isRepeatMod, java.lang.CharSequence pid, java.lang.Long epgid, java.lang.CharSequence secid, java.lang.Integer datasorce, java.lang.Integer metric_status, java.lang.Integer metric_techtype, java.lang.CharSequence playurl, java.lang.CharSequence apk_version, java.lang.Integer dim_po_id, java.lang.CharSequence metric_partnerinfo, java.lang.CharSequence extinfo, java.lang.Long vssip, java.lang.Long perfip, java.lang.Long mid, java.lang.Long sid) {
     this.sessID = sessID;
     this.UID = UID;
     this.HID = HID;
@@ -73,6 +75,8 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     this.extinfo = extinfo;
     this.vssip = vssip;
     this.perfip = perfip;
+    this.mid = mid;
+    this.sid = sid;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -105,6 +109,8 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     case 23: return extinfo;
     case 24: return vssip;
     case 25: return perfip;
+    case 26: return mid;
+    case 27: return sid;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -138,6 +144,8 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     case 23: extinfo = (java.lang.CharSequence)value$; break;
     case 24: vssip = (java.lang.Long)value$; break;
     case 25: perfip = (java.lang.Long)value$; break;
+    case 26: mid = (java.lang.Long)value$; break;
+    case 27: sid = (java.lang.Long)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -532,6 +540,36 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     this.perfip = value;
   }
 
+  /**
+   * Gets the value of the 'mid' field.
+   */
+  public java.lang.Long getMid() {
+    return mid;
+  }
+
+  /**
+   * Sets the value of the 'mid' field.
+   * @param value the value to set.
+   */
+  public void setMid(java.lang.Long value) {
+    this.mid = value;
+  }
+
+  /**
+   * Gets the value of the 'sid' field.
+   */
+  public java.lang.Long getSid() {
+    return sid;
+  }
+
+  /**
+   * Sets the value of the 'sid' field.
+   * @param value the value to set.
+   */
+  public void setSid(java.lang.Long value) {
+    this.sid = value;
+  }
+
   /** Creates a new HiveOrderDryRecord RecordBuilder */
   public static com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder newBuilder() {
     return new com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder();
@@ -579,6 +617,8 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
     private java.lang.CharSequence extinfo;
     private java.lang.Long vssip;
     private java.lang.Long perfip;
+    private java.lang.Long mid;
+    private java.lang.Long sid;
 
     /** Creates a new Builder */
     private Builder() {
@@ -692,6 +732,14 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
         this.perfip = data().deepCopy(fields()[25].schema(), other.perfip);
         fieldSetFlags()[25] = true;
       }
+      if (isValidValue(fields()[26], other.mid)) {
+        this.mid = data().deepCopy(fields()[26].schema(), other.mid);
+        fieldSetFlags()[26] = true;
+      }
+      if (isValidValue(fields()[27], other.sid)) {
+        this.sid = data().deepCopy(fields()[27].schema(), other.sid);
+        fieldSetFlags()[27] = true;
+      }
     }
     
     /** Creates a Builder by copying an existing HiveOrderDryRecord instance */
@@ -800,6 +848,14 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
       if (isValidValue(fields()[25], other.perfip)) {
         this.perfip = data().deepCopy(fields()[25].schema(), other.perfip);
         fieldSetFlags()[25] = true;
+      }
+      if (isValidValue(fields()[26], other.mid)) {
+        this.mid = data().deepCopy(fields()[26].schema(), other.mid);
+        fieldSetFlags()[26] = true;
+      }
+      if (isValidValue(fields()[27], other.sid)) {
+        this.sid = data().deepCopy(fields()[27].schema(), other.sid);
+        fieldSetFlags()[27] = true;
       }
     }
 
@@ -1451,6 +1507,56 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
       return this;
     }
 
+    /** Gets the value of the 'mid' field */
+    public java.lang.Long getMid() {
+      return mid;
+    }
+    
+    /** Sets the value of the 'mid' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setMid(java.lang.Long value) {
+      validate(fields()[26], value);
+      this.mid = value;
+      fieldSetFlags()[26] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'mid' field has been set */
+    public boolean hasMid() {
+      return fieldSetFlags()[26];
+    }
+    
+    /** Clears the value of the 'mid' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearMid() {
+      mid = null;
+      fieldSetFlags()[26] = false;
+      return this;
+    }
+
+    /** Gets the value of the 'sid' field */
+    public java.lang.Long getSid() {
+      return sid;
+    }
+    
+    /** Sets the value of the 'sid' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder setSid(java.lang.Long value) {
+      validate(fields()[27], value);
+      this.sid = value;
+      fieldSetFlags()[27] = true;
+      return this; 
+    }
+    
+    /** Checks whether the 'sid' field has been set */
+    public boolean hasSid() {
+      return fieldSetFlags()[27];
+    }
+    
+    /** Clears the value of the 'sid' field */
+    public com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord.Builder clearSid() {
+      sid = null;
+      fieldSetFlags()[27] = false;
+      return this;
+    }
+
     @Override
     public HiveOrderDryRecord build() {
       try {
@@ -1481,6 +1587,8 @@ public class HiveOrderDryRecord extends org.apache.avro.specific.SpecificRecordB
         record.extinfo = fieldSetFlags()[23] ? this.extinfo : (java.lang.CharSequence) defaultValue(fields()[23]);
         record.vssip = fieldSetFlags()[24] ? this.vssip : (java.lang.Long) defaultValue(fields()[24]);
         record.perfip = fieldSetFlags()[25] ? this.perfip : (java.lang.Long) defaultValue(fields()[25]);
+        record.mid = fieldSetFlags()[26] ? this.mid : (java.lang.Long) defaultValue(fields()[26]);
+        record.sid = fieldSetFlags()[27] ? this.sid : (java.lang.Long) defaultValue(fields()[27]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

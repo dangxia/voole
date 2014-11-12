@@ -1,12 +1,15 @@
 package com.voole.hobbit2.hive.order;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.avro.Schema;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
 
+import com.voole.hobbit2.camus.BsEpgOrderTopicUtils;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 
 public class HiveOrderMetaConfigs {
@@ -40,9 +43,12 @@ public class HiveOrderMetaConfigs {
 
 	public static Schema getOrderUnionSchema(JobContext job) {
 		String[] topics = HiveOrderMetaConfigs.getWhiteTopics(job);
+		Map<String, Schema> topicToSchema = new HashMap<String, Schema>();
+		topicToSchema.putAll(OrderTopicsUtils.topicBiSchema);
+		topicToSchema.putAll(BsEpgOrderTopicUtils.topicBiSchema);
 		List<Schema> schemas = new ArrayList<Schema>();
 		for (String topic : topics) {
-			schemas.add(OrderTopicsUtils.topicBiSchema.get(topic));
+			schemas.add(topicToSchema.get(topic));
 		}
 		return Schema.createUnion(schemas);
 	}

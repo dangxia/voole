@@ -1,0 +1,33 @@
+{
+	"type" : "record",
+	"name" : "BsEpgPlayInfo",
+	"namespace" : "com.voole.hobbit2.camus.bsepg",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playbgntime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playalivetime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playendtime",
+		"type" : [ "long", "null" ]
+	},{
+		"name" : "hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "userip",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "oemid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "playurl",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "perfip",
+		"type" : [ "string", "null" ]
+	}]
+}
