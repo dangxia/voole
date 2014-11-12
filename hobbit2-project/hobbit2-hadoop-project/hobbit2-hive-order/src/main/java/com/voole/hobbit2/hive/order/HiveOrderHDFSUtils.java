@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.voole.dungbeetle.api.model.HiveTable;
+import com.voole.hobbit2.camus.BsEpgOrderTopicUtils;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 
 public class HiveOrderHDFSUtils {
@@ -87,7 +88,8 @@ public class HiveOrderHDFSUtils {
 		Preconditions.checkArgument(topics != null && topics.length > 0,
 				"hive order topics is empty");
 		for (String topic : topics) {
-			if (!OrderTopicsUtils.containsTopic(topic)) {
+			if (!OrderTopicsUtils.containsTopic(topic)
+					&& !BsEpgOrderTopicUtils.containsTopic(topic)) {
 				throw new UnsupportedOperationException("topic:" + topic
 						+ " is not order topic!");
 			}
@@ -95,8 +97,9 @@ public class HiveOrderHDFSUtils {
 			if (!fs.exists(topicPath)) {
 				fs.mkdirs(topicPath);
 			}
-//			Preconditions.checkArgument(fs.exists(topicPath), "topic:" + topic
-//					+ " destPath does not exist");
+			// Preconditions.checkArgument(fs.exists(topicPath), "topic:" +
+			// topic
+			// + " destPath does not exist");
 			FileInputFormat.addInputPath(job, topicPath);
 		}
 	}
