@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.voole.dungbeetle.api.model.HiveTable;
+import com.voole.hobbit2.camus.BsEpgOrderTopicUtils;
 import com.voole.hobbit2.camus.OrderTopicsUtils;
 import com.voole.hobbit2.hive.order.HiveOrderHDFSUtils;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
@@ -129,14 +130,27 @@ public class HiveOrderMultiOutputFormat extends
 			}
 		}
 
+		private String getTopic(Class<? extends SpecificRecordBase> clazz) {
+			if (OrderTopicsUtils.topicBiClazz.inverse().containsKey(clazz)) {
+				return OrderTopicsUtils.topicBiClazz.inverse().get(clazz);
+			}
+			return BsEpgOrderTopicUtils.topicBiClazz.inverse().get(clazz);
+		}
+
+		private Schema getSchema(String topic) {
+			if (OrderTopicsUtils.topicBiSchema.containsKey(topic)) {
+				return OrderTopicsUtils.topicBiSchema.get(topic);
+			}
+			return BsEpgOrderTopicUtils.topicBiSchema.get(topic);
+		}
+
 		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createNoendDataRecordWriter(
 				TaskAttemptContext context, SpecificRecordBase data)
 				throws IOException, InterruptedException {
-			String topic = OrderTopicsUtils.topicBiClazz.inverse().get(
-					data.getClass());
+			String topic = getTopic(data.getClass());
 			FileSystem fs = FileSystem.get(context.getConfiguration());
 			Path workPath = getOutputCommitter(context).getWorkPath();
-			Schema schema = OrderTopicsUtils.topicBiSchema.get(topic);
+			Schema schema = getSchema(topic);
 			String fileName = HiveOrderMetaConfigs.NOEND_PREFIX + topic;
 			fileName = getUniqueFile(context, fileName, ".avro");
 			Path path = new Path(workPath, fileName);

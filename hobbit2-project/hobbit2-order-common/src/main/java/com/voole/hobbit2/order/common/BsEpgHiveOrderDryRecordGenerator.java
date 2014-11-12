@@ -12,6 +12,7 @@ public class BsEpgHiveOrderDryRecordGenerator {
 			BsEpgOrderSessionInfo orderSessionInfo) {
 		HiveOrderDryRecord record = new HiveOrderDryRecord();
 		BsEpgPlayInfo playInfo = orderSessionInfo.getPlayInfo();
+		record.setPlayBgnTime(orderSessionInfo.getPlayBgnTime());
 		fill(record, playInfo);
 		return record;
 	}
@@ -35,7 +36,6 @@ public class BsEpgHiveOrderDryRecordGenerator {
 		record.setPlayurl(url);
 		record.setPerfip(getIp(playInfo.getPerfip()));
 
-		record.setPlayBgnTime(playInfo.getPlaybgntime());
 		record.setPlayEndTime(playInfo.getPlayendtime());
 		record.setPlayAliveTime(playInfo.getPlayalivetime());
 

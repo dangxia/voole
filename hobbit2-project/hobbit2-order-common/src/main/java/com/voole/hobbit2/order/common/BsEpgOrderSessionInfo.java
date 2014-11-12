@@ -32,6 +32,13 @@ public class BsEpgOrderSessionInfo {
 		}
 	}
 
+	public Long getPlayBgnTime() {
+		if (_bgn != null) {
+			return _bgn.getPlaybgntime();
+		}
+		return null;
+	}
+
 	public BsEpgPlayInfo getPlayInfo() {
 		if (_end != null) {
 			return _end;
