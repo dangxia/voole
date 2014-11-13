@@ -20,7 +20,7 @@
 		<slf4j.version>1.7.2</slf4j.version>
 		<log4j.version>1.2.16</log4j.version>
 		<junit.version>4.8.1</junit.version>
-		<phoenix.version>4.1.0</phoenix.version>
+		<phoenix.version>4.2.0</phoenix.version>
 
 		<hbase.version>0.98.5-hadoop2</hbase.version>
 	</properties>
@@ -53,6 +53,12 @@
 						<artifactId>zookeeper</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.hbase</groupId>
+				<artifactId>hbase-server</artifactId>
+				<version>${hbase.version}</version>
+				<type>test-jar</type>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.hbase</groupId>
@@ -295,53 +301,24 @@
 						<groupId>org.apache.phoenix</groupId>
 						<artifactId>phoenix-hadoop1-compat</artifactId>
 					</exclusion>
-				</exclusions>
-			</dependency>
-
-			<dependency>
-				<groupId>org.apache.phoenix</groupId>
-				<artifactId>phoenix-hadoop2-compat</artifactId>
-				<version>${phoenix.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.apache.hbase</groupId>
-						<artifactId>hbase-common</artifactId>
-					</exclusion>
-
-					<exclusion>
-						<groupId>org.apache.hbase</groupId>
-						<artifactId>hbase-common</artifactId>
-					</exclusion>
 					<exclusion>
 						<groupId>org.apache.hadoop</groupId>
 						<artifactId>hadoop-mapreduce-client-core</artifactId>
 					</exclusion>
-					<exclusion>
-						<groupId>org.apache.hadoop</groupId>
-						<artifactId>hadoop-annotations</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.hadoop</groupId>
-						<artifactId>hadoop-common</artifactId>
-					</exclusion>
 				</exclusions>
 			</dependency>
-
-			<dependency>
-				<groupId>org.apache.phoenix</groupId>
-				<artifactId>phoenix-hadoop-compat</artifactId>
-				<version>${phoenix.version}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>org.apache.hbase</groupId>
-						<artifactId>hbase-hadoop-compat</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>org.apache.hbase</groupId>
-						<artifactId>hbase-common</artifactId>
-					</exclusion>
-				</exclusions>
-			</dependency>
+			<!-- <dependency> <groupId>org.apache.phoenix</groupId> <artifactId>phoenix-hadoop2-compat</artifactId> 
+				<version>${phoenix.version}</version> <exclusions> <exclusion> <groupId>org.apache.hbase</groupId> 
+				<artifactId>hbase-common</artifactId> </exclusion> <exclusion> <groupId>org.apache.hbase</groupId> 
+				<artifactId>hbase-common</artifactId> </exclusion> <exclusion> <groupId>org.apache.hadoop</groupId> 
+				<artifactId>hadoop-mapreduce-client-core</artifactId> </exclusion> <exclusion> 
+				<groupId>org.apache.hadoop</groupId> <artifactId>hadoop-annotations</artifactId> 
+				</exclusion> <exclusion> <groupId>org.apache.hadoop</groupId> <artifactId>hadoop-common</artifactId> 
+				</exclusion> </exclusions> </dependency> <dependency> <groupId>org.apache.phoenix</groupId> 
+				<artifactId>phoenix-hadoop-compat</artifactId> <version>${phoenix.version}</version> 
+				<exclusions> <exclusion> <groupId>org.apache.hbase</groupId> <artifactId>hbase-hadoop-compat</artifactId> 
+				</exclusion> <exclusion> <groupId>org.apache.hbase</groupId> <artifactId>hbase-common</artifactId> 
+				</exclusion> </exclusions> </dependency> -->
 			<!-- /phoenix -->
 		</dependencies>
 	</dependencyManagement>

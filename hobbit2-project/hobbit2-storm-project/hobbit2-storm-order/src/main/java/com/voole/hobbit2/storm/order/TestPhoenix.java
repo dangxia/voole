@@ -7,11 +7,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 public class TestPhoenix {
+	private static Logger log = LoggerFactory.getLogger(TestPhoenix.class);
 	public static void main(String[] args) throws SQLException {
+		
+		log.info("sjdlfjlsjdlfjsjdlfjlsjldj");
+		
 		Connection con = DriverManager
 				.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
 
