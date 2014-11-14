@@ -36,6 +36,7 @@ import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
 import com.voole.hobbit2.storm.order.util.KafkaRecordDehydration;
 import com.voole.hobbit2.storm.order.util.TopicMetaManagerUtil;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
+import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
  * @author XuehuiHe
@@ -122,6 +123,8 @@ public class OpaqueTridentKafkaSpout
 				TridentCollector collector, KafkaSpoutPartition spoutPartition,
 				JSONObject lastPartitionMeta) {
 			try {
+				TopicPartition topicPartition = spoutPartition
+						.getBrokerAndTopicPartition().getPartition();
 				// 新的topology
 				if (lastPartitionMeta == null
 						|| !_topologyName.equals(PartitionMetaUtil
@@ -130,7 +133,7 @@ public class OpaqueTridentKafkaSpout
 					PartitionMetaUtil.setTopologyName(lastPartitionMeta,
 							_topologyName);
 					// first emit
-					log.info("first emit for spout partition:" + spoutPartition);
+					log.info("first emit for spout partition:" + topicPartition);
 					Optional<Long> foundOffset = StormOrderHDFSUtils
 							.findOffset(
 									spoutPartition.getBrokerAndTopicPartition(),
@@ -140,14 +143,16 @@ public class OpaqueTridentKafkaSpout
 						PartitionMetaUtil.setPartitionOffset(lastPartitionMeta,
 								foundOffset.get());
 						log.info("offset set to:" + foundOffset.get()
-								+ " for spout partition:" + spoutPartition);
+								+ " for spout partition:" + topicPartition);
 					} else {
 						throw new RuntimeException("spout partition:"
-								+ spoutPartition + " is empty!!");
+								+ topicPartition + " is empty!!");
 					}
 				}
 				long offset = PartitionMetaUtil
 						.getPartitionOffset(lastPartitionMeta);
+
+				log.info(topicPartition + " start fetch from offset:" + offset);
 
 				SimpleConsumer consumer = connections.register(spoutPartition
 						.getBrokerAndTopicPartition());
@@ -165,12 +170,12 @@ public class OpaqueTridentKafkaSpout
 					count++;
 				}
 				if (count == 0l) {
-					log.info(spoutPartition + ", emit count:" + count
+					log.info(topicPartition + ", emit count:" + count
 							+ ", offset:" + offset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							offset);
 				} else {
-					log.info(spoutPartition + ", emit count:" + count
+					log.info(topicPartition + ", emit count:" + count
 							+ ", offset:" + lastOffset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							lastOffset);
@@ -215,8 +220,8 @@ public class OpaqueTridentKafkaSpout
 		@Override
 		public void refreshPartitions(
 				List<KafkaSpoutPartition> partitionResponsibilities) {
-//			log.info("-------------refreshPartitions------------");
-//			connections.clear();
+			// log.info("-------------refreshPartitions------------");
+			// connections.clear();
 		}
 
 		@Override
