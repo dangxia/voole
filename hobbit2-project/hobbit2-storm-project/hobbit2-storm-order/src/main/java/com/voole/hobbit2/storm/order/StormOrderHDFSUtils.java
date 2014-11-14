@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.FileReader;
@@ -28,10 +29,12 @@ import org.apache.hadoop.io.SequenceFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import backtype.storm.Config;
+
 import com.google.common.base.Optional;
-import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
-import com.voole.hobbit2.tools.kafka.KafkaUtils;
+import com.voole.hobbit2.tools.kafka.partition.Broker;
 import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
+import com.voole.hobbit2.tools.kafka.partition.PartitionState;
 import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
@@ -40,15 +43,14 @@ import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
  */
 public class StormOrderHDFSUtils {
 	private static final Logger log = LoggerFactory
-			.getLogger(StormOrderSpoutPartitionFetcher.class);
+			.getLogger(StormOrderHDFSUtils.class);
 	public static final Configuration conf = new Configuration();
+
+	public static volatile Map<TopicPartition, Long> topicPartitionToLastOffset;
+
 	static {
 		conf.addResource("core-site2.xml");
 		conf.setBoolean("order.detail.transformer.is.auto.refresh.cache", true);
-	}
-
-	public static void main(String[] args) throws IOException {
-		FileSystem.get(conf);
 	}
 
 	public static FileReader<SpecificRecordBase> getNoendReader(Path path)
@@ -60,62 +62,102 @@ public class StormOrderHDFSUtils {
 		return fileReader;
 	}
 
-	private static Map<TopicPartition, Long> readPrevPartionsStates()
-			throws IOException {
-		return readPrevPartionsStates(
-				getPreviousExecPath(StormOrderMetaConfigs
-						.getHiveOrderExecHistoryPath()),
-				StormOrderMetaConfigs.CAMUS_REQUESTS_FILE);
-	}
-
 	public static Optional<Long> findOffset(
-			BrokerAndTopicPartition brokerAndTopicPartition) throws IOException {
-		Optional<Long> hiveOffset = getHiveOrderOffset(brokerAndTopicPartition
-				.getPartition());
-		Optional<Long> kakfaEarliestOffset = KafkaUtils
-				.findEarliestOffset(brokerAndTopicPartition);
-		if (!kakfaEarliestOffset.isPresent()) {
-			return Optional.absent();
+			BrokerAndTopicPartition brokerAndTopicPartition,
+			@SuppressWarnings("rawtypes") Map stormConf) throws IOException {
+		if (topicPartitionToLastOffset == null) {
+			initTopicPartitionToLastOffset(stormConf);
 		}
-		long kakfaOffset = kakfaEarliestOffset.get() - 1;
-		if (!hiveOffset.isPresent()) {
-			return Optional.of(kakfaOffset);
-		}
-		if (kakfaOffset > hiveOffset.get()) {
-			log.warn(brokerAndTopicPartition + " kafka offset:" + kakfaOffset
-					+ ",hive order offset:" + hiveOffset.get() + ",reset");
-			return Optional.of(kakfaOffset);
-		}
-		return hiveOffset;
-	}
-
-	public static Optional<Long> getHiveOrderOffset(TopicPartition partition)
-			throws IOException {
-		Map<TopicPartition, Long> partitionsMap = readPrevPartionsStates();
-		if (partitionsMap.containsKey(partition)) {
-			return Optional.of(partitionsMap.get(partition));
+		TopicPartition topicPartition = brokerAndTopicPartition.getPartition();
+		if (topicPartitionToLastOffset.containsKey(topicPartition)) {
+			return Optional.of(topicPartitionToLastOffset.get(topicPartition));
 		}
 		return Optional.absent();
 	}
 
-	private static Map<TopicPartition, Long> readPrevPartionsStates(
-			Optional<Path> previousPath, String name) throws IOException {
+	public static synchronized void initTopicPartitionToLastOffset(
+			@SuppressWarnings("rawtypes") Map stormConf) throws IOException {
+		if (topicPartitionToLastOffset != null) {
+			return;
+		}
+		log.info("initTopicPartitionToLastOffset started");
 		Map<TopicPartition, Long> result = new HashMap<TopicPartition, Long>();
-		if (!previousPath.isPresent()) {
+		Map<TopicPartition, PartitionState> kafkaPartitionState = readKafkaPartitionState();
+		Map<TopicPartition, Long> hivePrevPartionsStates = readHivePrevPartionsStates(stormConf);
+
+		for (Entry<TopicPartition, PartitionState> entry : kafkaPartitionState
+				.entrySet()) {
+			TopicPartition topicPartition = entry.getKey();
+			long kafkaEarliestOffset = entry.getValue().getEarliestOffset() - 1;
+			long kafkaLatestOffset = entry.getValue().getLatestOffset() - 1;
+			long hiveLatestOffset = -1;
+			if (hivePrevPartionsStates.containsKey(topicPartition)) {
+				hiveLatestOffset = hivePrevPartionsStates.get(topicPartition);
+			}
+			if (hiveLatestOffset < kafkaEarliestOffset) {
+				log.warn(topicPartition
+						+ " ,hiveLatestOffset < kafkaEarliestOffset ,hiveLatestOffset:"
+						+ hiveLatestOffset + ",kafkaEarliestOffset:"
+						+ kafkaEarliestOffset
+						+ "set last offset to kafkaEarliestOffset");
+				result.put(topicPartition, kafkaEarliestOffset);
+			} else if (hiveLatestOffset > kafkaLatestOffset) {
+				log.warn(topicPartition
+						+ " ,hiveLatestOffset > kafkaLatestOffset ,hiveLatestOffset:"
+						+ hiveLatestOffset + ",kafkaLatestOffset:"
+						+ kafkaLatestOffset
+						+ "set last offset to kafkaEarliestOffset:"
+						+ kafkaEarliestOffset);
+				result.put(topicPartition, kafkaLatestOffset);
+			} else {
+				log.info(topicPartition
+						+ " ,set lastestoffset to hiveLatestOffset:"
+						+ hiveLatestOffset);
+				result.put(topicPartition, hiveLatestOffset);
+			}
+		}
+		topicPartitionToLastOffset = result;
+		log.info("initTopicPartitionToLastOffset ended");
+
+	}
+
+	public static Map<TopicPartition, PartitionState> readKafkaPartitionState() {
+		Map<TopicPartition, PartitionState> result = new HashMap<TopicPartition, PartitionState>();
+		Map<Broker, List<PartitionState>> data = StormOrderMetaConfigs
+				.fetchPartitionState();
+		for (Entry<Broker, List<PartitionState>> entry : data.entrySet()) {
+			for (PartitionState state : entry.getValue()) {
+				result.put(state.getBrokerAndTopicPartition().getPartition(),
+						state);
+			}
+		}
+		return result;
+	}
+
+	public static Map<TopicPartition, Long> readHivePrevPartionsStates(
+			@SuppressWarnings("rawtypes") Map stormConf) throws IOException {
+		Optional<Path> lastExecPath = StormOrderMetaConfigs
+				.getHiveOrderLastExecPath(stormConf);
+		String fileName = StormOrderMetaConfigs.CAMUS_REQUESTS_FILE;
+		Map<TopicPartition, Long> result = new HashMap<TopicPartition, Long>();
+		if (!lastExecPath.isPresent()) {
+			log.info("hive order last exec path is empty ,empty HivePrevPartionsStates");
 			return result;
 		}
-		Path path = new Path(previousPath.get(), name);
+		Path path = new Path(lastExecPath.get(), fileName);
 		if (!FileSystem.get(conf).exists(path)) {
-			log.warn("file:" + name + "don't exists");
+			log.warn("hive order PrevPartionsStates file:" + fileName
+					+ "not found,empty HivePrevPartionsStates");
 			return result;
 		}
-		log.info("readPrevPartionsStates file:" + path.toUri().getPath());
+		log.info("read hive order PrevPartionsStates file:"
+				+ path.toUri().getPath());
 		SequenceFile.Reader reader = new SequenceFile.Reader(conf,
 				SequenceFile.Reader.file(path));
 		TopicPartition key = new TopicPartition();
 		LongWritable offset = new LongWritable();
 		while (reader.next(key, offset)) {
-			long oldOffset = 0;
+			long oldOffset = -1;
 			if (result.containsKey(key)) {
 				oldOffset = result.get(key);
 			}
@@ -125,55 +167,74 @@ public class StormOrderHDFSUtils {
 			key = new TopicPartition();
 		}
 		reader.close();
-		return result;
 
+		return result;
 	}
 
-	private static Optional<Path> getPreviousExecPath(Path execHistoryPath)
+	public static Optional<Path> findHiveOrderLastExecPath()
 			throws FileNotFoundException, IOException {
 		FileSystem fs = FileSystem.get(conf);
-		FileStatus[] executions = fs.listStatus(execHistoryPath);
+		FileStatus[] executions = fs.listStatus(StormOrderMetaConfigs
+				.getHiveOrderExecHistoryPath());
 		if (executions.length > 0) {
 			Path previous = executions[executions.length - 1].getPath();
-			log.info("Previous execution: " + previous.toString());
+			log.info("hive order last exec path " + previous.toUri().getPath());
 			return Optional.of(previous);
 		} else {
-			log.info("No previous execution, all topics pulled from earliest available offset");
+			log.info("No hive order last exec path");
 			return Optional.absent();
 		}
 	}
 
-	protected static List<Path> getNoendFilePaths(String topic, int partition,
-			int partitions) throws IOException {
-		List<Path> paths = getNoendFilePaths(topic);
-		List<Path> result = new ArrayList<Path>();
-
-		int size = paths.size();
-		int index = partition;
-		while (index < size) {
-			result.add(paths.get(index));
-			index += partitions;
+	public static Map<String, List<Path>> getWhiteTopicToNoendPaths(
+			@SuppressWarnings("rawtypes") Map stormConf) throws IOException {
+		List<Path> noendPaths = getNoendFilePaths(stormConf);
+		List<String> whiteTopics = StormOrderMetaConfigs.getWhiteTopics();
+		Map<String, List<Path>> whiteTopicToNoendPaths = new HashMap<String, List<Path>>();
+		for (Path noendPath : noendPaths) {
+			String pathName = noendPath.getName();
+			boolean useless = true;
+			for (String topic : whiteTopics) {
+				if (pathName.indexOf(topic) != -1) {
+					useless = false;
+					List<Path> paths = null;
+					if (whiteTopicToNoendPaths.containsKey(topic)) {
+						paths = whiteTopicToNoendPaths.get(topic);
+					} else {
+						paths = new ArrayList<Path>();
+						whiteTopicToNoendPaths.put(topic, paths);
+					}
+					paths.add(noendPath);
+					log.info("found topic:" + topic + " noend file:"
+							+ noendPath.toUri().getPath());
+					break;
+				}
+			}
+			if (useless) {
+				log.info("found useless noend file:"
+						+ noendPath.toUri().getPath());
+			}
 		}
-		return result;
+		return whiteTopicToNoendPaths;
+
 	}
 
-	@SuppressWarnings("unchecked")
-	public static List<Path> getNoendFilePaths(final String topic)
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static List<Path> getNoendFilePaths(Map stormConf)
 			throws IOException {
-		Optional<Path> prevExecPath = getPreviousExecPath(StormOrderMetaConfigs
-				.getHiveOrderExecHistoryPath());
-		if (!prevExecPath.isPresent()) {
+		Optional<Path> lastExecPath = StormOrderMetaConfigs
+				.getHiveOrderLastExecPath(stormConf);
+		if (!lastExecPath.isPresent()) {
 			return Collections.EMPTY_LIST;
 		}
 		FileSystem fs = FileSystem.get(conf);
-		FileStatus[] fileStatus = fs.listStatus(prevExecPath.get(),
+		FileStatus[] fileStatus = fs.listStatus(lastExecPath.get(),
 				new PathFilter() {
 
 					@Override
 					public boolean accept(Path path) {
 						return path.getName().startsWith(
-								StormOrderMetaConfigs.HIVE_ORDER_NOEND_PREFIX)
-								&& (path.getName().indexOf(topic) != -1);
+								StormOrderMetaConfigs.HIVE_ORDER_NOEND_PREFIX);
 					}
 				});
 		List<Path> paths = new ArrayList<Path>();
@@ -182,6 +243,19 @@ public class StormOrderHDFSUtils {
 		}
 
 		return paths;
+	}
+
+	public static void main(String[] args) throws FileNotFoundException,
+			IOException {
+		Optional<Path> hiveOrderLastExecPath = findHiveOrderLastExecPath();
+		Config stormConf = new Config();
+		if (hiveOrderLastExecPath.isPresent()) {
+//			StormOrderMetaConfigs.setHiveOrderLastExecPath(stormConf,
+//					hiveOrderLastExecPath.get().toUri().getPath());
+		}
+		getWhiteTopicToNoendPaths(stormConf);
+		initTopicPartitionToLastOffset(stormConf);
+
 	}
 
 }

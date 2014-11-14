@@ -9,9 +9,9 @@ import com.google.common.collect.ImmutableBiMap;
 import com.voole.hobbit2.camus.bsepg.BsEpgPlayInfo;
 
 public class BsEpgOrderTopicUtils {
-	public static final BiMap<String, Schema> topicBiSchema;
-	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
-	public static final String TOPIC_EPG_BS_PLAYINFO = "epg_bs_playinfo";
+	protected static final BiMap<String, Schema> topicBiSchema;
+	protected static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
+	protected static final String TOPIC_EPG_BS_PLAYINFO = "epg_bs_playinfo";
 
 	static {
 		BiMap<String, Schema> topicToSchema = HashBiMap.create(6);

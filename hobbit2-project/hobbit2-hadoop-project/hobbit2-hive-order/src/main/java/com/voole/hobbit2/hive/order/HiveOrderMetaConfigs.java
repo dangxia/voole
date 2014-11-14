@@ -4,15 +4,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.avro.Schema;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapreduce.JobContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.voole.hobbit2.camus.BsEpgOrderTopicUtils;
-import com.voole.hobbit2.camus.OrderTopicsUtils;
+import com.google.common.base.Throwables;
+import com.voole.hobbit2.camus.api.TopicMeta;
+import com.voole.hobbit2.camus.api.TopicMetaManager;
+import com.voole.hobbit2.camus.api.TopicMetaRegister;
+import com.voole.hobbit2.camus.api.transform.TransformException;
 
 public class HiveOrderMetaConfigs {
+	private static final Logger log = LoggerFactory
+			.getLogger(HiveOrderMetaConfigs.class);
+
 	public static final String CAMUS_REQUESTS_FILE = "previous.partition.states";
 	public static final String CAMUS_OFFSET_PREFIX = "offsets";
 
@@ -41,16 +50,71 @@ public class HiveOrderMetaConfigs {
 	public static final String AD_NIELSEN_IS_SEND = "ad.nielsen.is.send";
 	public static final String AD_TRANSFORMER_IS_TO_RUN = "ad.transformer.is.to.run";
 
+	public static final String TOPIC_MEATA_REGISTERS = "hive.order.topic.meta.registers";
+
+	private volatile static TopicMetaManager topicManager;
+
+	public static TopicMetaManager getTopicMetaManager(JobContext job) {
+		if (topicManager == null) {
+			try {
+				createTopicMetaManager(job);
+			} catch (Exception e) {
+				log.error(HiveOrderMetaConfigs.class
+						+ " getTopicMetaManager error", e);
+				Throwables.propagate(e);
+			}
+		}
+		return topicManager;
+	}
+
+	private synchronized static void createTopicMetaManager(JobContext job)
+			throws TransformException {
+		if (topicManager != null) {
+			return;
+		}
+		TopicMetaManager _topicManager = new TopicMetaManager();
+		List<TopicMetaRegister> registers = job.getConfiguration()
+				.getInstances(TOPIC_MEATA_REGISTERS, TopicMetaRegister.class);
+		_topicManager.register(registers.toArray(new TopicMetaRegister[] {}));
+		topicManager = _topicManager;
+
+	}
+
 	public static Schema getOrderUnionSchema(JobContext job) {
 		String[] topics = HiveOrderMetaConfigs.getWhiteTopics(job);
-		Map<String, Schema> topicToSchema = new HashMap<String, Schema>();
-		topicToSchema.putAll(OrderTopicsUtils.topicBiSchema);
-		topicToSchema.putAll(BsEpgOrderTopicUtils.topicBiSchema);
 		List<Schema> schemas = new ArrayList<Schema>();
+		TopicMetaManager topicMetaManager = getTopicMetaManager(job);
 		for (String topic : topics) {
-			schemas.add(topicToSchema.get(topic));
+			TopicMeta topicMeta = topicMetaManager.findTopicMeta(topic);
+			if (topicMeta != null) {
+				schemas.add(topicMeta.getSchema());
+			}
 		}
 		return Schema.createUnion(schemas);
+	}
+
+	public static Map<Class<?>, String> getClassToTopic(JobContext job) {
+		TopicMetaManager topicMetaManager = getTopicMetaManager(job);
+		Map<String, TopicMeta> topicToTopicMeta = topicMetaManager
+				.getTopicToMeta();
+		Map<Class<?>, String> classToTopic = new HashMap<Class<?>, String>();
+		for (Entry<String, TopicMeta> entry : topicToTopicMeta.entrySet()) {
+			TopicMeta topicMeta = entry.getValue();
+			classToTopic.put(topicMeta.getClazz(), topicMeta.getTopic());
+		}
+		return classToTopic;
+	}
+
+	public static Map<String, Schema> getTopicToSchema(JobContext job) {
+		TopicMetaManager topicMetaManager = getTopicMetaManager(job);
+		Map<String, TopicMeta> topicToTopicMeta = topicMetaManager
+				.getTopicToMeta();
+		Map<String, Schema> topicToSchema = new HashMap<String, Schema>();
+		for (Entry<String, TopicMeta> entry : topicToTopicMeta.entrySet()) {
+			TopicMeta topicMeta = entry.getValue();
+			topicToSchema.put(topicMeta.getTopic(), topicMeta.getSchema());
+		}
+		return topicToSchema;
 	}
 
 	public static Path getCamusDestPath(JobContext job) {

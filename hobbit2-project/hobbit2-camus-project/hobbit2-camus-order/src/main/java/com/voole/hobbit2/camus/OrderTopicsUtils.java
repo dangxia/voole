@@ -12,7 +12,6 @@ import org.apache.avro.specific.SpecificRecordBase;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.ImmutableMap;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV3;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
@@ -25,19 +24,15 @@ import com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqSrvV3;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
-import com.voole.hobbit2.camus.order.dry.PlayAliveDryRecord;
-import com.voole.hobbit2.camus.order.dry.PlayBgnDryRecord;
-import com.voole.hobbit2.camus.order.dry.PlayEndDryRecord;
 
 /**
  * @author XuehuiHe
  * @date 2014年8月22日
  */
 public class OrderTopicsUtils {
-	public static final BiMap<String, Schema> topicBiSchema;
-	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
-	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiSrvClazz;
-	public static final Map<String, Class<? extends SpecificRecordBase>> topicDryClazz;
+	protected static final BiMap<String, Schema> topicBiSchema;
+	protected static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
+	protected static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiSrvClazz;
 
 	public static final String TOPIC_ORDER_BGN_V2 = "t_playbgn_v2";
 	public static final String TOPIC_ORDER_BGN_V3 = "t_playbgn_v3";
@@ -52,8 +47,6 @@ public class OrderTopicsUtils {
 				.create(6);
 		BiMap<String, Class<? extends SpecificRecordBase>> topicToSrvClazz = HashBiMap
 				.create(6);
-		Map<String, Class<? extends SpecificRecordBase>> topicToDryClazz = new HashMap<String, Class<? extends SpecificRecordBase>>(
-				6);
 
 		add(topicToSchema, topicToClazz, TOPIC_ORDER_BGN_V2,
 				OrderPlayBgnReqV2.class, OrderPlayBgnReqV2.getClassSchema());
@@ -77,17 +70,9 @@ public class OrderTopicsUtils {
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V2, OrderPlayAliveReqSrvV2.class);
 		topicToSrvClazz.put(TOPIC_ORDER_ALIVE_V3, OrderPlayAliveReqSrvV3.class);
 
-		topicToDryClazz.put(TOPIC_ORDER_BGN_V2, PlayBgnDryRecord.class);
-		topicToDryClazz.put(TOPIC_ORDER_BGN_V3, PlayBgnDryRecord.class);
-		topicToDryClazz.put(TOPIC_ORDER_END_V2, PlayEndDryRecord.class);
-		topicToDryClazz.put(TOPIC_ORDER_END_V3, PlayEndDryRecord.class);
-		topicToDryClazz.put(TOPIC_ORDER_ALIVE_V2, PlayAliveDryRecord.class);
-		topicToDryClazz.put(TOPIC_ORDER_ALIVE_V3, PlayAliveDryRecord.class);
-
 		topicBiSchema = ImmutableBiMap.copyOf(topicToSchema);
 		topicBiClazz = ImmutableBiMap.copyOf(topicToClazz);
 		topicBiSrvClazz = ImmutableBiMap.copyOf(topicToSrvClazz);
-		topicDryClazz = ImmutableMap.copyOf(topicToDryClazz);
 	}
 
 	private static void add(BiMap<String, Schema> topicToSchema,

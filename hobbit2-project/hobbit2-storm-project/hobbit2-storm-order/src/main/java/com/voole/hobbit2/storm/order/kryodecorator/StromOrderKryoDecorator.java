@@ -19,6 +19,7 @@ import com.twitter.chill.IKryoRegistrar;
 import com.twitter.chill.KryoSerializer;
 import com.twitter.chill.avro.AvroSerializer;
 import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
+import com.voole.hobbit2.camus.bsepg.BsEpgPlayInfo;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV2;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqSrvV3;
 import com.voole.hobbit2.camus.order.OrderPlayAliveReqV2;
@@ -52,16 +53,18 @@ public class StromOrderKryoDecorator implements IKryoDecorator {
 		list.add(OrderPlayBgnReqV3.class);
 		list.add(OrderPlayBgnReqSrvV2.class);
 		list.add(OrderPlayBgnReqSrvV3.class);
-		
+
 		list.add(OrderPlayAliveReqV2.class);
 		list.add(OrderPlayAliveReqV3.class);
 		list.add(OrderPlayAliveReqSrvV2.class);
 		list.add(OrderPlayAliveReqSrvV3.class);
-		
+
 		list.add(OrderPlayEndReqV2.class);
 		list.add(OrderPlayEndReqV3.class);
 		list.add(OrderPlayEndReqSrvV2.class);
 		list.add(OrderPlayEndReqSrvV3.class);
+
+		list.add(BsEpgPlayInfo.class);
 
 		for (Class<? extends SpecificRecordBase> clazz : list) {
 			log.info("avro KryoDecorator Registe: Class-->" + clazz.getName());

@@ -17,11 +17,15 @@ import backtype.storm.task.IMetricsContext;
 import com.voole.dungbeetle.api.DummyTaskAttemptContext;
 import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.OrderDetailDumgBeetleTransformer;
+import com.voole.hobbit2.camus.bsepg.BsEpgPlayInfo;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
 import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
+import com.voole.hobbit2.order.common.BsEpgHiveOrderDryRecordGenerator;
+import com.voole.hobbit2.order.common.BsEpgOrderSessionInfo;
 import com.voole.hobbit2.order.common.HiveOrderDryRecordGenerator;
 import com.voole.hobbit2.order.common.OrderSessionInfo;
+import com.voole.hobbit2.order.common.exception.OrderSessionInfoException;
 import com.voole.hobbit2.storm.order.StormOrderHDFSUtils;
 
 public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
@@ -29,9 +33,13 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 	private static final Logger log = LoggerFactory
 			.getLogger(ExtraInfoQueryState.class);
 	private final OrderDetailDumgBeetleTransformer transformer;
+	private final OrderSessionInfo sessionInfo;
+	private final BsEpgOrderSessionInfo bsSessionInfo;
 
 	public ExtraInfoQueryStateImpl() {
 		transformer = new OrderDetailDumgBeetleTransformer();
+		sessionInfo = new OrderSessionInfo();
+		bsSessionInfo = new BsEpgOrderSessionInfo();
 		DummyTaskAttemptContext context = new DummyTaskAttemptContext(
 				StormOrderHDFSUtils.conf);
 		try {
@@ -52,23 +60,15 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 	}
 
 	@Override
-	public List<SpecificRecordBase> query(List<TridentTuple> tuples) {
+	public List<SpecificRecordBase> queryRecords(List<SpecificRecordBase> inputs) {
 		long start = System.currentTimeMillis();
 		List<SpecificRecordBase> result = new ArrayList<SpecificRecordBase>();
-		OrderSessionInfo sessionInfo = new OrderSessionInfo();
-		for (TridentTuple tuple : tuples) {
-			SpecificRecordBase base = (SpecificRecordBase) tuple.get(0);
+		for (SpecificRecordBase base : inputs) {
 			try {
 				if (base instanceof OrderPlayBgnReqV2
-						|| base instanceof OrderPlayBgnReqV3) {
-					sessionInfo.clear();
-					if (base instanceof OrderPlayBgnReqV2) {
-						sessionInfo.setBgn((OrderPlayBgnReqV2) base);
-					} else {
-						sessionInfo.setBgn((OrderPlayBgnReqV3) base);
-					}
-					HiveOrderDryRecord dryRecord = HiveOrderDryRecordGenerator
-							.generate(sessionInfo);
+						|| base instanceof OrderPlayBgnReqV3
+						|| base instanceof BsEpgPlayInfo) {
+					HiveOrderDryRecord dryRecord = createDryRecord(base);
 					if (dryRecord == null) {
 						log.warn("dryRecord is null ,base record:"
 								+ base.toString());
@@ -90,6 +90,7 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 										&& entry.getValue().size() > 0) {
 									result.add(entry.getValue().get(0));
 									isSet = true;
+									break;
 								}
 							}
 							if (!isSet) {
@@ -106,9 +107,46 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 				log.warn("record transform failed", e);
 			}
 		}
-		log.info("query size:" + tuples.size() + ",used time:"
+		log.info("query size:" + inputs.size() + ",used time:"
 				+ ((System.currentTimeMillis() - start) / 1000));
 		return result;
+	}
+
+	public HiveOrderDryRecord createDryRecord(Object base)
+			throws OrderSessionInfoException {
+		if (base instanceof OrderPlayBgnReqV2
+				|| base instanceof OrderPlayBgnReqV3) {
+			return createDryRecordCtype(base);
+		} else {
+			return createDryRecordOther((BsEpgPlayInfo) base);
+		}
+	}
+
+	public HiveOrderDryRecord createDryRecordCtype(Object base)
+			throws OrderSessionInfoException {
+		sessionInfo.clear();
+		if (base instanceof OrderPlayBgnReqV2) {
+			sessionInfo.setBgn((OrderPlayBgnReqV2) base);
+		} else {
+			sessionInfo.setBgn((OrderPlayBgnReqV3) base);
+		}
+		return HiveOrderDryRecordGenerator.generate(sessionInfo);
+	}
+
+	public HiveOrderDryRecord createDryRecordOther(BsEpgPlayInfo base)
+			throws OrderSessionInfoException {
+		bsSessionInfo.clear();
+		bsSessionInfo.setPlayInfo(base);
+		return BsEpgHiveOrderDryRecordGenerator.generate(bsSessionInfo);
+	}
+
+	@Override
+	public List<SpecificRecordBase> query(List<TridentTuple> tuples) {
+		List<SpecificRecordBase> result = new ArrayList<SpecificRecordBase>();
+		for (TridentTuple tuple : tuples) {
+			result.add((SpecificRecordBase) tuple.get(0));
+		}
+		return queryRecords(result);
 	}
 
 	public static class ExtraInfoQueryStateFactory implements StateFactory {

@@ -49,4 +49,10 @@ public class TopicMetaManager {
 	protected void encapsulate() {
 		topicToMeta = ImmutableMap.copyOf(topicToMeta);
 	}
+
+	public Map<String, TopicMeta> getTopicToMeta() {
+		return topicToMeta;
+	}
+	
+	
 }

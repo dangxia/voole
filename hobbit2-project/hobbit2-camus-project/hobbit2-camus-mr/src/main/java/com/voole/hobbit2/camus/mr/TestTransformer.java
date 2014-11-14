@@ -96,10 +96,10 @@ public class TestTransformer {
 
 	public static AvroCtypeKafkaTransformer getTransform(String topic)
 			throws TransformException {
-		if (!topicToTransformer.containsKey(topic)) {
-			topicToTransformer.put(topic, new AvroCtypeKafkaTransformer(
-					OrderTopicsUtils.topicBiSchema.get(topic)));
-		}
+//		if (!topicToTransformer.containsKey(topic)) {
+//			topicToTransformer.put(topic, new AvroCtypeKafkaTransformer(
+//					OrderTopicsUtils.topicBiSchema.get(topic)));
+//		}
 		return topicToTransformer.get(topic);
 	}
 }

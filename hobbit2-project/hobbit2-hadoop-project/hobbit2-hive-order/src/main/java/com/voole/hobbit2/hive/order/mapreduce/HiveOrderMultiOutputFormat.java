@@ -29,8 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.voole.dungbeetle.api.model.HiveTable;
-import com.voole.hobbit2.camus.BsEpgOrderTopicUtils;
-import com.voole.hobbit2.camus.OrderTopicsUtils;
 import com.voole.hobbit2.hive.order.HiveOrderHDFSUtils;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
 
@@ -60,6 +58,9 @@ public class HiveOrderMultiOutputFormat extends
 
 		private final Map<String, Writer> transformerNameToWriter;
 
+		private final Map<Class<?>, String> classToTopic;
+		private final Map<String, Schema> topicToSchema;
+
 		public HiveOrderMultiRecordWriter(TaskAttemptContext job) {
 			this.attemptContext = job;
 			dataWriters = new HashMap<String, RecordWriter<AvroKey<SpecificRecordBase>, NullWritable>>();
@@ -68,6 +69,10 @@ public class HiveOrderMultiOutputFormat extends
 			fileNameToHiveTableMap = new HashMap<String, HiveTable>();
 
 			transformerNameToWriter = new HashMap<String, Writer>();
+
+			classToTopic = HiveOrderMetaConfigs.getClassToTopic(job);
+			topicToSchema = HiveOrderMetaConfigs.getTopicToSchema(job);
+
 		}
 
 		private final Text transformExceptionText = new Text();
@@ -131,17 +136,11 @@ public class HiveOrderMultiOutputFormat extends
 		}
 
 		private String getTopic(Class<? extends SpecificRecordBase> clazz) {
-			if (OrderTopicsUtils.topicBiClazz.inverse().containsKey(clazz)) {
-				return OrderTopicsUtils.topicBiClazz.inverse().get(clazz);
-			}
-			return BsEpgOrderTopicUtils.topicBiClazz.inverse().get(clazz);
+			return classToTopic.get(clazz);
 		}
 
 		private Schema getSchema(String topic) {
-			if (OrderTopicsUtils.topicBiSchema.containsKey(topic)) {
-				return OrderTopicsUtils.topicBiSchema.get(topic);
-			}
-			return BsEpgOrderTopicUtils.topicBiSchema.get(topic);
+			return topicToSchema.get(topic);
 		}
 
 		private RecordWriter<AvroKey<SpecificRecordBase>, NullWritable> createNoendDataRecordWriter(

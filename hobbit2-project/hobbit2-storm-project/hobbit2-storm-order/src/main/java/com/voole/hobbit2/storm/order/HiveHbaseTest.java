@@ -8,11 +8,10 @@ import org.apache.avro.Schema.Field;
 import org.apache.avro.Schema.Type;
 
 import com.google.common.base.Joiner;
-import com.voole.hobbit2.camus.order.dry.PlayBgnDryRecord;
 
 public class HiveHbaseTest {
 	public static void main(String[] args) {
-		Schema schema = PlayBgnDryRecord.getClassSchema();
+		Schema schema = null;
 		List<Field> fields = schema.getFields();
 		List<String> colums = new ArrayList<String>();
 		List<String> cfs = new ArrayList<String>();

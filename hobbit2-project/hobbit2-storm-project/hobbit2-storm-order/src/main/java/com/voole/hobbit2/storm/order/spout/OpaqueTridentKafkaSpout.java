@@ -12,9 +12,7 @@ import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.MessageAndOffset;
 
-import org.apache.avro.file.FileReader;
 import org.apache.avro.specific.SpecificRecordBase;
-import org.apache.hadoop.fs.Path;
 import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -110,13 +108,13 @@ public class OpaqueTridentKafkaSpout
 		private final DynamicPartitionConnections connections;
 		private final String _topologyName;
 
-		private final int noendParallel;
+		private final @SuppressWarnings("rawtypes") Map conf;
 
 		public OpaqueTridentKafkaSpoutEmitter(
 				@SuppressWarnings("rawtypes") Map conf) {
+			this.conf = conf;
 			connections = new DynamicPartitionConnections();
 			_topologyName = (String) conf.get(Config.TOPOLOGY_NAME);
-			noendParallel = StormOrderMetaConfigs.getNoendParallel();
 		}
 
 		@Override
@@ -128,15 +126,12 @@ public class OpaqueTridentKafkaSpout
 				if (lastPartitionMeta == null
 						|| !_topologyName.equals(PartitionMetaUtil
 								.getTopologyName(lastPartitionMeta))) {
-					lastPartitionMeta = new JSONObject();
-					PartitionMetaUtil.setTopologyName(lastPartitionMeta,
-							_topologyName);
-
 					// first emit
 					log.info("first emit for spout partition:" + spoutPartition);
 					Optional<Long> foundOffset = StormOrderHDFSUtils
-							.findOffset(spoutPartition
-									.getBrokerAndTopicPartition());
+							.findOffset(
+									spoutPartition.getBrokerAndTopicPartition(),
+									conf);
 					// set partition offset
 					if (foundOffset.isPresent()) {
 						PartitionMetaUtil.setPartitionOffset(lastPartitionMeta,
@@ -147,24 +142,6 @@ public class OpaqueTridentKafkaSpout
 						throw new RuntimeException("spout partition:"
 								+ spoutPartition + " is empty!!");
 					}
-					// init partition=0 noend index
-					if (spoutPartition.getBrokerAndTopicPartition()
-							.getPartition().getPartition() == 0) {
-						PartitionMetaUtil.setNextNoendIndex(lastPartitionMeta,
-								0);
-					}
-
-				}
-				Optional<Integer> noendIndexOpt = PartitionMetaUtil
-						.getNoendIndex(lastPartitionMeta);
-				// 发现noend data
-				if (noendIndexOpt.isPresent()) {
-					return emitNoend(
-							spoutPartition,
-							lastPartitionMeta,
-							noendIndexOpt.get(),
-							PartitionMetaUtil.getNoendOffset(lastPartitionMeta),
-							collector);
 				}
 				long offset = PartitionMetaUtil
 						.getPartitionOffset(lastPartitionMeta);
@@ -175,72 +152,77 @@ public class OpaqueTridentKafkaSpout
 						spoutPartition.getBrokerAndTopicPartition()
 								.getPartition(), offset + 1,
 						StormOrderMetaConfigs.getKafkafetchSize());
-				long lastOffset = 0l;
+				long lastOffset = -1l;
+				long count = 0;
 				for (MessageAndOffset msg : msgs) {
 					emit(collector, msg, spoutPartition
 							.getBrokerAndTopicPartition().getPartition()
 							.getTopic());
 					lastOffset = msg.offset();
+					count++;
 				}
-				if (lastOffset == 0l) {
-
+				if (count == 0l) {
+					log.info(spoutPartition + ", emit count:" + count
+							+ ", offset:" + offset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							offset);
 				} else {
+					log.info(spoutPartition + ", emit count:" + count
+							+ ", offset:" + lastOffset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							lastOffset);
 				}
 			} catch (IOException e) {
-				Throwables.propagate(e);
+				log.warn(spoutPartition + " fetch msg failed");
+				return lastPartitionMeta;
 			}
-			return null;
 		}
 
-		protected JSONObject emitNoend(KafkaSpoutPartition partition,
-				JSONObject meta, int noendIndex, long noendOffset,
-				TridentCollector collector) throws IOException {
-			List<Path> paths = StormOrderHDFSUtils.getNoendFilePaths(partition
-					.getBrokerAndTopicPartition().getPartition().getTopic());
-			if (paths != null && paths.size() > noendIndex) {
-				Path path = paths.get(noendIndex);
-				FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
-						.getNoendReader(path);
-				log.info("read noend records for partition:" + partition
-						+ ", index:" + noendIndex + ", offset:" + noendOffset
-						+ ", file:" + path.toUri().getPath());
-				// skip noend offset
-				long skipOffset = noendOffset;
-				while (skipOffset > 0) {
-					reader.next();
-					skipOffset--;
-				}
-				int currNoendParallel = 0;
-				boolean noendFileComplete = true;
-				SpecificRecordBase recordBase = null;
-				while (reader.hasNext()) {
-					if (currNoendParallel >= noendParallel) {
-						noendFileComplete = false;
-						break;
-					}
-					recordBase = reader.next();
-					emit(collector, recordBase);
-					currNoendParallel++;
-				}
-				reader.close();
-				if (noendFileComplete) {
-					if (paths.size() > noendIndex + 1) {
-						PartitionMetaUtil.setNextNoendIndex(meta,
-								noendIndex + 1);
-					} else {
-						PartitionMetaUtil.finishedNoend(meta);
-					}
-				} else {
-					noendOffset += currNoendParallel;
-					PartitionMetaUtil.setNoendOffset(meta, noendOffset);
-				}
-			}
-			return meta;
-		}
+		// protected JSONObject emitNoend(KafkaSpoutPartition partition,
+		// JSONObject meta, int noendIndex, long noendOffset,
+		// TridentCollector collector) throws IOException {
+		// List<Path> paths = StormOrderHDFSUtils.getNoendFilePaths(partition
+		// .getBrokerAndTopicPartition().getPartition().getTopic());
+		// if (paths != null && paths.size() > noendIndex) {
+		// Path path = paths.get(noendIndex);
+		// FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
+		// .getNoendReader(path);
+		// log.info("read noend records for partition:" + partition
+		// + ", index:" + noendIndex + ", offset:" + noendOffset
+		// + ", file:" + path.toUri().getPath());
+		// // skip noend offset
+		// long skipOffset = noendOffset;
+		// while (skipOffset > 0) {
+		// reader.next();
+		// skipOffset--;
+		// }
+		// int currNoendParallel = 0;
+		// boolean noendFileComplete = true;
+		// SpecificRecordBase recordBase = null;
+		// while (reader.hasNext()) {
+		// if (currNoendParallel >= noendParallel) {
+		// noendFileComplete = false;
+		// break;
+		// }
+		// recordBase = reader.next();
+		// emit(collector, recordBase);
+		// currNoendParallel++;
+		// }
+		// reader.close();
+		// if (noendFileComplete) {
+		// if (paths.size() > noendIndex + 1) {
+		// PartitionMetaUtil.setNextNoendIndex(meta,
+		// noendIndex + 1);
+		// } else {
+		// PartitionMetaUtil.finishedNoend(meta);
+		// }
+		// } else {
+		// noendOffset += currNoendParallel;
+		// PartitionMetaUtil.setNoendOffset(meta, noendOffset);
+		// }
+		// }
+		// return meta;
+		// }
 
 		private void emit(TridentCollector collector, MessageAndOffset msg,
 				String topic) {
@@ -276,6 +258,7 @@ public class OpaqueTridentKafkaSpout
 		@Override
 		public void refreshPartitions(
 				List<KafkaSpoutPartition> partitionResponsibilities) {
+			log.info("-------------refreshPartitions------------");
 			connections.clear();
 		}
 
@@ -287,6 +270,7 @@ public class OpaqueTridentKafkaSpout
 
 		@Override
 		public void close() {
+			log.info("-------------close------------");
 			connections.clear();
 		}
 

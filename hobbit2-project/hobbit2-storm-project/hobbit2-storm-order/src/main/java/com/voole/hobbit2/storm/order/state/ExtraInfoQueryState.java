@@ -9,4 +9,6 @@ import storm.trident.tuple.TridentTuple;
 
 public interface ExtraInfoQueryState extends State {
 	public List<SpecificRecordBase> query(List<TridentTuple> tuples);
+
+	public List<SpecificRecordBase> queryRecords(List<SpecificRecordBase> inputs);
 }
