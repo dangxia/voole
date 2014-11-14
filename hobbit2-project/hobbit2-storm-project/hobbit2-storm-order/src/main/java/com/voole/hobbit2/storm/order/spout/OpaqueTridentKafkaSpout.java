@@ -181,52 +181,6 @@ public class OpaqueTridentKafkaSpout
 			}
 		}
 
-		// protected JSONObject emitNoend(KafkaSpoutPartition partition,
-		// JSONObject meta, int noendIndex, long noendOffset,
-		// TridentCollector collector) throws IOException {
-		// List<Path> paths = StormOrderHDFSUtils.getNoendFilePaths(partition
-		// .getBrokerAndTopicPartition().getPartition().getTopic());
-		// if (paths != null && paths.size() > noendIndex) {
-		// Path path = paths.get(noendIndex);
-		// FileReader<SpecificRecordBase> reader = StormOrderHDFSUtils
-		// .getNoendReader(path);
-		// log.info("read noend records for partition:" + partition
-		// + ", index:" + noendIndex + ", offset:" + noendOffset
-		// + ", file:" + path.toUri().getPath());
-		// // skip noend offset
-		// long skipOffset = noendOffset;
-		// while (skipOffset > 0) {
-		// reader.next();
-		// skipOffset--;
-		// }
-		// int currNoendParallel = 0;
-		// boolean noendFileComplete = true;
-		// SpecificRecordBase recordBase = null;
-		// while (reader.hasNext()) {
-		// if (currNoendParallel >= noendParallel) {
-		// noendFileComplete = false;
-		// break;
-		// }
-		// recordBase = reader.next();
-		// emit(collector, recordBase);
-		// currNoendParallel++;
-		// }
-		// reader.close();
-		// if (noendFileComplete) {
-		// if (paths.size() > noendIndex + 1) {
-		// PartitionMetaUtil.setNextNoendIndex(meta,
-		// noendIndex + 1);
-		// } else {
-		// PartitionMetaUtil.finishedNoend(meta);
-		// }
-		// } else {
-		// noendOffset += currNoendParallel;
-		// PartitionMetaUtil.setNoendOffset(meta, noendOffset);
-		// }
-		// }
-		// return meta;
-		// }
-
 		private void emit(TridentCollector collector, MessageAndOffset msg,
 				String topic) {
 			ByteBuffer payload = msg.message().payload();
@@ -261,8 +215,8 @@ public class OpaqueTridentKafkaSpout
 		@Override
 		public void refreshPartitions(
 				List<KafkaSpoutPartition> partitionResponsibilities) {
-			log.info("-------------refreshPartitions------------");
-			connections.clear();
+//			log.info("-------------refreshPartitions------------");
+//			connections.clear();
 		}
 
 		@Override

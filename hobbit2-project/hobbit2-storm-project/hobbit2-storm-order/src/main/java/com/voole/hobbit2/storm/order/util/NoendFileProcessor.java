@@ -28,7 +28,7 @@ public class NoendFileProcessor {
 	private static final SessionState sessionState = new SessionStateImpl();
 	private static final List<SpecificRecordBase> drys = new ArrayList<SpecificRecordBase>();
 
-	public static void processNoendFiles(Config conf) throws IOException {
+	public static void processNoendFiles(Config conf) throws IOException, InterruptedException {
 		Map<String, List<Path>> topicToNoendPaths = StormOrderHDFSUtils
 				.getWhiteTopicToNoendPaths(conf);
 		for (Entry<String, List<Path>> entry : topicToNoendPaths.entrySet()) {
@@ -51,6 +51,9 @@ public class NoendFileProcessor {
 			}
 		}
 		flush();
+		
+		extraInfoQueryState.close();
+		sessionState.close();
 
 	}
 

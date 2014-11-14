@@ -65,7 +65,7 @@ public class TestOrderTopology {
 	}
 
 	public static void main(String[] args) throws AlreadyAliveException,
-			InvalidTopologyException, FileNotFoundException, IOException {
+			InvalidTopologyException, FileNotFoundException, IOException, InterruptedException {
 		Config conf = getConfig();
 		Optional<Path> hiveOrderLastExecPath = StormOrderHDFSUtils
 				.findHiveOrderLastExecPath();
