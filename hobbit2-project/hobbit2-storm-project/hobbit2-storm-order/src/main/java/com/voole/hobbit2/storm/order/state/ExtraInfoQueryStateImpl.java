@@ -1,5 +1,6 @@
 package com.voole.hobbit2.storm.order.state;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,18 +36,26 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 	private final OrderDetailDumgBeetleTransformer transformer;
 	private final OrderSessionInfo sessionInfo;
 	private final BsEpgOrderSessionInfo bsSessionInfo;
+	private final DummyTaskAttemptContext context;
 
 	public ExtraInfoQueryStateImpl() {
 		transformer = new OrderDetailDumgBeetleTransformer();
 		sessionInfo = new OrderSessionInfo();
 		bsSessionInfo = new BsEpgOrderSessionInfo();
-		DummyTaskAttemptContext context = new DummyTaskAttemptContext(
-				StormOrderHDFSUtils.conf);
+		context = new DummyTaskAttemptContext(StormOrderHDFSUtils.conf);
 		try {
 			transformer.setup(context);
 		} catch (Exception e) {
 			log.warn(getClass() + " init failed", e);
 		}
+	}
+
+	@Override
+	public void close() throws IOException, InterruptedException {
+		if (transformer != null) {
+			transformer.cleanup(context);
+		}
+
 	}
 
 	@Override

@@ -57,6 +57,17 @@ public class SessionStateImpl implements SessionState {
 	}
 
 	@Override
+	public void close() {
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	@Override
 	public void update(List<SpecificRecordBase> data) {
 		if (data.size() == 0) {
 			return;

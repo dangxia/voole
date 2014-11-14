@@ -126,6 +126,9 @@ public class OpaqueTridentKafkaSpout
 				if (lastPartitionMeta == null
 						|| !_topologyName.equals(PartitionMetaUtil
 								.getTopologyName(lastPartitionMeta))) {
+					lastPartitionMeta = new JSONObject();
+					PartitionMetaUtil.setTopologyName(lastPartitionMeta,
+							_topologyName);
 					// first emit
 					log.info("first emit for spout partition:" + spoutPartition);
 					Optional<Long> foundOffset = StormOrderHDFSUtils

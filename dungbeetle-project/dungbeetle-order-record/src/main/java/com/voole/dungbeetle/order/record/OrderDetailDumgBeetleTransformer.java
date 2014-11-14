@@ -28,7 +28,6 @@ import com.voole.hobbit2.cache.ParentAreaInfoCache;
 import com.voole.hobbit2.cache.ParentSectionInfoCache;
 import com.voole.hobbit2.cache.ProductInfoCache;
 import com.voole.hobbit2.cache.ResourceInfoCache;
-import com.voole.hobbit2.cache.db.CacheDaoUtil;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.MovieInfo;
 import com.voole.hobbit2.cache.entity.OemInfo;
@@ -77,7 +76,7 @@ public class OrderDetailDumgBeetleTransformer implements
 	public void setup(TaskAttemptContext context) throws IOException,
 			InterruptedException {
 		ClassPathXmlApplicationContext cxt = ApplicationContextUtil
-				.getCxt(getIsAutoRefreshCache(context));
+				.createCxt(getIsAutoRefreshCache(context));
 		areaInfoCache = cxt.getBean(AreaInfoCache.class);
 		oemInfoCache = cxt.getBean(OemInfoCache.class);
 		resourceInfoCache = cxt.getBean(ResourceInfoCache.class);
@@ -101,8 +100,7 @@ public class OrderDetailDumgBeetleTransformer implements
 	@Override
 	public void cleanup(TaskAttemptContext context) throws IOException,
 			InterruptedException {
-		CacheDaoUtil.close();
-
+		ApplicationContextUtil.closeCxt();
 	}
 
 	@Override

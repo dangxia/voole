@@ -15,4 +15,6 @@ import storm.trident.state.State;
  */
 public interface SessionState extends State {
 	public void update(List<SpecificRecordBase> data);
+
+	public void close();
 }
