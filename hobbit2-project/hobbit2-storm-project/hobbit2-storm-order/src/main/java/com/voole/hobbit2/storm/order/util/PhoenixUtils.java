@@ -19,30 +19,35 @@ public class PhoenixUtils {
 	public static String psName = "ps";
 
 	public static void main(String[] args) {
+		Set<String> allExcludeColumns = new HashSet<String>();
+		allExcludeColumns.add("sessid");
+
 		Schema schema = HiveOrderDetailRecord.getClassSchema();
-		System.out.println(getCreateSinglePkPhoenixTableSql(schema, "id",
-				String.class));
+		System.out.println(getCreateSinglePkPhoenixTableSql(schema, "sessid",
+				String.class, allExcludeColumns));
 
 		psName = "bgnPs";
 		Set<String> bgnExcludeColumns = new HashSet<String>();
 		bgnExcludeColumns.add("metric_playalivetime");
 		bgnExcludeColumns.add("metric_playendtime");
 		bgnExcludeColumns.add("metric_avgspeed");
-		getUpdateInsertSql(schema, "id", String.class, null, bgnExcludeColumns);
-		
+		bgnExcludeColumns.add("sessid");
+		getUpdateInsertSql(schema, "sessid", String.class, null,
+				bgnExcludeColumns);
+
 		System.out.println("------------alive-------");
 		psName = "alivePs";
 		Set<String> aliveIncludeColumns = new HashSet<String>();
 		aliveIncludeColumns.add("metric_playalivetime");
 		aliveIncludeColumns.add("metric_avgspeed");
-		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "id",
+		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "sessid",
 				String.class, aliveIncludeColumns, null);
 		System.out.println("------------end-------");
 		psName = "endPs";
 		Set<String> endIncludeColumns = new HashSet<String>();
 		endIncludeColumns.add("metric_playendtime");
 		endIncludeColumns.add("metric_avgspeed");
-		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "id",
+		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "sessid",
 				String.class, aliveIncludeColumns, null);
 	}
 
@@ -117,22 +122,26 @@ public class PhoenixUtils {
 	}
 
 	public static String getCreateSinglePkPhoenixTableSql(Schema schema,
-			String keyName, Class<?> keyType) {
+			String keyName, Class<?> keyType, Set<String> excludeColumns) {
 		return getCreateSinglePhoenixTableSql(schema, schema.getName()
-				+ "_phoenix", keyName, keyType);
+				+ "_phoenix", keyName, keyType, excludeColumns);
 	}
 
 	public static String getCreateSinglePhoenixTableSql(Schema schema,
-			String tableName, String keyName, Class<?> keyType) {
+			String tableName, String keyName, Class<?> keyType,
+			Set<String> excludeColumns) {
 		List<Field> fields = schema.getFields();
 		List<String> columnSqls = new ArrayList<String>();
 		columnSqls.add(keyName + " " + javaClassToPhoenixType.get(keyType)
 				+ " not null primary key");
 		for (Field field : fields) {
-			columnSqls.add(field.name()
-					+ " "
-					+ javaClassToPhoenixType.get(avroTypeToJavaClass
-							.get(getFieldType(field.schema()))));
+			if (excludeColumns == null || excludeColumns.size() == 0
+					|| !excludeColumns.contains(field.name())) {
+				columnSqls.add(field.name()
+						+ " "
+						+ javaClassToPhoenixType.get(avroTypeToJavaClass
+								.get(getFieldType(field.schema()))));
+			}
 		}
 		String columnSql = Joiner.on(',').join(columnSqls);
 		String createSql = "CREATE TABLE " + tableName + " ( " + columnSql

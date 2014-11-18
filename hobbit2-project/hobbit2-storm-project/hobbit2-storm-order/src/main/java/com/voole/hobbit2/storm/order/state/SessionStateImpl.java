@@ -33,9 +33,9 @@ import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
 public class SessionStateImpl implements SessionState {
 	private static final Logger log = LoggerFactory
 			.getLogger(SessionState.class);
-	private static final String UPDATE_INSERT_SQL_BGN = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,sessid,stamp,userip,datasorce,playurl,version,dim_date_hour,dim_isp_id,dim_user_uid,dim_user_hid,dim_oem_id,dim_area_id,dim_area_parentid,dim_nettype_id,dim_media_fid,dim_media_series,dim_media_mimeid,dim_movie_mid,dim_cp_id,dim_movie_category,dim_product_pid,dim_product_ptype,dim_po_id,dim_epg_id,dim_section_id,dim_section_parentid,metric_playbgntime,metric_durationtime,metric_isad,metric_isrepeatmod,metric_status,metric_techtype,metric_partnerinfo,extinfo,vssip,perfip,bitrate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
-	private static final String UPDATE_INSERT_SQL_ALIVE = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
-	private static final String UPDATE_INSERT_SQL_END = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
+	private static final String UPDATE_INSERT_SQL_BGN = "UPSERT INTO HiveOrderDetailRecord_phoenix(sessid,stamp,userip,datasorce,playurl,version,dim_date_hour,dim_isp_id,dim_user_uid,dim_user_hid,dim_oem_id,dim_area_id,dim_area_parentid,dim_nettype_id,dim_media_fid,dim_media_series,dim_media_mimeid,dim_movie_mid,dim_cp_id,dim_movie_category,dim_product_pid,dim_product_ptype,dim_po_id,dim_epg_id,dim_section_id,dim_section_parentid,metric_playbgntime,metric_durationtime,metric_isad,metric_isrepeatmod,metric_status,metric_techtype,metric_partnerinfo,extinfo,vssip,perfip,bitrate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+	private static final String UPDATE_INSERT_SQL_ALIVE = "UPSERT INTO HiveOrderDetailRecord_phoenix(sessid,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
+	private static final String UPDATE_INSERT_SQL_END = "UPSERT INTO HiveOrderDetailRecord_phoenix(sessid,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
 	private Connection connection;
 
 	public SessionStateImpl() {
@@ -95,164 +95,151 @@ public class SessionStateImpl implements SessionState {
 				total++;
 				if (specificRecordBase instanceof HiveOrderDetailRecord) {
 					HiveOrderDetailRecord record = (HiveOrderDetailRecord) specificRecordBase;
-					StringBuffer idSb = new StringBuffer();
-					idSb.append(record.getSessid());
-					idSb.append('-');
-					idSb.append(record.getUserip());
-					bgnPs.setString(1, String.valueOf(idSb.toString()));
-
-					bgnPs.setString(2, String.valueOf(record.getSessid()));
-
-					log.info("insert-bgn-record:" + idSb.toString());
-
+					bgnPs.setString(1, String.valueOf(record.getSessid()));
 					if (record.getStamp() == null) {
-						bgnPs.setNull(3, Types.BIGINT);
+						bgnPs.setNull(2, Types.BIGINT);
 					} else {
-						bgnPs.setLong(3, record.getStamp());
+						bgnPs.setLong(2, record.getStamp());
 					}
 					if (record.getUserip() == null) {
-						bgnPs.setNull(4, Types.BIGINT);
+						bgnPs.setNull(3, Types.BIGINT);
 					} else {
-						bgnPs.setLong(4, record.getUserip());
+						bgnPs.setLong(3, record.getUserip());
 					}
 					if (record.getDatasorce() == null) {
-						bgnPs.setNull(5, Types.INTEGER);
+						bgnPs.setNull(4, Types.INTEGER);
 					} else {
-						bgnPs.setInt(5, record.getDatasorce());
+						bgnPs.setInt(4, record.getDatasorce());
 					}
-					bgnPs.setString(6, String.valueOf(record.getPlayurl()));
-					bgnPs.setString(7, String.valueOf(record.getVersion()));
-					bgnPs.setString(8, String.valueOf(record.getDimDateHour()));
+					bgnPs.setString(5, String.valueOf(record.getPlayurl()));
+					bgnPs.setString(6, String.valueOf(record.getVersion()));
+					bgnPs.setString(7, String.valueOf(record.getDimDateHour()));
 					if (record.getDimIspId() == null) {
-						bgnPs.setNull(9, Types.INTEGER);
+						bgnPs.setNull(8, Types.INTEGER);
 					} else {
-						bgnPs.setInt(9, record.getDimIspId());
+						bgnPs.setInt(8, record.getDimIspId());
 					}
-					bgnPs.setString(10, String.valueOf(record.getDimUserUid()));
-					bgnPs.setString(11, String.valueOf(record.getDimUserHid()));
+					bgnPs.setString(9, String.valueOf(record.getDimUserUid()));
+					bgnPs.setString(10, String.valueOf(record.getDimUserHid()));
 					if (record.getDimOemId() == null) {
-						bgnPs.setNull(12, Types.BIGINT);
+						bgnPs.setNull(11, Types.BIGINT);
 					} else {
-						bgnPs.setLong(12, record.getDimOemId());
+						bgnPs.setLong(11, record.getDimOemId());
 					}
 					if (record.getDimAreaId() == null) {
-						bgnPs.setNull(13, Types.INTEGER);
+						bgnPs.setNull(12, Types.INTEGER);
 					} else {
-						bgnPs.setInt(13, record.getDimAreaId());
+						bgnPs.setInt(12, record.getDimAreaId());
 					}
 					if (record.getDimAreaParentid() == null) {
-						bgnPs.setNull(14, Types.INTEGER);
+						bgnPs.setNull(13, Types.INTEGER);
 					} else {
-						bgnPs.setInt(14, record.getDimAreaParentid());
+						bgnPs.setInt(13, record.getDimAreaParentid());
 					}
 					if (record.getDimNettypeId() == null) {
-						bgnPs.setNull(15, Types.INTEGER);
+						bgnPs.setNull(14, Types.INTEGER);
 					} else {
-						bgnPs.setInt(15, record.getDimNettypeId());
+						bgnPs.setInt(14, record.getDimNettypeId());
 					}
-					bgnPs.setString(16, String.valueOf(record.getDimMediaFid()));
+					bgnPs.setString(15, String.valueOf(record.getDimMediaFid()));
 					if (record.getDimMediaSeries() == null) {
-						bgnPs.setNull(17, Types.INTEGER);
+						bgnPs.setNull(16, Types.INTEGER);
 					} else {
-						bgnPs.setInt(17, record.getDimMediaSeries());
+						bgnPs.setInt(16, record.getDimMediaSeries());
 					}
 					if (record.getDimMediaMimeid() == null) {
-						bgnPs.setNull(18, Types.INTEGER);
+						bgnPs.setNull(17, Types.INTEGER);
 					} else {
-						bgnPs.setInt(18, record.getDimMediaMimeid());
+						bgnPs.setInt(17, record.getDimMediaMimeid());
 					}
 					if (record.getDimMovieMid() == null) {
-						bgnPs.setNull(19, Types.BIGINT);
+						bgnPs.setNull(18, Types.BIGINT);
 					} else {
-						bgnPs.setLong(19, record.getDimMovieMid());
+						bgnPs.setLong(18, record.getDimMovieMid());
 					}
 					if (record.getDimCpId() == null) {
-						bgnPs.setNull(20, Types.INTEGER);
+						bgnPs.setNull(19, Types.INTEGER);
 					} else {
-						bgnPs.setInt(20, record.getDimCpId());
+						bgnPs.setInt(19, record.getDimCpId());
 					}
-					bgnPs.setString(21,
+					bgnPs.setString(20,
 							String.valueOf(record.getDimMovieCategory()));
-					bgnPs.setString(22,
+					bgnPs.setString(21,
 							String.valueOf(record.getDimProductPid()));
 					if (record.getDimProductPtype() == null) {
-						bgnPs.setNull(23, Types.INTEGER);
+						bgnPs.setNull(22, Types.INTEGER);
 					} else {
-						bgnPs.setInt(23, record.getDimProductPtype());
+						bgnPs.setInt(22, record.getDimProductPtype());
 					}
 					if (record.getDimPoId() == null) {
-						bgnPs.setNull(24, Types.INTEGER);
+						bgnPs.setNull(23, Types.INTEGER);
 					} else {
-						bgnPs.setInt(24, record.getDimPoId());
+						bgnPs.setInt(23, record.getDimPoId());
 					}
 					if (record.getDimEpgId() == null) {
-						bgnPs.setNull(25, Types.BIGINT);
+						bgnPs.setNull(24, Types.BIGINT);
 					} else {
-						bgnPs.setLong(25, record.getDimEpgId());
+						bgnPs.setLong(24, record.getDimEpgId());
 					}
-					bgnPs.setString(26,
+					bgnPs.setString(25,
 							String.valueOf(record.getDimSectionId()));
-					bgnPs.setString(27,
+					bgnPs.setString(26,
 							String.valueOf(record.getDimSectionParentid()));
 					if (record.getMetricPlaybgntime() == null) {
-						bgnPs.setNull(28, Types.BIGINT);
+						bgnPs.setNull(27, Types.BIGINT);
 					} else {
-						bgnPs.setLong(28, record.getMetricPlaybgntime());
+						bgnPs.setLong(27, record.getMetricPlaybgntime());
 					}
 					if (record.getMetricDurationtime() == null) {
-						bgnPs.setNull(29, Types.BIGINT);
+						bgnPs.setNull(28, Types.BIGINT);
 					} else {
-						bgnPs.setLong(29, record.getMetricDurationtime());
+						bgnPs.setLong(28, record.getMetricDurationtime());
 					}
 					if (record.getMetricIsad() == null) {
-						bgnPs.setNull(30, Types.INTEGER);
+						bgnPs.setNull(29, Types.INTEGER);
 					} else {
-						bgnPs.setInt(30, record.getMetricIsad());
+						bgnPs.setInt(29, record.getMetricIsad());
 					}
 					if (record.getMetricIsrepeatmod() == null) {
-						bgnPs.setNull(31, Types.INTEGER);
+						bgnPs.setNull(30, Types.INTEGER);
 					} else {
-						bgnPs.setInt(31, record.getMetricIsrepeatmod());
+						bgnPs.setInt(30, record.getMetricIsrepeatmod());
 					}
 					if (record.getMetricStatus() == null) {
-						bgnPs.setNull(32, Types.INTEGER);
+						bgnPs.setNull(31, Types.INTEGER);
 					} else {
-						bgnPs.setInt(32, record.getMetricStatus());
+						bgnPs.setInt(31, record.getMetricStatus());
 					}
 					if (record.getMetricTechtype() == null) {
-						bgnPs.setNull(33, Types.INTEGER);
+						bgnPs.setNull(32, Types.INTEGER);
 					} else {
-						bgnPs.setInt(33, record.getMetricTechtype());
+						bgnPs.setInt(32, record.getMetricTechtype());
 					}
-					bgnPs.setString(34,
+					bgnPs.setString(33,
 							String.valueOf(record.getMetricPartnerinfo()));
-					bgnPs.setString(35, String.valueOf(record.getExtinfo()));
+					bgnPs.setString(34, String.valueOf(record.getExtinfo()));
 					if (record.getVssip() == null) {
-						bgnPs.setNull(36, Types.BIGINT);
+						bgnPs.setNull(35, Types.BIGINT);
 					} else {
-						bgnPs.setLong(36, record.getVssip());
+						bgnPs.setLong(35, record.getVssip());
 					}
 					if (record.getPerfip() == null) {
-						bgnPs.setNull(37, Types.BIGINT);
+						bgnPs.setNull(36, Types.BIGINT);
 					} else {
-						bgnPs.setLong(37, record.getPerfip());
+						bgnPs.setLong(36, record.getPerfip());
 					}
 					if (record.getBitrate() == null) {
-						bgnPs.setNull(38, Types.INTEGER);
+						bgnPs.setNull(37, Types.INTEGER);
 					} else {
-						bgnPs.setInt(38, record.getBitrate());
+						bgnPs.setInt(37, record.getBitrate());
 					}
 
 					bgnPs.addBatch();
 					bgnSize++;
 				} else if (specificRecordBase instanceof OrderPlayAliveReqV2) {
 					OrderPlayAliveReqV2 record = (OrderPlayAliveReqV2) specificRecordBase;
-					StringBuffer idSb = new StringBuffer();
-					idSb.append(record.getSessID());
-					idSb.append('-');
-					idSb.append(record.getNatip());
-					alivePs.setString(1, String.valueOf(idSb.toString()));
 
+					alivePs.setString(1, String.valueOf(record.getSessID()));
 					if (record.getAliveTick() == null) {
 						alivePs.setNull(2, Types.BIGINT);
 					} else {
@@ -268,12 +255,7 @@ public class SessionStateImpl implements SessionState {
 					aliveSize++;
 				} else if (specificRecordBase instanceof OrderPlayAliveReqV3) {
 					OrderPlayAliveReqV3 record = (OrderPlayAliveReqV3) specificRecordBase;
-					StringBuffer idSb = new StringBuffer();
-					idSb.append(record.getSessID());
-					idSb.append('-');
-					idSb.append(record.getNatip());
-					alivePs.setString(1, String.valueOf(idSb.toString()));
-
+					alivePs.setString(1, String.valueOf(record.getSessID()));
 					if (record.getAliveTick() == null) {
 						alivePs.setNull(2, Types.BIGINT);
 					} else {
@@ -289,12 +271,8 @@ public class SessionStateImpl implements SessionState {
 					aliveSize++;
 				} else if (specificRecordBase instanceof OrderPlayEndReqV2) {
 					OrderPlayEndReqV2 record = (OrderPlayEndReqV2) specificRecordBase;
-					StringBuffer idSb = new StringBuffer();
-					idSb.append(record.getSessID());
-					idSb.append('-');
-					idSb.append(record.getNatip());
-					endPs.setString(1, String.valueOf(idSb.toString()));
 
+					endPs.setString(1, String.valueOf(record.getSessID()));
 					if (record.getEndTick() == null) {
 						endPs.setNull(2, Types.BIGINT);
 					} else {
@@ -310,12 +288,8 @@ public class SessionStateImpl implements SessionState {
 					endSize++;
 				} else if (specificRecordBase instanceof OrderPlayEndReqV3) {
 					OrderPlayEndReqV3 record = (OrderPlayEndReqV3) specificRecordBase;
-					StringBuffer idSb = new StringBuffer();
-					idSb.append(record.getSessID());
-					idSb.append('-');
-					idSb.append(record.getNatip());
-					endPs.setString(1, String.valueOf(idSb.toString()));
 
+					endPs.setString(1, String.valueOf(record.getSessID()));
 					if (record.getEndTick() == null) {
 						endPs.setNull(2, Types.BIGINT);
 					} else {
@@ -335,15 +309,9 @@ public class SessionStateImpl implements SessionState {
 				}
 			}
 
-			if (bgnSize > 0) {
-				bgnPs.executeBatch();
-			}
-			if (aliveSize > 0) {
-				alivePs.executeBatch();
-			}
-			if (endSize > 0) {
-				endPs.executeBatch();
-			}
+			bgnPs.executeBatch();
+			alivePs.executeBatch();
+			endPs.executeBatch();
 
 			connection.commit();
 

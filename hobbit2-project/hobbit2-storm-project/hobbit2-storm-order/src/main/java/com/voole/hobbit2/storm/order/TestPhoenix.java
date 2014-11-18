@@ -12,43 +12,48 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.voole.hobbit2.common.Hobbit2Utils;
+
 public class TestPhoenix {
 	private static Logger log = LoggerFactory.getLogger(TestPhoenix.class);
-	public static void main(String[] args) throws SQLException {
-		
+
+	public static void main(String[] args) {
+		System.out.println(Hobbit2Utils.longToIp(1908947688l));
+		System.out.println(Hobbit2Utils.longToIp(2059194600l));
+		System.out.println(Hobbit2Utils.longToIp(2099769230l));
+		System.out.println(Hobbit2Utils.longToIp(3708493218l));
+	}
+
+	public static void main100(String[] args) throws SQLException,
+			ClassNotFoundException {
+
 		log.info("sjdlfjlsjdlfjsjdlfjlsjldj");
-		
 		Connection con = DriverManager
 				.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
 
-		Statement stmt = null;
-		ResultSet rset = null;
+		PreparedStatement ps1 = con
+				.prepareStatement("upsert into test3 (mykey,mycolumn)values (?,?)");
+		PreparedStatement ps2 = con
+				.prepareStatement("upsert into test3 (mykey,n)values (?,?)");
+		ps1.setInt(1, 3);
+		ps1.setString(2, "test_3");
+		ps1.addBatch();
 
-		stmt = con.createStatement();
-
-		stmt.executeUpdate("create table test3 (mykey integer not null primary key, mycolumn varchar,n bigint)");
-		
-		con.commit();
-		
-
-		PreparedStatement preparedStatement = con
-				.prepareStatement("upsert into test3 values (?,?,?)");
-
-		preparedStatement.setInt(1, 2);
-		preparedStatement.setString(2, null);
-		preparedStatement.setNull(3, java.sql.Types.BIGINT);
-		// preparedStatement.setBoolean(parameterIndex, x);
-		// preparedStatement.setLong(parameterIndex, x);
-		// preparedStatement.setDouble(parameterIndex, x);
-		// preparedStatement.setFloat(parameterIndex, x);
-
-		preparedStatement.addBatch();
-
-		preparedStatement.executeBatch();
+		// ps2.setInt(1, 3);
+		// ps2.setLong(2, 1000l);
+		// ps2.addBatch();
+		int[] results = ps1.executeBatch();
+		for (int i = 0; i < results.length; i++) {
+			System.out.println(results[i]);
+		}
+		results = ps2.executeBatch();
+		for (int i = 0; i < results.length; i++) {
+			System.out.println(results[i]);
+		}
 
 		con.commit();
-
 		con.close();
+
 	}
 
 	public static void main2(String[] args) throws SQLException {
