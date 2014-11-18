@@ -36,6 +36,7 @@ import com.voole.hobbit2.storm.order.partition.StormOrderSpoutPartitionFetcher;
 import com.voole.hobbit2.storm.order.util.KafkaRecordDehydration;
 import com.voole.hobbit2.storm.order.util.TopicMetaManagerUtil;
 import com.voole.hobbit2.tools.kafka.KafkaUtils;
+import com.voole.hobbit2.tools.kafka.partition.PartitionState;
 import com.voole.hobbit2.tools.kafka.partition.TopicPartition;
 
 /**
@@ -152,7 +153,8 @@ public class OpaqueTridentKafkaSpout
 				long offset = PartitionMetaUtil
 						.getPartitionOffset(lastPartitionMeta);
 
-//				log.info(topicPartition + " start fetch from offset:" + offset);
+				// log.info(topicPartition + " start fetch from offset:" +
+				// offset);
 
 				SimpleConsumer consumer = connections.register(spoutPartition
 						.getBrokerAndTopicPartition());
@@ -170,13 +172,13 @@ public class OpaqueTridentKafkaSpout
 					count++;
 				}
 				if (count == 0l) {
-//					log.info(topicPartition + ", emit count:" + count
-//							+ ", offset:" + offset);
+					// log.info(topicPartition + ", emit count:" + count
+					// + ", offset:" + offset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							offset);
 				} else {
-//					log.info(topicPartition + ", emit count:" + count
-//							+ ", offset:" + lastOffset);
+					// log.info(topicPartition + ", emit count:" + count
+					// + ", offset:" + lastOffset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							lastOffset);
 				}
@@ -236,6 +238,23 @@ public class OpaqueTridentKafkaSpout
 			connections.clear();
 		}
 
+	}
+
+	public static void main(String[] args) {
+		PartitionState partitionState = StormOrderHDFSUtils
+				.readKafkaPartitionState().entrySet().iterator().next()
+				.getValue();
+		System.out.println(partitionState);
+		DynamicPartitionConnections connections = new DynamicPartitionConnections();
+		SimpleConsumer consumer = connections.register(partitionState
+				.getBrokerAndTopicPartition());
+		ByteBufferMessageSet msgs = KafkaUtils.fetch(consumer, partitionState
+				.getBrokerAndTopicPartition().getPartition(), partitionState
+				.getLatestOffset() - 100, StormOrderMetaConfigs
+				.getKafkafetchSize());
+		for (MessageAndOffset msg : msgs) {
+			System.out.println(msg.offset());
+		}
 	}
 
 }

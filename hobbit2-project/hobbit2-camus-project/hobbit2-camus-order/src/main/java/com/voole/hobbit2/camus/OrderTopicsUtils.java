@@ -3,9 +3,6 @@
  */
 package com.voole.hobbit2.camus;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.avro.Schema;
 import org.apache.avro.specific.SpecificRecordBase;
 
@@ -30,9 +27,9 @@ import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
  * @date 2014年8月22日
  */
 public class OrderTopicsUtils {
-	protected static final BiMap<String, Schema> topicBiSchema;
-	protected static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
-	protected static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiSrvClazz;
+	public static final BiMap<String, Schema> topicBiSchema;
+	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiClazz;
+	public static final BiMap<String, Class<? extends SpecificRecordBase>> topicBiSrvClazz;
 
 	public static final String TOPIC_ORDER_BGN_V2 = "t_playbgn_v2";
 	public static final String TOPIC_ORDER_BGN_V3 = "t_playbgn_v3";

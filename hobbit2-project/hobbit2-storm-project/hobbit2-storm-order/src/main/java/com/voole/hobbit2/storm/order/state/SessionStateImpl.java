@@ -102,6 +102,9 @@ public class SessionStateImpl implements SessionState {
 					bgnPs.setString(1, String.valueOf(idSb.toString()));
 
 					bgnPs.setString(2, String.valueOf(record.getSessid()));
+
+					log.info("insert-bgn-record:" + idSb.toString());
+
 					if (record.getStamp() == null) {
 						bgnPs.setNull(3, Types.BIGINT);
 					} else {
