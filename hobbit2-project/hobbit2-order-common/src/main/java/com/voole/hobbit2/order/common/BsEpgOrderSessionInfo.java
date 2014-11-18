@@ -1,6 +1,10 @@
 package com.voole.hobbit2.order.common;
 
+import org.apache.avro.specific.SpecificRecordBase;
+
 import com.voole.hobbit2.camus.bsepg.BsEpgPlayInfo;
+import com.voole.hobbit2.camus.order.OrderPlayEndReqV2;
+import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
 
 public class BsEpgOrderSessionInfo {
 
@@ -62,4 +66,26 @@ public class BsEpgOrderSessionInfo {
 		this._end = _end;
 	}
 
+	public HiveOrderDryRecord getMrRecord() {
+		return BsEpgHiveOrderDryRecordGenerator.generate(this);
+	}
+
+	public SpecificRecordBase getStormRecord() {
+		if (get_bgn() != null) {
+			return getMrRecord();
+		}
+
+		OrderPlayEndReqV2 record = new OrderPlayEndReqV2();
+
+		record.setSessID(String.valueOf(_end.getSessID()));
+		record.setHID(_end.getHid());
+
+		record.setSessAvgSpeed(0l);
+		record.setNatip(BsEpgHiveOrderDryRecordGenerator.getIp(_end.getUserip()));
+		record.setPerfIp(BsEpgHiveOrderDryRecordGenerator.getIp(_end
+				.getPerfip()));
+		record.setEndTick(_end.getPlayendtime());
+
+		return record;
+	}
 }

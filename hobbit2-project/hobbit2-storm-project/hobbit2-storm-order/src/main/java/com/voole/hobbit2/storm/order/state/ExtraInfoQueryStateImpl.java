@@ -22,7 +22,6 @@ import com.voole.hobbit2.camus.bsepg.BsEpgPlayInfo;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV2;
 import com.voole.hobbit2.camus.order.OrderPlayBgnReqV3;
 import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
-import com.voole.hobbit2.order.common.BsEpgHiveOrderDryRecordGenerator;
 import com.voole.hobbit2.order.common.BsEpgOrderSessionInfo;
 import com.voole.hobbit2.order.common.HiveOrderDryRecordGenerator;
 import com.voole.hobbit2.order.common.OrderSessionInfo;
@@ -77,7 +76,19 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 				if (base instanceof OrderPlayBgnReqV2
 						|| base instanceof OrderPlayBgnReqV3
 						|| base instanceof BsEpgPlayInfo) {
-					HiveOrderDryRecord dryRecord = createDryRecord(base);
+					HiveOrderDryRecord dryRecord = null;
+					if (base instanceof BsEpgPlayInfo) {
+						SpecificRecordBase record = createBsEpgRecord((BsEpgPlayInfo) base);
+						if (record instanceof HiveOrderDryRecord) {
+							dryRecord = (HiveOrderDryRecord) record;
+						} else {
+							result.add(record);
+							continue;
+						}
+					} else {
+						dryRecord = createDryRecord(base);
+					}
+
 					if (dryRecord == null) {
 						log.warn("dryRecord is null ,base record:"
 								+ base.toString());
@@ -123,16 +134,6 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 
 	public HiveOrderDryRecord createDryRecord(Object base)
 			throws OrderSessionInfoException {
-		if (base instanceof OrderPlayBgnReqV2
-				|| base instanceof OrderPlayBgnReqV3) {
-			return createDryRecordCtype(base);
-		} else {
-			return createDryRecordOther((BsEpgPlayInfo) base);
-		}
-	}
-
-	public HiveOrderDryRecord createDryRecordCtype(Object base)
-			throws OrderSessionInfoException {
 		sessionInfo.clear();
 		if (base instanceof OrderPlayBgnReqV2) {
 			sessionInfo.setBgn((OrderPlayBgnReqV2) base);
@@ -142,11 +143,10 @@ public class ExtraInfoQueryStateImpl implements ExtraInfoQueryState {
 		return HiveOrderDryRecordGenerator.generate(sessionInfo);
 	}
 
-	public HiveOrderDryRecord createDryRecordOther(BsEpgPlayInfo base)
-			throws OrderSessionInfoException {
+	public SpecificRecordBase createBsEpgRecord(BsEpgPlayInfo base) {
 		bsSessionInfo.clear();
 		bsSessionInfo.setPlayInfo(base);
-		return BsEpgHiveOrderDryRecordGenerator.generate(bsSessionInfo);
+		return bsSessionInfo.getStormRecord();
 	}
 
 	@Override

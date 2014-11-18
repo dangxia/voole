@@ -16,35 +16,46 @@ import com.google.common.collect.ImmutableMap;
 import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
 
 public class PhoenixUtils {
+	public static String psName = "ps";
+
 	public static void main(String[] args) {
 		Schema schema = HiveOrderDetailRecord.getClassSchema();
 		System.out.println(getCreateSinglePkPhoenixTableSql(schema, "id",
 				String.class));
-		getUpdateInsertSql(schema, "id", String.class, null);
 
+		psName = "bgnPs";
+		Set<String> bgnExcludeColumns = new HashSet<String>();
+		bgnExcludeColumns.add("metric_playalivetime");
+		bgnExcludeColumns.add("metric_playendtime");
+		bgnExcludeColumns.add("metric_avgspeed");
+		getUpdateInsertSql(schema, "id", String.class, null, bgnExcludeColumns);
+		
 		System.out.println("------------alive-------");
+		psName = "alivePs";
 		Set<String> aliveIncludeColumns = new HashSet<String>();
 		aliveIncludeColumns.add("metric_playalivetime");
 		aliveIncludeColumns.add("metric_avgspeed");
 		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "id",
-				String.class, aliveIncludeColumns);
+				String.class, aliveIncludeColumns, null);
 		System.out.println("------------end-------");
-
+		psName = "endPs";
 		Set<String> endIncludeColumns = new HashSet<String>();
 		endIncludeColumns.add("metric_playendtime");
 		endIncludeColumns.add("metric_avgspeed");
 		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "id",
-				String.class, aliveIncludeColumns);
+				String.class, aliveIncludeColumns, null);
 	}
 
 	public static void getUpdateInsertSql(Schema schema, String keyName,
-			Class<?> keyType, Set<String> includeColumns) {
+			Class<?> keyType, Set<String> includeColumns,
+			Set<String> excludeColumns) {
 		getUpdateInsertSql(schema, schema.getName() + "_phoenix", keyName,
-				keyType, includeColumns);
+				keyType, includeColumns, excludeColumns);
 	}
 
 	public static void getUpdateInsertSql(Schema schema, String tableName,
-			String keyName, Class<?> keyType, Set<String> includeColumns) {
+			String keyName, Class<?> keyType, Set<String> includeColumns,
+			Set<String> excludeColumns) {
 		List<Field> fields = schema.getFields();
 		List<String> columns = new ArrayList<String>();
 		List<Class<?>> columnTypes = new ArrayList<Class<?>>();
@@ -57,8 +68,10 @@ public class PhoenixUtils {
 
 		for (Field field : fields) {
 			String name = field.name();
-			if (includeColumns == null || includeColumns.size() == 0
-					|| includeColumns.contains(name)) {
+			if ((includeColumns == null || includeColumns.size() == 0 || includeColumns
+					.contains(name))
+					&& (excludeColumns == null || !excludeColumns
+							.contains(name))) {
 				columns.add(name);
 				columnTypes.add(avroTypeToJavaClass.get(getFieldType(field
 						.schema())));
@@ -79,17 +92,17 @@ public class PhoenixUtils {
 
 	public static void psColumn(int i, Class<?> type, String name) {
 		if (type == String.class) {
-			System.out.println("ps." + javaClassToPsSetMethod.get(type) + "("
-					+ i + ", String.valueOf(record."
+			System.out.println(psName + "." + javaClassToPsSetMethod.get(type)
+					+ "(" + i + ", String.valueOf(record."
 					+ instanceGetMethodName(name) + "()));");
 		} else {
 			String getMethodName = instanceGetMethodName(name);
 			System.out.println("if(record." + getMethodName + "()==null){");
-			System.out.println("ps.setNull(" + i + ", "
+			System.out.println(psName + ".setNull(" + i + ", "
 					+ javaClassToSqlType.get(type) + ");");
 			System.out.println("}else{");
-			System.out.println("ps." + javaClassToPsSetMethod.get(type) + "("
-					+ i + ", record." + getMethodName + "());");
+			System.out.println(psName + "." + javaClassToPsSetMethod.get(type)
+					+ "(" + i + ", record." + getMethodName + "());");
 			System.out.println("}");
 		}
 	}

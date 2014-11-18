@@ -152,7 +152,7 @@ public class OpaqueTridentKafkaSpout
 				long offset = PartitionMetaUtil
 						.getPartitionOffset(lastPartitionMeta);
 
-				log.info(topicPartition + " start fetch from offset:" + offset);
+//				log.info(topicPartition + " start fetch from offset:" + offset);
 
 				SimpleConsumer consumer = connections.register(spoutPartition
 						.getBrokerAndTopicPartition());
@@ -170,13 +170,13 @@ public class OpaqueTridentKafkaSpout
 					count++;
 				}
 				if (count == 0l) {
-					log.info(topicPartition + ", emit count:" + count
-							+ ", offset:" + offset);
+//					log.info(topicPartition + ", emit count:" + count
+//							+ ", offset:" + offset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							offset);
 				} else {
-					log.info(topicPartition + ", emit count:" + count
-							+ ", offset:" + lastOffset);
+//					log.info(topicPartition + ", emit count:" + count
+//							+ ", offset:" + lastOffset);
 					return PartitionMetaUtil.newJSONObject(_topologyName,
 							lastOffset);
 				}

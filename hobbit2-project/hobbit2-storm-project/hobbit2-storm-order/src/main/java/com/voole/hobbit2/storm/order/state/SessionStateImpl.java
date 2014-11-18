@@ -33,7 +33,7 @@ import com.voole.hobbit2.camus.order.OrderPlayEndReqV3;
 public class SessionStateImpl implements SessionState {
 	private static final Logger log = LoggerFactory
 			.getLogger(SessionState.class);
-	private static final String UPDATE_INSERT_SQL_BGN = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,sessid,stamp,userip,datasorce,playurl,version,dim_date_hour,dim_isp_id,dim_user_uid,dim_user_hid,dim_oem_id,dim_area_id,dim_area_parentid,dim_nettype_id,dim_media_fid,dim_media_series,dim_media_mimeid,dim_movie_mid,dim_cp_id,dim_movie_category,dim_product_pid,dim_product_ptype,dim_po_id,dim_epg_id,dim_section_id,dim_section_parentid,metric_playbgntime,metric_playalivetime,metric_playendtime,metric_durationtime,metric_avgspeed,metric_isad,metric_isrepeatmod,metric_status,metric_techtype,metric_partnerinfo,extinfo,vssip,perfip,bitrate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+	private static final String UPDATE_INSERT_SQL_BGN = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,sessid,stamp,userip,datasorce,playurl,version,dim_date_hour,dim_isp_id,dim_user_uid,dim_user_hid,dim_oem_id,dim_area_id,dim_area_parentid,dim_nettype_id,dim_media_fid,dim_media_series,dim_media_mimeid,dim_movie_mid,dim_cp_id,dim_movie_category,dim_product_pid,dim_product_ptype,dim_po_id,dim_epg_id,dim_section_id,dim_section_parentid,metric_playbgntime,metric_durationtime,metric_isad,metric_isrepeatmod,metric_status,metric_techtype,metric_partnerinfo,extinfo,vssip,perfip,bitrate) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 	private static final String UPDATE_INSERT_SQL_ALIVE = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
 	private static final String UPDATE_INSERT_SQL_END = "UPSERT INTO HiveOrderDetailRecord_phoenix(id,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
 	private Connection connection;
@@ -196,63 +196,48 @@ public class SessionStateImpl implements SessionState {
 					} else {
 						bgnPs.setLong(28, record.getMetricPlaybgntime());
 					}
-					if (record.getMetricPlayalivetime() == null) {
+					if (record.getMetricDurationtime() == null) {
 						bgnPs.setNull(29, Types.BIGINT);
 					} else {
-						bgnPs.setLong(29, record.getMetricPlayalivetime());
-					}
-					if (record.getMetricPlayendtime() == null) {
-						bgnPs.setNull(30, Types.BIGINT);
-					} else {
-						bgnPs.setLong(30, record.getMetricPlayendtime());
-					}
-					if (record.getMetricDurationtime() == null) {
-						bgnPs.setNull(31, Types.BIGINT);
-					} else {
-						bgnPs.setLong(31, record.getMetricDurationtime());
-					}
-					if (record.getMetricAvgspeed() == null) {
-						bgnPs.setNull(32, Types.BIGINT);
-					} else {
-						bgnPs.setLong(32, record.getMetricAvgspeed());
+						bgnPs.setLong(29, record.getMetricDurationtime());
 					}
 					if (record.getMetricIsad() == null) {
-						bgnPs.setNull(33, Types.INTEGER);
+						bgnPs.setNull(30, Types.INTEGER);
 					} else {
-						bgnPs.setInt(33, record.getMetricIsad());
+						bgnPs.setInt(30, record.getMetricIsad());
 					}
 					if (record.getMetricIsrepeatmod() == null) {
-						bgnPs.setNull(34, Types.INTEGER);
+						bgnPs.setNull(31, Types.INTEGER);
 					} else {
-						bgnPs.setInt(34, record.getMetricIsrepeatmod());
+						bgnPs.setInt(31, record.getMetricIsrepeatmod());
 					}
 					if (record.getMetricStatus() == null) {
-						bgnPs.setNull(35, Types.INTEGER);
+						bgnPs.setNull(32, Types.INTEGER);
 					} else {
-						bgnPs.setInt(35, record.getMetricStatus());
+						bgnPs.setInt(32, record.getMetricStatus());
 					}
 					if (record.getMetricTechtype() == null) {
-						bgnPs.setNull(36, Types.INTEGER);
+						bgnPs.setNull(33, Types.INTEGER);
 					} else {
-						bgnPs.setInt(36, record.getMetricTechtype());
+						bgnPs.setInt(33, record.getMetricTechtype());
 					}
-					bgnPs.setString(37,
+					bgnPs.setString(34,
 							String.valueOf(record.getMetricPartnerinfo()));
-					bgnPs.setString(38, String.valueOf(record.getExtinfo()));
+					bgnPs.setString(35, String.valueOf(record.getExtinfo()));
 					if (record.getVssip() == null) {
-						bgnPs.setNull(39, Types.BIGINT);
+						bgnPs.setNull(36, Types.BIGINT);
 					} else {
-						bgnPs.setLong(39, record.getVssip());
+						bgnPs.setLong(36, record.getVssip());
 					}
 					if (record.getPerfip() == null) {
-						bgnPs.setNull(40, Types.BIGINT);
+						bgnPs.setNull(37, Types.BIGINT);
 					} else {
-						bgnPs.setLong(40, record.getPerfip());
+						bgnPs.setLong(37, record.getPerfip());
 					}
 					if (record.getBitrate() == null) {
-						bgnPs.setNull(41, Types.INTEGER);
+						bgnPs.setNull(38, Types.INTEGER);
 					} else {
-						bgnPs.setInt(41, record.getBitrate());
+						bgnPs.setInt(38, record.getBitrate());
 					}
 
 					bgnPs.addBatch();
@@ -359,7 +344,7 @@ public class SessionStateImpl implements SessionState {
 
 			connection.commit();
 
-			log.warn("session size:" + total + ",bgnSize:" + bgnSize
+			log.info("session size:" + total + ",bgnSize:" + bgnSize
 					+ ",aliveSize:" + aliveSize + ",endSize:" + endSize
 					+ ",used time:"
 					+ ((System.currentTimeMillis() - start) / 1000));

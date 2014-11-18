@@ -17,7 +17,7 @@ public class BsEpgHiveOrderDryRecordGenerator {
 		return record;
 	}
 
-	private static long getIp(CharSequence ipStr) {
+	public static long getIp(CharSequence ipStr) {
 		try {
 			return Hobbit2Utils.ipToLong(String.valueOf(ipStr));
 		} catch (Exception e) {

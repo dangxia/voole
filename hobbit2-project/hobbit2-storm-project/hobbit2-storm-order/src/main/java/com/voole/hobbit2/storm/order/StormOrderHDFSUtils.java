@@ -29,8 +29,6 @@ import org.apache.hadoop.io.SequenceFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import backtype.storm.Config;
-
 import com.google.common.base.Optional;
 import com.voole.hobbit2.tools.kafka.partition.Broker;
 import com.voole.hobbit2.tools.kafka.partition.BrokerAndTopicPartition;
@@ -247,14 +245,16 @@ public class StormOrderHDFSUtils {
 
 	public static void main(String[] args) throws FileNotFoundException,
 			IOException {
-		Optional<Path> hiveOrderLastExecPath = findHiveOrderLastExecPath();
-		Config stormConf = new Config();
-		if (hiveOrderLastExecPath.isPresent()) {
+//		Optional<Path> hiveOrderLastExecPath = findHiveOrderLastExecPath();
+//		Config stormConf = new Config();
+//		if (hiveOrderLastExecPath.isPresent()) {
 //			StormOrderMetaConfigs.setHiveOrderLastExecPath(stormConf,
 //					hiveOrderLastExecPath.get().toUri().getPath());
-		}
-		getWhiteTopicToNoendPaths(stormConf);
-		initTopicPartitionToLastOffset(stormConf);
+//		}
+//		getWhiteTopicToNoendPaths(stormConf);
+//		initTopicPartitionToLastOffset(stormConf);
+		Map<TopicPartition, PartitionState> kafkaPartitionState = readKafkaPartitionState();
+		System.out.println(kafkaPartitionState.get(new TopicPartition("t_playalive_v3", 2)));
 
 	}
 
