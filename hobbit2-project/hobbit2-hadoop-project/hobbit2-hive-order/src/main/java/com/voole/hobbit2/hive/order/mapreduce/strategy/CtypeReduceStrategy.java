@@ -45,7 +45,7 @@ public class CtypeReduceStrategy {
 			Iterable<AvroValue<SpecificRecordBase>> iterable, Context context)
 			throws IOException, InterruptedException {
 		sessionInfo.clear();
-		sessionInfo.setSessionIdAndNatip(sessionIdAndNatip.toString());
+		sessionInfo.setSessId(sessionIdAndNatip.toString());
 		try {
 			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
 				SpecificRecordBase record = avroValue.datum();

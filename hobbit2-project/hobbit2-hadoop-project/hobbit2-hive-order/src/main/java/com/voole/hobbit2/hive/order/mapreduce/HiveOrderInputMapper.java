@@ -35,16 +35,13 @@ public class HiveOrderInputMapper
 	protected void map(AvroKey<SpecificRecordBase> key, NullWritable value,
 			Context context) throws IOException, InterruptedException {
 		SpecificRecordBase recordBase = key.datum();
-		StringBuffer sb = new StringBuffer();
 		if (recordBase instanceof BsEpgPlayInfo) {
+			StringBuffer sb = new StringBuffer();
 			sb.append("bsepg-");
 			sb.append(((BsEpgPlayInfo) recordBase).getSessID());
 			sessionId.set(sb.toString());
 		} else {
-			sb.append((String) recordBase.get("sessID"));
-			sb.append("-");
-			sb.append((Long) recordBase.get("natip"));
-			sessionId.set(sb.toString());
+			sessionId.set((String) recordBase.get("sessID"));
 		}
 		record.datum(recordBase);
 		context.write(sessionId, record);

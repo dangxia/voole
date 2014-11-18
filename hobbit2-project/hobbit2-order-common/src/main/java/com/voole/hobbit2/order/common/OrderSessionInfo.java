@@ -20,7 +20,7 @@ import com.voole.hobbit2.order.common.exception.OrderSessionInfoException.OrderS
  * @date 2014年9月6日
  */
 public class OrderSessionInfo {
-	private String sessionIdAndNatip;
+	private String sessId;
 	public Object _bgn;
 	public long _bgnTime;
 
@@ -33,7 +33,7 @@ public class OrderSessionInfo {
 	private long maxDiff = 30;
 
 	public void clear() {
-		this.sessionIdAndNatip = null;
+		this.sessId = null;
 		_bgn = null;
 		_bgnTime = 0l;
 
@@ -46,13 +46,13 @@ public class OrderSessionInfo {
 
 	public void verify() throws OrderSessionInfoException {
 		if (_bgn == null) {
-			throw new OrderSessionInfoException(sessionIdAndNatip,
+			throw new OrderSessionInfoException(sessId,
 					OrderSessionInfoExceptionType.BGN_IS_NULL, null);
 		}
 		if (_end != null && _bgnTime > _endTime) {
 			long diff = _bgnTime - _endTime;
 			if (diff > maxDiff) {
-				throw new OrderSessionInfoException(sessionIdAndNatip,
+				throw new OrderSessionInfoException(sessId,
 						OrderSessionInfoExceptionType.BGN_TIME_GT_END_TIME,
 						diff);
 			}
@@ -60,7 +60,7 @@ public class OrderSessionInfo {
 		if (_lastAlive != null && _bgnTime > _lastAliveTime) {
 			long diff = _bgnTime - _lastAliveTime;
 			if (diff > maxDiff) {
-				throw new OrderSessionInfoException(sessionIdAndNatip,
+				throw new OrderSessionInfoException(sessId,
 						OrderSessionInfoExceptionType.BGN_TIME_GT_ALIVE_TIME,
 						diff);
 			}
@@ -69,7 +69,7 @@ public class OrderSessionInfo {
 		if (_lastAlive != null && _end != null && _endTime < _lastAliveTime) {
 			long diff = _lastAliveTime - _endTime;
 			if (diff > maxDiff) {
-				throw new OrderSessionInfoException(sessionIdAndNatip,
+				throw new OrderSessionInfoException(sessId,
 						OrderSessionInfoExceptionType.ALIVE_TIME_GT_END_TIME,
 						diff);
 			}
@@ -89,7 +89,7 @@ public class OrderSessionInfo {
 		if (_bgn != null) {
 			long diff = Math.abs(_bgnTime - bgnTime);
 			if (diff > maxDiff) {
-				throw new OrderSessionInfoException(sessionIdAndNatip,
+				throw new OrderSessionInfoException(sessId,
 						OrderSessionInfoExceptionType.BGN_IS_MULTI, diff);
 			}
 
@@ -113,7 +113,7 @@ public class OrderSessionInfo {
 		if (_end != null) {
 			long diff = Math.abs(_endTime - endTime);
 			if (diff > maxDiff) {
-				throw new OrderSessionInfoException(sessionIdAndNatip,
+				throw new OrderSessionInfoException(sessId,
 						OrderSessionInfoExceptionType.END_IS_MULTI, diff);
 			}
 		}
@@ -138,12 +138,12 @@ public class OrderSessionInfo {
 		}
 	}
 
-	public String getSessionIdAndNatip() {
-		return sessionIdAndNatip;
+	public String getSessId() {
+		return sessId;
 	}
 
-	public void setSessionIdAndNatip(String sessionIdAndNatip) {
-		this.sessionIdAndNatip = sessionIdAndNatip;
+	public void setSessId(String sessId) {
+		this.sessId = sessId;
 	}
 
 }
