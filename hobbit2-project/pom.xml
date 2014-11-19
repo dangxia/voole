@@ -23,6 +23,11 @@
 		<phoenix.version>4.2.0</phoenix.version>
 
 		<hbase.version>0.98.5-hadoop2</hbase.version>
+		
+		<slf4j.version>1.7.2</slf4j.version>
+		<log4j.version>1.2.16</log4j.version>
+		<junit.version>4.8.1</junit.version>
+		<aspectj.version>1.7.2</aspectj.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -462,5 +467,9 @@
 			hobbit2-hadoop-project/hobbit2-camus-hive-order-mixed
 		</module>
 		<module>hobbit2-order-common</module>
+		<module>
+			hobbit2-storm-project/hobbit2-storm-onlineuser-flex
+		</module>
+		<module>hobbit2-flex-base</module>
 	</modules>
 </project>

@@ -27,6 +27,7 @@ import com.voole.hobbit2.cache.ParentAreaInfoCache.ParentAreaInfoFetch;
 import com.voole.hobbit2.cache.ParentSectionInfoCache.ParentSectionInfoFetch;
 import com.voole.hobbit2.cache.ProductInfoCache.ProductInfoFetch;
 import com.voole.hobbit2.cache.ResourceInfoCache.ResourceInfoFetch;
+import com.voole.hobbit2.cache.SpInfoCache.SpInfosFetch;
 import com.voole.hobbit2.cache.entity.AreaInfo;
 import com.voole.hobbit2.cache.entity.BoxStoreAreaInfo;
 import com.voole.hobbit2.cache.entity.DeviceInfo;
@@ -51,7 +52,7 @@ import com.voole.hobbit2.common.Tuple;
  */
 public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		ResourceInfoFetch, MovieInfoFetch, ParentAreaInfoFetch,
-		ParentSectionInfoFetch, ProductInfoFetch {
+		ParentSectionInfoFetch, ProductInfoFetch, SpInfosFetch {
 
 	private JdbcTemplate realtimeJt;
 
@@ -374,16 +375,16 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 	}
 
 	public List<SpInfo> getSpInfos() {
-		String sql = "SELECT s.`spid`,s.`shortname`,s.`nettype`,s.`tidshare_sp` FROM sp s";
+		String sql = "SELECT d.`id`,d.`name`,d.`dim_nettype_id` FROM dim_isp d";
 		List<SpInfo> spInfos = new ArrayList<SpInfo>();
 		spInfos = realtimeJt.query(sql, new RowMapper<SpInfo>() {
 
 			@Override
 			public SpInfo mapRow(ResultSet rs, int rowNum) throws SQLException {
 				SpInfo info = new SpInfo();
-				info.setSpid(rs.getString("spid"));
-				info.setShortname(rs.getString("shortname"));
-				info.setNettype(rs.getInt("nettype"));
+				info.setSpid(rs.getString("id"));
+				info.setShortname(rs.getString("name"));
+				info.setNettype(rs.getInt("dim_nettype_id"));
 				return info;
 			}
 		});

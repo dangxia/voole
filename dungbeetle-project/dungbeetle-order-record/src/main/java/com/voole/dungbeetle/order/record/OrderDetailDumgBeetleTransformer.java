@@ -15,7 +15,6 @@ import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.api.IDumgBeetleTransformer;
@@ -84,17 +83,6 @@ public class OrderDetailDumgBeetleTransformer implements
 		parentAreaInfoCache = cxt.getBean(ParentAreaInfoCache.class);
 		productInfoCache = cxt.getBean(ProductInfoCache.class);
 		parentSectionInfoCache = cxt.getBean(ParentSectionInfoCache.class);
-		try {
-			areaInfoCache.refresh();
-			oemInfoCache.refresh();
-			resourceInfoCache.refresh();
-			movieInfoCache.refresh();
-			parentAreaInfoCache.refresh();
-			parentSectionInfoCache.refresh();
-			productInfoCache.refresh();
-		} catch (Exception e) {
-			Throwables.propagate(e);
-		}
 	}
 
 	@Override

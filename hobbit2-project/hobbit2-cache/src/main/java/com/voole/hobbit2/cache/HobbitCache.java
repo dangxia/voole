@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 
 import com.google.common.base.Function;
 import com.voole.hobbit2.cache.exception.CacheQueryException;
@@ -20,7 +21,7 @@ import com.voole.hobbit2.cache.exception.CacheRefreshException;
  * @author XuehuiHe
  * @date 2014年6月13日
  */
-public interface HobbitCache {
+public interface HobbitCache extends InitializingBean {
 	public void refresh() throws CacheRefreshException;
 
 	public abstract static class AbstractHobbitCache implements HobbitCache {
@@ -34,6 +35,11 @@ public interface HobbitCache {
 
 		private final AtomicBoolean isFetching;
 		private volatile CountDownLatch fetchLatch;
+
+		@Override
+		public void afterPropertiesSet() throws Exception {
+			refresh();
+		}
 
 		public AbstractHobbitCache() {
 			isRefreshFailed = false;

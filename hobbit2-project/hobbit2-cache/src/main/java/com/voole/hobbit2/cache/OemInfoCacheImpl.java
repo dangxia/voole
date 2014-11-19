@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.InitializingBean;
+
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
@@ -20,7 +22,7 @@ import com.voole.hobbit2.cache.exception.CacheRefreshException;
  * @date 2014年6月13日
  */
 public class OemInfoCacheImpl extends AbstractHobbitCache implements
-		OemInfoCache {
+		OemInfoCache, InitializingBean {
 	private final OemInfoFetch fetch;
 
 	private volatile Map<Long, OemInfo> oemInfoMap;
