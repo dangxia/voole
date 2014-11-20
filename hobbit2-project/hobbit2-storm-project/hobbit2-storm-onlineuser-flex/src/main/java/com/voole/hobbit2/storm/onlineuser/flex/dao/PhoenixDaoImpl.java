@@ -1,7 +1,5 @@
 package com.voole.hobbit2.storm.onlineuser.flex.dao;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,7 +17,6 @@ import org.springframework.beans.factory.DisposableBean;
 
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import com.google.common.io.CharStreams;
 import com.voole.hobbit2.flex.base.model.curve.FlexCurveStampState;
 import com.voole.hobbit2.storm.onlineuser.flex.OnlineUserConfigs;
 import com.voole.hobbit2.storm.onlineuser.flex.model.OnlineState;
