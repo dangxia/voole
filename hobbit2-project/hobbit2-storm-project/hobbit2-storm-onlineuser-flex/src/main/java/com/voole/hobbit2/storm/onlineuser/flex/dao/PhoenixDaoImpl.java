@@ -59,10 +59,8 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 
 	private String getQueryPhoenixOnlineUserStateSql() {
 		try {
-			return CharStreams
-					.toString(new InputStreamReader(
-							PhoenixDaoImpl.class
-									.getResourceAsStream("queryPhoenixOnlineUserState.sql")));
+			return CharStreams.toString(new InputStreamReader(this.getClass()
+					.getResourceAsStream("queryPhoenixOnlineUserState.sql")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
