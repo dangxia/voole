@@ -63,6 +63,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		sql+="FIRST_VALUE ( ";
 		sql+="  CASE ";
 		sql+="    WHEN METRIC_AVGSPEED IS NULL  ";
+		sql+="    OR METRIC_AVGSPEED = 0  ";
 		sql+="    OR BITRATE IS NULL  ";
 		sql+="    OR BITRATE * 1024 <= METRIC_AVGSPEED * 8  ";
 		sql+="    THEN 0  ";
