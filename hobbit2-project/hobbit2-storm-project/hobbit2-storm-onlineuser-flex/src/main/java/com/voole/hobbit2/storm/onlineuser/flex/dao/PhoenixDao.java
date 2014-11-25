@@ -21,4 +21,6 @@ public interface PhoenixDao
 	void updateOnlineUserState(
 			List<CalcOemOnlineUserState> oemOnlineUserStates,
 			List<CalcSpOnlineUserState> spOnlineUserStates);
+
+	void sync();
 }

@@ -33,6 +33,11 @@
 		<property name="flexDao" ref="phoenixDao" />
 	</bean>
 
+	<bean id="syncHistoryData"
+		class="com.voole.hobbit2.storm.onlineuser.flex.service.SyncHistoryDataImpl">
+		<property name="phoenixDao" ref="phoenixDao" />
+	</bean>
+
 	<bean id="calcOnlineUserJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="calcOnlineUserStateService" />
@@ -45,6 +50,21 @@
 		<property name="cronExpression" value="0 0/2 * * * ?" />
 	</bean>
 
+
+	<bean id="syncHistoryDataJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="syncHistoryData" />
+		<property name="targetMethod" value="sync" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="syncHistoryDataTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="syncHistoryDataJob" />
+		<property name="cronExpression" value="0 30 0/2 * * ?" />
+	</bean>
+
+
+
 	<aop:aspectj-autoproxy />
 	<context:annotation-config />
 	<context:component-scan
@@ -56,6 +76,7 @@
 				<ref bean="oemInfoCacheTrigger" />
 				<ref bean="spInfoCacheTrigger" />
 				<ref bean="calcOnlineUserTrigger" />
+				<ref bean="syncHistoryDataTrigger" />
 			</list>
 		</property>
 	</bean>

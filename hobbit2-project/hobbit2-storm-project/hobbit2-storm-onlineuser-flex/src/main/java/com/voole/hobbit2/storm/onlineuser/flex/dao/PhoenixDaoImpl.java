@@ -56,47 +56,47 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 
 	private String getQueryPhoenixOnlineUserStateSql() {
 		String sql = "";
-		sql+="SELECT  ";
-		sql+="  FIRST_VALUE (DIM_OEM_ID) WITHIN ";
-		sql+="GROUP ( ";
-		sql+="ORDER BY METRIC_PLAYBGNTIME DESC) AS oemid, ";
-		sql+="FIRST_VALUE ( ";
-		sql+="  CASE ";
-		sql+="    WHEN METRIC_AVGSPEED IS NULL  ";
-		sql+="    OR METRIC_AVGSPEED = 0  ";
-		sql+="    OR BITRATE IS NULL  ";
-		sql+="    OR BITRATE * 1024 <= METRIC_AVGSPEED * 8  ";
-		sql+="    THEN 0  ";
-		sql+="    ELSE 1  ";
-		sql+="  END ";
-		sql+=") WITHIN ";
-		sql+="GROUP ( ";
-		sql+="ORDER BY METRIC_PLAYBGNTIME DESC) AS is_low  ";
-		sql+="FROM ";
-		sql+="  HIVEORDERDETAILRECORD_PHOENIX ";
-		sql+="WHERE METRIC_PLAYBGNTIME IS NOT NULL  ";
-		sql+="  AND METRIC_PLAYBGNTIME > CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
-		sql+="  AND  ";
-		sql+="  CASE ";
-		sql+="    WHEN METRIC_PLAYENDTIME IS NOT NULL  ";
-		sql+="    AND METRIC_PLAYENDTIME > METRIC_PLAYBGNTIME  ";
-		sql+="    THEN - 1  ";
-		sql+="    ELSE  ";
-		sql+="    CASE ";
-		sql+="      WHEN METRIC_PLAYALIVETIME IS NOT NULL  ";
-		sql+="      AND METRIC_PLAYALIVETIME > METRIC_PLAYBGNTIME  ";
-		sql+="      THEN METRIC_PLAYALIVETIME  ";
-		sql+="      ELSE METRIC_PLAYBGNTIME  ";
-		sql+="    END  ";
-		sql+="  END >  CAST(CURRENT_DATE() AS BIGINT) / 1000 - 600  ";
-		sql+="GROUP BY DIM_USER_HID  ";
-//		try {
-//			return CharStreams.toString(new InputStreamReader(this.getClass()
-//					.getResourceAsStream("queryPhoenixOnlineUserState.sql")));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
+		sql += "SELECT  ";
+		sql += "  FIRST_VALUE (DIM_OEM_ID) WITHIN ";
+		sql += "GROUP ( ";
+		sql += "ORDER BY METRIC_PLAYBGNTIME DESC) AS oemid, ";
+		sql += "FIRST_VALUE ( ";
+		sql += "  CASE ";
+		sql += "    WHEN METRIC_AVGSPEED IS NULL  ";
+		sql += "    OR METRIC_AVGSPEED = 0  ";
+		sql += "    OR BITRATE IS NULL  ";
+		sql += "    OR BITRATE * 1024 <= METRIC_AVGSPEED * 8  ";
+		sql += "    THEN 0  ";
+		sql += "    ELSE 1  ";
+		sql += "  END ";
+		sql += ") WITHIN ";
+		sql += "GROUP ( ";
+		sql += "ORDER BY METRIC_PLAYBGNTIME DESC) AS is_low  ";
+		sql += "FROM ";
+		sql += "  HIVEORDERDETAILRECORD_PHOENIX ";
+		sql += "WHERE METRIC_PLAYBGNTIME IS NOT NULL  ";
+		sql += "  AND METRIC_PLAYBGNTIME > CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
+		sql += "  AND  ";
+		sql += "  CASE ";
+		sql += "    WHEN METRIC_PLAYENDTIME IS NOT NULL  ";
+		sql += "    AND METRIC_PLAYENDTIME > METRIC_PLAYBGNTIME  ";
+		sql += "    THEN - 1  ";
+		sql += "    ELSE  ";
+		sql += "    CASE ";
+		sql += "      WHEN METRIC_PLAYALIVETIME IS NOT NULL  ";
+		sql += "      AND METRIC_PLAYALIVETIME > METRIC_PLAYBGNTIME  ";
+		sql += "      THEN METRIC_PLAYALIVETIME  ";
+		sql += "      ELSE METRIC_PLAYBGNTIME  ";
+		sql += "    END  ";
+		sql += "  END >  CAST(CURRENT_DATE() AS BIGINT) / 1000 - 600  ";
+		sql += "GROUP BY DIM_USER_HID  ";
+		// try {
+		// return CharStreams.toString(new InputStreamReader(this.getClass()
+		// .getResourceAsStream("queryPhoenixOnlineUserState.sql")));
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
+		// return null;
 		return sql;
 	}
 
@@ -468,6 +468,84 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 			}
 
 		}
+	}
+
+	@Override
+	public void sync() {
+		String sql = "";
+		sql += "UPSERT INTO fact_vod_history ( ";
+		sql += "  HOUR, DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate ";
+		sql += ")  ";
+		sql += "SELECT  ";
+		sql += "  SUBSTR( ";
+		sql += "    TO_CHAR ( ";
+		sql += "      CAST( ";
+		sql += "        METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
+		sql += "      ) ";
+		sql += "    ), 12, 2 ";
+		sql += "  ) AS HOUR, TO_CHAR ( ";
+		sql += "    CAST( ";
+		sql += "      METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
+		sql += "    ), 'yyyy-MM-dd' ";
+		sql += "  ) AS DATE, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate  ";
+		sql += "FROM ";
+		sql += "  HIVEORDERDETAILRECORD_PHOENIX  ";
+		sql += "WHERE METRIC_PLAYBGNTIME IS NOT NULL  ";
+		sql += "  AND METRIC_PLAYBGNTIME <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
+
+		String deleteOldSql = "";
+		deleteOldSql += "DELETE  ";
+		deleteOldSql += "FROM ";
+		deleteOldSql += "  HIVEORDERDETAILRECORD_PHOENIX  ";
+		deleteOldSql += "WHERE  ";
+		deleteOldSql += "  CASE ";
+		deleteOldSql += "    WHEN METRIC_PLAYALIVETIME IS NULL  ";
+		deleteOldSql += "    OR METRIC_PLAYBGNTIME > METRIC_PLAYALIVETIME  ";
+		deleteOldSql += "    THEN  ";
+		deleteOldSql += "    CASE ";
+		deleteOldSql += "      WHEN METRIC_PLAYENDTIME IS NULL  ";
+		deleteOldSql += "      OR METRIC_PLAYBGNTIME > METRIC_PLAYENDTIME  ";
+		deleteOldSql += "      THEN METRIC_PLAYBGNTIME  ";
+		deleteOldSql += "      ELSE METRIC_PLAYENDTIME  ";
+		deleteOldSql += "    END  ";
+		deleteOldSql += "    ELSE  ";
+		deleteOldSql += "    CASE ";
+		deleteOldSql += "      WHEN METRIC_PLAYENDTIME IS NULL  ";
+		deleteOldSql += "      OR METRIC_PLAYALIVETIME > METRIC_PLAYENDTIME  ";
+		deleteOldSql += "      THEN METRIC_PLAYALIVETIME  ";
+		deleteOldSql += "      ELSE METRIC_PLAYENDTIME  ";
+		deleteOldSql += "    END  ";
+		deleteOldSql += "  END <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 21600  ";
+		PreparedStatement ps = null;
+		PreparedStatement deleteps = null;
+		try {
+			ps = connection.prepareStatement(sql);
+			ps.execute();
+
+			deleteps = connection.prepareStatement(deleteOldSql);
+			deleteps.execute();
+
+		} catch (SQLException e) {
+			Throwables.propagate(e);
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+					ps = null;
+				} catch (SQLException e) {
+					Throwables.propagate(e);
+				}
+			}
+			if (deleteps != null) {
+				try {
+					deleteps.close();
+					deleteps = null;
+				} catch (SQLException e) {
+					Throwables.propagate(e);
+				}
+			}
+		}
+
 	}
 
 }

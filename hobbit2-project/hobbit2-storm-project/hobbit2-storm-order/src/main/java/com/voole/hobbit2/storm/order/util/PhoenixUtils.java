@@ -14,6 +14,7 @@ import org.apache.avro.Schema.Type;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
+import com.voole.hobbit2.common.Tuple;
 
 public class PhoenixUtils {
 	public static String psName = "ps";
@@ -25,6 +26,12 @@ public class PhoenixUtils {
 		Schema schema = HiveOrderDetailRecord.getClassSchema();
 		System.out.println(getCreateSinglePkPhoenixTableSql(schema, "sessid",
 				String.class, allExcludeColumns));
+		List<Tuple<String, Class<?>>> keyInfos = new ArrayList<Tuple<String, Class<?>>>();
+		keyInfos.add(new Tuple<String, Class<?>>("hour", String.class));
+		keyInfos.add(new Tuple<String, Class<?>>("day", String.class));
+		keyInfos.add(new Tuple<String, Class<?>>("sessid", String.class));
+		System.out.println(getCreateMultiPkPhoenixTableSql(schema,
+				"fact_vod_history", keyInfos, null));
 
 		psName = "bgnPs";
 		Set<String> bgnExcludeColumns = new HashSet<String>();
@@ -48,7 +55,7 @@ public class PhoenixUtils {
 		endIncludeColumns.add("metric_playendtime");
 		endIncludeColumns.add("metric_avgspeed");
 		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "sessid",
-				String.class, aliveIncludeColumns, null);
+				String.class, endIncludeColumns, null);
 	}
 
 	public static void getUpdateInsertSql(Schema schema, String keyName,
@@ -119,6 +126,45 @@ public class PhoenixUtils {
 			sb.append(item.substring(0, 1).toUpperCase() + item.substring(1));
 		}
 		return "get" + sb.toString();
+	}
+
+	public static String getCreateMultiPkPhoenixTableSql(Schema schema,
+			String tableName, List<Tuple<String, Class<?>>> keyInfos,
+			Set<String> excludeColumns) {
+		List<Field> fields = schema.getFields();
+		List<String> columnSqls = new ArrayList<String>();
+		List<String> writedColumns = new ArrayList<String>();
+
+		List<String> pkColumns = new ArrayList<String>();
+		for (Tuple<String, Class<?>> tuple : keyInfos) {
+			pkColumns.add(tuple.getA());
+			writedColumns.add(tuple.getA());
+			columnSqls.add(tuple.getA() + " "
+					+ javaClassToPhoenixType.get(tuple.getB()));
+		}
+
+		for (Field field : fields) {
+			if (writedColumns.contains(field.name())) {
+				continue;
+			}
+			if (excludeColumns == null || excludeColumns.size() == 0
+					|| !excludeColumns.contains(field.name())) {
+				writedColumns.add(field.name());
+				columnSqls.add(field.name()
+						+ " "
+						+ javaClassToPhoenixType.get(avroTypeToJavaClass
+								.get(getFieldType(field.schema()))));
+			}
+		}
+		String columnSql = Joiner.on(',').join(columnSqls);
+		String pkSql = " CONSTRAINT pk PRIMARY KEY ("
+				+ Joiner.on(',').join(pkColumns) + ") ";
+		String createSql = "CREATE TABLE " + tableName + " ( " + columnSql
+				+ pkSql + ") ";
+
+		System.out.println(Joiner.on(',').join(writedColumns));
+
+		return createSql;
 	}
 
 	public static String getCreateSinglePkPhoenixTableSql(Schema schema,
