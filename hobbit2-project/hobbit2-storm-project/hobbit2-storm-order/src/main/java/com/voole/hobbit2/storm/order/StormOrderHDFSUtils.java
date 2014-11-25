@@ -245,16 +245,21 @@ public class StormOrderHDFSUtils {
 
 	public static void main(String[] args) throws FileNotFoundException,
 			IOException {
-//		Optional<Path> hiveOrderLastExecPath = findHiveOrderLastExecPath();
-//		Config stormConf = new Config();
-//		if (hiveOrderLastExecPath.isPresent()) {
-//			StormOrderMetaConfigs.setHiveOrderLastExecPath(stormConf,
-//					hiveOrderLastExecPath.get().toUri().getPath());
-//		}
-//		getWhiteTopicToNoendPaths(stormConf);
-//		initTopicPartitionToLastOffset(stormConf);
+		// Optional<Path> hiveOrderLastExecPath = findHiveOrderLastExecPath();
+		// Config stormConf = new Config();
+		// if (hiveOrderLastExecPath.isPresent()) {
+		// StormOrderMetaConfigs.setHiveOrderLastExecPath(stormConf,
+		// hiveOrderLastExecPath.get().toUri().getPath());
+		// }
+		// getWhiteTopicToNoendPaths(stormConf);
+		// initTopicPartitionToLastOffset(stormConf);
 		Map<TopicPartition, PartitionState> kafkaPartitionState = readKafkaPartitionState();
-		System.out.println(kafkaPartitionState.get(new TopicPartition("t_playalive_v3", 2)));
+		for (Entry<TopicPartition, PartitionState> entry : kafkaPartitionState
+				.entrySet()) {
+			if (entry.getKey().getTopic().equals("epg_bs_playinfo")) {
+				System.out.println(entry.getValue());
+			}
+		}
 
 	}
 

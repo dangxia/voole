@@ -43,6 +43,13 @@ public class BsEpgOrderSessionInfo {
 		return null;
 	}
 
+	public Long getPlayEndTime() {
+		if (_end != null) {
+			return _end.getPlayendtime();
+		}
+		return null;
+	}
+
 	public BsEpgPlayInfo getPlayInfo() {
 		if (_end != null) {
 			return _end;

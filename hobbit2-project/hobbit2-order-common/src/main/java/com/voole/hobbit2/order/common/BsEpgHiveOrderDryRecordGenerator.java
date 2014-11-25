@@ -14,6 +14,15 @@ public class BsEpgHiveOrderDryRecordGenerator {
 		BsEpgPlayInfo playInfo = orderSessionInfo.getPlayInfo();
 		record.setPlayBgnTime(orderSessionInfo.getPlayBgnTime());
 		fill(record, playInfo);
+
+		Long endTime = orderSessionInfo.getPlayEndTime();
+		Long startTime = orderSessionInfo.getPlayBgnTime();
+		if (startTime != null && endTime != null) {
+			record.setPlayDurationTime(endTime - startTime);
+		} else {
+			record.setPlayDurationTime(0l);
+		}
+
 		return record;
 	}
 
