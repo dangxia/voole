@@ -39,7 +39,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 					PhoenixDaoImpl.class.getClassLoader());
 			connection = DriverManager
 					.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
-			connection.setAutoCommit(false);
+			connection.setAutoCommit(true);
 		} catch (Exception e) {
 			log.warn("init PhoenixDao error:", e);
 			Throwables.propagate(e);
