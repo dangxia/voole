@@ -60,7 +60,7 @@
 
 	<bean id="syncHistoryDataTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="syncHistoryDataJob" />
-		<property name="cronExpression" value="0 30 0/2 * * ?" />
+		<property name="cronExpression" value="0 5/10 * * * ?" />
 	</bean>
 
 

@@ -515,7 +515,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		deleteOldSql += "      THEN METRIC_PLAYALIVETIME  ";
 		deleteOldSql += "      ELSE METRIC_PLAYENDTIME  ";
 		deleteOldSql += "    END  ";
-		deleteOldSql += "  END <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 21600  ";
+		deleteOldSql += "  END <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
 		PreparedStatement ps = null;
 		PreparedStatement deleteps = null;
 		try {
