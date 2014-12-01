@@ -473,25 +473,19 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 	@Override
 	public void sync() {
 		String sql = "";
-		sql += "UPSERT INTO fact_vod_history ( ";
-		sql += "  HOUR, DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate ";
-		sql += ")  ";
-		sql += "SELECT  ";
-		sql += "  SUBSTR( ";
-		sql += "    TO_CHAR ( ";
-		sql += "      CAST( ";
-		sql += "        METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
-		sql += "      ) ";
-		sql += "    ), 12, 2 ";
-		sql += "  ) AS HOUR, TO_CHAR ( ";
-		sql += "    CAST( ";
-		sql += "      METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
-		sql += "    ), 'yyyy-MM-dd' ";
-		sql += "  ) AS DATE, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate  ";
-		sql += "FROM ";
-		sql += "  HIVEORDERDETAILRECORD_PHOENIX  ";
-		sql += "WHERE METRIC_PLAYBGNTIME IS NOT NULL  ";
-		sql += "  AND METRIC_PLAYBGNTIME <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
+		sql+="UPSERT INTO fact_vod_history ( ";
+		sql+="  DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate ";
+		sql+=")  ";
+		sql+="SELECT  ";
+		sql+="  TO_CHAR ( ";
+		sql+="    CAST( ";
+		sql+="      METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
+		sql+="    ), 'yyyy-MM-dd' ";
+		sql+="  ) AS DATE, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate  ";
+		sql+="FROM ";
+		sql+="  HIVEORDERDETAILRECORD_PHOENIX  ";
+		sql+="WHERE METRIC_PLAYBGNTIME IS NOT NULL  ";
+		sql+="  AND METRIC_PLAYBGNTIME <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
 
 		String deleteOldSql = "";
 		deleteOldSql += "DELETE  ";

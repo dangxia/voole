@@ -27,8 +27,9 @@ public class PhoenixUtils {
 		System.out.println(getCreateSinglePkPhoenixTableSql(schema, "sessid",
 				String.class, allExcludeColumns));
 		List<Tuple<String, Class<?>>> keyInfos = new ArrayList<Tuple<String, Class<?>>>();
-		keyInfos.add(new Tuple<String, Class<?>>("hour", String.class));
+//		keyInfos.add(new Tuple<String, Class<?>>("hour", String.class));
 		keyInfos.add(new Tuple<String, Class<?>>("day", String.class));
+		keyInfos.add(new Tuple<String, Class<?>>("dim_oem_id", Long.class));
 		keyInfos.add(new Tuple<String, Class<?>>("sessid", String.class));
 		System.out.println(getCreateMultiPkPhoenixTableSql(schema,
 				"fact_vod_history", keyInfos, null));
@@ -160,7 +161,7 @@ public class PhoenixUtils {
 		String pkSql = " CONSTRAINT pk PRIMARY KEY ("
 				+ Joiner.on(',').join(pkColumns) + ") ";
 		String createSql = "CREATE TABLE " + tableName + " ( " + columnSql
-				+ pkSql + ") ";
+				+ pkSql + ") SALT_BUCKETS=14, KEEP_DELETED_CELLS = false";
 
 		System.out.println(Joiner.on(',').join(writedColumns));
 
@@ -191,7 +192,7 @@ public class PhoenixUtils {
 		}
 		String columnSql = Joiner.on(',').join(columnSqls);
 		String createSql = "CREATE TABLE " + tableName + " ( " + columnSql
-				+ ") SALT_BUCKETS=14 ";
+				+ ") SALT_BUCKETS=14 , KEEP_DELETED_CELLS = false, IN_MEMORY = true, TTL = 18000";
 		return createSql;
 	}
 

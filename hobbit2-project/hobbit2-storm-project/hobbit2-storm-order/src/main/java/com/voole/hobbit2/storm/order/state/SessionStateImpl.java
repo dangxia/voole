@@ -258,7 +258,8 @@ public class SessionStateImpl implements SessionState {
 		bgnPs.setString(9, String.valueOf(record.getDimUserUid()));
 		bgnPs.setString(10, String.valueOf(record.getDimUserHid()));
 		if (record.getDimOemId() == null) {
-			bgnPs.setNull(11, Types.BIGINT);
+//			bgnPs.setNull(11, Types.BIGINT);
+			bgnPs.setLong(11, -1l);
 		} else {
 			bgnPs.setLong(11, record.getDimOemId());
 		}
