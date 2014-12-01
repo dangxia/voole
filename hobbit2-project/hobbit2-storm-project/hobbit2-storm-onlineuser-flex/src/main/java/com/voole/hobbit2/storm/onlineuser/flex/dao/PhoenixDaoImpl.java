@@ -515,9 +515,13 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		try {
 			ps = connection.prepareStatement(sql);
 			ps.execute();
+			
+			log.info("copy real time data finished");
 
 			deleteps = connection.prepareStatement(deleteOldSql);
 			deleteps.execute();
+			
+			log.info("delete time out data finished");
 
 		} catch (SQLException e) {
 			Throwables.propagate(e);
