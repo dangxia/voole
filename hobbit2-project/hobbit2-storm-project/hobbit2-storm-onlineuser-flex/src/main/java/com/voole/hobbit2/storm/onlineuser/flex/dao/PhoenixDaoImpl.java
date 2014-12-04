@@ -734,7 +734,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		querySql += "      THEN METRIC_PLAYALIVETIME  ";
 		querySql += "      ELSE METRIC_PLAYENDTIME  ";
 		querySql += "    END  ";
-		querySql += "  END <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
+		querySql += "  END <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 3600  ";
 
 		String insertSql = "";
 		insertSql += "UPSERT INTO fact_vod_history ( ";
