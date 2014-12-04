@@ -33,7 +33,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 	private static final Logger log = LoggerFactory
 			.getLogger(PhoenixDaoImpl.class);
 	private Connection connection;
-
+	private Connection connection2;
 	public PhoenixDaoImpl() {
 		try {
 			Class.forName("org.apache.phoenix.jdbc.PhoenixDriver", true,
@@ -41,6 +41,10 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 			connection = DriverManager
 					.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
 			connection.setAutoCommit(true);
+			
+			connection2 = DriverManager
+					.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
+			connection2.setAutoCommit(true);
 		} catch (Exception e) {
 			log.warn("init PhoenixDao error:", e);
 			Throwables.propagate(e);
@@ -742,9 +746,9 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		PreparedStatement insertPs = null;
 		PreparedStatement deletePs = null;
 		try {
-			queryPs = connection.prepareStatement(querySql);
-			insertPs = connection.prepareStatement(insertSql);
-			deletePs = connection.prepareStatement(deleteSql);
+			queryPs = connection2.prepareStatement(querySql);
+			insertPs = connection2.prepareStatement(insertSql);
+			deletePs = connection2.prepareStatement(deleteSql);
 
 			queryResult = queryPs.executeQuery();
 			while (queryResult.next()) {
@@ -755,7 +759,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 			}
 			insertPs.executeBatch();
 			deletePs.executeBatch();
-			connection.commit();
+			connection2.commit();
 		} catch (Exception e) {
 			Throwables.propagate(e);
 		} finally {

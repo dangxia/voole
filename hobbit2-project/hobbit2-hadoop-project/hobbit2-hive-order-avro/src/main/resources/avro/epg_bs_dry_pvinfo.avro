@@ -1,0 +1,57 @@
+{
+	"type" : "record",
+	"name" : "BsPvPlayDryInfo",
+	"namespace" : "com.voole.hobbit2.hive.order.avro",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "accesstime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "oemid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "uid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "userip",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "epgid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "url",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "kind",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "channelCD",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "page",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "mid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "usertype",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "searchword",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "midlist",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "button",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "perfip",
+		"type" : [ "string", "null" ]
+	}]
+}

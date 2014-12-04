@@ -1,0 +1,78 @@
+{
+	"type" : "record",
+	"name" : "BsPvPlayDetailInfo",
+	"namespace" : "com.voole.dungbeetle.order.record.avro",
+	"fields" : [ {
+		"name" : "sessid",
+		"type" : [ "string", "null" ]
+	},{
+		"name" : "stamp",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "accesstime",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "userip",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "url",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_isp_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_user_uid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_user_hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_oem_id",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "dim_epg_id",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "dim_area_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_area_parentid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_nettype_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_movie_mid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "dim_section_id",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_section_parentid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_kind_code",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "page",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "usertype",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "searchword",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "midlist",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "button",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "perfip",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_date_hour",
+		"type" : [ "string", "null" ]
+	}]
+}

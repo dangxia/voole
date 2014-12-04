@@ -1,0 +1,60 @@
+{
+	"type" : "record",
+	"name" : "BsRevenueDetailInfo",
+	"namespace" : "com.voole.dungbeetle.order.record.avro",
+	"fields" : [ {
+		"name" : "sessid",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "stamp",
+		"type" : [ "long", "null" ]
+	}, { 
+		"name" : "accesstime",
+		"type" : [ "long", "null" ]
+	}, { 
+		"name" : "datasource",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "userip",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "dim_isp_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_user_uid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_user_hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "dim_oem_id",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "dim_epg_id",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "dim_area_id",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_area_parentid",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "dim_nettype_id",
+		"type" : [ "int", "null" ]
+	}, { 
+		"name" : "dim_product_pid",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "dim_product_ptype",
+		"type" : [ "int", "null" ]
+	}, { 
+		"name" : "dim_product_fee",
+		"type" : [ "int", "null" ]
+	}, { 
+		"name" : "result",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "perfip",
+		"type" : [ "string", "null" ]
+	}]
+}

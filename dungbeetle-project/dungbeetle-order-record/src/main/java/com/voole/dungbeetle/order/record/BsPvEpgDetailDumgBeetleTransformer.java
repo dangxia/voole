@@ -19,39 +19,31 @@ import com.google.common.collect.Lists;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.api.IDumgBeetleTransformer;
 import com.voole.dungbeetle.api.model.HiveTable;
-import com.voole.dungbeetle.order.record.avro.HiveOrderDetailRecord;
+import com.voole.dungbeetle.order.record.avro.BsPvPlayDetailInfo;
+import com.voole.dungbeetle.util.IPtoLong;
 import com.voole.hobbit2.cache.AreaInfoCache;
-import com.voole.hobbit2.cache.MovieInfoCache;
 import com.voole.hobbit2.cache.OemInfoCache;
 import com.voole.hobbit2.cache.ParentAreaInfoCache;
 import com.voole.hobbit2.cache.ParentSectionInfoCache;
-import com.voole.hobbit2.cache.ProductInfoCache;
-import com.voole.hobbit2.cache.ResourceInfoCache;
 import com.voole.hobbit2.cache.entity.AreaInfo;
-import com.voole.hobbit2.cache.entity.MovieInfo;
 import com.voole.hobbit2.cache.entity.OemInfo;
 import com.voole.hobbit2.cache.entity.ParentAreaInfo;
 import com.voole.hobbit2.cache.entity.ParentSectionInfo;
-import com.voole.hobbit2.cache.entity.ProductInfo;
-import com.voole.hobbit2.cache.entity.ResourceInfo;
 import com.voole.hobbit2.cache.exception.CacheQueryException;
 import com.voole.hobbit2.cache.exception.CacheRefreshException;
+import com.voole.hobbit2.hive.order.avro.BsPvPlayDryInfo;
 import com.voole.hobbit2.common.enums.ProductType;
-import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
 
 /**
  * @author XuehuiHe
  * @date 2014年9月6日
  */
-public class OrderDetailDumgBeetleTransformer implements
-		IDumgBeetleTransformer<HiveOrderDryRecord> {
+public class BsPvEpgDetailDumgBeetleTransformer implements
+		IDumgBeetleTransformer<BsPvPlayDryInfo> {
 	private AreaInfoCache areaInfoCache;
 	private OemInfoCache oemInfoCache;
-	private ResourceInfoCache resourceInfoCache;
-	private MovieInfoCache movieInfoCache;
 	private ParentAreaInfoCache parentAreaInfoCache;
 	private ParentSectionInfoCache parentSectionInfoCache;
-	private ProductInfoCache productInfoCache;
 	private final Map<String, HiveTable> partitionCache;
 
 	private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -59,7 +51,7 @@ public class OrderDetailDumgBeetleTransformer implements
 
 	public static final String IS_AUTO_REFRESH_CACHE = "order.detail.transformer.is.auto.refresh.cache";
 
-	public OrderDetailDumgBeetleTransformer() {
+	public BsPvEpgDetailDumgBeetleTransformer() {
 		partitionCache = new HashMap<String, HiveTable>();
 	}
 
@@ -78,10 +70,7 @@ public class OrderDetailDumgBeetleTransformer implements
 				.createCxt(getIsAutoRefreshCache(context));
 		areaInfoCache = cxt.getBean(AreaInfoCache.class);
 		oemInfoCache = cxt.getBean(OemInfoCache.class);
-		resourceInfoCache = cxt.getBean(ResourceInfoCache.class);
-		movieInfoCache = cxt.getBean(MovieInfoCache.class);
 		parentAreaInfoCache = cxt.getBean(ParentAreaInfoCache.class);
-		productInfoCache = cxt.getBean(ProductInfoCache.class);
 		parentSectionInfoCache = cxt.getBean(ParentSectionInfoCache.class);
 	}
 
@@ -93,16 +82,12 @@ public class OrderDetailDumgBeetleTransformer implements
 
 	@Override
 	public Map<HiveTable, List<SpecificRecordBase>> transform(
-			HiveOrderDryRecord dry) throws DumgBeetleTransformException {
-		HiveOrderDetailRecord record = new HiveOrderDetailRecord();
+			BsPvPlayDryInfo dry) throws DumgBeetleTransformException {
+		BsPvPlayDetailInfo record = new BsPvPlayDetailInfo();
 		fillDetail(record, dry);
 		try {
-			// 过滤异常时长
-			if (record.getMetricDurationtime() > 10800) {
-				record.setMetricDurationtime((long) 10800);
-			}
-
 			String spid = getSpid(record.getDimOemId());
+			record.setDimIspId(Integer.parseInt(spid));
 			// area
 			Optional<AreaInfo> areaInfo = getAreaInfo(
 					record.getDimUserHid() != null ? record.getDimUserHid()
@@ -117,33 +102,7 @@ public class OrderDetailDumgBeetleTransformer implements
 				record.setDimAreaId(0);
 				record.setDimNettypeId(0);
 			}
-			// resource
-			Optional<ResourceInfo> resourceInfo = getResourceInfo(spid,
-					record.getDimMediaFid() != null ? record.getDimMediaFid()
-							.toString() : null);
-			if (resourceInfo.isPresent()) {
-				Long mid = resourceInfo.get().getMid();
-				int series = resourceInfo.get().getSeries();
-				int mimeid = resourceInfo.get().getMimeid();
-				if (mid != null) {
-					record.setDimMovieMid(mid);
-					record.setDimMediaSeries(series);
-					record.setDimMediaMimeid(mimeid);
-				} else {
-					record.setDimMovieMid((long) 0);
-					record.setDimMediaSeries(0);
-					record.setDimMediaMimeid(0);
-				}
-			}
-			// movie
-			Optional<MovieInfo> movieInfo = getMovieInfo(record
-					.getDimMovieMid());
-			if (movieInfo.isPresent()) {
-				record.setDimCpId(movieInfo.get().getDim_cp_id());
-				record.setDimMovieCategory(movieInfo.get().getCategory());
-			} else {
-				record.setDimCpId(100010);
-			}
+
 			// 省份
 			Optional<ParentAreaInfo> parentAreaInfo = getParentAreaInfo(record
 					.getDimAreaId());
@@ -160,29 +119,15 @@ public class OrderDetailDumgBeetleTransformer implements
 			} else {
 				record.setDimSectionParentid(record.getDimSectionId() + "");
 			}
-			// 产品类型
-			Optional<ProductInfo> productInfo = getProductInfo(
-					record.getDimPoId() + "", record.getDimProductPid() + "");
-			if (productInfo.isPresent()) {
-				record.setDimProductPtype(productInfo.get().getPptype());
-			} else {
-				record.setDimProductPtype(0);
-			}
 
 			// 时段
-			record.setDimDateHour(getDayHour(record.getMetricPlaybgntime()));
+			record.setDimDateHour(getDayHour(record.getAccesstime()));
 
-			Optional<ResourceInfo> resourceOpt = getResourceInfo(
-					String.valueOf(record.getDimIspId()),
-					String.valueOf(dry.getFID()));
-			if (resourceOpt.isPresent()) {
-				record.setBitrate(resourceOpt.get().getBitrate());
-			}
 		} catch (Exception e) {
 			throw new DumgBeetleTransformException(e);
 		}
 
-		String partition = getDayPartition(record.getMetricPlaybgntime());
+		String partition = getDayPartition(record.getAccesstime());
 		Map<HiveTable, List<SpecificRecordBase>> result = new HashMap<HiveTable, List<SpecificRecordBase>>();
 		result.put(getTable(partition),
 				Lists.newArrayList((SpecificRecordBase) record));
@@ -201,7 +146,7 @@ public class OrderDetailDumgBeetleTransformer implements
 			return;
 		}
 		partitionCache.put(partition,
-				OrderDetailHiveTableCreator.create(partition));
+				BsPvEpgDetailHiveTableCreator.create(partition));
 	}
 
 	private String getDayPartition(long stamp) {
@@ -212,34 +157,25 @@ public class OrderDetailDumgBeetleTransformer implements
 		return df2.format(new Date(stamp * 1000));
 	}
 
-	private void fillDetail(HiveOrderDetailRecord record, HiveOrderDryRecord dry) {
+	private void fillDetail(BsPvPlayDetailInfo record, BsPvPlayDryInfo dry) {
 		record.setSessid(dry.getSessID());
 		record.setStamp(System.currentTimeMillis());
-		record.setUserip(dry.getNatip());
-		record.setDatasorce(dry.getDatasorce());
-		record.setPlayurl(null);
-		record.setVersion(dry.getApkVersion());
-		record.setDimUserUid(dry.getUID());
-		record.setDimUserHid(dry.getHID());
-		record.setDimOemId(dry.getOEMID());
-		record.setDimMediaFid(dry.getFID());
-		record.setDimProductPid(dry.getPid());
-		record.setDimPoId(dry.getDimPoId());
-		record.setDimEpgId(dry.getEpgid());
-		record.setDimSectionId(dry.getSecid());
-		record.setMetricPlaybgntime(dry.getPlayBgnTime());
-		record.setMetricPlayendtime(dry.getPlayEndTime());
-		record.setMetricPlayalivetime(dry.getPlayAliveTime());
-		record.setMetricDurationtime(dry.getPlayDurationTime());
-		record.setMetricAvgspeed(dry.getAvgspeed());
-		record.setMetricIsad((dry.getIsAdMod()) ? 1 : 0);
-		record.setMetricIsrepeatmod((dry.getIsRepeatMod()) ? 1 : 0);
-		record.setMetricStatus(dry.getMetricStatus());
-		record.setMetricTechtype(dry.getMetricTechtype());
-		record.setMetricPartnerinfo(dry.getMetricPartnerinfo());
-		record.setVssip(dry.getVssip());
+		record.setAccesstime(dry.getAccesstime());
+		record.setDimUserHid(dry.getHid());
+		record.setDimOemId(dry.getOemid());
+		record.setDimUserUid(dry.getUid());
+		record.setUserip(IPtoLong.ipToLong(dry.getUserip() + ""));
+		record.setDimEpgId(IPtoLong.StrToLong(dry.getEpgid() + ""));
+		record.setUrl(dry.getUrl());
+		record.setDimKindCode(dry.getKind());
+		record.setDimSectionId(dry.getChannelCD());
+		record.setPage(dry.getPage());
+		record.setDimMovieMid(IPtoLong.StrToLong(dry.getMid() + ""));
+		record.setUsertype(dry.getUsertype());
+		record.setSearchword(dry.getSearchword());
+		record.setMidlist(dry.getMidlist());
+		record.setButton(dry.getButton());
 		record.setPerfip(dry.getPerfip());
-		record.setExtinfo(dry.getExtinfo());
 	}
 
 	protected String getSpid(Long oemid) throws CacheRefreshException,
@@ -263,16 +199,6 @@ public class OrderDetailDumgBeetleTransformer implements
 		return oemInfoCache.getOemInfo(oemid);
 	}
 
-	public Optional<ResourceInfo> getResourceInfo(String spid, String fid)
-			throws CacheRefreshException, CacheQueryException {
-		return resourceInfoCache.getResourceInfo(spid, fid);
-	}
-
-	public Optional<MovieInfo> getMovieInfo(Long mid)
-			throws CacheRefreshException, CacheQueryException {
-		return movieInfoCache.getMovieInfo(mid);
-	}
-
 	public Optional<ParentAreaInfo> getParentAreaInfo(Integer areaid)
 			throws CacheRefreshException, CacheQueryException {
 		return parentAreaInfoCache.getParentAreaInfo(areaid);
@@ -283,15 +209,9 @@ public class OrderDetailDumgBeetleTransformer implements
 		return parentSectionInfoCache.getParentSectionInfo(sectionid);
 	}
 
-	public Optional<ProductInfo> getProductInfo(String dim_po_id,
-			String dim_product_pid) throws CacheRefreshException,
-			CacheQueryException {
-		return productInfoCache.getProductInfo(dim_po_id, dim_product_pid);
-	}
-
 	public static void main(String[] args) throws IOException,
 			InterruptedException {
-		OrderDetailDumgBeetleTransformer transformer = new OrderDetailDumgBeetleTransformer();
+		BsPvEpgDetailDumgBeetleTransformer transformer = new BsPvEpgDetailDumgBeetleTransformer();
 		transformer.setup(null);
 	}
 }

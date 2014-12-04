@@ -1,0 +1,39 @@
+{
+	"type" : "record",
+	"name" : "BsRevenueDryInfo",
+	"namespace" : "com.voole.hobbit2.hive.order.avro",
+	"fields" : [ {
+		"name" : "sessID",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "datasource",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "accesstime",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "hid",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "oemid",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "uid",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "userip",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "epgid",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "pid",
+		"type" : [ "string", "null" ]
+	}, { 
+		"name" : "result",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "perfip",
+		"type" : [ "string", "null" ]
+	}]
+}
