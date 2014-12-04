@@ -27,7 +27,7 @@ public class PhoenixUtils {
 		System.out.println(getCreateSinglePkPhoenixTableSql(schema, "sessid",
 				String.class, allExcludeColumns));
 		List<Tuple<String, Class<?>>> keyInfos = new ArrayList<Tuple<String, Class<?>>>();
-//		keyInfos.add(new Tuple<String, Class<?>>("hour", String.class));
+		// keyInfos.add(new Tuple<String, Class<?>>("hour", String.class));
 		keyInfos.add(new Tuple<String, Class<?>>("day", String.class));
 		keyInfos.add(new Tuple<String, Class<?>>("dim_oem_id", Long.class));
 		keyInfos.add(new Tuple<String, Class<?>>("sessid", String.class));
@@ -57,6 +57,36 @@ public class PhoenixUtils {
 		endIncludeColumns.add("metric_avgspeed");
 		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "sessid",
 				String.class, endIncludeColumns, null);
+
+		moveDate(schema, 2);
+	}
+
+	public static void moveDate(Schema schema, int start) {
+		List<Field> fields = schema.getFields();
+		int index = start;
+		for (Field field : fields) {
+			Class<?> fieldType = avroTypeToJavaClass.get(getFieldType(field
+					.schema()));
+			String name = field.name();
+			System.out.println("// " + name);
+			if (fieldType == String.class) {
+				System.out.println("ps.setString(" + index + ", qs.getString("
+						+ index + "));");
+			} else {
+				System.out.println(fieldType.getSimpleName() + " tmp" + index
+						+ "=qs." + javaClassToPsGetMethod.get(fieldType) + "("
+						+ index + ");");
+				System.out.println("if (qs.wasNull()) {");
+				System.out.println("ps.setNull(" + index + ", "
+						+ javaClassToSqlType.get(fieldType) + ");");
+				System.out.println(" } else {");
+				System.out.println("ps."
+						+ javaClassToPsSetMethod.get(fieldType) + "(" + index
+						+ ", tmp" + index + ");");
+				System.out.println("}");
+			}
+			index++;
+		}
 	}
 
 	public static void getUpdateInsertSql(Schema schema, String keyName,
@@ -191,7 +221,10 @@ public class PhoenixUtils {
 			}
 		}
 		String columnSql = Joiner.on(',').join(columnSqls);
-		String createSql = "CREATE TABLE " + tableName + " ( " + columnSql
+		String createSql = "CREATE TABLE "
+				+ tableName
+				+ " ( "
+				+ columnSql
 				+ ") SALT_BUCKETS=14 , KEEP_DELETED_CELLS = false, IN_MEMORY = true, TTL = 18000";
 		return createSql;
 	}
@@ -238,6 +271,22 @@ public class PhoenixUtils {
 		javaClassToPsSetMethod.put(String.class, "setString");
 
 		javaClassToPsSetMethod = ImmutableMap.copyOf(javaClassToPsSetMethod);
+	}
+
+	public static Map<Class<?>, String> javaClassToPsGetMethod = new HashMap<Class<?>, String>();
+
+	static {
+		javaClassToPsGetMethod.put(Integer.class, "getInt");
+		javaClassToPsGetMethod.put(Long.class, "getLong");
+
+		javaClassToPsGetMethod.put(Double.class, "getDouble");
+		javaClassToPsGetMethod.put(Float.class, "getFloat");
+
+		javaClassToPsGetMethod.put(Boolean.class, "getBoolean");
+
+		javaClassToPsGetMethod.put(String.class, "getString");
+
+		javaClassToPsGetMethod = ImmutableMap.copyOf(javaClassToPsGetMethod);
 	}
 
 	public static Map<Class<?>, String> javaClassToSqlType = new HashMap<Class<?>, String>();

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -470,74 +471,320 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		}
 	}
 
+	protected String fillInsertSql(ResultSet qs, PreparedStatement ps)
+			throws SQLException {
+		String sessid = qs.getString("sessid");
+		long playBgnTime = qs.getLong(28);
+		if (!qs.wasNull()) {// 有影片播放开始信息
+			long playAliveTime = qs.getLong(29);
+			long playendTime = qs.getLong(30);
+			long endTime = Math.max(playAliveTime, playendTime);
+			long durationtime = 0;
+			if (endTime != 0) {
+				durationtime = endTime - playBgnTime;
+			}
+			ps.setString(1, qs.getString(1));// day
+			// sessid
+			ps.setString(2, qs.getString(2));
+			// stamp
+			Long tmp3 = qs.getLong(3);
+			if (qs.wasNull()) {
+				ps.setNull(3, Types.BIGINT);
+			} else {
+				ps.setLong(3, tmp3);
+			}
+			// userip
+			Long tmp4 = qs.getLong(4);
+			if (qs.wasNull()) {
+				ps.setNull(4, Types.BIGINT);
+			} else {
+				ps.setLong(4, tmp4);
+			}
+			// datasorce
+			Integer tmp5 = qs.getInt(5);
+			if (qs.wasNull()) {
+				ps.setNull(5, Types.INTEGER);
+			} else {
+				ps.setInt(5, tmp5);
+			}
+			// playurl
+			ps.setString(6, qs.getString(6));
+			// version
+			ps.setString(7, qs.getString(7));
+			// dim_date_hour
+			ps.setString(8, qs.getString(8));
+			// dim_isp_id
+			Integer tmp9 = qs.getInt(9);
+			if (qs.wasNull()) {
+				ps.setNull(9, Types.INTEGER);
+			} else {
+				ps.setInt(9, tmp9);
+			}
+			// dim_user_uid
+			ps.setString(10, qs.getString(10));
+			// dim_user_hid
+			ps.setString(11, qs.getString(11));
+			// dim_oem_id
+			Long tmp12 = qs.getLong(12);
+			if (qs.wasNull()) {
+				ps.setNull(12, Types.BIGINT);
+			} else {
+				ps.setLong(12, tmp12);
+			}
+			// dim_area_id
+			Integer tmp13 = qs.getInt(13);
+			if (qs.wasNull()) {
+				ps.setNull(13, Types.INTEGER);
+			} else {
+				ps.setInt(13, tmp13);
+			}
+			// dim_area_parentid
+			Integer tmp14 = qs.getInt(14);
+			if (qs.wasNull()) {
+				ps.setNull(14, Types.INTEGER);
+			} else {
+				ps.setInt(14, tmp14);
+			}
+			// dim_nettype_id
+			Integer tmp15 = qs.getInt(15);
+			if (qs.wasNull()) {
+				ps.setNull(15, Types.INTEGER);
+			} else {
+				ps.setInt(15, tmp15);
+			}
+			// dim_media_fid
+			ps.setString(16, qs.getString(16));
+			// dim_media_series
+			Integer tmp17 = qs.getInt(17);
+			if (qs.wasNull()) {
+				ps.setNull(17, Types.INTEGER);
+			} else {
+				ps.setInt(17, tmp17);
+			}
+			// dim_media_mimeid
+			Integer tmp18 = qs.getInt(18);
+			if (qs.wasNull()) {
+				ps.setNull(18, Types.INTEGER);
+			} else {
+				ps.setInt(18, tmp18);
+			}
+			// dim_movie_mid
+			Long tmp19 = qs.getLong(19);
+			if (qs.wasNull()) {
+				ps.setNull(19, Types.BIGINT);
+			} else {
+				ps.setLong(19, tmp19);
+			}
+			// dim_cp_id
+			Integer tmp20 = qs.getInt(20);
+			if (qs.wasNull()) {
+				ps.setNull(20, Types.INTEGER);
+			} else {
+				ps.setInt(20, tmp20);
+			}
+			// dim_movie_category
+			ps.setString(21, qs.getString(21));
+			// dim_product_pid
+			ps.setString(22, qs.getString(22));
+			// dim_product_ptype
+			Integer tmp23 = qs.getInt(23);
+			if (qs.wasNull()) {
+				ps.setNull(23, Types.INTEGER);
+			} else {
+				ps.setInt(23, tmp23);
+			}
+			// dim_po_id
+			Integer tmp24 = qs.getInt(24);
+			if (qs.wasNull()) {
+				ps.setNull(24, Types.INTEGER);
+			} else {
+				ps.setInt(24, tmp24);
+			}
+			// dim_epg_id
+			Long tmp25 = qs.getLong(25);
+			if (qs.wasNull()) {
+				ps.setNull(25, Types.BIGINT);
+			} else {
+				ps.setLong(25, tmp25);
+			}
+			// dim_section_id
+			ps.setString(26, qs.getString(26));
+			// dim_section_parentid
+			ps.setString(27, qs.getString(27));
+			// metric_playbgntime
+			Long tmp28 = qs.getLong(28);
+			if (qs.wasNull()) {
+				ps.setNull(28, Types.BIGINT);
+			} else {
+				ps.setLong(28, tmp28);
+			}
+			// metric_playalivetime
+			Long tmp29 = qs.getLong(29);
+			if (qs.wasNull()) {
+				ps.setNull(29, Types.BIGINT);
+			} else {
+				ps.setLong(29, tmp29);
+			}
+			// metric_playendtime
+			Long tmp30 = qs.getLong(30);
+			if (qs.wasNull()) {
+				ps.setNull(30, Types.BIGINT);
+			} else {
+				ps.setLong(30, tmp30);
+			}
+			// metric_durationtime
+			ps.setLong(31, durationtime);
+			// metric_avgspeed
+			Long tmp32 = qs.getLong(32);
+			if (qs.wasNull()) {
+				ps.setNull(32, Types.BIGINT);
+			} else {
+				ps.setLong(32, tmp32);
+			}
+			// metric_isad
+			Integer tmp33 = qs.getInt(33);
+			if (qs.wasNull()) {
+				ps.setNull(33, Types.INTEGER);
+			} else {
+				ps.setInt(33, tmp33);
+			}
+			// metric_isrepeatmod
+			Integer tmp34 = qs.getInt(34);
+			if (qs.wasNull()) {
+				ps.setNull(34, Types.INTEGER);
+			} else {
+				ps.setInt(34, tmp34);
+			}
+			// metric_status
+			Integer tmp35 = qs.getInt(35);
+			if (qs.wasNull()) {
+				ps.setNull(35, Types.INTEGER);
+			} else {
+				ps.setInt(35, tmp35);
+			}
+			// metric_techtype
+			Integer tmp36 = qs.getInt(36);
+			if (qs.wasNull()) {
+				ps.setNull(36, Types.INTEGER);
+			} else {
+				ps.setInt(36, tmp36);
+			}
+			// metric_partnerinfo
+			ps.setString(37, qs.getString(37));
+			// extinfo
+			ps.setString(38, qs.getString(38));
+			// vssip
+			Long tmp39 = qs.getLong(39);
+			if (qs.wasNull()) {
+				ps.setNull(39, Types.BIGINT);
+			} else {
+				ps.setLong(39, tmp39);
+			}
+			// perfip
+			Long tmp40 = qs.getLong(40);
+			if (qs.wasNull()) {
+				ps.setNull(40, Types.BIGINT);
+			} else {
+				ps.setLong(40, tmp40);
+			}
+			// bitrate
+			Integer tmp41 = qs.getInt(41);
+			if (qs.wasNull()) {
+				ps.setNull(41, Types.INTEGER);
+			} else {
+				ps.setInt(41, tmp41);
+			}
+
+			ps.addBatch();
+		}
+		return sessid;
+	}
+
 	@Override
 	public void sync() {
-		String sql = "";
-		sql+="UPSERT INTO fact_vod_history ( ";
-		sql+="  DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate ";
-		sql+=")  ";
-		sql+="SELECT  ";
-		sql+="  TO_CHAR ( ";
-		sql+="    CAST( ";
-		sql+="      METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
-		sql+="    ), 'yyyy-MM-dd' ";
-		sql+="  ) AS DATE, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate  ";
-		sql+="FROM ";
-		sql+="  HIVEORDERDETAILRECORD_PHOENIX  ";
-		sql+="WHERE METRIC_PLAYBGNTIME IS NOT NULL  ";
-		sql+="  AND METRIC_PLAYBGNTIME <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
+		String querySql = "";
+		querySql += "SELECT  ";
+		querySql += "  TO_CHAR ( ";
+		querySql += "    CAST( ";
+		querySql += "      METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
+		querySql += "    ), 'yyyy-MM-dd' ";
+		querySql += "  ) AS DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate  ";
+		querySql += "FROM ";
+		querySql += "  HIVEORDERDETAILRECORD_PHOENIX  ";
+		querySql += "WHERE  ";
+		querySql += "  CASE ";
+		querySql += "    WHEN METRIC_PLAYALIVETIME IS NULL  ";
+		querySql += "    OR METRIC_PLAYBGNTIME > METRIC_PLAYALIVETIME  ";
+		querySql += "    THEN  ";
+		querySql += "    CASE ";
+		querySql += "      WHEN METRIC_PLAYENDTIME IS NULL  ";
+		querySql += "      OR METRIC_PLAYBGNTIME > METRIC_PLAYENDTIME  ";
+		querySql += "      THEN METRIC_PLAYBGNTIME  ";
+		querySql += "      ELSE METRIC_PLAYENDTIME  ";
+		querySql += "    END  ";
+		querySql += "    ELSE  ";
+		querySql += "    CASE ";
+		querySql += "      WHEN METRIC_PLAYENDTIME IS NULL  ";
+		querySql += "      OR METRIC_PLAYALIVETIME > METRIC_PLAYENDTIME  ";
+		querySql += "      THEN METRIC_PLAYALIVETIME  ";
+		querySql += "      ELSE METRIC_PLAYENDTIME  ";
+		querySql += "    END  ";
+		querySql += "  END <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
 
-		String deleteOldSql = "";
-		deleteOldSql += "DELETE  ";
-		deleteOldSql += "FROM ";
-		deleteOldSql += "  HIVEORDERDETAILRECORD_PHOENIX  ";
-		deleteOldSql += "WHERE  ";
-		deleteOldSql += "  CASE ";
-		deleteOldSql += "    WHEN METRIC_PLAYALIVETIME IS NULL  ";
-		deleteOldSql += "    OR METRIC_PLAYBGNTIME > METRIC_PLAYALIVETIME  ";
-		deleteOldSql += "    THEN  ";
-		deleteOldSql += "    CASE ";
-		deleteOldSql += "      WHEN METRIC_PLAYENDTIME IS NULL  ";
-		deleteOldSql += "      OR METRIC_PLAYBGNTIME > METRIC_PLAYENDTIME  ";
-		deleteOldSql += "      THEN METRIC_PLAYBGNTIME  ";
-		deleteOldSql += "      ELSE METRIC_PLAYENDTIME  ";
-		deleteOldSql += "    END  ";
-		deleteOldSql += "    ELSE  ";
-		deleteOldSql += "    CASE ";
-		deleteOldSql += "      WHEN METRIC_PLAYENDTIME IS NULL  ";
-		deleteOldSql += "      OR METRIC_PLAYALIVETIME > METRIC_PLAYENDTIME  ";
-		deleteOldSql += "      THEN METRIC_PLAYALIVETIME  ";
-		deleteOldSql += "      ELSE METRIC_PLAYENDTIME  ";
-		deleteOldSql += "    END  ";
-		deleteOldSql += "  END <= CAST(CURRENT_DATE() AS BIGINT) / 1000 - 10800  ";
-		PreparedStatement ps = null;
-		PreparedStatement deleteps = null;
+		String insertSql = "";
+		querySql += "UPSERT INTO fact_vod_history ( ";
+		querySql += "  DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate ";
+		querySql += ")  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+
+		String deleteSql = "DELETE FROM HIVEORDERDETAILRECORD_PHOENIX WHERE sessid = ? ";
+		PreparedStatement queryPs = null;
+		ResultSet queryResult = null;
+		PreparedStatement insertPs = null;
+		PreparedStatement deletePs = null;
 		try {
-			ps = connection.prepareStatement(sql);
-			ps.execute();
-			
-			log.info("copy real time data finished");
+			queryPs = connection.prepareStatement(querySql);
+			insertPs = connection.prepareStatement(insertSql);
+			deletePs = connection.prepareStatement(deleteSql);
 
-			deleteps = connection.prepareStatement(deleteOldSql);
-			deleteps.execute();
-			
-			log.info("delete time out data finished");
+			queryResult = queryPs.executeQuery();
+			while (queryResult.next()) {
+				String sessid = fillInsertSql(queryResult, insertPs);
 
-		} catch (SQLException e) {
+				deletePs.setString(1, sessid);
+				deletePs.addBatch();
+			}
+			insertPs.executeBatch();
+			deletePs.executeBatch();
+			connection.commit();
+		} catch (Exception e) {
 			Throwables.propagate(e);
 		} finally {
-			if (ps != null) {
+			if (queryPs != null) {
 				try {
-					ps.close();
-					ps = null;
+					queryPs.close();
 				} catch (SQLException e) {
 					Throwables.propagate(e);
 				}
 			}
-			if (deleteps != null) {
+			if (queryResult != null) {
 				try {
-					deleteps.close();
-					deleteps = null;
+					queryResult.close();
+				} catch (SQLException e) {
+					Throwables.propagate(e);
+				}
+			}
+
+			if (insertPs != null) {
+				try {
+					insertPs.close();
+				} catch (SQLException e) {
+					Throwables.propagate(e);
+				}
+			}
+
+			if (deletePs != null) {
+				try {
+					deletePs.close();
 				} catch (SQLException e) {
 					Throwables.propagate(e);
 				}
