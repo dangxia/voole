@@ -20,7 +20,11 @@ public class DirectAvroStampFinder implements IStampFinder {
 			String accesstime = String
 					.valueOf((CharSequence) ((SpecificRecordBase) value)
 							.get("accesstime"));
-			stamp = Long.parseLong(accesstime);
+			try {
+				stamp = Long.parseLong(accesstime);
+			} catch (Exception e) {
+			}
+
 		} else {
 			throw new IllegalArgumentException("Don't support class:"
 					+ value.getClass().getName());
