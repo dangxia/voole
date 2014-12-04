@@ -45,7 +45,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 
 			connection2 = DriverManager
 					.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
-			connection2.setAutoCommit(true);
+			connection2.setAutoCommit(false);
 		} catch (Exception e) {
 			log.warn("init PhoenixDao error:", e);
 			Throwables.propagate(e);
@@ -762,6 +762,9 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 				total++;
 				if (total % 1000 == 0) {
 					log.info("sync index at:" + total);
+					insertPs.executeBatch();
+					deletePs.executeBatch();
+					connection2.commit();
 				}
 			}
 			insertPs.executeBatch();
