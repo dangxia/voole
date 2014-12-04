@@ -34,6 +34,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 			.getLogger(PhoenixDaoImpl.class);
 	private Connection connection;
 	private Connection connection2;
+
 	public PhoenixDaoImpl() {
 		try {
 			Class.forName("org.apache.phoenix.jdbc.PhoenixDriver", true,
@@ -41,7 +42,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 			connection = DriverManager
 					.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
 			connection.setAutoCommit(true);
-			
+
 			connection2 = DriverManager
 					.getConnection("jdbc:phoenix:data-slave2.voole.com,data-slave3.voole.com,data-slave4.voole.com");
 			connection2.setAutoCommit(true);
@@ -745,6 +746,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		ResultSet queryResult = null;
 		PreparedStatement insertPs = null;
 		PreparedStatement deletePs = null;
+		long total = 0l;
 		try {
 			queryPs = connection2.prepareStatement(querySql);
 			insertPs = connection2.prepareStatement(insertSql);
@@ -756,6 +758,11 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 
 				deletePs.setString(1, sessid);
 				deletePs.addBatch();
+
+				total++;
+				if (total % 1000 == 0) {
+					log.info("sync index at:" + total);
+				}
 			}
 			insertPs.executeBatch();
 			deletePs.executeBatch();
