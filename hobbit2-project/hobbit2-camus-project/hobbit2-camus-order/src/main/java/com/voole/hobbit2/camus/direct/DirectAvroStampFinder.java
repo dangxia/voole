@@ -17,7 +17,10 @@ public class DirectAvroStampFinder implements IStampFinder {
 		if (value instanceof BsPvPlayDryInfo) {
 			stamp = (Long) ((SpecificRecordBase) value).get("accesstime");
 		} else if (value instanceof BsRevenueDryInfo) {
-			stamp = (Long) ((SpecificRecordBase) value).get("accesstime");
+			String accesstime = String
+					.valueOf((CharSequence) ((SpecificRecordBase) value)
+							.get("accesstime"));
+			stamp = Long.parseLong(accesstime);
 		} else {
 			throw new IllegalArgumentException("Don't support class:"
 					+ value.getClass().getName());
