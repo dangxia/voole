@@ -1,23 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>hobbit2-camus-hive-order-mixed</artifactId>
 	<parent>
 		<groupId>com.voole.hobbit2</groupId>
 		<artifactId>hobbit2-project</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../../</relativePath>
 	</parent>
+	<artifactId>hobbit2-hive-direct</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>com.voole.hobbit2</groupId>
-			<artifactId>hobbit2-camus-mr</artifactId>
+			<artifactId>hobbit2-tools-kafka</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.voole.hobbit2</groupId>
-			<artifactId>hobbit2-hive-order</artifactId>
+			<artifactId>hobbit2-camus-order</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.voole</groupId>
+			<version>1.0</version>
+			<artifactId>monitor2-playurl-analyze</artifactId>
 		</dependency>
 
 		<!-- hadoop mapreduce -->
@@ -51,9 +61,25 @@
 			<scope>provided</scope>
 		</dependency>
 		<!--/ hadoop mapreduce -->
+
 		<dependency>
 			<groupId>com.voole.hobbit2</groupId>
-			<artifactId>hobbit2-hive-direct</artifactId>
+			<artifactId>hobbit2-hive-order-avro</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.voole.dungbeetle</groupId>
+			<artifactId>dungbeetle-order-record</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.voole.dungbeetle</groupId>
+			<artifactId>dungbeetle-ad</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.voole.hobbit2</groupId>
+			<artifactId>hobbit2-order-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

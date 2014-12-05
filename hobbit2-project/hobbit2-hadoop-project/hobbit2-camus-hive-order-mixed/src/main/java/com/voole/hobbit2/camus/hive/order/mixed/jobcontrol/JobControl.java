@@ -14,6 +14,8 @@ import org.apache.hadoop.util.StringUtils;
 import com.voole.hobbit2.camus.hive.order.mixed.jobcontrol.ControlledJob.State;
 import com.voole.hobbit2.camus.mr.CamusJobCreator;
 import com.voole.hobbit2.camus.mr.CamusMetaConfigs;
+import com.voole.hobbit2.hive.direct.HiveDirectJobCreator;
+import com.voole.hobbit2.hive.direct.HiveDirectMetaConfigs;
 import com.voole.hobbit2.hive.order.HiveOrderJobCreator;
 import com.voole.hobbit2.hive.order.HiveOrderMetaConfigs;
 
@@ -246,6 +248,9 @@ public class JobControl implements Runnable {
 		} else if (j.getJobName().equals(
 				HiveOrderMetaConfigs.getJobName(j.getJob()))) {
 			HiveOrderJobCreator.finishJob(j.getJob());
+		} else if (j.getJobName().equals(
+				HiveDirectMetaConfigs.getJobName(j.getJob()))) {
+			HiveDirectJobCreator.finishJob(j.getJob());
 		}
 
 	}

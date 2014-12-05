@@ -21,6 +21,7 @@ import com.voole.hobbit2.camus.hive.order.mixed.jobcontrol.JobControl;
 import com.voole.hobbit2.camus.mr.CamusJobCreator;
 import com.voole.hobbit2.common.Hobbit2Configuration;
 import com.voole.hobbit2.common.config.ZookeeperMetaConfigs;
+import com.voole.hobbit2.hive.direct.HiveDirectJobCreator;
 import com.voole.hobbit2.hive.order.HiveOrderJobCreator;
 import com.voole.hobbit2.tools.kafka.ZookeeperUtils;
 
@@ -137,11 +138,25 @@ public class MixedJobChain extends Configured implements Tool {
 	protected void fillJobControl(String[] args) throws Exception {
 		ControlledJob camusControlledJob = createCamusControlledJob(args);
 		ControlledJob hiveOrderControlledJob = createHiveOrderControlledJob(args);
+		ControlledJob hiveDirectControlledJob = createHiveDirectControlledJob(args);
 		hiveOrderControlledJob.addDependingJob(camusControlledJob);
+		hiveDirectControlledJob.addDependingJob(camusControlledJob);
 
 		jobControl.addJob(camusControlledJob);
 		jobControl.addJob(hiveOrderControlledJob);
+		jobControl.addJob(hiveDirectControlledJob);
+	}
 
+	protected ControlledJob createHiveDirectControlledJob(String[] args)
+			throws IOException, ConfigurationException, ParseException {
+		HiveDirectJobCreator hiveOrderJobCreator = new HiveDirectJobCreator();
+		hiveOrderJobCreator.setConf(getConf());
+		Job hiveOrderJob = hiveOrderJobCreator.create(args);
+		ControlledJob hiveOrderControlledJob = new ControlledJob(
+				hiveOrderJob.getConfiguration());
+		hiveOrderControlledJob.setJob(hiveOrderJob);
+
+		return hiveOrderControlledJob;
 	}
 
 	protected ControlledJob createHiveOrderControlledJob(String[] args)
