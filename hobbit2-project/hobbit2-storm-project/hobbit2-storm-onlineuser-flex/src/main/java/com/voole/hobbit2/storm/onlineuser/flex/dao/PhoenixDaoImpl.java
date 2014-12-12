@@ -479,7 +479,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 	protected String fillInsertSql(ResultSet qs, PreparedStatement ps)
 			throws SQLException {
 		String sessid = qs.getString("sessid");
-		long playBgnTime = qs.getLong(28);
+		long playBgnTime = qs.getLong(27);
 		if (!qs.wasNull()) {// 有影片播放开始信息
 			long playAliveTime = qs.getLong(29);
 			long playendTime = qs.getLong(30);
