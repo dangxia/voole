@@ -488,216 +488,216 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 			if (endTime != 0) {
 				durationtime = endTime - playBgnTime;
 			}
-			ps.setString(1, qs.getString(1));// day
+
 			// sessid
-			ps.setString(2, qs.getString(2));
+			ps.setString(1, qs.getString(1));
 			// stamp
+			Long tmp2 = qs.getLong(2);
+			if (qs.wasNull()) {
+				ps.setNull(2, Types.BIGINT);
+			} else {
+				ps.setLong(2, tmp2);
+			}
+			// userip
 			Long tmp3 = qs.getLong(3);
 			if (qs.wasNull()) {
 				ps.setNull(3, Types.BIGINT);
 			} else {
 				ps.setLong(3, tmp3);
 			}
-			// userip
-			Long tmp4 = qs.getLong(4);
-			if (qs.wasNull()) {
-				ps.setNull(4, Types.BIGINT);
-			} else {
-				ps.setLong(4, tmp4);
-			}
 			// datasorce
-			Integer tmp5 = qs.getInt(5);
+			Integer tmp4 = qs.getInt(4);
 			if (qs.wasNull()) {
-				ps.setNull(5, Types.INTEGER);
+				ps.setNull(4, Types.INTEGER);
 			} else {
-				ps.setInt(5, tmp5);
+				ps.setInt(4, tmp4);
 			}
 			// playurl
-			ps.setString(6, qs.getString(6));
+			ps.setString(5, qs.getString(5));
 			// version
-			ps.setString(7, qs.getString(7));
+			ps.setString(6, qs.getString(6));
 			// dim_date_hour
-			ps.setString(8, qs.getString(8));
+			ps.setString(7, qs.getString(7));
 			// dim_isp_id
-			Integer tmp9 = qs.getInt(9);
+			Integer tmp8 = qs.getInt(8);
 			if (qs.wasNull()) {
-				ps.setNull(9, Types.INTEGER);
+				ps.setNull(8, Types.INTEGER);
 			} else {
-				ps.setInt(9, tmp9);
+				ps.setInt(8, tmp8);
 			}
 			// dim_user_uid
-			ps.setString(10, qs.getString(10));
+			ps.setString(9, qs.getString(9));
 			// dim_user_hid
-			ps.setString(11, qs.getString(11));
+			ps.setString(10, qs.getString(10));
 			// dim_oem_id
-			Long tmp12 = qs.getLong(12);
+			Long tmp11 = qs.getLong(11);
 			if (qs.wasNull()) {
-				ps.setNull(12, Types.BIGINT);
+				ps.setLong(11, -1l);
 			} else {
-				ps.setLong(12, tmp12);
+				ps.setLong(11, tmp11);
 			}
 			// dim_area_id
+			Integer tmp12 = qs.getInt(12);
+			if (qs.wasNull()) {
+				ps.setNull(12, Types.INTEGER);
+			} else {
+				ps.setInt(12, tmp12);
+			}
+			// dim_area_parentid
 			Integer tmp13 = qs.getInt(13);
 			if (qs.wasNull()) {
 				ps.setNull(13, Types.INTEGER);
 			} else {
 				ps.setInt(13, tmp13);
 			}
-			// dim_area_parentid
+			// dim_nettype_id
 			Integer tmp14 = qs.getInt(14);
 			if (qs.wasNull()) {
 				ps.setNull(14, Types.INTEGER);
 			} else {
 				ps.setInt(14, tmp14);
 			}
-			// dim_nettype_id
-			Integer tmp15 = qs.getInt(15);
-			if (qs.wasNull()) {
-				ps.setNull(15, Types.INTEGER);
-			} else {
-				ps.setInt(15, tmp15);
-			}
 			// dim_media_fid
-			ps.setString(16, qs.getString(16));
+			ps.setString(15, qs.getString(15));
 			// dim_media_series
+			Integer tmp16 = qs.getInt(16);
+			if (qs.wasNull()) {
+				ps.setNull(16, Types.INTEGER);
+			} else {
+				ps.setInt(16, tmp16);
+			}
+			// dim_media_mimeid
 			Integer tmp17 = qs.getInt(17);
 			if (qs.wasNull()) {
 				ps.setNull(17, Types.INTEGER);
 			} else {
 				ps.setInt(17, tmp17);
 			}
-			// dim_media_mimeid
-			Integer tmp18 = qs.getInt(18);
-			if (qs.wasNull()) {
-				ps.setNull(18, Types.INTEGER);
-			} else {
-				ps.setInt(18, tmp18);
-			}
 			// dim_movie_mid
-			Long tmp19 = qs.getLong(19);
+			Long tmp18 = qs.getLong(18);
 			if (qs.wasNull()) {
-				ps.setNull(19, Types.BIGINT);
+				ps.setNull(18, Types.BIGINT);
 			} else {
-				ps.setLong(19, tmp19);
+				ps.setLong(18, tmp18);
 			}
 			// dim_cp_id
-			Integer tmp20 = qs.getInt(20);
+			Integer tmp19 = qs.getInt(19);
 			if (qs.wasNull()) {
-				ps.setNull(20, Types.INTEGER);
+				ps.setNull(19, Types.INTEGER);
 			} else {
-				ps.setInt(20, tmp20);
+				ps.setInt(19, tmp19);
 			}
 			// dim_movie_category
-			ps.setString(21, qs.getString(21));
+			ps.setString(20, qs.getString(20));
 			// dim_product_pid
-			ps.setString(22, qs.getString(22));
+			ps.setString(21, qs.getString(21));
 			// dim_product_ptype
+			Integer tmp22 = qs.getInt(22);
+			if (qs.wasNull()) {
+				ps.setNull(22, Types.INTEGER);
+			} else {
+				ps.setInt(22, tmp22);
+			}
+			// dim_po_id
 			Integer tmp23 = qs.getInt(23);
 			if (qs.wasNull()) {
 				ps.setNull(23, Types.INTEGER);
 			} else {
 				ps.setInt(23, tmp23);
 			}
-			// dim_po_id
-			Integer tmp24 = qs.getInt(24);
-			if (qs.wasNull()) {
-				ps.setNull(24, Types.INTEGER);
-			} else {
-				ps.setInt(24, tmp24);
-			}
 			// dim_epg_id
-			Long tmp25 = qs.getLong(25);
+			Long tmp24 = qs.getLong(24);
 			if (qs.wasNull()) {
-				ps.setNull(25, Types.BIGINT);
+				ps.setNull(24, Types.BIGINT);
 			} else {
-				ps.setLong(25, tmp25);
+				ps.setLong(24, tmp24);
 			}
 			// dim_section_id
-			ps.setString(26, qs.getString(26));
+			ps.setString(25, qs.getString(25));
 			// dim_section_parentid
-			ps.setString(27, qs.getString(27));
+			ps.setString(26, qs.getString(26));
 			// metric_playbgntime
+			Long tmp27 = qs.getLong(27);
+			if (qs.wasNull()) {
+				ps.setNull(27, Types.BIGINT);
+			} else {
+				ps.setLong(27, tmp27);
+			}
+			// metric_playalivetime
 			Long tmp28 = qs.getLong(28);
 			if (qs.wasNull()) {
 				ps.setNull(28, Types.BIGINT);
 			} else {
 				ps.setLong(28, tmp28);
 			}
-			// metric_playalivetime
+			// metric_playendtime
 			Long tmp29 = qs.getLong(29);
 			if (qs.wasNull()) {
 				ps.setNull(29, Types.BIGINT);
 			} else {
 				ps.setLong(29, tmp29);
 			}
-			// metric_playendtime
-			Long tmp30 = qs.getLong(30);
-			if (qs.wasNull()) {
-				ps.setNull(30, Types.BIGINT);
-			} else {
-				ps.setLong(30, tmp30);
-			}
 			// metric_durationtime
 			ps.setLong(31, durationtime);
 			// metric_avgspeed
-			Long tmp32 = qs.getLong(32);
+			Long tmp31 = qs.getLong(31);
 			if (qs.wasNull()) {
-				ps.setNull(32, Types.BIGINT);
+				ps.setNull(31, Types.BIGINT);
 			} else {
-				ps.setLong(32, tmp32);
+				ps.setLong(31, tmp31);
 			}
 			// metric_isad
+			Integer tmp32 = qs.getInt(32);
+			if (qs.wasNull()) {
+				ps.setNull(32, Types.INTEGER);
+			} else {
+				ps.setInt(32, tmp32);
+			}
+			// metric_isrepeatmod
 			Integer tmp33 = qs.getInt(33);
 			if (qs.wasNull()) {
 				ps.setNull(33, Types.INTEGER);
 			} else {
 				ps.setInt(33, tmp33);
 			}
-			// metric_isrepeatmod
+			// metric_status
 			Integer tmp34 = qs.getInt(34);
 			if (qs.wasNull()) {
 				ps.setNull(34, Types.INTEGER);
 			} else {
 				ps.setInt(34, tmp34);
 			}
-			// metric_status
+			// metric_techtype
 			Integer tmp35 = qs.getInt(35);
 			if (qs.wasNull()) {
 				ps.setNull(35, Types.INTEGER);
 			} else {
 				ps.setInt(35, tmp35);
 			}
-			// metric_techtype
-			Integer tmp36 = qs.getInt(36);
-			if (qs.wasNull()) {
-				ps.setNull(36, Types.INTEGER);
-			} else {
-				ps.setInt(36, tmp36);
-			}
 			// metric_partnerinfo
-			ps.setString(37, qs.getString(37));
+			ps.setString(36, qs.getString(36));
 			// extinfo
-			ps.setString(38, qs.getString(38));
+			ps.setString(37, qs.getString(37));
 			// vssip
+			Long tmp38 = qs.getLong(38);
+			if (qs.wasNull()) {
+				ps.setNull(38, Types.BIGINT);
+			} else {
+				ps.setLong(38, tmp38);
+			}
+			// perfip
 			Long tmp39 = qs.getLong(39);
 			if (qs.wasNull()) {
 				ps.setNull(39, Types.BIGINT);
 			} else {
 				ps.setLong(39, tmp39);
 			}
-			// perfip
-			Long tmp40 = qs.getLong(40);
-			if (qs.wasNull()) {
-				ps.setNull(40, Types.BIGINT);
-			} else {
-				ps.setLong(40, tmp40);
-			}
 			// bitrate
-			Integer tmp41 = qs.getInt(41);
+			Integer tmp40 = qs.getInt(40);
 			if (qs.wasNull()) {
-				ps.setNull(41, Types.INTEGER);
+				ps.setNull(40, Types.INTEGER);
 			} else {
-				ps.setInt(41, tmp41);
+				ps.setInt(40, tmp40);
 			}
 
 			ps.addBatch();
@@ -709,11 +709,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 	public void sync() {
 		String querySql = "";
 		querySql += "SELECT  ";
-		querySql += "  TO_CHAR ( ";
-		querySql += "    CAST( ";
-		querySql += "      METRIC_PLAYBGNTIME * 1000 AS TIMESTAMP ";
-		querySql += "    ), 'yyyy-MM-dd' ";
-		querySql += "  ) AS DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate  ";
+		querySql += "  sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate  ";
 		querySql += "FROM ";
 		querySql += "  HIVEORDERDETAILRECORD_PHOENIX  ";
 		querySql += "WHERE  ";
@@ -738,8 +734,8 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 
 		String insertSql = "";
 		insertSql += "UPSERT INTO fact_vod_history ( ";
-		insertSql += "  DAY, sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate ";
-		insertSql += ")  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+		insertSql += "  sessid, stamp, userip, datasorce, playurl, VERSION, dim_date_hour, dim_isp_id, dim_user_uid, dim_user_hid, dim_oem_id, dim_area_id, dim_area_parentid, dim_nettype_id, dim_media_fid, dim_media_series, dim_media_mimeid, dim_movie_mid, dim_cp_id, dim_movie_category, dim_product_pid, dim_product_ptype, dim_po_id, dim_epg_id, dim_section_id, dim_section_parentid, metric_playbgntime, metric_playalivetime, metric_playendtime, metric_durationtime, metric_avgspeed, metric_isad, metric_isrepeatmod, metric_status, metric_techtype, metric_partnerinfo, extinfo, vssip, perfip, bitrate ";
+		insertSql += ")  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 
 		String deleteSql = "DELETE FROM HIVEORDERDETAILRECORD_PHOENIX WHERE sessid = ? ";
 		PreparedStatement queryPs = null;

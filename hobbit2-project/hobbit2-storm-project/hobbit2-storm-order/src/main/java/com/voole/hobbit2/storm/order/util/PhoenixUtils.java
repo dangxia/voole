@@ -28,7 +28,7 @@ public class PhoenixUtils {
 				String.class, allExcludeColumns));
 		List<Tuple<String, Class<?>>> keyInfos = new ArrayList<Tuple<String, Class<?>>>();
 		// keyInfos.add(new Tuple<String, Class<?>>("hour", String.class));
-		keyInfos.add(new Tuple<String, Class<?>>("day", String.class));
+		keyInfos.add(new Tuple<String, Class<?>>("metric_playbgntime", Long.class));
 		keyInfos.add(new Tuple<String, Class<?>>("dim_oem_id", Long.class));
 		keyInfos.add(new Tuple<String, Class<?>>("sessid", String.class));
 		System.out.println(getCreateMultiPkPhoenixTableSql(schema,
@@ -58,7 +58,7 @@ public class PhoenixUtils {
 		getUpdateInsertSql(schema, "HiveOrderDetailRecord_phoenix", "sessid",
 				String.class, endIncludeColumns, null);
 
-		moveDate(schema, 2);
+		moveDate(schema, 1);
 	}
 
 	public static void moveDate(Schema schema, int start) {
