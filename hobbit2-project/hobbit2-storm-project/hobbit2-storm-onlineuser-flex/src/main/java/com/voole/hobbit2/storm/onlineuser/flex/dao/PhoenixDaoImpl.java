@@ -638,7 +638,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 				ps.setLong(29, tmp29);
 			}
 			// metric_durationtime
-			ps.setLong(31, durationtime);
+			ps.setLong(30, durationtime);
 			// metric_avgspeed
 			Long tmp31 = qs.getLong(31);
 			if (qs.wasNull()) {
