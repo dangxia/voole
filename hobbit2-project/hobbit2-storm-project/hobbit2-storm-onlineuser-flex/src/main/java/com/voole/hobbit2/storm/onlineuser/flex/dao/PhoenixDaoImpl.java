@@ -483,7 +483,12 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		if (!qs.wasNull()) {// 有影片播放开始信息
 			long playAliveTime = qs.getLong(29);
 			long playendTime = qs.getLong(30);
-			long endTime = Math.max(playAliveTime, playendTime);
+			long endTime = 0;
+			if(playendTime == 0){
+				endTime = playAliveTime;
+			}else{
+				endTime = playendTime;
+			}
 			long durationtime = 0;
 			if (endTime != 0) {
 				durationtime = endTime - playBgnTime;
