@@ -1,0 +1,37 @@
+@startuml
+[*] --> 会话中 : 创建会话
+
+state 会话中{
+	[*] --> prepare
+	prepare --> playing
+	
+	state playing{
+		[*] --> play_start
+		play_start --> Active
+		
+		Active --> Active : state_change
+		Active --> play_complete
+		play_start -> play_complete
+		state Active{
+			[*] --> pause
+			pause --> resume
+			resume --> pause
+			--
+			[*] --> buffer_start
+			buffer_start --> buffer_end
+			--
+			[*] --> seek
+		}
+	}
+	
+	playing --> playing : resource_change
+	
+	prepare --> error
+	playing --> error
+	error -> prepare
+}
+
+
+
+会话中 --> [*] : 停止(会话关闭)
+@enduml 

@@ -94,7 +94,7 @@ public class PhoenixDaoImpl implements DisposableBean, PhoenixDao {
 		sql += "      THEN METRIC_PLAYALIVETIME  ";
 		sql += "      ELSE METRIC_PLAYBGNTIME  ";
 		sql += "    END  ";
-		sql += "  END >  CAST(CURRENT_DATE() AS BIGINT) / 1000 - 600  ";
+		sql += "  END >  CAST(CURRENT_DATE() AS BIGINT) / 1000 - 360  ";
 		sql += "GROUP BY DIM_USER_HID  ";
 		// try {
 		// return CharStreams.toString(new InputStreamReader(this.getClass()
