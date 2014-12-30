@@ -191,7 +191,7 @@ public class BsPvEpgDetailDumgBeetleTransformer implements
 	public Optional<AreaInfo> getAreaInfo(String hid, String oemid,
 			String spid, long ip) throws CacheQueryException,
 			CacheRefreshException {
-		return areaInfoCache.getAreaInfo(hid, oemid, spid, ip);
+		return areaInfoCache.getAreaInfo(spid, ip);
 	}
 
 	public Optional<OemInfo> getOemInfo(Long oemid)

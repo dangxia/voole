@@ -49,6 +49,7 @@ public class StormOrderHDFSUtils {
 	static {
 		conf.addResource("core-site2.xml");
 		conf.setBoolean("order.detail.transformer.is.auto.refresh.cache", true);
+		conf.setBoolean("order.detail.transformer.is.remove.playurl", false);
 	}
 
 	public static FileReader<SpecificRecordBase> getNoendReader(Path path)

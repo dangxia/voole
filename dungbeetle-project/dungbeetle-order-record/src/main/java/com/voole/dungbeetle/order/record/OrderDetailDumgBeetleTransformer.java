@@ -58,6 +58,9 @@ public class OrderDetailDumgBeetleTransformer implements
 	private static SimpleDateFormat df2 = new SimpleDateFormat("HH");
 
 	public static final String IS_AUTO_REFRESH_CACHE = "order.detail.transformer.is.auto.refresh.cache";
+	public static final String IS_REMOVE_PLAYURL = "order.detail.transformer.is.remove.playurl";
+
+	private volatile boolean isRemovePlayUrl = true;
 
 	public OrderDetailDumgBeetleTransformer() {
 		partitionCache = new HashMap<String, HiveTable>();
@@ -71,11 +74,21 @@ public class OrderDetailDumgBeetleTransformer implements
 				false);
 	}
 
+	protected boolean getIsRemovePlayUrl(TaskAttemptContext context) {
+		if (context == null || context.getConfiguration() == null) {
+			return true;
+		}
+		return context.getConfiguration().getBoolean(IS_REMOVE_PLAYURL, true);
+	}
+
 	@Override
 	public void setup(TaskAttemptContext context) throws IOException,
 			InterruptedException {
 		ClassPathXmlApplicationContext cxt = ApplicationContextUtil
 				.createCxt(getIsAutoRefreshCache(context));
+
+		isRemovePlayUrl = getIsRemovePlayUrl(context);
+
 		areaInfoCache = cxt.getBean(AreaInfoCache.class);
 		oemInfoCache = cxt.getBean(OemInfoCache.class);
 		resourceInfoCache = cxt.getBean(ResourceInfoCache.class);
@@ -121,20 +134,27 @@ public class OrderDetailDumgBeetleTransformer implements
 			Optional<ResourceInfo> resourceInfo = getResourceInfo(spid,
 					record.getDimMediaFid() != null ? record.getDimMediaFid()
 							.toString() : null);
+			boolean isSetMid = record.getDimMovieMid() != null;
+
 			if (resourceInfo.isPresent()) {
 				Long mid = resourceInfo.get().getMid();
 				int series = resourceInfo.get().getSeries();
 				int mimeid = resourceInfo.get().getMimeid();
 				if (mid != null) {
-					record.setDimMovieMid(mid);
+					if (!isSetMid) {
+						record.setDimMovieMid(mid);
+					}
 					record.setDimMediaSeries(series);
 					record.setDimMediaMimeid(mimeid);
 				} else {
-					record.setDimMovieMid((long) 0);
+					if (!isSetMid) {
+						record.setDimMovieMid((long) 0);
+					}
 					record.setDimMediaSeries(0);
 					record.setDimMediaMimeid(0);
 				}
 			}
+
 			// movie
 			Optional<MovieInfo> movieInfo = getMovieInfo(record
 					.getDimMovieMid());
@@ -217,7 +237,11 @@ public class OrderDetailDumgBeetleTransformer implements
 		record.setStamp(System.currentTimeMillis());
 		record.setUserip(dry.getNatip());
 		record.setDatasorce(dry.getDatasorce());
-		record.setPlayurl(null);
+		if (isRemovePlayUrl) {
+			record.setPlayurl(null);
+		} else {
+			record.setPlayurl(dry.getPlayurl());
+		}
 		record.setVersion(dry.getApkVersion());
 		record.setDimUserUid(dry.getUID());
 		record.setDimUserHid(dry.getHID());
@@ -240,6 +264,7 @@ public class OrderDetailDumgBeetleTransformer implements
 		record.setVssip(dry.getVssip());
 		record.setPerfip(dry.getPerfip());
 		record.setExtinfo(dry.getExtinfo());
+		record.setDimMovieMid(dry.getMid());
 	}
 
 	protected String getSpid(Long oemid) throws CacheRefreshException,
@@ -255,7 +280,7 @@ public class OrderDetailDumgBeetleTransformer implements
 	public Optional<AreaInfo> getAreaInfo(String hid, String oemid,
 			String spid, long ip) throws CacheQueryException,
 			CacheRefreshException {
-		return areaInfoCache.getAreaInfo(hid, oemid, spid, ip);
+		return areaInfoCache.getAreaInfo(spid, ip);
 	}
 
 	public Optional<OemInfo> getOemInfo(Long oemid)
