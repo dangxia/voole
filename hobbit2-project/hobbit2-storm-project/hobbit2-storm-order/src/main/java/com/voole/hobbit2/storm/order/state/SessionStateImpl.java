@@ -37,6 +37,8 @@ public class SessionStateImpl implements SessionState {
 	private static final String UPDATE_INSERT_SQL_BGN_BS = "UPSERT INTO HiveOrderDetailRecord_phoenix(sessid,stamp,userip,datasorce,playurl,version,dim_date_hour,dim_isp_id,dim_user_uid,dim_user_hid,dim_oem_id,dim_area_id,dim_area_parentid,dim_nettype_id,dim_media_fid,dim_media_series,dim_media_mimeid,dim_movie_mid,dim_cp_id,dim_movie_category,dim_product_pid,dim_product_ptype,dim_po_id,dim_epg_id,dim_section_id,dim_section_parentid,metric_playbgntime,metric_durationtime,metric_isad,metric_isrepeatmod,metric_status,metric_techtype,metric_partnerinfo,extinfo,vssip,perfip,bitrate,metric_playalivetime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
 	private static final String UPDATE_INSERT_SQL_ALIVE = "UPSERT INTO HiveOrderDetailRecord_phoenix(sessid,metric_playalivetime,metric_avgspeed) VALUES (?,?,?) ";
 	private static final String UPDATE_INSERT_SQL_END = "UPSERT INTO HiveOrderDetailRecord_phoenix(sessid,metric_playendtime,metric_avgspeed) VALUES (?,?,?) ";
+	private static final String UPDATE_INSERT_SQL_PLAYURL = "UPSERT INTO SESSION_PLAYURL(session,playurl) VALUES (?,?) ";
+
 	private Connection connection;
 
 	public SessionStateImpl() {
@@ -83,6 +85,8 @@ public class SessionStateImpl implements SessionState {
 		long endSize = 0;
 
 		PreparedStatement bgnBsPs = null;
+
+		PreparedStatement playurlPs = null;
 		try {
 			long total = 0l;
 			long start = System.currentTimeMillis();
@@ -91,6 +95,8 @@ public class SessionStateImpl implements SessionState {
 			endPs = connection.prepareStatement(UPDATE_INSERT_SQL_END);
 
 			bgnBsPs = connection.prepareStatement(UPDATE_INSERT_SQL_BGN_BS);
+
+			playurlPs = connection.prepareStatement(UPDATE_INSERT_SQL_PLAYURL);
 
 			for (SpecificRecordBase specificRecordBase : data) {
 				if (specificRecordBase == null) {
@@ -101,10 +107,10 @@ public class SessionStateImpl implements SessionState {
 				if (specificRecordBase instanceof HiveOrderDetailRecord) {
 					HiveOrderDetailRecord record = (HiveOrderDetailRecord) specificRecordBase;
 					if (record.getMetricPlayalivetime() == null) {
-						noAlive(record, bgnPs);
+						noAlive(record, bgnPs, playurlPs);
 						bgnPs.addBatch();
 					} else {
-						withAlive(record, bgnBsPs);
+						withAlive(record, bgnBsPs, playurlPs);
 						bgnBsPs.addBatch();
 					}
 					bgnSize++;
@@ -185,6 +191,7 @@ public class SessionStateImpl implements SessionState {
 			bgnBsPs.executeBatch();
 			alivePs.executeBatch();
 			endPs.executeBatch();
+			playurlPs.executeBatch();
 
 			connection.commit();
 
@@ -226,11 +233,24 @@ public class SessionStateImpl implements SessionState {
 					log.warn("endPs close error");
 				}
 			}
+			if (playurlPs != null) {
+				try {
+					playurlPs.close();
+				} catch (SQLException e) {
+					log.warn("playurlPs close error");
+				}
+			}
+
 		}
 	}
 
-	protected void noAlive(HiveOrderDetailRecord record, PreparedStatement bgnPs)
+	protected void noAlive(HiveOrderDetailRecord record,
+			PreparedStatement bgnPs, PreparedStatement playurlPs)
 			throws SQLException {
+		playurlPs.setString(1, String.valueOf(record.getSessid()));
+		playurlPs.setString(2, String.valueOf(record.getPlayurl()));
+		playurlPs.addBatch();
+
 		bgnPs.setString(1, String.valueOf(record.getSessid()));
 		if (record.getStamp() == null) {
 			bgnPs.setNull(2, Types.BIGINT);
@@ -247,7 +267,8 @@ public class SessionStateImpl implements SessionState {
 		} else {
 			bgnPs.setInt(4, record.getDatasorce());
 		}
-		bgnPs.setString(5, String.valueOf(record.getPlayurl()));
+		bgnPs.setString(5, null);
+		// bgnPs.setString(5, String.valueOf(record.getPlayurl()));
 		bgnPs.setString(6, String.valueOf(record.getVersion()));
 		bgnPs.setString(7, String.valueOf(record.getDimDateHour()));
 		if (record.getDimIspId() == null) {
@@ -258,7 +279,7 @@ public class SessionStateImpl implements SessionState {
 		bgnPs.setString(9, String.valueOf(record.getDimUserUid()));
 		bgnPs.setString(10, String.valueOf(record.getDimUserHid()));
 		if (record.getDimOemId() == null) {
-//			bgnPs.setNull(11, Types.BIGINT);
+			// bgnPs.setNull(11, Types.BIGINT);
 			bgnPs.setLong(11, -1l);
 		} else {
 			bgnPs.setLong(11, record.getDimOemId());
@@ -368,8 +389,9 @@ public class SessionStateImpl implements SessionState {
 	}
 
 	protected void withAlive(HiveOrderDetailRecord record,
-			PreparedStatement bgnPs) throws SQLException {
-		noAlive(record, bgnPs);
+			PreparedStatement bgnPs, PreparedStatement playurlPs)
+			throws SQLException {
+		noAlive(record, bgnPs, playurlPs);
 		if (record.getMetricPlayalivetime() == null) {
 			bgnPs.setNull(38, Types.BIGINT);
 		} else {
