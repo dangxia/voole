@@ -78,9 +78,9 @@ public class BsEpgHiveOrderDryRecordGenerator {
 			record.setFID(fid.toString().toUpperCase());
 		}
 		CharSequence hid = record.getHID();
-		if (hid != null && hid.length() > 12) {
-			hid = hid.toString().substring(0, 12);
-		}
+		// if (hid != null && hid.length() > 12) {
+		// hid = hid.toString().substring(0, 12);
+		// }
 		if (hid != null) {
 			record.setHID(hid.toString().toUpperCase());
 		}
