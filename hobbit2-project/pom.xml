@@ -472,5 +472,8 @@
 		</module>
 		<module>hobbit2-flex-base</module>
 		<module>hobbit2-hadoop-project/hobbit2-hive-direct</module>
+		<module>
+			hobbit2-storm-project/hobbit2-storm-test-metrics
+		</module>
 	</modules>
 </project>
