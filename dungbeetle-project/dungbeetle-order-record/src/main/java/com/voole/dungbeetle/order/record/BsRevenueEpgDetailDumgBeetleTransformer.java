@@ -165,7 +165,7 @@ public class BsRevenueEpgDetailDumgBeetleTransformer implements
 		record.setDimUserUid(dry.getUid());
 		record.setUserip(IPtoLong.ipToLong(dry.getUserip() + ""));
 		record.setDimEpgId(IPtoLong.StrToLong(dry.getEpgid() + ""));
-		record.setDimProductPid(dry.getPerfip());
+		record.setDimProductPid(dry.getPid());
 		record.setResult(dry.getResult());
 		record.setPerfip(dry.getPerfip());
 	}
