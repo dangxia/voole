@@ -15,6 +15,9 @@ public class BsEpgOrderStampFinder implements IStampFinder {
 		Long stamp = null;
 		if (value instanceof BsEpgPlayInfo) {
 			stamp = (Long) ((SpecificRecordBase) value).get("playbgntime");
+			if (stamp == null) {
+				stamp = (Long) ((SpecificRecordBase) value).get("playendtime");
+			}
 		} else {
 			throw new IllegalArgumentException("Don't support class:"
 					+ value.getClass().getName());
