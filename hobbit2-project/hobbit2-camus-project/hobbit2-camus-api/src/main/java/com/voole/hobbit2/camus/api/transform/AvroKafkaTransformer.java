@@ -33,7 +33,7 @@ public class AvroKafkaTransformer implements
 			} else {
 				return Optional.absent();
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new TransformException(e);
 		}
 
