@@ -1,10 +1,14 @@
 package com.voole.hobbit2.hive.order.mapreduce.strategy;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.avro.data.RecordBuilder;
 import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
@@ -30,8 +34,11 @@ public class BsEpgReduceStrategy {
 	private long currCamusExecTime;
 	private final BsEpgOrderSessionInfo sessionInfo;
 
+	private final Map<Class<?>, Method> clazzToCreateBuilderMethod;
+
 	public BsEpgReduceStrategy() {
 		sessionInfo = new BsEpgOrderSessionInfo();
+		clazzToCreateBuilderMethod = new HashMap<Class<?>, Method>();
 	}
 
 	public void reduce(Text sessionIdAndNatip,
@@ -43,7 +50,7 @@ public class BsEpgReduceStrategy {
 			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
 				SpecificRecordBase record = avroValue.datum();
 				if (record instanceof BsEpgPlayInfo) {
-					sessionInfo.setPlayInfo((BsEpgPlayInfo) record);
+					sessionInfo.setPlayInfo(deepCopy((BsEpgPlayInfo) record));
 				} else {
 					throw new UnsupportedOperationException(record.getClass()
 							.getName() + " don't support");
@@ -84,8 +91,30 @@ public class BsEpgReduceStrategy {
 			context.write(
 					HiveOrderInputReducer.ORDER_DETAIL_TRANSFORM_EXCEPTION,
 					e.getMessage());
+		} catch (Exception e) {
+			context.write(
+					HiveOrderInputReducer.ORDER_DETAIL_TRANSFORM_EXCEPTION,
+					e.getMessage());
 		}
 
+	}
+
+	protected <T extends SpecificRecordBase> T deepCopy(T record)
+			throws IllegalAccessException, IllegalArgumentException,
+			InvocationTargetException, NoSuchMethodException, SecurityException {
+		RecordBuilder<?> builder = (RecordBuilder<?>) getBuilderMethod(record)
+				.invoke(null, record);
+		return (T) builder.build();
+	}
+
+	protected Method getBuilderMethod(SpecificRecordBase record)
+			throws NoSuchMethodException, SecurityException {
+		Class<?> clazz = record.getClass();
+		if (!clazzToCreateBuilderMethod.containsKey(clazz)) {
+			clazzToCreateBuilderMethod.put(clazz,
+					clazz.getMethod("newBuilder", clazz));
+		}
+		return clazzToCreateBuilderMethod.get(clazz);
 	}
 
 	public void writeNoEnd(Context context) throws IOException,
