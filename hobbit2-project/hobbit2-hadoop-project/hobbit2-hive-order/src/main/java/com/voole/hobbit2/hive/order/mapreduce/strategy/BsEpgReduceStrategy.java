@@ -38,6 +38,10 @@ public class BsEpgReduceStrategy {
 			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
 				SpecificRecordBase record = avroValue.datum();
 				if (record instanceof BsEpgPlayInfo) {
+					if (((BsEpgPlayInfo) record).getPlayendtime() != null) {
+						context.getCounter("epg_play_info", "end_num")
+								.increment(1l);
+					}
 					sessionInfo.setPlayInfo((BsEpgPlayInfo) record);
 				} else {
 					throw new UnsupportedOperationException(record.getClass()
@@ -70,8 +74,8 @@ public class BsEpgReduceStrategy {
 
 	public void writeNoEnd(Context context) throws IOException,
 			InterruptedException {
-		if (sessionInfo._bgn != null) {
-			context.write(NullWritable.get(), sessionInfo._bgn);
+		if (sessionInfo.get_bgn() != null) {
+			context.write(NullWritable.get(), sessionInfo.get_bgn());
 		}
 	}
 

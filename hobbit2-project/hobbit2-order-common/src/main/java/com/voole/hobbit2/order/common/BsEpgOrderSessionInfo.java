@@ -8,9 +8,9 @@ import com.voole.hobbit2.hive.order.avro.HiveOrderDryRecord;
 
 public class BsEpgOrderSessionInfo {
 
-	public BsEpgPlayInfo _bgn;
+	private BsEpgPlayInfo _bgn;
 
-	public BsEpgPlayInfo _end;
+	private BsEpgPlayInfo _end;
 
 	public void clear() {
 		_bgn = null;

@@ -8,6 +8,7 @@ import backtype.storm.generated.AlreadyAliveException;
 import backtype.storm.generated.InvalidTopologyException;
 import backtype.storm.topology.TopologyBuilder;
 
+import com.esotericsoftware.kryo.KryoSerializable;
 import com.voole.hobbit2.storm.test.NumBigBolt.NumSmallBolt;
 
 public class NumTopology {
@@ -18,6 +19,9 @@ public class NumTopology {
 		int messageTimeOut = maxSeconds + 10;
 
 		Config config = new Config();
+
+		config.registerSerialization(KryoSerializable.class);
+
 		config.setMaxSpoutPending(5);
 		config.setMessageTimeoutSecs(messageTimeOut);
 		// config.setMaxTaskParallelism(1);
