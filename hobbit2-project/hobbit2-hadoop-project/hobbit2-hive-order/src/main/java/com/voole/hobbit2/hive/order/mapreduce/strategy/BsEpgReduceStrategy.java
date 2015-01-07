@@ -10,6 +10,8 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.api.model.HiveTable;
@@ -21,6 +23,9 @@ import com.voole.hobbit2.order.common.BsEpgHiveOrderDryRecordGenerator;
 import com.voole.hobbit2.order.common.BsEpgOrderSessionInfo;
 
 public class BsEpgReduceStrategy {
+
+	private static final Logger LOG = LoggerFactory
+			.getLogger(BsEpgReduceStrategy.class);
 	private OrderDetailDumgBeetleTransformer orderDetailDumgBeetleTransformer;
 	private long currCamusExecTime;
 	private final BsEpgOrderSessionInfo sessionInfo;
@@ -59,6 +64,12 @@ public class BsEpgReduceStrategy {
 			}
 			HiveOrderDryRecord orderRecord = BsEpgHiveOrderDryRecordGenerator
 					.generate(sessionInfo);
+
+			if (hasBgn && hasEnd) {
+				LOG.info("BGN:" + sessionInfo.get_bgn());
+				LOG.info("END:" + sessionInfo.get_end());
+				LOG.info("DRY:" + orderRecord);
+			}
 
 			Map<HiveTable, List<SpecificRecordBase>> result = orderDetailDumgBeetleTransformer
 					.transform(orderRecord);
