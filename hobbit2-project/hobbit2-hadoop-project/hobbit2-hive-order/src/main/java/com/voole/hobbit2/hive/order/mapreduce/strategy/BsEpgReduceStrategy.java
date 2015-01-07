@@ -72,11 +72,11 @@ public class BsEpgReduceStrategy {
 			HiveOrderDryRecord orderRecord = BsEpgHiveOrderDryRecordGenerator
 					.generate(sessionInfo);
 
-			if (hasBgn && hasEnd) {
-				LOG.info("BGN:" + sessionInfo.get_bgn());
-				LOG.info("END:" + sessionInfo.get_end());
-				LOG.info("DRY:" + orderRecord);
-			}
+//			if (hasBgn && hasEnd) {
+//				LOG.info("BGN:" + sessionInfo.get_bgn());
+//				LOG.info("END:" + sessionInfo.get_end());
+//				LOG.info("DRY:" + orderRecord);
+//			}
 
 			Map<HiveTable, List<SpecificRecordBase>> result = orderDetailDumgBeetleTransformer
 					.transform(orderRecord);
