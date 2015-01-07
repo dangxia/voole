@@ -16,14 +16,7 @@ public class BsEpgHiveOrderDryRecordGenerator {
 		record.setPlayEndTime(orderSessionInfo.getPlayEndTime());
 		fill(record, playInfo);
 
-		Long endTime = orderSessionInfo.getPlayEndTime();
-		Long startTime = orderSessionInfo.getPlayBgnTime();
-		if (startTime != null && endTime != null) {
-			record.setPlayDurationTime(endTime - startTime);
-		} else {
-			record.setPlayDurationTime(0l);
-		}
-
+		record.setPlayDurationTime(orderSessionInfo.getPlayDurationTime());
 		return record;
 	}
 
@@ -46,7 +39,7 @@ public class BsEpgHiveOrderDryRecordGenerator {
 		record.setPlayurl(url);
 		record.setPerfip(getIp(playInfo.getPerfip()));
 
-//		record.setPlayEndTime(playInfo.getPlayendtime());
+		// record.setPlayEndTime(playInfo.getPlayendtime());
 		record.setPlayAliveTime(playInfo.getPlayalivetime());
 
 		record.setDatasorce(1);

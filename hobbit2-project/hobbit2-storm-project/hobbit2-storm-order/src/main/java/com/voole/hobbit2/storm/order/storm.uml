@@ -1,0 +1,26 @@
+@startuml
+[*] --> kafka_spout
+[*] --> timeout_spout
+[*] --> persistent_spout
+
+kafka_spout --> bgn_process_bolt : process bgn
+bgn_process_bolt --> combine_session_bolt : group by sessionId
+kafka_spout --> combine_session_bolt : alive or end, group by sessionId
+
+combine_session_bolt --> session_state : group by sessionId
+
+timeout_spout --> session_state
+
+session_state --> user_state : group by hid
+
+session_state -->  idc_state
+
+idc_state --> idc_online_state
+
+user_state --> user_online_num_state : modify online_user_num
+
+
+persistent_spout -> idc_online_state
+persistent_spout -> user_online_num_state
+
+@enduml 

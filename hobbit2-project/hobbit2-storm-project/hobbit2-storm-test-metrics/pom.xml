@@ -19,10 +19,61 @@
 		</dependency>
 
 
+		<!-- storm deps -->
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>bijection-core_2.10</artifactId>
+			<version>0.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>bijection-avro_2.10</artifactId>
+			<version>0.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>chill-avro</artifactId>
+			<version>0.4.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.esotericsoftware.kryo</groupId>
+					<artifactId>kryo</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>chill_2.10</artifactId>
+			<version>0.4.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.esotericsoftware.kryo</groupId>
+					<artifactId>kryo</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.twitter</groupId>
+			<artifactId>chill-bijection_2.10</artifactId>
+			<version>0.4.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.esotericsoftware.kryo</groupId>
+					<artifactId>kryo</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.storm</groupId>
 			<artifactId>storm-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.esotericsoftware.kryo</groupId>
+			<artifactId>kryo</artifactId>
+			<version>2.21</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--/ storm deps -->
 
 		<dependency>
 			<groupId>org.slf4j</groupId>

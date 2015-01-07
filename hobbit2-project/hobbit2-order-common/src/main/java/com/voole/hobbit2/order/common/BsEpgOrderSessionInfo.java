@@ -95,4 +95,19 @@ public class BsEpgOrderSessionInfo {
 
 		return record;
 	}
+
+	public Long getPlayDurationTime() {
+		Long endTime = this.getPlayEndTime();
+		Long startTime = this.getPlayBgnTime();
+		Long aliveTime = this.get_bgn() != null ? this.get_bgn()
+				.getPlayalivetime() : this.get_end().getPlayalivetime();
+		if (startTime != null) {
+			if (endTime != null) {
+				return endTime - startTime;
+			} else if (aliveTime != null) {
+				return aliveTime - startTime;
+			}
+		}
+		return 0l;
+	}
 }

@@ -1,0 +1,12 @@
+{
+	"type" : "record",
+	"name" : "AvroModel2",
+	"namespace" : "com.voole.hobbit2.storm.test.avro.model",
+	"fields" : [ {
+		"name" : "name",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "total",
+		"type" : [ "long", "null" ]
+	}]
+}
