@@ -38,16 +38,21 @@ public class BsEpgReduceStrategy {
 			for (AvroValue<SpecificRecordBase> avroValue : iterable) {
 				SpecificRecordBase record = avroValue.datum();
 				if (record instanceof BsEpgPlayInfo) {
-					if (((BsEpgPlayInfo) record).getPlayendtime() != null) {
-						context.getCounter("epg_play_info", "end_num")
-								.increment(1l);
-					}
 					sessionInfo.setPlayInfo((BsEpgPlayInfo) record);
 				} else {
 					throw new UnsupportedOperationException(record.getClass()
 							.getName() + " don't support");
 				}
 			}
+			boolean hasBgn = sessionInfo.get_bgn() != null;
+			boolean hasEnd = sessionInfo.get_end() != null;
+			if (hasBgn)
+				context.getCounter("epg_play_info", "has_bgn").increment(1l);
+			if (hasEnd)
+				context.getCounter("epg_play_info", "has_end").increment(1l);
+			if (hasBgn && hasEnd)
+				context.getCounter("epg_play_info", "has_full").increment(1l);
+
 			if (!sessionInfo.isEnd(currCamusExecTime)) {
 				writeNoEnd(context);
 				return;
