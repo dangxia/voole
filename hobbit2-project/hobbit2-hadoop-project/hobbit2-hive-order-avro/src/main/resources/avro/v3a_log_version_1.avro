@@ -1,0 +1,25 @@
+{
+	"type" : "record",
+	"fields" : [ {
+		"name" : "stamp",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "userIp",
+		"type" : [ "String", "null" ]
+	},{
+		"name" : "serverip",
+		"type" : [ "String", "null" ]
+	}, {
+		"name" : "hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "oemid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "uid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "status",
+		"type" : [ "int", "null" ]
+	}]
+}

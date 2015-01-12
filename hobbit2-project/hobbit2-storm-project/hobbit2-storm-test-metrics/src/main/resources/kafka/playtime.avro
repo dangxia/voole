@@ -1,0 +1,6 @@
+{
+	"type" : "enum",
+	"name" : "PlayType",
+	"namespace" : "com.voole.hobbit2.storm.test.kafka.avro",
+	"symbols" : ["BGN", "END", "ALIVE", "PARTITIONINFO"]
+}

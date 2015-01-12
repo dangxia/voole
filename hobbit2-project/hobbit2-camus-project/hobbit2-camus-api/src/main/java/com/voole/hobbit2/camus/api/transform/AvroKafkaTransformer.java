@@ -1,7 +1,5 @@
 package com.voole.hobbit2.camus.api.transform;
 
-import java.io.IOException;
-
 import org.apache.avro.Schema;
 import org.apache.avro.io.BinaryDecoder;
 import org.apache.avro.io.DecoderFactory;

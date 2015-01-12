@@ -3,24 +3,35 @@
 [*] --> timeout_spout
 [*] --> persistent_spout
 
-kafka_spout --> bgn_process_bolt : process bgn
-bgn_process_bolt --> combine_session_bolt : group by sessionId
-kafka_spout --> combine_session_bolt : alive or end, group by sessionId
+kafka_spout --> custom_partition_kafka_spout
 
-combine_session_bolt --> session_state : group by sessionId
+custom_partition_kafka_spout --> bgn_process_bolt : bgn
+bgn_process_bolt --> group_bgn_by_sessionId
+group_bgn_by_sessionId --> combine_session_bolt
 
-timeout_spout --> session_state
-
-session_state --> user_state : group by hid
-
-session_state -->  idc_state
-
-idc_state --> idc_online_state
-
-user_state --> user_online_num_state : modify online_user_num
+custom_partition_kafka_spout --> group_alive_and_end_by_sessionId : alive or end
+group_alive_and_end_by_sessionId --> combine_session_bolt 
 
 
-persistent_spout -> idc_online_state
-persistent_spout -> user_online_num_state
+
+custom_partition_kafka_spout --> meger_session_info : bocardcast -> partition_state
+combine_session_bolt --> meger_session_info : partition by sessionId
+timeout_spout --> meger_session_info : bocardcast -> timeoutinfo
+
+
+meger_session_info --> session_state : update or timeout session_state
+
+
+session_state --> user_state : partition by hid
+
+session_state -->  idc_state : partition by idcid
+
+idc_state --> idc_online_state : update idc_online_user_num
+
+user_state --> user_online_num_state : update online_user_num
+
+
+persistent_spout -> idc_online_state : persistent
+persistent_spout -> user_online_num_state : persistent
 
 @enduml 

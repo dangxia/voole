@@ -37,13 +37,13 @@ public class NumBolt extends BaseRichBolt {
 	@Override
 	public void prepare(@SuppressWarnings("rawtypes") Map stormConf,
 			TopologyContext context, OutputCollector collector) {
-		countMetric = context.registerMetric("count", new CountMetric(), 60);
+		countMetric = context.registerMetric("count", new CountMetric(), 10);
 		multiCountMetric = context.registerMetric("multi_count",
-				new MultiCountMetric(), 60);
-		maxMetric = context.registerMetric("max", new MaxMetric(), 60);
-		avgMetric = context.registerMetric("avg", new AvgReduce(), 60);
+				new MultiCountMetric(), 10);
+		maxMetric = context.registerMetric("max", new MaxMetric(), 10);
+		avgMetric = context.registerMetric("avg", new AvgReduce(), 10);
 		multiAvgMetric = context.registerMetric("multi_avg",
-				new MultiReducedMetric(new AvgReduce()), 60);
+				new MultiReducedMetric(new AvgReduce()), 10);
 
 		this.collector = collector;
 

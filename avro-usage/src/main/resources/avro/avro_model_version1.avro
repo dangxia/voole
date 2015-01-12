@@ -1,0 +1,12 @@
+{
+	"type" : "record",
+	"name" : "AvroModelVersion1",
+	"namespace" : "com.voole.avro.usage.model",
+	"fields" : [ {
+		"name" : "name",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "num",
+		"type" : [ "long", "null" ]
+	}]
+}

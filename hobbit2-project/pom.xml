@@ -475,5 +475,6 @@
 		<module>
 			hobbit2-storm-project/hobbit2-storm-test-metrics
 		</module>
+		<module>hobbit2-storm-project/hobbit2-storm-order2</module>
 	</modules>
 </project>

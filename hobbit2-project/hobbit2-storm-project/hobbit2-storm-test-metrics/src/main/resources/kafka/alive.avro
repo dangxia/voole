@@ -1,0 +1,15 @@
+{
+	"type" : "record",
+	"name" : "PlayAlive",
+	"namespace" : "com.voole.hobbit2.storm.test.kafka.avro",
+	"fields" : [ {
+		"name" : "sessionId",
+		"type" : "string"
+	}, {
+		"name" : "stamp",
+		"type" : "long"
+	}, {
+		"name" : "type",
+		"type" : "PlayType"
+	}]
+}
