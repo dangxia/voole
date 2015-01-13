@@ -13,6 +13,7 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
+import com.google.common.collect.Lists;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.BsPvEpgDetailDumgBeetleTransformer;
@@ -72,7 +73,7 @@ public class HiveOrderInputReducer extends
 					result = bsRevenueEpgDetailDumgBeetleTransformer
 							.transform((BsRevenueDryInfo) record);
 				} else if (record instanceof V3aLogVersion1) {
-					context.write(v3aTable, record);
+					context.write(v3aTable, Lists.newArrayList(record));
 					continue;
 				}
 				if (result != null && result.size() > 0) {
