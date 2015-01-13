@@ -13,11 +13,11 @@ import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import com.google.common.collect.Lists;
 import com.voole.dungbeetle.api.DumgBeetleTransformException;
 import com.voole.dungbeetle.api.model.HiveTable;
 import com.voole.dungbeetle.order.record.BsPvEpgDetailDumgBeetleTransformer;
 import com.voole.dungbeetle.order.record.BsRevenueEpgDetailDumgBeetleTransformer;
+import com.voole.dungbeetle.order.record.V3aDumgBeetleTransformer;
 import com.voole.hobbit2.hive.order.avro.BsPvPlayDryInfo;
 import com.voole.hobbit2.hive.order.avro.BsRevenueDryInfo;
 import com.voole.hobbit2.hive.order.avro.V3aLogVersion1;
@@ -31,12 +31,9 @@ public class HiveOrderInputReducer extends
 
 	private BsPvEpgDetailDumgBeetleTransformer bsPvEpgDetailDumgBeetleTransformer;
 	private BsRevenueEpgDetailDumgBeetleTransformer bsRevenueEpgDetailDumgBeetleTransformer;
-	private final HiveTable v3aTable;
+	private V3aDumgBeetleTransformer v3aDumgBeetleTransformer;
 
 	public HiveOrderInputReducer() {
-		v3aTable = new HiveTable();
-		v3aTable.setName("v3a_log");
-		v3aTable.setSchema(V3aLogVersion1.getClassSchema());
 	}
 
 	@Override
@@ -47,6 +44,9 @@ public class HiveOrderInputReducer extends
 
 		bsRevenueEpgDetailDumgBeetleTransformer = new BsRevenueEpgDetailDumgBeetleTransformer();
 		bsRevenueEpgDetailDumgBeetleTransformer.setup(context);
+		
+		v3aDumgBeetleTransformer = new V3aDumgBeetleTransformer();
+		v3aDumgBeetleTransformer.setup(context);
 
 	}
 
@@ -55,6 +55,7 @@ public class HiveOrderInputReducer extends
 			InterruptedException {
 		bsPvEpgDetailDumgBeetleTransformer.cleanup(context);
 		bsRevenueEpgDetailDumgBeetleTransformer.cleanup(context);
+		v3aDumgBeetleTransformer.cleanup(context);
 	}
 
 	@Override
@@ -73,8 +74,8 @@ public class HiveOrderInputReducer extends
 					result = bsRevenueEpgDetailDumgBeetleTransformer
 							.transform((BsRevenueDryInfo) record);
 				} else if (record instanceof V3aLogVersion1) {
-					context.write(v3aTable, Lists.newArrayList(record));
-					continue;
+					result = v3aDumgBeetleTransformer
+							.transform((V3aLogVersion1) record);
 				}
 				if (result != null && result.size() > 0) {
 					for (Entry<HiveTable, List<SpecificRecordBase>> entry : result

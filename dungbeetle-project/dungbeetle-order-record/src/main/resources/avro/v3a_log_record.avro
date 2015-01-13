@@ -1,0 +1,30 @@
+{
+	"type" : "record",
+	"name" : "V3aLogRecord",
+	"namespace" : "com.voole.dungbeetle.order.record.avro",
+	"fields" : [ {
+		"name" : "stamp",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "userIp",
+		"type" : [ "string", "null" ]
+	},{
+		"name" : "serverip",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "hid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "oemid",
+		"type" : [ "long", "null" ]
+	}, {
+		"name" : "uid",
+		"type" : [ "string", "null" ]
+	}, {
+		"name" : "status",
+		"type" : [ "int", "null" ]
+	}, {
+		"name" : "hour",
+		"type" : "string"
+	}]
+}
