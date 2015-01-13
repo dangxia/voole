@@ -19,6 +19,7 @@ import com.voole.dungbeetle.order.record.BsPvEpgDetailDumgBeetleTransformer;
 import com.voole.dungbeetle.order.record.BsRevenueEpgDetailDumgBeetleTransformer;
 import com.voole.hobbit2.hive.order.avro.BsPvPlayDryInfo;
 import com.voole.hobbit2.hive.order.avro.BsRevenueDryInfo;
+import com.voole.hobbit2.hive.order.avro.V3aLogVersion1;
 
 /**
  * @author XuehuiHe
@@ -29,8 +30,12 @@ public class HiveOrderInputReducer extends
 
 	private BsPvEpgDetailDumgBeetleTransformer bsPvEpgDetailDumgBeetleTransformer;
 	private BsRevenueEpgDetailDumgBeetleTransformer bsRevenueEpgDetailDumgBeetleTransformer;
+	private final HiveTable v3aTable;
 
 	public HiveOrderInputReducer() {
+		v3aTable = new HiveTable();
+		v3aTable.setName("v3a_log");
+		v3aTable.setSchema(V3aLogVersion1.getClassSchema());
 	}
 
 	@Override
@@ -66,6 +71,9 @@ public class HiveOrderInputReducer extends
 				} else if (record instanceof BsRevenueDryInfo) {
 					result = bsRevenueEpgDetailDumgBeetleTransformer
 							.transform((BsRevenueDryInfo) record);
+				} else if (record instanceof V3aLogVersion1) {
+					context.write(v3aTable, record);
+					continue;
 				}
 				if (result != null && result.size() > 0) {
 					for (Entry<HiveTable, List<SpecificRecordBase>> entry : result

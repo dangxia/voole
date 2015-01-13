@@ -1,14 +1,16 @@
 {
 	"type" : "record",
+	"name" : "V3aLogVersion1",
+	"namespace" : "com.voole.hobbit2.hive.order.avro",
 	"fields" : [ {
 		"name" : "stamp",
 		"type" : [ "long", "null" ]
 	}, {
 		"name" : "userIp",
-		"type" : [ "String", "null" ]
+		"type" : [ "string", "null" ]
 	},{
 		"name" : "serverip",
-		"type" : [ "String", "null" ]
+		"type" : [ "string", "null" ]
 	}, {
 		"name" : "hid",
 		"type" : [ "string", "null" ]
