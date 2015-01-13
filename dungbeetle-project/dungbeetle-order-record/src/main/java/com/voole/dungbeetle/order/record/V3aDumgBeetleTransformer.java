@@ -69,8 +69,20 @@ public class V3aDumgBeetleTransformer implements
 		record.setStamp(dry.getStamp());
 		record.setUid(dry.getUid());
 		record.setUserIp(dry.getUserIp());
+		record.setStatus(dry.getStatus());
 
+		cutHidAndToUperCase(record);
 		return record;
+	}
+
+	protected static void cutHidAndToUperCase(V3aLogRecord record) {
+		CharSequence hid = record.getHid();
+		if (hid != null && hid.length() > 12) {
+			hid = hid.toString().substring(0, 12);
+		}
+		if (hid != null) {
+			record.setHid(hid.toString().toUpperCase());
+		}
 	}
 
 	private String getDayPartition(long stamp) {
