@@ -110,7 +110,7 @@ public class V3aDumgBeetleTransformer implements
 	public static class HiveTableCreator {
 		public static HiveTable create(String partitionValue) {
 			HiveTable table = new HiveTable();
-			table.setName("v3a_log");
+			table.setName("fact_auth");
 			table.setSchema(V3aLogRecord.getClassSchema());
 			HiveTablePartition partition = new HiveTablePartition();
 			partition.setName("day");
@@ -122,7 +122,7 @@ public class V3aDumgBeetleTransformer implements
 
 		public static void main(String[] args) {
 
-			HiveTableSchema tableSchema = new HiveTableSchema("v3a_log",
+			HiveTableSchema tableSchema = new HiveTableSchema("fact_auth",
 					Lists.newArrayList(new HiveTablePartitionSchema("day",
 							Type.STRING_TYPE)), V3aLogRecord.getClassSchema());
 			System.out.println(HiveTableSchema
