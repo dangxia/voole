@@ -359,6 +359,26 @@ public class CacheDao implements OemInfoFetch, AreaInfosFetch,
 		return map;
 	}
 
+	/***
+	 * B2B产品数据
+	 ****/
+	public Map<String, ProductInfo> getProductB2BInfos() {
+		final Map<String, ProductInfo> map = new HashMap<String, ProductInfo>();
+		String sql = "select t.pid,t.ptype,t.fee from  dim_b2b_product t ";
+		realtimeJt.query(sql, new RowMapper<Void>() {
+			@Override
+			public Void mapRow(ResultSet rs, int rowNum) throws SQLException {
+				ProductInfo info = new ProductInfo();
+				info.setPtype(rs.getInt("ptype"));
+				info.setFee(rs.getInt("fee"));
+				info._process();
+				map.put(rs.getString("pid"), info);
+				return null;
+			}
+		});
+		return map;
+	}
+
 	public Map<String, ParentSectionInfo> getParentSectionMap() {
 		final Map<String, ParentSectionInfo> map = new HashMap<String, ParentSectionInfo>();
 		String sql = "SELECT t.code,(select code from dim_section ms where ms.id=t.parentid limit 0,1) parentcode FROM dim_section t where parentid>0 ";
